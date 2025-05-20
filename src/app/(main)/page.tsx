@@ -73,73 +73,78 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }, [leagueData]);
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
+    const defaultStyle = { textClass: 'font-semibold text-foreground', style: {} };
+    const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', style: {} };
+  
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
   
     if (rank === 1) {
-      return { 
-        textClass: 'text-primary-foreground font-semibold', 
-        style: { backgroundColor: 'hsl(var(--primary))' } 
+      return {
+        textClass: 'text-primary-foreground font-semibold',
+        style: { backgroundColor: 'hsl(var(--primary))' }
       };
     }
-  
+    
     // Handle cases where maxRankInYear is too small for a meaningful scale
-    if (maxRankInYear <= 1) { 
-        return { textClass: 'font-semibold text-foreground', style: {} }; // Default for safety
+    if (maxRankInYear <= 1) return defaultStyle;
+  
+    const SATURATION = 60;
+    const MAX_LIGHTNESS = 92; // Very light pastel
+    const MIN_LIGHTNESS = 78; // Slightly more saturated pastel
+  
+    // For leagues with only 2 GMs, rank 2 is the "worst"
+    if (maxRankInYear === 2 && rank === 2) {
+        return { 
+            textClass: coloredRankedStyle.textClass, 
+            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } // Lightest red
+        };
     }
-    if (maxRankInYear === 2 && rank === 2) { // Only 1st and 2nd, rank 2 is "worst"
-      return { textClass: 'text-neutral-900 font-semibold', style: { backgroundColor: `hsl(0, 70%, 65%)` } }; // Red
-    }
-     // If maxRankInYear is 2, but rank is not 2 (e.g. an invalid rank for that year), default styling
-    if (maxRankInYear <= 2) {
-        return { textClass: 'font-semibold text-foreground', style: {} };
-    }
+    // If maxRankInYear is 2, but rank is not 2 (e.g. an invalid rank for that year), default styling
+    if (maxRankInYear <= 2) return defaultStyle;
+    
   
     // Normalize rank (from 2 to maxRankInYear) to a 0-1 scale
     // 0 is best (greenest, rank 2), 1 is worst (reddest, rank maxRankInYear).
-    const denominator = maxRankInYear - 2;
-    // This check should ideally not be hit if maxRankInYear > 2 logic above is sound
-    if (denominator === 0) { 
-        return { textClass: 'font-semibold text-foreground', style: {} }; 
-    }
+    const denominator = maxRankInYear - 2; 
+    if (denominator === 0) return defaultStyle; // Should be caught by maxRankInYear <= 2
   
     const normalizedRank = (rank - 2) / denominator;
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Clamp between 0 and 1
   
-    let hue: number;
-    const saturation: number = 70;
-    const lightness: number = 65; // Adjusted lightness for better color visibility
-    let backgroundColor = '';
-    let textColor = 'text-neutral-900'; // Default for light HSL backgrounds, contrast is important
-  
-    // Define the center and the width of the neutral band
     const NEUTRAL_CENTER = 0.5;
-    // Neutral band, e.g. ranks between 45% and 55% of the normalized scale
-    const NEUTRAL_BANDWIDTH = 0.1; // Ranks very close to the middle get no specific color
+    const NEUTRAL_BANDWIDTH = 0.15; // Ranks from 42.5% to 57.5% of the scale get no specific color
+  
+    const GREEN_HUE = 120;
+    const RED_HUE = 0;
+    
+    let backgroundColor = '';
   
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
       // Neutral zone - use default cell styling
-      return { textClass: 'font-semibold text-foreground', style: {} };
+      return defaultStyle;
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
       // Green spectrum (normalizedRank from 0 up to NEUTRAL_CENTER - BANDWIDTH/2)
-      // Map [0, NEUTRAL_CENTER - BANDWIDTH/2) to a hue range for green.
-      // t goes from 0 (best in green range, full green) to 1 (edge of green range, less green)
-      const t = clampedNormalizedRank / (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2);
-      hue = 120 - (t * 40); // Interpolate hue from 120 (green) down to 80 (greenish-yellow/lime)
-      backgroundColor = `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`;
+      // t_green maps the green portion of the scale [0, green_zone_width) to [0, 1]
+      // where 0 is best (rank 2), 1 is closest to neutral from green side
+      const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
+      // Prevent division by zero if green_zone_width is 0 (e.g. if NEUTRAL_CENTER is too small or BANDWIDTH too large)
+      const t_green = green_zone_width > 0 ? clampedNormalizedRank / green_zone_width : 1;
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Interpolates from MAX_LIGHTNESS down to MIN_LIGHTNESS
+      backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else { // clampedNormalizedRank > NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2
       // Red spectrum (normalizedRank from NEUTRAL_CENTER + BANDWIDTH/2 up to 1)
-      // Map [NEUTRAL_CENTER + BANDWIDTH/2, 1] to a hue range for red.
-      // t goes from 0 (edge of red range, less red) to 1 (worst in red range, full red)
-      const t = (clampedNormalizedRank - (NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2)) / (1 - (NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2));
-      hue = 40 - (t * 40); // Interpolate hue from 40 (orange-ish) down to 0 (red)
-      backgroundColor = `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`;
+      // t_red maps the red portion of the scale [red_zone_start, 1] to [0, 1]
+      // where 0 is closest to neutral from red side, 1 is worst (maxRankInYear)
+      const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
+      const red_zone_width = 1 - red_zone_start;
+      // Prevent division by zero if red_zone_width is 0 or less
+      const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Interpolates from MIN_LIGHTNESS up to MAX_LIGHTNESS
+      backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
-    // For HSL lightness 65, a dark text color generally works.
-    // If lightness were to vary more, this would need to be more dynamic.
-  
     return {
-      textClass: `${textColor} font-semibold`,
+      textClass: coloredRankedStyle.textClass,
       style: { backgroundColor }
     };
   };
@@ -411,7 +416,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Primary color (1st), Green (better) to Neutral to Red (worse) scale for others.</CardDescription>
+          <CardDescription>GM finishing positions by year. Primary color (1st), transitioning from light green (better) through neutral to light red (worse) for other ranks.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -631,3 +636,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
