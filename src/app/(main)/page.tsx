@@ -24,13 +24,16 @@ import type {
   TopPerformerPlayer,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell as RechartsCell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // Removed ScatterChart specific imports
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
 import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChartIcon, ClipboardList, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
@@ -601,27 +604,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   );
 };
 
-interface HeatmapTooltipProps {
-  active?: boolean;
-  payload?: any[];
-  label?: string; // Week number
-}
-
-const HeatmapTooltip: React.FC<HeatmapTooltipProps> = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload; // The data object for the cell
-    return (
-      <div className="bg-popover text-popover-foreground border border-border p-2 rounded shadow-lg text-xs">
-        <p className="font-bold">{data.teamName}</p>
-        <p>Week {data.week}</p>
-        {data.score !== undefined && <p>Score: {data.score.toFixed(1)}</p>}
-        {data.result && <p>Result: {data.result}</p>}
-      </div>
-    );
-  }
-  return null;
-};
-
 
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
@@ -693,77 +675,44 @@ const SeasonDetail = () => {
       </div>
     </div>
   );
+  
+  const getScoreCellClass = (score: number | undefined | null): string => {
+    if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
+    if (score >= 140) return 'bg-green-600 text-white';
+    if (score >= 125) return 'bg-green-400 text-black';
+    if (score >= 110) return 'bg-lime-300 text-black';
+    if (score >= 100) return 'bg-yellow-200 text-black';
+    if (score >= 90) return 'bg-orange-300 text-black';
+    return 'bg-red-400 text-white';
+  };
 
-  const transformedHeatmapData = useMemo(() => {
-    if (!seasonData?.weeklyScoresData?.scores || !seasonData.weeklyScoresData.teams) {
-      return [];
-    }
-    const flatData: Array<{
-      week: number;
-      teamName: string;
-      score: number | undefined;
-      result: string | undefined;
-    }> = [];
-
-    const teams = seasonData.weeklyScoresData.teams;
-    seasonData.weeklyScoresData.scores.forEach((weekScores, weekIndex) => {
-      teams.forEach((teamName, teamIndex) => {
+  const averageScores = useMemo(() => {
+    if (!seasonData?.weeklyScoresData?.teams || !seasonData.weeklyScoresData.scores) return {};
+    const averages: { [teamName: string]: number | null } = {};
+    seasonData.weeklyScoresData.teams.forEach((teamName, teamIndex) => {
+      let totalScore = 0;
+      let gameCount = 0;
+      seasonData.weeklyScoresData?.scores.forEach(weekScores => {
         const score = weekScores[teamIndex];
-        const result = seasonData.weeklyScoresData!.results?.[weekIndex]?.[teamIndex];
-        flatData.push({
-          week: weekIndex + 1,
-          teamName: teamName,
-          score: score,
-          result: result,
-        });
+        if (score !== null && score !== undefined) {
+          totalScore += score;
+          gameCount++;
+        }
       });
+      averages[teamName] = gameCount > 0 ? totalScore / gameCount : null;
     });
-    return flatData;
+    return averages;
   }, [seasonData?.weeklyScoresData]);
 
-  const { minScore, maxScore } = useMemo(() => {
-    if (!seasonData?.weeklyScoresData?.scores) return { minScore: 60, maxScore: 180 }; // Default range
-    let minS = Infinity;
-    let maxS = -Infinity;
-    let hasScores = false;
-    seasonData.weeklyScoresData.scores.flat().forEach(score => {
-      if (score !== null && score !== undefined) {
-        hasScores = true;
-        if (score < minS) minS = score;
-        if (score > maxS) maxS = score;
-      }
-    });
-    if (!hasScores) return { minScore: 60, maxScore: 180 };
-    return { minScore: minS, maxScore: maxS };
-  }, [seasonData?.weeklyScoresData?.scores]);
+  const weeklyScoreLegend = [
+    { label: '140+ pts', className: 'bg-green-600 text-white' },
+    { label: '125-139', className: 'bg-green-400 text-black' },
+    { label: '110-124', className: 'bg-lime-300 text-black' },
+    { label: '100-109', className: 'bg-yellow-200 text-black' },
+    { label: '90-99', className: 'bg-orange-300 text-black' },
+    { label: '<90 pts', className: 'bg-red-400 text-white' },
+  ];
 
-  const getScoreColor = (score?: number) => {
-    if (score === undefined || score === null) return 'hsl(var(--muted))';
-    const range = maxScore - minScore;
-    if (range === 0) return 'hsl(90, 70%, 55%)'; // All scores are same, make them neutral green
-
-    const normalized = (score - minScore) / range;
-    
-    let hue;
-    // Red (0) -> Yellow (60) -> Green (120)
-    if (normalized < 0.5) { // Red to Yellow
-        hue = normalized * 2 * 60; // Scale 0-0.5 to 0-60
-    } else { // Yellow to Green
-        hue = 60 + (normalized - 0.5) * 2 * 60; // Scale 0.5-1 to 60-120
-    }
-    hue = Math.max(0, Math.min(120, hue)); // Clamp hue
-    return `hsl(${hue}, 70%, 60%)`;
-  };
-
-  const getResultColor = (result?: string) => {
-    if (result === 'W') return 'hsl(var(--chart-2))'; // Green
-    if (result === 'L') return 'hsl(var(--destructive))'; // Red
-    if (result === 'T') return 'hsl(var(--muted-foreground))'; // Gray
-    return 'hsl(var(--muted))'; // Default for no result
-  };
-
-  const heatmapCellSize = 25; // Adjust for desired cell size
-  const chartHeight = (seasonData?.weeklyScoresData?.teams?.length || 10) * heatmapCellSize + 80; // +80 for margins/axes
 
   return (
     <div className="space-y-6">
@@ -815,7 +764,7 @@ const SeasonDetail = () => {
                 <Tabs defaultValue="overview" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="weekly_scores">Weekly Scores</TabsTrigger>
+                    <TabsTrigger value="weekly_scores">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
                     <TabsTrigger value="waiver_pickups">Waiver Pickups</TabsTrigger>
                     <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
@@ -914,63 +863,86 @@ const SeasonDetail = () => {
 
                 <TabsContent value="weekly_scores" className="pt-4 space-y-4">
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center"><BarChart2 className="mr-2 h-5 w-5 text-primary" />Weekly Scores Heatmap</CardTitle>
-                            <CardDescription>Visualize scores or W/L/T results across weeks and teams.</CardDescription>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div className="flex items-center">
+                                <BarChart2 className="mr-2 h-5 w-5 text-primary" />
+                                <CardTitle>Weekly Performance</CardTitle>
+                            </div>
+                            <RadioGroup
+                                defaultValue="scores"
+                                onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
+                                className="flex items-center space-x-2"
+                            >
+                                <div className="flex items-center space-x-1">
+                                    <RadioGroupItem value="scores" id="scores-mode" />
+                                    <Label htmlFor="scores-mode" className="text-sm cursor-pointer">Scores</Label>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                    <RadioGroupItem value="results" id="results-mode" />
+                                    <Label htmlFor="results-mode" className="text-sm cursor-pointer">W/L</Label>
+                                </div>
+                            </RadioGroup>
                         </CardHeader>
                         <CardContent>
-                            {seasonData.weeklyScoresData && transformedHeatmapData.length > 0 ? (
-                            <>
-                                <Tabs defaultValue="scores" onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')} className="mb-4 w-full sm:w-auto">
-                                    <TabsList className="grid w-full grid-cols-2 sm:inline-flex">
-                                        <TabsTrigger value="scores">Show Scores Heatmap</TabsTrigger>
-                                        <TabsTrigger value="results">Show W/L/T Heatmap</TabsTrigger>
-                                    </TabsList>
-                                </Tabs>
-                                <ResponsiveContainer width="100%" height={chartHeight}>
-                                    <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 80 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                                        <XAxis 
-                                            dataKey="week" 
-                                            type="number" 
-                                            name="Week" 
-                                            label={{ value: 'Week', position: 'insideBottom', offset: -10 }}
-                                            domain={['dataMin', 'dataMax']}
-                                            tickFormatter={(val) => `Wk ${val}`}
-                                            allowDecimals={false}
-                                            tickCount={seasonData.weeklyScoresData.scores.length || 13}
-                                        />
-                                        <YAxis 
-                                            dataKey="teamName" 
-                                            type="category" 
-                                            name="Team"
-                                            width={100}
-                                            tick={{ fontSize: 10 }}
-                                            interval={0}
-                                        />
-                                        <ZAxis dataKey="score" range={[heatmapCellSize * heatmapCellSize * 0.8, heatmapCellSize * heatmapCellSize * 0.8]} /> 
-                                        <Tooltip content={<HeatmapTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-                                        <Scatter 
-                                            name="Weekly Data" 
-                                            data={transformedHeatmapData} 
-                                            shape="square"
-                                        >
-                                        {transformedHeatmapData.map((entry, index) => (
-                                            <RechartsCell
-                                            key={`cell-${index}`}
-                                            fill={
-                                                weeklyScoresDisplayMode === 'scores'
-                                                ? getScoreColor(entry.score)
-                                                : getResultColor(entry.result)
-                                            }
-                                            />
-                                        ))}
-                                        </Scatter>
-                                    </ScatterChart>
-                                </ResponsiveContainer>
-                            </>
+                            {seasonData.weeklyScoresData && Array.isArray(seasonData.weeklyScoresData.teams) && seasonData.weeklyScoresData.teams.length > 0 ? (
+                                <>
+                                <div className="overflow-x-auto">
+                                    <Table className="min-w-full">
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="sticky left-0 bg-card z-10 w-1/6 min-w-[150px] text-left">TEAM</TableHead>
+                                                {seasonData.weeklyScoresData.scores.map((_, weekIndex) => (
+                                                    <TableHead key={`wk-header-${weekIndex}`} className="text-center min-w-[60px]">{`W${weekIndex + 1}`}</TableHead>
+                                                ))}
+                                                <TableHead className="text-center min-w-[70px]">AVG</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {seasonData.weeklyScoresData.teams.map((teamName, teamIndex) => (
+                                                <TableRow key={teamName}>
+                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate" title={teamName}>{teamName}</TableCell>
+                                                    {seasonData.weeklyScoresData!.scores.map((weekScores, weekIndex) => {
+                                                        const score = weekScores[teamIndex];
+                                                        const result = seasonData.weeklyScoresData!.results?.[weekIndex]?.[teamIndex];
+                                                        return (
+                                                            <TableCell key={`wk-${weekIndex}-team-${teamIndex}`} className={cn(
+                                                                "p-1.5 text-center text-xs rounded-md border border-transparent",
+                                                                weeklyScoresDisplayMode === 'scores' ? getScoreCellClass(score) : '',
+                                                                weeklyScoresDisplayMode === 'results' && result === 'W' ? 'border-yellow-400 border-2' : ''
+                                                            )}>
+                                                                {weeklyScoresDisplayMode === 'scores' ? (
+                                                                    score?.toFixed(1) ?? '-'
+                                                                ) : (
+                                                                    result === 'W' ? <CheckCircle2 className="mx-auto h-4 w-4 text-green-600" /> :
+                                                                    result === 'L' ? <XCircle className="mx-auto h-4 w-4 text-red-600" /> :
+                                                                    result === 'T' ? <span className="text-muted-foreground">T</span> : '-'
+                                                                )}
+                                                            </TableCell>
+                                                        );
+                                                    })}
+                                                    <TableCell className={cn("p-1.5 text-center text-xs rounded-md font-semibold", getScoreCellClass(averageScores[teamName]))}>
+                                                        {averageScores[teamName]?.toFixed(1) ?? 'N/A'}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
+                                    {weeklyScoreLegend.map(item => (
+                                        <div key={item.label} className="flex items-center gap-1.5">
+                                            <span className={cn("h-3 w-3 rounded-sm", item.className)}></span>
+                                            <span>{item.label}</span>
+                                        </div>
+                                    ))}
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="h-3 w-5 rounded-sm border-2 border-yellow-400"></span>
+                                        <span>Win (in W/L mode)</span>
+                                    </div>
+                                </div>
+                                </>
                             ) : (
-                            <p className="text-muted-foreground">No weekly scores data available for {seasonData.seasonData.year} to display heatmap.</p>
+                                <p className="text-muted-foreground text-center py-4">No weekly scores data available for {seasonData.seasonData.year}.</p>
                             )}
                         </CardContent>
                     </Card>
@@ -1399,3 +1371,5 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
+
