@@ -20,12 +20,12 @@ import type {
   SeasonWaiverPickupEntry,
   BestOverallGameEntry,
   TopPerformerPlayer,
-  SeasonBaseData,
-  PlayoffData,
-  WeeklyScoresMatrixData,
+  // SeasonBaseData,
+  // PlayoffData,
+  // WeeklyScoresMatrixData,
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
-  PositionalTopPerformersData,
+  // PositionalTopPerformersData,
   BestOverallGameEntry as SeasonBestOverallGameEntry,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -222,7 +222,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return sortedData;
     } catch (e) {
       console.error("Error in sortData:", e, { data, config });
-      return data; 
+      return Array.isArray(data) ? data : []; // Ensure it always returns an array
     }
   };
 
@@ -266,7 +266,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
           <CardContent className="px-0 sm:px-6 flex items-center justify-center">
-            <Skeleton className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl h-60 mx-auto" />
+            <Skeleton className="w-full h-60 mx-auto" />
           </CardContent>
         </Card>
         <Card>
@@ -312,7 +312,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               align: "start",
               loop: Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.length > 1,
             }}
-            className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
+            className="w-full"
           >
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
