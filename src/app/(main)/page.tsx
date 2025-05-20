@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type {
   LeagueData,
   CareerStat,
-  Season as SeasonType,
   ChampionTimelineEntry,
   LeagueRecord,
   PlayoffAppearanceRate,
@@ -23,14 +22,16 @@ import { ArrowUpDown, ListChecks } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
-// Mock data for SeasonDetail and GMCareer tabs (until they are also updated)
-const mockSeasonsForTabs: SeasonType[] = [
+// Mock data for SeasonDetail and GMCareer tabs (as types)
+import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
+
+const mockSeasonsForTabs: SeasonType_Mock[] = [
   { id: "2023", year: 2023, championId: "gm1", championName: "The Champs", championTeamName: "Victorious Secret", championPhotoUrl: "https://placehold.co/60x60.png" },
   { id: "2022", year: 2022 },
   { id: "2021", year: 2021 },
 ];
 
-const mockGmsForTabs: { id: string; name: string }[] = [
+const mockGmsForTabs: GM_Mock[] = [
   { id: "gm1", name: "Alice" },
   { id: "gm2", name: "Bob" },
   { id: "gm3", name: "Charlie" },
@@ -81,34 +82,34 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground',
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' }
+        borderClass: 'border-2 border-foreground', // Dark border
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Vibrant yellow
       };
     }
 
-    if (maxRankInYear <= 1) return defaultStyle;
+    if (maxRankInYear <= 1) return defaultStyle; 
 
-    const SATURATION = 60;
-    const MAX_LIGHTNESS = 92;
-    const MIN_LIGHTNESS = 78;
+    const SATURATION = 60; 
+    const MAX_LIGHTNESS = 92; 
+    const MIN_LIGHTNESS = 78; 
 
-    if (maxRankInYear === 2 && rank === 2) {
+    if (maxRankInYear === 2 && rank === 2) { 
         return {
             textClass: coloredRankedStyle.textClass,
-            borderClass: '',
-            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` }
+            borderClass: '', 
+            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
         };
     }
-    if (maxRankInYear <= 2) return defaultStyle;
+    if (maxRankInYear <= 2) return defaultStyle; 
 
-    const denominator = maxRankInYear - 2;
-    if (denominator === 0) return defaultStyle;
+    const denominator = maxRankInYear - 2; 
+    if (denominator === 0) return defaultStyle; 
 
-    const normalizedRank = (rank - 2) / denominator;
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
+    const normalizedRank = (rank - 2) / denominator; 
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); 
 
-    const NEUTRAL_CENTER = 0.5;
-    const NEUTRAL_BANDWIDTH = 0.25;
+    const NEUTRAL_CENTER = 0.5; 
+    const NEUTRAL_BANDWIDTH = 0.25; 
 
     const GREEN_HUE = 120;
     const RED_HUE = 0;
@@ -126,7 +127,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
 
@@ -202,8 +203,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <div className="space-y-6">
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
-          <CardContent className="h-96 flex items-center justify-center">
-            <Skeleton className="w-full h-[28rem]" />
+          <CardContent className="h-60 flex items-center justify-center">
+            <Skeleton className="w-full h-[14rem]" />
           </CardContent>
         </Card>
         <Card>
@@ -249,7 +250,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <Carousel
             opts={{
               align: "start",
-              loop: true,
+              loop: leagueData.championshipTimeline.length > 1,
             }}
             className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
           >
@@ -571,13 +572,13 @@ const SeasonDetail = () => {
                 <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="pt-4">
-                <p>Standings and playoff bracket for {selectedSeason}. (Mock Data)</p>
+                <p>Standings and playoff bracket for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
               </TabsContent>
               <TabsContent value="weekly_scores" className="pt-4">
-                <p>Weekly scores heatmap for {selectedSeason}. (Mock Data)</p>
+                <p>Weekly scores heatmap for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
               </TabsContent>
               <TabsContent value="top_performers" className="pt-4">
-                <p>Top performing players for {selectedSeason}. (Mock Data)</p>
+                <p>Top performing players for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -606,7 +607,7 @@ const GMCareer = () => {
         <Card>
           <CardHeader><CardTitle>{mockGmsForTabs.find(g => g.id === selectedGm)?.name}'s Career</CardTitle></CardHeader>
           <CardContent>
-            <p>Detailed career statistics, season progression, and more for {selectedGm}. (Mock Data)</p>
+            <p>Detailed career statistics, season progression, and more for {mockGmsForTabs.find(g => g.id === selectedGm)?.name}. (Mock Data)</p>
           </CardContent>
         </Card>
       )}
@@ -629,7 +630,7 @@ export default function LeagueHistoryPage() {
       .then((data: any) => {
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points,
+          pointsFor: stat.points, 
           pointsAgainst: stat.pointsAgainst,
         }));
 
@@ -647,7 +648,7 @@ export default function LeagueHistoryPage() {
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
-        setLeagueData(null);
+        setLeagueData(null); 
       })
       .finally(() => {
         setLoading(false);
