@@ -19,17 +19,20 @@ import type {
   SeasonStrengthOfScheduleEntry,
   SeasonWaiverPickupEntry,
   BestOverallGameEntry,
-  PositionalTopPerformersData,
   TopPerformerPlayer,
   SeasonBaseData,
   PlayoffData,
   WeeklyScoresMatrixData,
+  StrengthOfScheduleEntry,
+  WaiverPickupEntry,
+  PositionalTopPerformersData,
+  BestOverallGameEntry as SeasonBestOverallGameEntry,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, HelpCircle } from 'lucide-react'; // Renamed LineChartIcon to avoid conflict
+import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -196,14 +199,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             } else {
               comparison = String(valA).localeCompare(String(valB));
             }
-          } else if (config.key === 'value' && typeof valA === 'string' && valA.match(/^-?\d+(\.\d+)?$/) && typeof valB === 'string' && valB.match(/^-?\d+(\.\d+)?$/)) {
+          } else if (config.key === 'value' && typeof valA === 'string' && /^-?\d+(\.\d+)?$/.test(valA) && typeof valB === 'string' && /^-?\d+(\.\d+)?$/.test(valB)) {
             const numA = parseFloat(valA);
             const numB = parseFloat(valB);
             comparison = numA - numB;
           } else {
             comparison = String(valA).localeCompare(String(valB));
           }
-        } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || (typeof valA === 'string' && String(valA).match(/^-?\d+(\.\d+)?$/)) || (typeof valB === 'string' && String(valB).match(/^-?\d+(\.\d+)?$/)))) {
+        } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || (typeof valA === 'string' && /^-?\d+(\.\d+)?$/.test(String(valA))) || (typeof valB === 'string' && /^-?\d+(\.\d+)?$/.test(String(valB))))) {
             const numA = parseFloat(String(valA));
             const numB = parseFloat(String(valB));
             if (!isNaN(numA) && !isNaN(numB)) {
@@ -313,7 +316,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           >
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
-                <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                   <div className="p-1 h-full">
                     <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
                       <div className="relative mb-3">
@@ -659,11 +662,11 @@ const SeasonDetail = () => {
       <div className="text-xs space-y-1">
         <div className="flex justify-between">
           <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
-          <span className="font-medium">{matchup.home.score.toFixed(1)}</span>
+          <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
         </div>
         <div className="flex justify-between">
           <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
-          <span className="font-medium">{matchup.away.score.toFixed(1)}</span>
+          <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">
           Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
@@ -766,7 +769,7 @@ const SeasonDetail = () => {
           {!loading && !error && seasonData && (
              <CardContent className="pt-0">
                 <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4"> {/* Adjusted grid-cols for 5 tabs */}
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="weekly_performance">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
@@ -984,7 +987,7 @@ const SeasonDetail = () => {
                                 </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                {seasonData.strengthOfScheduleData.map((sos: SeasonStrengthOfScheduleEntry) => (
+                                {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
                                     <TableRow key={sos.owner}>
                                     <TableCell>{sos.rank}</TableCell>
                                     <TableCell>{sos.owner}</TableCell>
@@ -1018,7 +1021,7 @@ const SeasonDetail = () => {
                                 </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                {seasonData.waiverPickupsData.map((pickup: SeasonWaiverPickupEntry) => (
+                                {seasonData.waiverPickupsData.map((pickup: WaiverPickupEntry) => (
                                     <TableRow key={pickup.player}>
                                     <TableCell>{pickup.rank ?? '-'}</TableCell>
                                     <TableCell>{pickup.player}</TableCell>
@@ -1090,7 +1093,7 @@ const SeasonDetail = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {seasonData.bestOverallGamesData.map((game) => (
+                                {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => (
                                 <TableRow key={game.rank}>
                                     <TableCell>{game.rank}</TableCell>
                                     <TableCell>{game.player}</TableCell>
@@ -1217,7 +1220,7 @@ const GMCareer = () => {
           <CardHeader>
             <div className="flex items-center gap-3">
               {gmData.photoUrl ? (
-                <Image src={gmData.photoUrl} alt={`${gmData.gmName} photo`} width={48} height={48} className="rounded-full border" data-ai-hint="person avatar"/>
+                <Image data-ai-hint="person avatar" src={gmData.photoUrl} alt={`${gmData.gmName} photo`} width={48} height={48} className="rounded-full border"/>
               ) : (
                 <Users className="h-10 w-10 text-muted-foreground" />
               )}
@@ -1390,3 +1393,4 @@ export default function LeagueHistoryPage() {
   // Fallback or not found content if section is invalid
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
