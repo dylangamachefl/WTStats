@@ -54,22 +54,27 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const [heatmapSortConfig, setHeatmapSortConfig] = useState<SortConfig<FinalStandingsHeatmapEntry>>({ key: 'gm_name', direction: 'asc' });
 
   useEffect(() => {
-    if (leagueData?.finalStandingsHeatmap) {
+    if (leagueData?.finalStandingsHeatmap && Array.isArray(leagueData.finalStandingsHeatmap)) {
       const years = new Set<string>();
       const currentMaxRanks: { [year: string]: number } = {};
       leagueData.finalStandingsHeatmap.forEach(gm => {
-        Object.keys(gm).forEach(key => {
-          if (key !== 'gm_name' && !isNaN(Number(key))) {
-            years.add(key);
-            const rank = gm[key] as number | null | undefined;
-            if (typeof rank === 'number') {
-              currentMaxRanks[key] = Math.max(currentMaxRanks[key] || 0, rank);
+        if (typeof gm === 'object' && gm !== null) {
+          Object.keys(gm).forEach(key => {
+            if (key !== 'gm_name' && !isNaN(Number(key))) {
+              years.add(key);
+              const rank = gm[key] as number | null | undefined;
+              if (typeof rank === 'number') {
+                currentMaxRanks[key] = Math.max(currentMaxRanks[key] || 0, rank);
+              }
             }
-          }
-        });
+          });
+        }
       });
       setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a)));
       setMaxRankPerYear(currentMaxRanks);
+    } else {
+      setHeatmapYears([]);
+      setMaxRankPerYear({});
     }
   }, [leagueData]);
 
@@ -82,16 +87,17 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground',
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' }
+        borderClass: 'border-2 border-foreground', // Dark border
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Vibrant yellow
       };
     }
 
     if (maxRankInYear <= 1) return defaultStyle;
 
-    const SATURATION = 60;
-    const MAX_LIGHTNESS = 92;
-    const MIN_LIGHTNESS = 78;
+    const SATURATION = 60; // Adjusted for pastel
+    const MAX_LIGHTNESS = 92; // Lighter end for pastel
+    const MIN_LIGHTNESS = 78; // Darker end for pastel (but still light)
+
 
     if (maxRankInYear === 2 && rank === 2) { // Last place in a 2-team year (treated as "worst")
       return {
@@ -100,18 +106,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } // Lightest red
       };
     }
-    if (maxRankInYear <= 2) return defaultStyle;
+    if (maxRankInYear <= 2) return defaultStyle; // Not enough ranks to show a scale meaningfully
 
-    const denominator = maxRankInYear - 2;
-    if (denominator === 0) {
+    // Normalize rank from 0 (best non-1st) to 1 (worst)
+    // Ranks are 2, 3, ..., maxRankInYear. Total items in this range: maxRankInYear - 2 + 1 = maxRankInYear - 1
+    const denominator = maxRankInYear - 2; // Range of ranks from 2nd to worst (e.g. if maxRank is 10, ranks 2-10, denominator is 8)
+    
+    if (denominator === 0) { // Only 1st and 2nd place exist, 2nd is handled if maxRankInYear is 2.
         return defaultStyle;
     }
 
-    const normalizedRank = (rank - 2) / denominator;
+    const normalizedRank = (rank - 2) / denominator; // rank 2 -> 0, rank maxRankInYear -> 1
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
+    // Define the neutral zone (e.g., middle 25% of ranks)
     const NEUTRAL_CENTER = 0.5;
-    const NEUTRAL_BANDWIDTH = 0.25;
+    const NEUTRAL_BANDWIDTH = 0.25; // Middle 25% will be neutral
 
     const GREEN_HUE = 120;
     const RED_HUE = 0;
@@ -119,17 +129,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
+      // Rank is in the neutral zone
       return defaultStyle;
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
+      // Rank is in the green zone
+      // Calculate how far into the green zone (0 = edge of neutral, 1 = best possible green)
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for better ranks
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else {
+      // Rank is in the red zone
+      // Calculate how far into the red zone (0 = edge of neutral, 1 = worst possible red)
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
+      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for "less bad" reds
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness_pastel_red.toFixed(0)}%)`;
     }
 
@@ -158,64 +173,90 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
 
-  const sortData = <T,>(data: T[], config: SortConfig<T>): T[] => {
-    if (!config.key || !data) return data;
-    const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      const valA = a[config.key!];
-      const valB = b[config.key!];
-      let comparison = 0;
+  const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
+    if (!config || !config.key || !data || !Array.isArray(data)) {
+        return Array.isArray(data) ? data : [];
+    }
+    try {
+        const sortedData = [...data];
+        sortedData.sort((a, b) => {
+        const valA = a[config.key!];
+        const valB = b[config.key!];
+        let comparison = 0;
 
-      if (valA === null || valA === undefined) comparison = 1;
-      else if (valB === null || valB === undefined) comparison = -1;
-      else if (typeof valA === 'number' && typeof valB === 'number') {
-        comparison = valA - valB;
-      } else if (typeof valA === 'string' && typeof valB === 'string') {
-        if (config.key === 'winPct') {
-          comparison = parseFloat(valA.replace('%', '')) - parseFloat(valB.replace('%', ''));
-        } else if (config.key === 'value') {
-          const numA = parseFloat(valA);
-          const numB = parseFloat(valB);
-          if (!isNaN(numA) && !isNaN(numB)) {
+        if (valA === null || valA === undefined) comparison = 1;
+        else if (valB === null || valB === undefined) comparison = -1;
+        else if (typeof valA === 'number' && typeof valB === 'number') {
+            comparison = valA - valB;
+        } else if (typeof valA === 'string' && typeof valB === 'string') {
+            if (config.key === 'winPct' && typeof config.key === 'string' && 'winPct' in a && 'winPct' in b) {
+                comparison = parseFloat(String(valA).replace('%', '')) - parseFloat(String(valB).replace('%', ''));
+            } else if (config.key === 'value' && typeof config.key === 'string' && 'value' in a && 'value' in b) {
+                const numA = parseFloat(String(valA));
+                const numB = parseFloat(String(valB));
+                if (!isNaN(numA) && !isNaN(numB)) {
+                comparison = numA - numB;
+                } else {
+                comparison = String(valA).localeCompare(String(valB));
+                }
+            } else {
+            comparison = String(valA).localeCompare(String(valB));
+            }
+        } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) {
+            const numA = parseFloat(String(valA));
+            const numB = parseFloat(String(valB));
+            if (!isNaN(numA) && !isNaN(numB)) {
             comparison = numA - numB;
-          } else {
-            comparison = valA.localeCompare(valB);
-          }
-        } else {
-          comparison = valA.localeCompare(valB);
+            } else {
+            comparison = String(valA).localeCompare(String(valB));
+            }
         }
-      } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) {
-        const numA = parseFloat(String(valA));
-        const numB = parseFloat(String(valB));
-        if (!isNaN(numA) && !isNaN(numB)) {
-          comparison = numA - numB;
-        } else {
-           comparison = String(valA).localeCompare(String(valB));
+        else {
+            comparison = String(valA).localeCompare(String(valB));
         }
-      }
-      else {
-        comparison = String(valA).localeCompare(String(valB));
-      }
-      return config.direction === 'asc' ? comparison : -comparison;
-    });
-    return sortedData;
+        return config.direction === 'asc' ? comparison : -comparison;
+        });
+        return sortedData;
+    } catch (e) {
+        console.error("Error in sortData:", e, {data, config});
+        return Array.isArray(data) ? data : [];
+    }
   };
 
-  const sortedCareerLeaderboard = useMemo(() => sortData(leagueData?.careerLeaderboard || [], careerSortConfig), [leagueData?.careerLeaderboard, careerSortConfig]);
+
+  const sortedCareerLeaderboard = useMemo(() => {
+    if (!leagueData?.careerLeaderboard || !Array.isArray(leagueData.careerLeaderboard)) return [];
+    return sortData([...leagueData.careerLeaderboard], careerSortConfig);
+  }, [leagueData?.careerLeaderboard, careerSortConfig]);
   const requestCareerSort = createSortHandler(careerSortConfig, setCareerSortConfig);
 
-  const sortedLeagueRecords = useMemo(() => sortData(leagueData?.leagueRecords || [], recordsSortConfig), [leagueData?.leagueRecords, recordsSortConfig]);
+  const sortedLeagueRecords = useMemo(() => {
+    if (!leagueData?.leagueRecords || !Array.isArray(leagueData.leagueRecords)) return [];
+    return sortData([...leagueData.leagueRecords], recordsSortConfig);
+  }, [leagueData?.leagueRecords, recordsSortConfig]);
   const requestRecordsSort = createSortHandler(recordsSortConfig, setRecordsSortConfig);
 
-  const sortedGmPlayoffPerformance = useMemo(() => sortData(leagueData?.gmPlayoffPerformance || [], playoffPerfSortConfig), [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
+  const sortedGmPlayoffPerformance = useMemo(() => {
+    if (!leagueData?.gmPlayoffPerformance || !Array.isArray(leagueData.gmPlayoffPerformance)) return [];
+    return sortData([...leagueData.gmPlayoffPerformance], playoffPerfSortConfig);
+  }, [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
   const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig, setPlayoffPerfSortConfig);
 
-  const sortedFinalStandingsHeatmap = useMemo(() => sortData(leagueData?.finalStandingsHeatmap || [], heatmapSortConfig), [leagueData?.finalStandingsHeatmap, heatmapSortConfig]);
+  const sortedFinalStandingsHeatmap = useMemo(() => {
+    if (!leagueData?.finalStandingsHeatmap || !Array.isArray(leagueData.finalStandingsHeatmap)) return [];
+    return sortData([...leagueData.finalStandingsHeatmap], heatmapSortConfig);
+  }, [leagueData?.finalStandingsHeatmap, heatmapSortConfig]);
   const requestHeatmapSort = createSortHandler(heatmapSortConfig, setHeatmapSortConfig);
+  
+  const sortedPlayoffRates = useMemo(() => {
+    if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) return [];
+    return [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
+  }, [leagueData?.playoffQualificationRate]);
+
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
           <CardContent className="h-60 flex items-center justify-center">
@@ -252,10 +293,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <Card><CardContent className="pt-6 text-center">Failed to load league data.</CardContent></Card>;
   }
 
-  const sortedPlayoffRates = useMemo(() => {
-    if (!leagueData?.playoffQualificationRate) return [];
-    return [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
-  }, [leagueData?.playoffQualificationRate]);
 
   return (
     <div className="space-y-8">
@@ -268,12 +305,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <Carousel
             opts={{
               align: "start",
-              loop: leagueData.championshipTimeline.length > 1,
+              loop: leagueData.championshipTimeline && Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.length > 1,
             }}
             className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
           >
             <CarouselContent>
-              {leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
+              {leagueData.championshipTimeline && Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/2 lg:basis-1/3">
                   <div className="p-1 h-full">
                     <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
@@ -312,7 +349,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         </div>
                       </div>
 
-                      {champion.parsedRoster && champion.parsedRoster.length > 0 && (
+                      {champion.parsedRoster && Array.isArray(champion.parsedRoster) && champion.parsedRoster.length > 0 && (
                         <div className="w-full pt-2 mt-2 border-t border-border/60">
                           <h4 className="text-xs font-semibold text-foreground mb-1 flex items-center justify-center">
                             <ListChecks size={14} className="mr-1.5 text-primary"/> Key Players
@@ -397,9 +434,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <TableCell>{stat.ties}</TableCell>
                   <TableCell>{stat.winPct}</TableCell>
                   <TableCell>{stat.championships}</TableCell>
-                  <TableCell>{stat.pointsFor.toFixed(2)}</TableCell>
-                  <TableCell>{stat.pointsAgainst.toFixed(2)}</TableCell>
-                  <TableCell>{(stat.playoffRate * 100).toFixed(1)}%</TableCell>
+                  <TableCell>{stat.pointsFor?.toFixed(2) ?? 'N/A'}</TableCell>
+                  <TableCell>{stat.pointsAgainst?.toFixed(2) ?? 'N/A'}</TableCell>
+                  <TableCell>{stat.playoffRate !== undefined ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -450,7 +487,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           </CardContent>
         </Card>
 
-        {leagueData.playoffQualificationRate && leagueData.playoffQualificationRate.length > 0 && (
+        {Array.isArray(leagueData.playoffQualificationRate) && leagueData.playoffQualificationRate.length > 0 && (
           <Card>
             <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
             <CardContent className="h-[300px] pt-6">
@@ -520,12 +557,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
 
-      {leagueData.gmPlayoffPerformance && leagueData.gmPlayoffPerformance.length > 0 && (
+      {Array.isArray(leagueData.gmPlayoffPerformance) && leagueData.gmPlayoffPerformance.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>GM Playoff Performance</CardTitle>
             <CardDescription>Statistics from playoff appearances.</CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
@@ -551,8 +588,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                     <TableCell className="text-right">{gmPerf.quarterfinal_matchups}</TableCell>
                     <TableCell className="text-right">{gmPerf.semifinal_matchups}</TableCell>
                     <TableCell className="text-right">{gmPerf.championship_matchups}</TableCell>
-                    <TableCell className="text-right">{gmPerf.avg_playoff_points_weekly.toFixed(2)}</TableCell>
-                    <TableCell className="text-right">{gmPerf.playoff_performance_pct.toFixed(2)}%</TableCell>
+                    <TableCell className="text-right">{gmPerf.avg_playoff_points_weekly?.toFixed(2) ?? 'N/A'}</TableCell>
+                    <TableCell className="text-right">{gmPerf.playoff_performance_pct?.toFixed(2) ?? 'N/A'}%</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -646,27 +683,25 @@ export default function LeagueHistoryPage() {
         return res.json();
       })
       .then((data: any) => {
-        const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
+        const mappedCareerLeaderboard = (Array.isArray(data.careerLeaderboard) ? data.careerLeaderboard : []).map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points,
+          pointsFor: stat.points, // Assuming 'points' is 'pointsFor'
           pointsAgainst: stat.pointsAgainst,
         }));
 
         const processedData: LeagueData = {
-          ...data,
+          championshipTimeline: Array.isArray(data.championshipTimeline) ? data.championshipTimeline : [],
           careerLeaderboard: mappedCareerLeaderboard,
-          championshipTimeline: data.championshipTimeline || [],
-          leagueRecords: data.leagueRecords || [],
-          finalStandingsHeatmap: data.finalStandingsHeatmap || [],
-          playoffQualificationRate: data.playoffQualificationRate || [],
-          gmPlayoffPerformance: data.gmPlayoffPerformance || [],
+          leagueRecords: Array.isArray(data.leagueRecords) ? data.leagueRecords : [],
+          finalStandingsHeatmap: Array.isArray(data.finalStandingsHeatmap) ? data.finalStandingsHeatmap : [],
+          playoffQualificationRate: Array.isArray(data.playoffQualificationRate) ? data.playoffQualificationRate : [],
+          gmPlayoffPerformance: Array.isArray(data.gmPlayoffPerformance) ? data.gmPlayoffPerformance : [],
         };
-
         setLeagueData(processedData);
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
-        setLeagueData(null);
+        setLeagueData(null); // Ensure leagueData is null on error
       })
       .finally(() => {
         setLoading(false);
@@ -692,3 +727,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
