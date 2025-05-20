@@ -16,15 +16,13 @@ import type {
   GMCareerData,
   SeasonStandingEntry,
   PlayoffMatchup,
-  StrengthOfScheduleEntry as SeasonStrengthOfScheduleEntry,
-  WaiverPickupEntry as SeasonWaiverPickupEntry,
+  SeasonStrengthOfScheduleEntry,
+  SeasonWaiverPickupEntry,
   BestOverallGameEntry,
   PositionalTopPerformersData,
-  WeeklyScoresMatrixData,
   TopPerformerPlayer,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // Removed ScatterChart specific imports
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
@@ -33,6 +31,7 @@ import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend } from 'recharts';
 
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
@@ -106,17 +105,20 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (maxRankInYear <= 1) return defaultStyle;
 
     const SATURATION = 60;
-    const MAX_LIGHTNESS = 92;
-    const MIN_LIGHTNESS = 78;
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
+    const MAX_LIGHTNESS = 92; // Lighter pastel end
+    const MIN_LIGHTNESS = 78; // Darker pastel end (but still relatively light)
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; // e.g., 25% of ranks in middle are neutral
 
-    const numRanksToScale = maxRankInYear - 1; 
-    if (numRanksToScale <= 0) return defaultStyle;
+    const numRanksToScale = maxRankInYear - 1; // Ranks from 2 to maxRankInYear
+    if (numRanksToScale <= 0) return defaultStyle; // Should not happen if maxRankInYear > 1
 
+    // Normalize rank: 0 for rank 2, 1 for maxRankInYear
     const rankPositionInScale = rank - 2; 
-    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5;
+    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; // Handle division by zero for 2-rank scale
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
+
+    // Determine if rank falls into the neutral zone
     const neutralZoneStart = 0.5 - NEUTRAL_BANDWIDTH_PERCENT / 2;
     const neutralZoneEnd = 0.5 + NEUTRAL_BANDWIDTH_PERCENT / 2;
 
@@ -126,23 +128,28 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-      return defaultStyle; 
+      // Rank is in the neutral zone
+      return defaultStyle; // Default styling, no specific background
     } else if (clampedNormalizedRank < neutralZoneStart) {
-      const greenZoneWidth = neutralZoneStart;
-      const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1;
+      // Rank is in the "good" zone (greenish)
+      // Calculate interpolation factor within the green zone (0 at neutralZoneStart, 1 at the best rank (0 for normalizedRank))
+      const greenZoneWidth = neutralZoneStart; // width of the green area
+      const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; // ensure t_green is 0 to 1
       const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else { 
+      // Rank is in the "bad" zone (reddish)
+      // Calculate interpolation factor within the red zone (0 at neutralZoneEnd, 1 at the worst rank (1 for normalizedRank))
       const redZoneEffectiveStart = neutralZoneEnd;
-      const redZoneWidth = 1 - redZoneEffectiveStart;
-      const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0;
+      const redZoneWidth = 1 - redZoneEffectiveStart; // width of the red area
+      const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0; // ensure t_red is 0 to 1
       const lightness = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
     return { 
       textClass: coloredRankedStyle.textClass, 
-      borderClass: '', 
+      borderClass: '', // No special border for non-1st place
       style: { backgroundColor } 
     };
   };
@@ -195,7 +202,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               comparison = String(valA).localeCompare(String(valB));
             }
           } else if (config.key === 'value' && String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/)) {
-             // Check if values are purely numeric strings
             const numA = parseFloat(String(valA));
             const numB = parseFloat(String(valB));
             comparison = numA - numB;
@@ -218,7 +224,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return sortedData;
     } catch (e) {
       console.error("Error in sortData:", e, { data, config });
-      return data; // Return original data on error
+      return data; 
     }
   };
 
@@ -249,7 +255,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const sortedPlayoffRates = useMemo(() => {
     if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) return [];
-    // Ensure qualification_rate is treated as a number for sorting
     const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
       ...item,
       qualification_rate: Number(item.qualification_rate) || 0
@@ -500,7 +505,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <XAxis dataKey="gm_name" />
                   <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
                   <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
-                  <Legend />
+                  <RechartsLegend />
                   <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
                 </BarChart>
               </ResponsiveContainer>
@@ -658,7 +663,7 @@ const SeasonDetail = () => {
 
 
   const renderPlayoffMatchup = (matchup: PlayoffMatchup, roundName: string, isChampionship: boolean = false) => (
-    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100 dark:bg-yellow-900/30" : "bg-card")}>
+    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100 dark:bg-yellow-800/30" : "bg-card")}>
       <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
       <div className="text-xs space-y-1">
         <div className="flex justify-between">
@@ -678,25 +683,31 @@ const SeasonDetail = () => {
   
   const getScoreCellClass = (score: number | undefined | null): string => {
     if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
-    if (score >= 140) return 'bg-green-600 text-white';
-    if (score >= 125) return 'bg-green-400 text-black';
-    if (score >= 110) return 'bg-lime-300 text-black';
-    if (score >= 100) return 'bg-yellow-200 text-black';
-    if (score >= 90) return 'bg-orange-300 text-black';
-    return 'bg-red-400 text-white';
+    // Softer colors: using -100 for background, -700 for text in light mode.
+    // Dark mode will need different considerations if not using Tailwind's built-in dark variants properly.
+    // For now, assuming light mode focus or Tailwind handles dark variants for these.
+    if (score >= 140) return 'bg-green-200 text-green-800';
+    if (score >= 125) return 'bg-green-100 text-green-700';
+    if (score >= 110) return 'bg-lime-100 text-lime-700';
+    if (score >= 100) return 'bg-yellow-100 text-yellow-700';
+    if (score >= 90) return 'bg-orange-100 text-orange-700';
+    return 'bg-red-100 text-red-700';
   };
+  
 
   const averageScores = useMemo(() => {
-    if (!seasonData?.weeklyScoresData?.teams || !seasonData.weeklyScoresData.scores) return {};
+    if (!seasonData?.weeklyScoresData?.teams || !Array.isArray(seasonData.weeklyScoresData.teams) || !seasonData.weeklyScoresData.scores || !Array.isArray(seasonData.weeklyScoresData.scores)) return {};
     const averages: { [teamName: string]: number | null } = {};
     seasonData.weeklyScoresData.teams.forEach((teamName, teamIndex) => {
       let totalScore = 0;
       let gameCount = 0;
-      seasonData.weeklyScoresData?.scores.forEach(weekScores => {
-        const score = weekScores[teamIndex];
-        if (score !== null && score !== undefined) {
-          totalScore += score;
-          gameCount++;
+      seasonData.weeklyScoresData!.scores.forEach(weekScores => {
+        if(Array.isArray(weekScores)){
+          const score = weekScores[teamIndex];
+          if (score !== null && score !== undefined) {
+            totalScore += score;
+            gameCount++;
+          }
         }
       });
       averages[teamName] = gameCount > 0 ? totalScore / gameCount : null;
@@ -704,20 +715,26 @@ const SeasonDetail = () => {
     return averages;
   }, [seasonData?.weeklyScoresData]);
 
-  const weeklyScoreLegend = [
-    { label: '140+ pts', className: 'bg-green-600 text-white' },
-    { label: '125-139', className: 'bg-green-400 text-black' },
-    { label: '110-124', className: 'bg-lime-300 text-black' },
-    { label: '100-109', className: 'bg-yellow-200 text-black' },
-    { label: '90-99', className: 'bg-orange-300 text-black' },
-    { label: '<90 pts', className: 'bg-red-400 text-white' },
+  const weeklyScoreLegendItems = [
+    { label: '140+ pts', className: 'bg-green-200 text-green-800' },
+    { label: '125-139', className: 'bg-green-100 text-green-700' },
+    { label: '110-124', className: 'bg-lime-100 text-lime-700' },
+    { label: '100-109', className: 'bg-yellow-100 text-yellow-700' },
+    { label: '90-99', className: 'bg-orange-100 text-orange-700' },
+    { label: '<90 pts', className: 'bg-red-100 text-red-700' },
+  ];
+
+  const weeklyResultLegendItems = [
+    { label: 'W - Win', className: 'bg-green-100 text-green-700 font-semibold' },
+    { label: 'L - Loss', className: 'bg-red-100 text-red-700 font-semibold' },
+    { label: 'T - Tie', className: 'bg-gray-100 text-gray-700 font-semibold' },
   ];
 
 
   return (
     <div className="space-y-6">
         <Card className="overflow-visible">
-          <CardHeader className="flex flex-row items-start justify-between gap-4">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
                 <CardTitle className="flex items-center gap-2">
                 <CalendarDays className="text-primary h-6 w-6" /> 
@@ -732,7 +749,7 @@ const SeasonDetail = () => {
                 )}
             </div>
             <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-                <SelectTrigger className="w-[220px] shrink-0">
+                <SelectTrigger className="w-full sm:w-[220px] shrink-0">
                 <SelectValue placeholder="Select a season" />
                 </SelectTrigger>
                 <SelectContent>
@@ -745,14 +762,15 @@ const SeasonDetail = () => {
           
           {loading && (
             <CardContent className="pt-6 space-y-4">
-                <Skeleton className="h-6 w-full mb-2" />
+                <Skeleton className="h-8 w-1/2 mb-2" /> 
+                <Skeleton className="h-6 w-3/4 mb-4" /> 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
                     {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
                 </div>
                 {[...Array(3)].map((_, i) => (
-                    <div key={i} className="space-y-2">
+                    <div key={i} className="space-y-2 mt-6">
                         <Skeleton className="h-6 w-1/3 mb-2" />
-                        <Skeleton className="h-32 w-full" />
+                        <Skeleton className="h-40 w-full" />
                     </div>
                 ))}
             </CardContent>
@@ -764,7 +782,7 @@ const SeasonDetail = () => {
                 <Tabs defaultValue="overview" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="weekly_scores">Weekly Performance</TabsTrigger>
+                    <TabsTrigger value="weekly_performance">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
                     <TabsTrigger value="waiver_pickups">Waiver Pickups</TabsTrigger>
                     <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
@@ -778,7 +796,7 @@ const SeasonDetail = () => {
                             <Table>
                             <TableHeader>
                                 <TableRow>
-                                <TableHead className="w-[50px]">POS</TableHead>
+                                <TableHead className="w-[60px]">POS</TableHead>
                                 <TableHead>TEAM</TableHead>
                                 <TableHead>OWNER</TableHead>
                                 <TableHead className="text-center">W</TableHead>
@@ -791,7 +809,7 @@ const SeasonDetail = () => {
                             <TableBody>
                                 {seasonData.standingsData.map((s: SeasonStandingEntry) => (
                                 <TableRow key={s.owner_name}>
-                                    <TableCell className="font-medium">
+                                    <TableCell className="font-medium text-center">
                                     {s.regular_season_finish === 1 ? <Trophy className="h-5 w-5 text-yellow-500 inline-block" /> : s.regular_season_finish}
                                     </TableCell>
                                     <TableCell>{s.wt_team_name}</TableCell>
@@ -802,7 +820,7 @@ const SeasonDetail = () => {
                                     <TableCell className="text-right">{s.regular_season_points_against?.toFixed(1)}</TableCell>
                                     <TableCell className="text-center">
                                     <div className="flex justify-center space-x-1">
-                                        {s.lastFive?.map((gameResult, index) => (
+                                        {Array.isArray(s.lastFive) && s.lastFive.map((gameResult, index) => (
                                         <span key={index} className={cn("h-3 w-3 rounded-full inline-block", gameResult === 1 ? "bg-green-500" : gameResult === 0 ? "bg-red-500" : "bg-gray-300")} title={gameResult === 1 ? 'Win' : gameResult === 0 ? 'Loss' : 'Tie'}></span>
                                         ))}
                                     </div>
@@ -812,7 +830,7 @@ const SeasonDetail = () => {
                             </TableBody>
                             </Table>
                         ) : (
-                            <p className="text-muted-foreground">No standings data available for {seasonData.seasonData.year}.</p>
+                            <p className="text-muted-foreground text-center py-4">No standings data available for {seasonData.seasonData.year}.</p>
                         )}
                         </CardContent>
                     </Card>
@@ -820,7 +838,7 @@ const SeasonDetail = () => {
                     <Card>
                         <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Playoff Bracket</CardTitle></CardHeader>
                         <CardContent>
-                        {seasonData.playoffData && (seasonData.playoffData.semiFinals?.length || seasonData.playoffData.championship?.length) ? (
+                        {(seasonData.playoffData && (Array.isArray(seasonData.playoffData.semiFinals) && seasonData.playoffData.semiFinals.length > 0 || Array.isArray(seasonData.playoffData.championship) && seasonData.playoffData.championship.length > 0)) ? (
                             <div className="space-y-6">
                             {seasonData.playoffData.quarterFinals && Array.isArray(seasonData.playoffData.quarterFinals) && seasonData.playoffData.quarterFinals.length > 0 && (
                                 <div>
@@ -861,7 +879,7 @@ const SeasonDetail = () => {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="weekly_scores" className="pt-4 space-y-4">
+                <TabsContent value="weekly_performance" className="pt-4 space-y-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div className="flex items-center">
@@ -869,7 +887,7 @@ const SeasonDetail = () => {
                                 <CardTitle>Weekly Performance</CardTitle>
                             </div>
                             <RadioGroup
-                                defaultValue="scores"
+                                value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
                                 className="flex items-center space-x-2"
                             >
@@ -884,44 +902,59 @@ const SeasonDetail = () => {
                             </RadioGroup>
                         </CardHeader>
                         <CardContent>
-                            {seasonData.weeklyScoresData && Array.isArray(seasonData.weeklyScoresData.teams) && seasonData.weeklyScoresData.teams.length > 0 ? (
+                            {seasonData.weeklyScoresData && Array.isArray(seasonData.weeklyScoresData.teams) && seasonData.weeklyScoresData.teams.length > 0 && Array.isArray(seasonData.weeklyScoresData.scores) ? (
                                 <>
                                 <div className="overflow-x-auto">
-                                    <Table className="min-w-full">
+                                    <Table className="min-w-full table-fixed"> {/* table-fixed for consistent column widths */}
                                         <TableHeader>
                                             <TableRow>
-                                                <TableHead className="sticky left-0 bg-card z-10 w-1/6 min-w-[150px] text-left">TEAM</TableHead>
+                                                <TableHead className="sticky left-0 bg-card z-10 w-1/6 min-w-[150px] text-left align-middle">TEAM</TableHead>
                                                 {seasonData.weeklyScoresData.scores.map((_, weekIndex) => (
-                                                    <TableHead key={`wk-header-${weekIndex}`} className="text-center min-w-[60px]">{`W${weekIndex + 1}`}</TableHead>
+                                                    <TableHead key={`wk-header-${weekIndex}`} className="text-center min-w-[60px] align-middle">{`W${weekIndex + 1}`}</TableHead>
                                                 ))}
-                                                <TableHead className="text-center min-w-[70px]">AVG</TableHead>
+                                                <TableHead className="text-center min-w-[70px] align-middle">AVG</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {seasonData.weeklyScoresData.teams.map((teamName, teamIndex) => (
                                                 <TableRow key={teamName}>
-                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate" title={teamName}>{teamName}</TableCell>
+                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate align-middle" title={teamName}>{teamName}</TableCell>
                                                     {seasonData.weeklyScoresData!.scores.map((weekScores, weekIndex) => {
-                                                        const score = weekScores[teamIndex];
-                                                        const result = seasonData.weeklyScoresData!.results?.[weekIndex]?.[teamIndex];
+                                                        const score = Array.isArray(weekScores) ? weekScores[teamIndex] : undefined;
+                                                        const result = Array.isArray(seasonData.weeklyScoresData!.results) && Array.isArray(seasonData.weeklyScoresData!.results[weekIndex]) ? seasonData.weeklyScoresData!.results[weekIndex][teamIndex] : undefined;
+                                                        
+                                                        let cellContent;
+                                                        let cellClasses = "p-0.5"; // Padding for the TableCell to create the gap
+                                                        let innerDivClasses = "p-1.5 text-center text-xs rounded-md w-full h-full flex items-center justify-center";
+
+                                                        if (weeklyScoresDisplayMode === 'scores') {
+                                                            cellContent = score?.toFixed(1) ?? '-';
+                                                            innerDivClasses = cn(innerDivClasses, getScoreCellClass(score));
+                                                        } else { // results mode
+                                                            if (result === 'W') {
+                                                                cellContent = 'W';
+                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
+                                                            } else if (result === 'L') {
+                                                                cellContent = 'L';
+                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700 font-semibold");
+                                                            } else if (result === 'T') {
+                                                                cellContent = 'T';
+                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700 font-semibold");
+                                                            } else {
+                                                                cellContent = '-';
+                                                                innerDivClasses = cn(innerDivClasses, "bg-muted/30 text-muted-foreground");
+                                                            }
+                                                        }
                                                         return (
-                                                            <TableCell key={`wk-${weekIndex}-team-${teamIndex}`} className={cn(
-                                                                "p-1.5 text-center text-xs rounded-md border border-transparent",
-                                                                weeklyScoresDisplayMode === 'scores' ? getScoreCellClass(score) : '',
-                                                                weeklyScoresDisplayMode === 'results' && result === 'W' ? 'border-yellow-400 border-2' : ''
-                                                            )}>
-                                                                {weeklyScoresDisplayMode === 'scores' ? (
-                                                                    score?.toFixed(1) ?? '-'
-                                                                ) : (
-                                                                    result === 'W' ? <CheckCircle2 className="mx-auto h-4 w-4 text-green-600" /> :
-                                                                    result === 'L' ? <XCircle className="mx-auto h-4 w-4 text-red-600" /> :
-                                                                    result === 'T' ? <span className="text-muted-foreground">T</span> : '-'
-                                                                )}
+                                                            <TableCell key={`wk-${weekIndex}-team-${teamIndex}`} className={cn(cellClasses, "align-middle")}>
+                                                              <div className={innerDivClasses}>{cellContent}</div>
                                                             </TableCell>
                                                         );
                                                     })}
-                                                    <TableCell className={cn("p-1.5 text-center text-xs rounded-md font-semibold", getScoreCellClass(averageScores[teamName]))}>
-                                                        {averageScores[teamName]?.toFixed(1) ?? 'N/A'}
+                                                    <TableCell className="p-0.5 align-middle">
+                                                      <div className={cn("p-1.5 text-center text-xs rounded-md font-semibold w-full h-full flex items-center justify-center", getScoreCellClass(averageScores[teamName]))}>
+                                                          {averageScores[teamName]?.toFixed(1) ?? 'N/A'}
+                                                      </div>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -929,20 +962,21 @@ const SeasonDetail = () => {
                                     </Table>
                                 </div>
                                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-                                    {weeklyScoreLegend.map(item => (
-                                        <div key={item.label} className="flex items-center gap-1.5">
-                                            <span className={cn("h-3 w-3 rounded-sm", item.className)}></span>
-                                            <span>{item.label}</span>
-                                        </div>
-                                    ))}
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="h-3 w-5 rounded-sm border-2 border-yellow-400"></span>
-                                        <span>Win (in W/L mode)</span>
+                                  {weeklyScoresDisplayMode === 'scores' ? weeklyScoreLegendItems.map(item => (
+                                      <div key={item.label} className="flex items-center gap-1.5">
+                                          <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span> {/* Use only bg class for swatch */}
+                                          <span>{item.label}</span>
+                                      </div>
+                                  )) : weeklyResultLegendItems.map(item => (
+                                    <div key={item.label} className="flex items-center gap-1.5">
+                                        <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
+                                        <span>{item.label}</span>
                                     </div>
+                                  ))}
                                 </div>
                                 </>
                             ) : (
-                                <p className="text-muted-foreground text-center py-4">No weekly scores data available for {seasonData.seasonData.year}.</p>
+                                <p className="text-muted-foreground text-center py-4">No weekly scores data available for {seasonData?.seasonData?.year}.</p>
                             )}
                         </CardContent>
                     </Card>
@@ -983,7 +1017,7 @@ const SeasonDetail = () => {
                             ) : null
                         ))
                         ) : (
-                        <p className="text-muted-foreground">No top performer data available for {seasonData.seasonData.year}.</p>
+                        <p className="text-muted-foreground">No top performer data available for {seasonData?.seasonData?.year}.</p>
                         )}
 
                         {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
@@ -1049,7 +1083,7 @@ const SeasonDetail = () => {
                                 </TableBody>
                             </Table>
                             ) : (
-                            <p className="text-muted-foreground">Strength of Schedule data not available for {seasonData.seasonData.year}.</p>
+                            <p className="text-muted-foreground text-center py-4">Strength of Schedule data not available for {seasonData?.seasonData?.year}.</p>
                             )}
                         </CardContent>
                     </Card>
@@ -1082,7 +1116,7 @@ const SeasonDetail = () => {
                                 </TableBody>
                             </Table>
                             ) : (
-                            <p className="text-muted-foreground">Waiver pickup data not available for {seasonData.seasonData.year}.</p>
+                            <p className="text-muted-foreground text-center py-4">Waiver pickup data not available for {seasonData?.seasonData?.year}.</p>
                             )}
                         </CardContent>
                     </Card>
@@ -1092,7 +1126,7 @@ const SeasonDetail = () => {
             </CardContent>
           )}
           {!loading && !error && !seasonData && selectedSeason && (
-            <CardContent className="pt-6 text-center text-muted-foreground">No data found for the {selectedSeason} season. Please ensure the file '{selectedSeason}.json' exists in 'public/data/league_data/seasons/' and is correctly formatted according to the expected structure.</CardContent>
+            <CardContent className="pt-6 text-center text-muted-foreground">No data found for the {selectedSeason} season. Please ensure the file '{selectedSeason}.json' exists in 'public/data/league_data/seasons/' and is correctly formatted according to the expected structure. Also check browser console for fetch errors.</CardContent>
           )}
           {!loading && !error && !seasonData && !selectedSeason && (
             <CardContent className="pt-6 text-center text-muted-foreground">Please select a season to view details.</CardContent>
@@ -1371,5 +1405,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
-
