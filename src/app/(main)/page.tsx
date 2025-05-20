@@ -75,30 +75,40 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
     
-    // Gold for 1st place
+    // Use primary theme color for 1st place
     if (rank === 1) {
-      return { textClass: 'text-yellow-950 dark:text-yellow-900 font-semibold', style: { backgroundColor: 'hsl(45, 100%, 60%)' } };
+      return { 
+        textClass: 'text-primary-foreground font-semibold', 
+        style: { backgroundColor: 'hsl(var(--primary))' } 
+      };
     }
 
     let hue;
-    if (maxRankInYear <= 1) { // Should mostly be covered by rank === 1 case
-        hue = 120; // Default to green
-    } else if (maxRankInYear === 2 && rank === 2) { // Only 1st and 2nd, 2nd is red
-        hue = 0; 
+    if (maxRankInYear <= 1) { 
+        hue = 120; // Default to green if only one participant (should be caught by rank === 1)
     } else if (rank > 1) {
-        // Normalize rank for the scale (rank 2 is 0, maxRankInYear is 1 for the scale purpose)
-        // Ensure divisor is not zero if maxRankInYear is 2 (rank 2 becomes 0)
-        const divisor = maxRankInYear - 2;
-        const normalizedRank = divisor > 0 ? (rank - 2) / divisor : 0; // if only 2 ranks and current is 2nd, normalized is 0 (most green end of this scale)
-                                                                      // but this case (maxRankInYear === 2 && rank === 2) is handled above for red.
-                                                                      // So if maxRankInYear is 3, rank 2 is (2-2)/(3-2)=0 (green), rank 3 is (3-2)/(3-2)=1 (red)
+        // Normalize rank for the scale (rank 2 is 0 for scale, maxRankInYear is 1 for scale)
+        // Ensure divisor is not zero if maxRankInYear is 2 (rank 2 becomes 0 for the scale)
+        const divisor = maxRankInYear - 2; // Max possible value for (rank - 2)
+        // If maxRankInYear is 2, this means only 1st and 2nd place. Rank 2 will be (2-2)/0 -> handle this
+        // This leads to (rank-2) / (maxRankInYear-2) for ranks from 2 to maxRankInYear
+        // Example: 10 GMs. Rank 2: (2-2)/(10-2) = 0/8 = 0 (greenest). Rank 10: (10-2)/(10-2) = 8/8 = 1 (reddest).
+        // Example: 2 GMs. Rank 2: (2-2)/(2-2) = 0/0. Needs to be handled. MaxRankInYear=2 means only 1st (handled) and 2nd. 2nd should be reddest.
+        
+        let normalizedRank = 0;
+        if (maxRankInYear === 2 && rank === 2) { // Only 2 GMs, this is 2nd place (last)
+            normalizedRank = 1; // Full red
+        } else if (divisor > 0) {
+            normalizedRank = (rank - 2) / divisor;
+        }
+                                                                      
         hue = 120 * (1 - Math.min(1, Math.max(0, normalizedRank))); // Interpolate hue from green (120) to red (0)
     } else {
-        hue = 120; // Default for any other unexpected case
+        hue = 120; // Default for any other unexpected case (should not happen if rank 1 is handled)
     }
     
     const saturation = 70;
-    const lightness = 65; // Adjusted for better readability with black/white text
+    const lightness = 65; 
     const textColor = lightness > 55 ? 'text-neutral-900' : 'text-white';
 
     return {
@@ -122,35 +132,36 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const getSortIcon = <T,>(config: SortConfig<T>, columnKey: keyof T) => {
     if (config.key === columnKey) {
-      return config.direction === 'asc' ? <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" /> : <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
+      // Ideally, you'd have separate up and down arrow icons.
+      // For simplicity, ArrowUpDown is used and implies sortability.
+      // Visual distinction for direction can be added by changing icon based on config.direction.
+      return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
     }
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
   
   const sortData = <T,>(data: T[], config: SortConfig<T>): T[] => {
-    if (!config.key) return data;
+    if (!config.key || !data) return data; // Added !data check
     const sortedData = [...data];
     sortedData.sort((a, b) => {
       const valA = a[config.key!];
       const valB = b[config.key!];
       let comparison = 0;
 
-      if (typeof valA === 'number' && typeof valB === 'number') {
+      if (valA === null || valA === undefined) comparison = 1;
+      else if (valB === null || valB === undefined) comparison = -1;
+      else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
-        if (config.key === 'winPct') { // CareerStat winPct is like "53.66%"
+        if (config.key === 'winPct') { 
             comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
-        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { // LeagueRecord value might be numeric string
+        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { 
             comparison = parseFloat(valA) - parseFloat(valB);
         }
         else {
             comparison = valA.localeCompare(valB);
         }
-      } else if (valA === null || valA === undefined) {
-        comparison = 1; // nulls/undefined last
-      } else if (valB === null || valB === undefined) {
-        comparison = -1; // nulls/undefined last
-      } else { // Fallback for mixed types or other specific parsing
+      } else { 
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
@@ -210,7 +221,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <Card><CardContent className="pt-6 text-center">Failed to load league data.</CardContent></Card>;
   }
   
-  const sortedPlayoffRates = leagueData.playoffQualificationRate.slice().sort((a, b) => b.qualification_rate - a.qualification_rate);
+  const sortedPlayoffRates = leagueData.playoffQualificationRate && [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
 
   return (
     <div className="space-y-6">
@@ -354,27 +365,29 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           </CardContent>
         </Card>
         
-        <Card>
-            <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-            <CardContent className="h-[300px] pt-6">
-                <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sortedPlayoffRates}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="gm_name" />
-                    <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
-                    <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
-                    <Legend />
-                    <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
-                </BarChart>
-                </ResponsiveContainer>
-            </CardContent>
-        </Card>
+        {leagueData.playoffQualificationRate && leagueData.playoffQualificationRate.length > 0 && (
+          <Card>
+              <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+              <CardContent className="h-[300px] pt-6">
+                  <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={sortedPlayoffRates}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="gm_name" />
+                      <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
+                      <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
+                      <Legend />
+                      <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
+                  </BarChart>
+                  </ResponsiveContainer>
+              </CardContent>
+          </Card>
+        )}
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Gold (1st), Green (good) to Red (bad) scale for others.</CardDescription>
+          <CardDescription>GM finishing positions by year. Primary color (1st), Green (good) to Red (bad) scale for others.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -421,45 +434,46 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>GM Playoff Performance</CardTitle>
-          <CardDescription>Statistics from playoff appearances.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
-                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
-                <TableRow key={gmPerf.gm_name}>
-                  <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
-                  <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
-                  <TableCell className="text-right">{gmPerf.wins}</TableCell>
-                  <TableCell className="text-right">{gmPerf.losses}</TableCell>
-                  <TableCell className="text-right">{gmPerf.quarterfinal_matchups}</TableCell>
-                  <TableCell className="text-right">{gmPerf.semifinal_matchups}</TableCell>
-                  <TableCell className="text-right">{gmPerf.championship_matchups}</TableCell>
-                  <TableCell className="text-right">{gmPerf.avg_playoff_points_weekly.toFixed(2)}</TableCell>
-                  <TableCell className="text-right">{gmPerf.playoff_performance_pct.toFixed(2)}%</TableCell>
+      {leagueData.gmPlayoffPerformance && leagueData.gmPlayoffPerformance.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>GM Playoff Performance</CardTitle>
+            <CardDescription>Statistics from playoff appearances.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
+              </TableHeader>
+              <TableBody>
+                {sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
+                  <TableRow key={gmPerf.gm_name}>
+                    <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
+                    <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
+                    <TableCell className="text-right">{gmPerf.wins}</TableCell>
+                    <TableCell className="text-right">{gmPerf.losses}</TableCell>
+                    <TableCell className="text-right">{gmPerf.quarterfinal_matchups}</TableCell>
+                    <TableCell className="text-right">{gmPerf.semifinal_matchups}</TableCell>
+                    <TableCell className="text-right">{gmPerf.championship_matchups}</TableCell>
+                    <TableCell className="text-right">{gmPerf.avg_playoff_points_weekly.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">{gmPerf.playoff_performance_pct.toFixed(2)}%</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
