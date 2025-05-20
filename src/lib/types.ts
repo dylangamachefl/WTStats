@@ -37,9 +37,9 @@ export interface CareerStat {
   pointsAgainst: number;
   winPct: string;
   playoffRate: number;
-  acquisitions: number;
-  avgRegularSeasonFinish: number;
-  avgFinalStanding: number;
+  acquisitions?: number; // Made optional as it's not in all provided JSONs
+  avgRegularSeasonFinish?: number; // Made optional
+  avgFinalStanding?: number; // Made optional
 }
 
 export interface PlayoffAppearanceRate {
@@ -75,101 +75,158 @@ export interface LeagueData {
   gmPlayoffPerformance: GMPlayoffPerformanceStat[];
 }
 
-// For Season Detail Page (e.g., 2023.json)
+// For Season Detail Page (e.g., 2009.json)
+export interface SeasonBaseData {
+  year: number;
+  championName: string;
+  runnerUp?: string;
+  teams?: number;
+  regularSeasonWeeks?: number;
+  // Retaining champion details here if they might be present in some season files,
+  // though 2009.json has championName at this level.
+  gmId?: string; // Champion's GM ID
+  teamName?: string; // Champion's Team Name
+  roster?: string[]; // Champion's Roster
+}
+
 export interface SeasonStandingEntry {
-  gmId: string;
-  gmName: string;
-  rank: number;
-  wins: number;
-  losses: number;
-  ties: number;
-  pointsFor: number;
-  pointsAgainst: number;
-  teamName: string;
-}
-
-export interface SeasonWeeklyMatchup {
-  gm1Id: string;
-  gm1Name: string;
-  gm1Score: number;
-  gm1TeamName?: string;
-  gm2Id: string;
-  gm2Name: string;
-  gm2Score: number;
-  gm2TeamName?: string;
-  winnerId?: string; // gmId of winner, or 'tie' or undefined
-}
-
-export interface SeasonWeeklyScoresData {
-  week: number;
-  matchups: SeasonWeeklyMatchup[];
-}
-
-export interface SeasonTopPerformer {
-  playerName: string;
-  position: string;
-  points: number;
+  season_id: number;
+  owner_name: string;
+  wt_team_name: string;
+  regular_season_wins: number;
+  regular_season_losses: number;
+  regular_season_ties: number;
+  regular_season_points_for: number;
+  regular_season_points_against: number;
+  regular_season_finish: number;
+  lastFive?: number[];
+  playoffSeed?: number | null;
+  // Mapping to existing usage in page.tsx; can be refined.
+  // These were from the old SeasonStandingEntry, adapt if needed or remove if wt_team_name etc. are always used.
   gmId?: string;
   gmName?: string;
-  teamName?: string; // Player's NFL team
-  week?: number; // For weekly top performers
+  rank?: number;
+  wins?: number;
+  losses?: number;
+  ties?: number;
+  pointsFor?: number;
+  pointsAgainst?: number;
+  teamName?: string;
 }
 
-export interface SeasonPlayoffBracketNode {
-  matchupId: string;
-  round: string; // e.g., "Quarterfinal 1", "Semifinal 2", "Championship"
-  team1?: { gmId: string; gmName: string; score?: number; seed?: number; teamName?: string };
-  team2?: { gmId: string; gmName: string; score?: number; seed?: number; teamName?: string };
-  winnerId?: string; // gmId of the winner
-  nextMatchupId?: string | null; // ID of the matchup this one feeds into
-  isChampionship?: boolean;
+export interface PlayoffMatchupTeam {
+  seed: number;
+  name: string;
+  owner: string;
+  score: number;
 }
+
+export interface PlayoffMatchup {
+  home: PlayoffMatchupTeam;
+  away: PlayoffMatchupTeam;
+}
+
+export interface PlayoffData {
+  quarterFinals?: PlayoffMatchup[];
+  semiFinals?: PlayoffMatchup[];
+  championship?: PlayoffMatchup[];
+}
+
+export interface WeeklyScoresMatrixData {
+  teams: string[]; // Team names, matches order in scores/results
+  scores: number[][]; // scores[week_idx][team_idx]
+  results: string[][]; // results[week_idx][team_idx] (W/L/T)
+}
+
 
 export interface StrengthOfScheduleEntry {
-  gmId: string;
-  gmName: string;
-  teamName?: string;
-  sosValue: number; // Example: average opponent win percentage
+  team: string;
+  owner: string;
+  leagueAvgPpg?: number;
+  differential?: number;
+  actualOpponentsPpg?: number;
   rank: number;
+  rating?: string;
+  // For consistency with old type, can be removed if not used:
+  gmId?: string;
+  gmName?: string;
+  teamName?: string;
+  sosValue?: number;
   description?: string;
 }
 
 export interface WaiverPickupEntry {
-  week: number;
-  gmId: string;
-  gmName: string;
-  playerAdded: string;
+  player: string;
+  position: string;
+  team: string; // NFL Team
+  pickedUpBy?: string | null; // GM Name or null
+  week?: number | null;
+  totalPoints?: number; // Seems like season total points for this player
+  rank?: number;
+  // For consistency with old type:
+  gmId?: string;
+  gmName?: string;
+  playerAdded?: string; // Redundant with 'player'
   playerDropped?: string;
   faabSpent?: number;
   pickupDate?: string;
 }
 
+export interface TopPerformerPlayerGame {
+  week: number;
+  points: number;
+}
+
+export interface TopPerformerPlayer {
+  player: string;
+  team: string; // NFL Team
+  fantasyTeam?: string | null; // GM/Fantasy Team Name
+  totalPoints: number;
+  ppg: number;
+  bestGame?: TopPerformerPlayerGame;
+}
+
+export interface PositionalTopPerformersData {
+  QB?: TopPerformerPlayer[];
+  RB?: TopPerformerPlayer[];
+  WR?: TopPerformerPlayer[];
+  TE?: TopPerformerPlayer[];
+  K?: TopPerformerPlayer[];
+  DST?: TopPerformerPlayer[];
+  // Potentially other positions
+  [key: string]: TopPerformerPlayer[] | undefined;
+}
+
+export interface BestOverallGameEntry {
+  rank: number;
+  player: string;
+  position: string;
+  team: string; // NFL Team
+  fantasyTeam?: string | null;
+  week: number;
+  points: number;
+}
+
 export interface SeasonDetailData {
-  seasonId: string;
-  year: number;
-  champion?: {
-    gmId: string;
-    gmName: string;
-    teamName: string;
-    roster?: string[];
-  };
-  summary?: string;
-  standings: SeasonStandingEntry[];
-  playoffBracket?: {
-    type: string; // e.g., 'single-elimination-6-team'
-    rounds: {
-      roundName: string; // "Quarterfinals", "Semifinals", "Championship"
-      matchups: SeasonPlayoffBracketNode[];
-    }[];
-  };
-  weeklyScores?: SeasonWeeklyScoresData[];
-  topPerformers?: {
-    weekly?: SeasonTopPerformer[];
-    seasonal?: SeasonTopPerformer[];
-  };
+  seasonData: SeasonBaseData;
+  standingsData: SeasonStandingEntry[];
+  playoffData?: PlayoffData;
+  weeklyScoresData?: WeeklyScoresMatrixData;
   strengthOfScheduleData?: StrengthOfScheduleEntry[];
   waiverPickupsData?: WaiverPickupEntry[];
+  topPerformersData?: PositionalTopPerformersData;
+  bestOverallGamesData?: BestOverallGameEntry[];
+  // Deprecated fields from older SeasonDetailData structure, if needed for backward compat with some files:
+  // seasonId?: string;
+  // year?: number;
+  // champion?: { gmId: string; gmName: string; teamName: string; roster?: string[]; };
+  // summary?: string;
+  // standings?: SeasonStandingEntry[]; // old structure
+  // playoffBracket?: { type: string; rounds: { roundName: string; matchups: any[] }[] }; // old structure
+  // weeklyScores?: any[]; // old structure
+  // topPerformers?: { weekly?: any[]; seasonal?: any[]; }; // old structure
 }
+
 
 // For GM Career Page (e.g., Chris.json)
 export interface GMCareerSeasonSummary {
@@ -318,3 +375,4 @@ export interface LeagueHistoryForAI {
   }>;
 }
 
+    
