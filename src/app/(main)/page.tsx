@@ -314,27 +314,27 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
                   <Card className="flex flex-col p-4 h-full gap-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-12 w-12 border-2 border-muted">
-                        <AvatarImage 
-                          data-ai-hint="team logo"
-                          src={champion.imgUrl || undefined} 
+                    <div className="flex flex-col items-center text-center pt-3 relative">
+                      <Badge
+                        variant="default"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 transform bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm"
+                      >
+                        {champion.year}
+                      </Badge>
+                      <Avatar className="h-20 w-20 border-2 border-primary mt-1 mb-2 shadow-md">
+                        <AvatarImage
+                          src={champion.imgUrl || undefined}
                           alt={champion.teamName ? `${champion.teamName} logo` : 'Champion logo'}
+                          data-ai-hint="team logo"
                         />
-                        <AvatarFallback className="text-lg">
+                        <AvatarFallback className="text-3xl">
                           {champion.championName ? champion.championName.charAt(0).toUpperCase() : '?'}
                         </AvatarFallback>
-                        <Badge 
-                          variant="default" 
-                          className="absolute -top-2 -right-2 text-xs bg-accent text-accent-foreground px-1.5 py-0.5"
-                        >
-                          {champion.year}
-                        </Badge>
                       </Avatar>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-foreground leading-tight">{champion.championName}</h3>
-                        <p className="text-xs text-muted-foreground">{champion.teamName || "Team Name N/A"}</p>
-                      </div>
+                      <h3 className="text-xl font-bold text-foreground">{champion.championName}</h3>
+                      <p className="text-sm text-muted-foreground max-w-full truncate px-2">
+                        {champion.teamName || "Team Name N/A"}
+                      </p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 text-center border-t border-b py-3">
