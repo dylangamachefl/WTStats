@@ -15,7 +15,7 @@ import type {
   GMPlayoffPerformanceStat
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
@@ -72,47 +72,43 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
   }, [leagueData]);
 
-  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
-    const defaultStyle = { textClass: 'font-semibold text-foreground', style: {} };
-    const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', style: {} };
+  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
+    const defaultStyle = { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
+    const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', borderClass: '', style: {} };
   
-    if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
+    if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
   
     if (rank === 1) {
       return {
-        textClass: 'text-primary-foreground font-semibold',
-        style: { backgroundColor: 'hsl(var(--primary))' }
+        textClass: 'text-neutral-800 font-semibold', // Dark text for gold background
+        borderClass: 'border-2 border-primary', // Primary color border for 1st place
+        style: { backgroundColor: 'hsl(45, 85%, 65%)' } // Gold color
       };
     }
     
-    // Handle cases where maxRankInYear is too small for a meaningful scale
     if (maxRankInYear <= 1) return defaultStyle;
   
     const SATURATION = 60;
-    const MAX_LIGHTNESS = 92; // Very light pastel
-    const MIN_LIGHTNESS = 78; // Slightly more saturated pastel
+    const MAX_LIGHTNESS = 92; 
+    const MIN_LIGHTNESS = 78; 
   
-    // For leagues with only 2 GMs, rank 2 is the "worst"
     if (maxRankInYear === 2 && rank === 2) {
         return { 
             textClass: coloredRankedStyle.textClass, 
-            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } // Lightest red
+            borderClass: '',
+            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
         };
     }
-    // If maxRankInYear is 2, but rank is not 2 (e.g. an invalid rank for that year), default styling
     if (maxRankInYear <= 2) return defaultStyle;
     
-  
-    // Normalize rank (from 2 to maxRankInYear) to a 0-1 scale
-    // 0 is best (greenest, rank 2), 1 is worst (reddest, rank maxRankInYear).
     const denominator = maxRankInYear - 2; 
-    if (denominator === 0) return defaultStyle; // Should be caught by maxRankInYear <= 2
+    if (denominator === 0) return defaultStyle;
   
     const normalizedRank = (rank - 2) / denominator;
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Clamp between 0 and 1
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
   
     const NEUTRAL_CENTER = 0.5;
-    const NEUTRAL_BANDWIDTH = 0.15; // Ranks from 42.5% to 57.5% of the scale get no specific color
+    const NEUTRAL_BANDWIDTH = 0.15; 
   
     const GREEN_HUE = 120;
     const RED_HUE = 0;
@@ -120,31 +116,23 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
   
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
-      // Neutral zone - use default cell styling
       return defaultStyle;
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
-      // Green spectrum (normalizedRank from 0 up to NEUTRAL_CENTER - BANDWIDTH/2)
-      // t_green maps the green portion of the scale [0, green_zone_width) to [0, 1]
-      // where 0 is best (rank 2), 1 is closest to neutral from green side
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
-      // Prevent division by zero if green_zone_width is 0 (e.g. if NEUTRAL_CENTER is too small or BANDWIDTH too large)
       const t_green = green_zone_width > 0 ? clampedNormalizedRank / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Interpolates from MAX_LIGHTNESS down to MIN_LIGHTNESS
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
-    } else { // clampedNormalizedRank > NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2
-      // Red spectrum (normalizedRank from NEUTRAL_CENTER + BANDWIDTH/2 up to 1)
-      // t_red maps the red portion of the scale [red_zone_start, 1] to [0, 1]
-      // where 0 is closest to neutral from red side, 1 is worst (maxRankInYear)
+    } else { 
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
-      // Prevent division by zero if red_zone_width is 0 or less
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Interpolates from MIN_LIGHTNESS up to MAX_LIGHTNESS
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
     return {
       textClass: coloredRankedStyle.textClass,
+      borderClass: '',
       style: { backgroundColor }
     };
   };
@@ -180,17 +168,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
-        // Specific handling for string-based numbers like percentages or values with units
         if (config.key === 'winPct') { 
             comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
-        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { // For LeagueRecord value
+        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { 
             comparison = parseFloat(valA) - parseFloat(valB);
         }
         else {
             comparison = valA.localeCompare(valB);
         }
       } else { 
-        // Fallback for other types or mixed types, convert to string for comparison
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
@@ -416,7 +402,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Primary color (1st), transitioning from light green (better) through neutral to light red (worse) for other ranks.</CardDescription>
+          <CardDescription>GM finishing positions by year. 1st place is gold with a primary border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -439,7 +425,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                     <TableCell className="font-medium sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm whitespace-nowrap">{gmEntry.gm_name}</TableCell>
                     {heatmapYears.map(year => {
                       const rank = gmEntry[year] as number | null | undefined;
-                      const { textClass, style } = getRankStyle(rank, maxRankPerYear[year] || 0);
+                      const { textClass, borderClass, style } = getRankStyle(rank, maxRankPerYear[year] || 0);
                       const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
                       
                       return (
@@ -447,7 +433,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                           key={year} 
                           className={cn(
                             "text-center py-2 px-1 text-xs md:text-sm min-w-[40px] md:min-w-[50px]",
-                            textClass
+                            textClass,
+                            borderClass
                           )}
                           style={style}
                         >
@@ -589,11 +576,10 @@ export default function LeagueHistoryPage() {
         return res.json();
       })
       .then((data: any) => {
-        // Map 'points' to 'pointsFor' in careerLeaderboard
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, // Assuming 'points' from JSON is total points for
-          // pointsAgainst is already in the JSON with the correct name
+          pointsFor: stat.points, 
+          pointsAgainst: stat.pointsAgainst,
         }));
 
         const processedData: LeagueData = {
@@ -637,3 +623,4 @@ export default function LeagueHistoryPage() {
   );
 }
 
+    
