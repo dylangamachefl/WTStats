@@ -7,14 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { 
   LeagueData, 
   CareerStat,
+  // FinalStandingsHeatmapEntry, // No longer directly used as type for leagueData.finalStandingsHeatmap in component
+  // GMPlayoffPerformanceStat, // No longer directly used as type for leagueData.gmPlayoffPerformance in component
+  Season as SeasonType, // Renamed to avoid conflict with React's Season
+  ChampionTimelineEntry,
+  LeagueRecord,
+  PlayoffAppearanceRate,
   FinalStandingsHeatmapEntry,
-  GMPlayoffPerformanceStat,
-  Season as SeasonType
+  GMPlayoffPerformanceStat
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from '@/lib/utils';
 
 // Mock data for SeasonDetail and GMCareer tabs (until they are also updated)
 const mockSeasonsForTabs: SeasonType[] = [
@@ -45,6 +51,20 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))); // Sort descending
     }
   }, [leagueData]);
+
+  const getRankClass = (rank: number | null | undefined): string => {
+    if (rank === null || rank === undefined) return ''; // Handled by isRanked check for text color
+    switch (rank) {
+      case 1:
+        return 'bg-yellow-400 text-yellow-900 dark:bg-yellow-500 dark:text-yellow-950'; // Gold
+      case 2:
+        return 'bg-gray-300 text-gray-800 dark:bg-gray-500 dark:text-gray-200';    // Silver
+      case 3:
+        return 'bg-amber-500 text-amber-950 dark:bg-amber-600 dark:text-amber-100';   // Bronze
+      default:
+        return ''; // Default styling
+    }
+  };
 
   if (loading) {
     return (
@@ -95,12 +115,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardDescription>A chronological display of league champions.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {leagueData.championshipTimeline.map(champion => (
+          {leagueData.championshipTimeline.map((champion: ChampionTimelineEntry) => (
             <Card key={champion.year} className="flex flex-col items-center p-4 text-center bg-card hover:shadow-lg transition-shadow">
               <Image 
                 data-ai-hint="team logo" 
                 src={champion.imgUrl || "https://placehold.co/80x80.png"} 
-                alt={champion.teamName || champion.championName}
+                alt={`${champion.teamName || champion.championName} logo`}
                 width={80} height={80} 
                 className="rounded-full mb-2 border-2 border-primary object-contain" 
               />
@@ -132,7 +152,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leagueData.careerLeaderboard.map(stat => (
+              {leagueData.careerLeaderboard.map((stat: CareerStat) => (
                 <TableRow key={stat.name}>
                   <TableCell className="font-medium">{stat.name}</TableCell>
                   <TableCell>{stat.wins}</TableCell>
@@ -164,7 +184,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leagueData.leagueRecords.map((record, index) => (
+                {leagueData.leagueRecords.map((record: LeagueRecord, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium">{record.record_category}</TableCell>
                     <TableCell>{record.gm_name}</TableCell>
@@ -197,28 +217,42 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year.</CardDescription>
+          <CardDescription>GM finishing positions by year. Gold (1st), Silver (2nd), Bronze (3rd).</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="sticky left-0 bg-card z-10">GM</TableHead>
+                  <TableHead className="sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">GM</TableHead>
                   {heatmapYears.map(year => (
-                    <TableHead key={year} className="text-center">{year}</TableHead>
+                    <TableHead key={year} className="text-center py-2 px-1 text-xs md:text-sm">{year}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leagueData.finalStandingsHeatmap.map(gmEntry => (
+                {leagueData.finalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
                   <TableRow key={gmEntry.gm_name}>
-                    <TableCell className="font-medium sticky left-0 bg-card z-10">{gmEntry.gm_name}</TableCell>
-                    {heatmapYears.map(year => (
-                      <TableCell key={year} className="text-center">
-                        {gmEntry[year] !== undefined && gmEntry[year] !== null ? gmEntry[year] : '-'}
-                      </TableCell>
-                    ))}
+                    <TableCell className="font-medium sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">{gmEntry.gm_name}</TableCell>
+                    {heatmapYears.map(year => {
+                      const rank = gmEntry[year] as number | null | undefined;
+                      const rankClass = getRankClass(rank);
+                      const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
+                      const isRanked = (rank !== undefined && rank !== null);
+
+                      return (
+                        <TableCell 
+                          key={year} 
+                          className={cn(
+                            "text-center py-2 px-1 text-xs md:text-sm min-w-[40px]", // Added min-width
+                            isRanked ? 'font-semibold' : 'text-muted-foreground',
+                            rankClass
+                          )}
+                        >
+                          {displayValue}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))}
               </TableBody>
@@ -248,7 +282,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leagueData.gmPlayoffPerformance.sort((a,b) => b.playoff_performance_pct - a.playoff_performance_pct).map(gmPerf => (
+              {leagueData.gmPlayoffPerformance.sort((a,b) => b.playoff_performance_pct - a.playoff_performance_pct).map((gmPerf: GMPlayoffPerformanceStat) => (
                 <TableRow key={gmPerf.gm_name}>
                   <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
                   <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
@@ -352,21 +386,33 @@ export default function LeagueHistoryPage() {
         return res.json();
       })
       .then((data: any) => {
-        type RawCareerStat = Omit<CareerStat, 'pointsFor'> & { points: number };
+        // Type assertion for the fetched data structure.
+        // This assumes data.json has a structure compatible with LeagueData after mapping.
+        
+        // Map 'points' to 'pointsFor' in careerLeaderboard
+        const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
+          ...stat,
+          pointsFor: stat.points, // Assuming 'points' exists and should be mapped to 'pointsFor'
+        }));
 
-        const mappedData: LeagueData = {
+        const processedData: LeagueData = {
           ...data,
-          careerLeaderboard: data.careerLeaderboard.map((stat: RawCareerStat) => ({
-            ...stat,
-            pointsFor: stat.points,
-          })),
+          careerLeaderboard: mappedCareerLeaderboard,
+          // Ensure all other parts of LeagueData are correctly structured or mapped if necessary
+          championshipTimeline: data.championshipTimeline || [],
+          leagueRecords: data.leagueRecords || [],
+          finalStandingsHeatmap: data.finalStandingsHeatmap || [],
+          playoffQualificationRate: data.playoffQualificationRate || [],
+          gmPlayoffPerformance: data.gmPlayoffPerformance || [],
         };
-        setLeagueData(mappedData);
-        setLoading(false);
+        
+        setLeagueData(processedData);
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
         setLeagueData(null); 
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
@@ -390,3 +436,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
