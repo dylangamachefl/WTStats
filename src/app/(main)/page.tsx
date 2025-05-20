@@ -82,8 +82,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground', 
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
+        borderClass: 'border-2 border-foreground',
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' }
       };
     }
 
@@ -102,16 +102,16 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
     if (maxRankInYear <= 2) return defaultStyle;
 
-    const denominator = maxRankInYear - 2; 
-    if (denominator === 0) { 
+    const denominator = maxRankInYear - 2;
+    if (denominator === 0) {
         return defaultStyle;
     }
 
-    const normalizedRank = (rank - 2) / denominator; 
+    const normalizedRank = (rank - 2) / denominator;
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
-    const NEUTRAL_CENTER = 0.5; 
-    const NEUTRAL_BANDWIDTH = 0.25; 
+    const NEUTRAL_CENTER = 0.5;
+    const NEUTRAL_BANDWIDTH = 0.25;
 
     const GREEN_HUE = 120;
     const RED_HUE = 0;
@@ -123,13 +123,13 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else {
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);                                                                        
+      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness_pastel_red.toFixed(0)}%)`;
     }
 
@@ -171,20 +171,20 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
-        if (config.key === 'winPct') { 
+        if (config.key === 'winPct') {
           comparison = parseFloat(valA.replace('%', '')) - parseFloat(valB.replace('%', ''));
-        } else if (config.key === 'value') { 
+        } else if (config.key === 'value') {
           const numA = parseFloat(valA);
           const numB = parseFloat(valB);
           if (!isNaN(numA) && !isNaN(numB)) {
             comparison = numA - numB;
           } else {
-            comparison = valA.localeCompare(valB); 
+            comparison = valA.localeCompare(valB);
           }
         } else {
           comparison = valA.localeCompare(valB);
         }
-      } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) { 
+      } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) {
         const numA = parseFloat(String(valA));
         const numB = parseFloat(String(valB));
         if (!isNaN(numA) && !isNaN(numB)) {
@@ -193,7 +193,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
            comparison = String(valA).localeCompare(String(valB));
         }
       }
-      else { 
+      else {
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
@@ -648,7 +648,7 @@ export default function LeagueHistoryPage() {
       .then((data: any) => {
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, 
+          pointsFor: stat.points,
           pointsAgainst: stat.pointsAgainst,
         }));
 
@@ -666,7 +666,7 @@ export default function LeagueHistoryPage() {
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
-        setLeagueData(null); 
+        setLeagueData(null);
       })
       .finally(() => {
         setLoading(false);
@@ -692,4 +692,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-    
