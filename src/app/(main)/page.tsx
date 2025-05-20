@@ -75,7 +75,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
     
-    // Use primary theme color for 1st place
     if (rank === 1) {
       return { 
         textClass: 'text-primary-foreground font-semibold', 
@@ -83,34 +82,41 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       };
     }
 
-    let hue;
-    if (maxRankInYear <= 1) { 
-        hue = 120; // Default to green if only one participant (should be caught by rank === 1)
-    } else if (rank > 1) {
-        // Normalize rank for the scale (rank 2 is 0 for scale, maxRankInYear is 1 for scale)
-        // Ensure divisor is not zero if maxRankInYear is 2 (rank 2 becomes 0 for the scale)
-        const divisor = maxRankInYear - 2; // Max possible value for (rank - 2)
-        // If maxRankInYear is 2, this means only 1st and 2nd place. Rank 2 will be (2-2)/0 -> handle this
-        // This leads to (rank-2) / (maxRankInYear-2) for ranks from 2 to maxRankInYear
-        // Example: 10 GMs. Rank 2: (2-2)/(10-2) = 0/8 = 0 (greenest). Rank 10: (10-2)/(10-2) = 8/8 = 1 (reddest).
-        // Example: 2 GMs. Rank 2: (2-2)/(2-2) = 0/0. Needs to be handled. MaxRankInYear=2 means only 1st (handled) and 2nd. 2nd should be reddest.
-        
-        let normalizedRank = 0;
-        if (maxRankInYear === 2 && rank === 2) { // Only 2 GMs, this is 2nd place (last)
-            normalizedRank = 1; // Full red
-        } else if (divisor > 0) {
-            normalizedRank = (rank - 2) / divisor;
-        }
-                                                                      
-        hue = 120 * (1 - Math.min(1, Math.max(0, normalizedRank))); // Interpolate hue from green (120) to red (0)
+    // For ranks 2 and above, use a diverging green-yellow-red scale
+    if (maxRankInYear <= 1) { // Should not happen if rank > 1, but as a fallback
+      return { textClass: 'text-neutral-900 font-semibold', style: { backgroundColor: `hsl(120, 70%, 70%)` } }; // Default green
+    }
+  
+    let normalizedRank: number;
+    if (maxRankInYear === 2) { // Only 1st (primary handled) and 2nd place. Rank 2 is "worst".
+      normalizedRank = 1; // Full red
+    } else if (maxRankInYear > 2) {
+      // Normalize rank (from 2 to maxRankInYear) to a 0-1 scale
+      // 0 is best (greenest, rank 2), 1 is worst (reddest, rank maxRankInYear).
+      normalizedRank = (rank - 2) / (maxRankInYear - 2);
     } else {
-        hue = 120; // Default for any other unexpected case (should not happen if rank 1 is handled)
+      // Fallback for maxRankInYear being unexpectedly small (e.g. 0 or 1) when rank > 1
+      normalizedRank = 0; // Default to greenest
     }
     
-    const saturation = 70;
-    const lightness = 65; 
+    normalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Clamp between 0 and 1
+  
+    let hue: number;
+    const saturation: number = 70;
+    const lightness: number = 65; // Adjusted lightness
+  
+    if (normalizedRank <= 0.5) {
+      // Green (120) to Yellow (60)
+      const t = normalizedRank * 2; // Scale to 0-1 for this half
+      hue = 120 - (t * 60); 
+    } else {
+      // Yellow (60) to Red (0)
+      const t = (normalizedRank - 0.5) * 2; // Scale to 0-1 for this half
+      hue = 60 - (t * 60);
+    }
+    
     const textColor = lightness > 55 ? 'text-neutral-900' : 'text-white';
-
+  
     return {
       textClass: `${textColor} font-semibold`,
       style: {
@@ -387,7 +393,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Primary color (1st), Green (good) to Red (bad) scale for others.</CardDescription>
+          <CardDescription>GM finishing positions by year. Primary color (1st), Green (better) to Yellow (neutral) to Red (worse) scale for others.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -605,5 +611,7 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
+    
 
     
