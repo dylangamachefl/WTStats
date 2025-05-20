@@ -21,6 +21,7 @@ import type {
   TopPerformerPlayer,
   BestOverallGameEntry as SeasonBestOverallGameEntry,
   WeeklyScoresMatrixData,
+  PositionalTopPerformersData,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
@@ -247,7 +248,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const requestHeatmapSort = createSortHandler(heatmapSortConfig, setHeatmapSortConfig);
 
   const sortedPlayoffRates = useMemo(() => {
-    if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) return [];
+    if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) {
+        return [];
+    }
     const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
       ...item,
       qualification_rate: Number(item.qualification_rate) || 0
@@ -313,11 +316,11 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                  <Card className="flex flex-col p-4 h-full gap-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <Card className="flex flex-col p-4 h-full gap-4 rounded-lg shadow-md hover:shadow-lg transition-shadow transform hover:-translate-y-1">
                     <div className="flex flex-col items-center text-center pt-3 relative">
                       <Badge
                         variant="default"
-                        className="absolute top-0 left-1/2 -translate-x-1/2 transform bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 transform bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
                       >
                         {champion.year}
                       </Badge>
