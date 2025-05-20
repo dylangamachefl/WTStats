@@ -1,15 +1,13 @@
 
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { 
   LeagueData, 
   CareerStat,
-  // FinalStandingsHeatmapEntry, // No longer directly used as type for leagueData.finalStandingsHeatmap in component
-  // GMPlayoffPerformanceStat, // No longer directly used as type for leagueData.gmPlayoffPerformance in component
-  Season as SeasonType, // Renamed to avoid conflict with React's Season
+  Season as SeasonType,
   ChampionTimelineEntry,
   LeagueRecord,
   PlayoffAppearanceRate,
@@ -17,10 +15,12 @@ import type {
   GMPlayoffPerformanceStat
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Mock data for SeasonDetail and GMCareer tabs (until they are also updated)
 const mockSeasonsForTabs: SeasonType[] = [
@@ -35,36 +35,141 @@ const mockGmsForTabs: { id: string; name: string }[] = [
   { id: "gm3", name: "Charlie" },
 ];
 
+type SortDirection = 'asc' | 'desc';
+
+interface SortConfig<T> {
+  key: keyof T | null;
+  direction: SortDirection;
+}
+
 const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | null; loading: boolean }) => {
   const [heatmapYears, setHeatmapYears] = useState<string[]>([]);
+  const [maxRankPerYear, setMaxRankPerYear] = useState<{ [year: string]: number }>({});
+
+  const [careerSortConfig, setCareerSortConfig] = useState<SortConfig<CareerStat>>({ key: 'name', direction: 'asc' });
+  const [recordsSortConfig, setRecordsSortConfig] = useState<SortConfig<LeagueRecord>>({ key: 'record_category', direction: 'asc' });
+  const [playoffPerfSortConfig, setPlayoffPerfSortConfig] = useState<SortConfig<GMPlayoffPerformanceStat>>({ key: 'gm_name', direction: 'asc' });
+  const [heatmapSortConfig, setHeatmapSortConfig] = useState<SortConfig<FinalStandingsHeatmapEntry>>({ key: 'gm_name', direction: 'asc' });
+
 
   useEffect(() => {
     if (leagueData?.finalStandingsHeatmap) {
       const years = new Set<string>();
+      const currentMaxRanks: { [year: string]: number } = {};
       leagueData.finalStandingsHeatmap.forEach(gm => {
         Object.keys(gm).forEach(key => {
           if (key !== 'gm_name' && !isNaN(Number(key))) {
             years.add(key);
+            const rank = gm[key] as number | null | undefined;
+            if (typeof rank === 'number') {
+              currentMaxRanks[key] = Math.max(currentMaxRanks[key] || 0, rank);
+            }
           }
         });
       });
-      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))); // Sort descending
+      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a)));
+      setMaxRankPerYear(currentMaxRanks);
     }
   }, [leagueData]);
 
-  const getRankClass = (rank: number | null | undefined): string => {
-    if (rank === null || rank === undefined) return ''; // Handled by isRanked check for text color
-    switch (rank) {
-      case 1:
-        return 'bg-yellow-400 text-yellow-900 dark:bg-yellow-500 dark:text-yellow-950'; // Gold
-      case 2:
-        return 'bg-gray-300 text-gray-800 dark:bg-gray-500 dark:text-gray-200';    // Silver
-      case 3:
-        return 'bg-amber-500 text-amber-950 dark:bg-amber-600 dark:text-amber-100';   // Bronze
-      default:
-        return ''; // Default styling
+  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
+    if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
+    
+    // Gold for 1st place
+    if (rank === 1) {
+      return { textClass: 'text-yellow-950 dark:text-yellow-900 font-semibold', style: { backgroundColor: 'hsl(45, 100%, 60%)' } };
     }
+
+    let hue;
+    if (maxRankInYear <= 1) { // Should mostly be covered by rank === 1 case
+        hue = 120; // Default to green
+    } else if (maxRankInYear === 2 && rank === 2) { // Only 1st and 2nd, 2nd is red
+        hue = 0; 
+    } else if (rank > 1) {
+        // Normalize rank for the scale (rank 2 is 0, maxRankInYear is 1 for the scale purpose)
+        // Ensure divisor is not zero if maxRankInYear is 2 (rank 2 becomes 0)
+        const divisor = maxRankInYear - 2;
+        const normalizedRank = divisor > 0 ? (rank - 2) / divisor : 0; // if only 2 ranks and current is 2nd, normalized is 0 (most green end of this scale)
+                                                                      // but this case (maxRankInYear === 2 && rank === 2) is handled above for red.
+                                                                      // So if maxRankInYear is 3, rank 2 is (2-2)/(3-2)=0 (green), rank 3 is (3-2)/(3-2)=1 (red)
+        hue = 120 * (1 - Math.min(1, Math.max(0, normalizedRank))); // Interpolate hue from green (120) to red (0)
+    } else {
+        hue = 120; // Default for any other unexpected case
+    }
+    
+    const saturation = 70;
+    const lightness = 65; // Adjusted for better readability with black/white text
+    const textColor = lightness > 55 ? 'text-neutral-900' : 'text-white';
+
+    return {
+      textClass: `${textColor} font-semibold`,
+      style: {
+        backgroundColor: `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`,
+      }
+    };
   };
+  
+  const createSortHandler = <T,>(
+    config: SortConfig<T>,
+    setConfig: React.Dispatch<React.SetStateAction<SortConfig<T>>>
+  ) => (key: keyof T) => {
+    let direction: SortDirection = 'asc';
+    if (config.key === key && config.direction === 'asc') {
+      direction = 'desc';
+    }
+    setConfig({ key, direction });
+  };
+
+  const getSortIcon = <T,>(config: SortConfig<T>, columnKey: keyof T) => {
+    if (config.key === columnKey) {
+      return config.direction === 'asc' ? <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" /> : <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
+    }
+    return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
+  };
+  
+  const sortData = <T,>(data: T[], config: SortConfig<T>): T[] => {
+    if (!config.key) return data;
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      const valA = a[config.key!];
+      const valB = b[config.key!];
+      let comparison = 0;
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        comparison = valA - valB;
+      } else if (typeof valA === 'string' && typeof valB === 'string') {
+        if (config.key === 'winPct') { // CareerStat winPct is like "53.66%"
+            comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
+        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { // LeagueRecord value might be numeric string
+            comparison = parseFloat(valA) - parseFloat(valB);
+        }
+        else {
+            comparison = valA.localeCompare(valB);
+        }
+      } else if (valA === null || valA === undefined) {
+        comparison = 1; // nulls/undefined last
+      } else if (valB === null || valB === undefined) {
+        comparison = -1; // nulls/undefined last
+      } else { // Fallback for mixed types or other specific parsing
+        comparison = String(valA).localeCompare(String(valB));
+      }
+      return config.direction === 'asc' ? comparison : -comparison;
+    });
+    return sortedData;
+  };
+  
+  const sortedCareerLeaderboard = useMemo(() => sortData(leagueData?.careerLeaderboard || [], careerSortConfig), [leagueData?.careerLeaderboard, careerSortConfig]);
+  const requestCareerSort = createSortHandler(careerSortConfig, setCareerSortConfig);
+
+  const sortedLeagueRecords = useMemo(() => sortData(leagueData?.leagueRecords || [], recordsSortConfig), [leagueData?.leagueRecords, recordsSortConfig]);
+  const requestRecordsSort = createSortHandler(recordsSortConfig, setRecordsSortConfig);
+  
+  const sortedGmPlayoffPerformance = useMemo(() => sortData(leagueData?.gmPlayoffPerformance || [], playoffPerfSortConfig), [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
+  const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig, setPlayoffPerfSortConfig);
+
+  const sortedFinalStandingsHeatmap = useMemo(() => sortData(leagueData?.finalStandingsHeatmap || [], heatmapSortConfig), [leagueData?.finalStandingsHeatmap, heatmapSortConfig]);
+  const requestHeatmapSort = createSortHandler(heatmapSortConfig, setHeatmapSortConfig);
+
 
   if (loading) {
     return (
@@ -140,19 +245,55 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>GM</TableHead>
-                <TableHead>W</TableHead>
-                <TableHead>L</TableHead>
-                <TableHead>T</TableHead>
-                <TableHead>Win%</TableHead>
-                <TableHead>Champs</TableHead>
-                <TableHead>PF</TableHead>
-                <TableHead>PA</TableHead>
-                <TableHead>Playoff Rate</TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('name')} className="px-1 group">
+                    GM {getSortIcon(careerSortConfig, 'name')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('wins')} className="px-1 group">
+                    W {getSortIcon(careerSortConfig, 'wins')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('losses')} className="px-1 group">
+                    L {getSortIcon(careerSortConfig, 'losses')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('ties')} className="px-1 group">
+                    T {getSortIcon(careerSortConfig, 'ties')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('winPct')} className="px-1 group">
+                    Win% {getSortIcon(careerSortConfig, 'winPct')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('championships')} className="px-1 group">
+                    Champs {getSortIcon(careerSortConfig, 'championships')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('pointsFor')} className="px-1 group">
+                    PF {getSortIcon(careerSortConfig, 'pointsFor')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('pointsAgainst')} className="px-1 group">
+                    PA {getSortIcon(careerSortConfig, 'pointsAgainst')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestCareerSort('playoffRate')} className="px-1 group">
+                    Playoff Rate {getSortIcon(careerSortConfig, 'playoffRate')}
+                  </Button>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leagueData.careerLeaderboard.map((stat: CareerStat) => (
+              {sortedCareerLeaderboard.map((stat: CareerStat) => (
                 <TableRow key={stat.name}>
                   <TableCell className="font-medium">{stat.name}</TableCell>
                   <TableCell>{stat.wins}</TableCell>
@@ -177,14 +318,30 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Category</TableHead>
-                  <TableHead>GM</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Season(s)</TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('record_category')} className="px-1 group">
+                      Category {getSortIcon(recordsSortConfig, 'record_category')}
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('gm_name')} className="px-1 group">
+                      GM {getSortIcon(recordsSortConfig, 'gm_name')}
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('value')} className="px-1 group">
+                      Value {getSortIcon(recordsSortConfig, 'value')}
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('seasons')} className="px-1 group">
+                      Season(s) {getSortIcon(recordsSortConfig, 'seasons')}
+                    </Button>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leagueData.leagueRecords.map((record: LeagueRecord, index: number) => (
+                {sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium">{record.record_category}</TableCell>
                     <TableCell>{record.gm_name}</TableCell>
@@ -217,37 +374,40 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Gold (1st), Silver (2nd), Bronze (3rd).</CardDescription>
+          <CardDescription>GM finishing positions by year. Gold (1st), Green (good) to Red (bad) scale for others.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">GM</TableHead>
+                  <TableHead className="sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">
+                     <Button variant="ghost" onClick={() => requestHeatmapSort('gm_name')} className="px-1 group">
+                        GM {getSortIcon(heatmapSortConfig, 'gm_name')}
+                      </Button>
+                  </TableHead>
                   {heatmapYears.map(year => (
-                    <TableHead key={year} className="text-center py-2 px-1 text-xs md:text-sm">{year}</TableHead>
+                    <TableHead key={year} className="text-center py-2 px-1 text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leagueData.finalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
+                {sortedFinalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
                   <TableRow key={gmEntry.gm_name}>
-                    <TableCell className="font-medium sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">{gmEntry.gm_name}</TableCell>
+                    <TableCell className="font-medium sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm whitespace-nowrap">{gmEntry.gm_name}</TableCell>
                     {heatmapYears.map(year => {
                       const rank = gmEntry[year] as number | null | undefined;
-                      const rankClass = getRankClass(rank);
+                      const { textClass, style } = getRankStyle(rank, maxRankPerYear[year] || 0);
                       const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
-                      const isRanked = (rank !== undefined && rank !== null);
-
+                      
                       return (
                         <TableCell 
                           key={year} 
                           className={cn(
-                            "text-center py-2 px-1 text-xs md:text-sm min-w-[40px]", // Added min-width
-                            isRanked ? 'font-semibold' : 'text-muted-foreground',
-                            rankClass
+                            "text-center py-2 px-1 text-xs md:text-sm min-w-[40px] md:min-w-[50px]",
+                            textClass
                           )}
+                          style={style}
                         >
                           {displayValue}
                         </TableCell>
@@ -270,19 +430,19 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>GM</TableHead>
-                <TableHead className="text-right">Total Matchups</TableHead>
-                <TableHead className="text-right">Wins</TableHead>
-                <TableHead className="text-right">Losses</TableHead>
-                <TableHead className="text-right">Quarterfinals</TableHead>
-                <TableHead className="text-right">Semifinals</TableHead>
-                <TableHead className="text-right">Championships</TableHead>
-                <TableHead className="text-right">Avg Pts</TableHead>
-                <TableHead className="text-right">Perf %</TableHead>
+                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
+                <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leagueData.gmPlayoffPerformance.sort((a,b) => b.playoff_performance_pct - a.playoff_performance_pct).map((gmPerf: GMPlayoffPerformanceStat) => (
+              {sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                 <TableRow key={gmPerf.gm_name}>
                   <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
                   <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
@@ -386,19 +546,14 @@ export default function LeagueHistoryPage() {
         return res.json();
       })
       .then((data: any) => {
-        // Type assertion for the fetched data structure.
-        // This assumes data.json has a structure compatible with LeagueData after mapping.
-        
-        // Map 'points' to 'pointsFor' in careerLeaderboard
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, // Assuming 'points' exists and should be mapped to 'pointsFor'
+          pointsFor: stat.points, 
         }));
 
         const processedData: LeagueData = {
           ...data,
           careerLeaderboard: mappedCareerLeaderboard,
-          // Ensure all other parts of LeagueData are correctly structured or mapped if necessary
           championshipTimeline: data.championshipTimeline || [],
           leagueRecords: data.leagueRecords || [],
           finalStandingsHeatmap: data.finalStandingsHeatmap || [],
@@ -437,3 +592,4 @@ export default function LeagueHistoryPage() {
   );
 }
 
+    
