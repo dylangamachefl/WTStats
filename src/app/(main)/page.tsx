@@ -18,7 +18,7 @@ import type {
   GMCareerSeasonSummary
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
@@ -60,7 +60,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       const years = new Set<string>();
       const currentMaxRanks: { [year: string]: number } = {};
       leagueData.finalStandingsHeatmap.forEach(gm => {
-        if (typeof gm === 'object' && gm !== null && Object.keys(gm).length > 0) { // Added check for non-empty gm object
+        if (typeof gm === 'object' && gm !== null && Object.keys(gm).length > 0) {
           Object.keys(gm).forEach(key => {
             if (key !== 'gm_name' && !isNaN(Number(key))) {
               years.add(key);
@@ -89,37 +89,24 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground', // Use foreground for a dark border as discussed
+        borderClass: 'border-2 border-foreground', 
         style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Yellow
       };
     }
 
     if (maxRankInYear <= 1) return defaultStyle;
-
-    // Normalize rank for 2nd place to last place
-    // Consider maxRankInYear to be the number of participants.
-    // If maxRankInYear is, say, 10, ranks are 1 to 10.
-    // We are coloring ranks 2 to 10. The effective range size is maxRankInYear - 1.
-    // But we start from rank 2, so effectively, rank 2 is position 0 in our scale, rank 10 is position 8.
     
-    const SATURATION = 60; // Pastel saturation
-    const MAX_LIGHTNESS = 92; // Lighter end of pastel
-    const MIN_LIGHTNESS = 78; // Darker end of pastel (but still light)
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; // e.g., 25% of ranks in the middle are neutral
+    const SATURATION = 60; 
+    const MAX_LIGHTNESS = 92; 
+    const MIN_LIGHTNESS = 78; 
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
 
-    // Number of ranks we are applying the diverging scale to (e.g., if 10 teams, ranks 2-10, so 9 ranks)
     const numRanksToScale = maxRankInYear -1; 
     if (numRanksToScale <=0) return defaultStyle;
 
-
-    // Position of the current rank within the 2-to-maxRank scale (0-indexed)
-    // e.g. for 10 teams, rank 2 is 0, rank 3 is 1, ..., rank 10 is 8
     const rankPositionInScale = rank - 2; 
-
-    // Normalized position: 0 for best (rank 2), 1 for worst (maxRank) among the scaled ranks
-    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; // treat 2-rank scale as middle
+    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; 
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
-
 
     const neutralZoneStart = 0.5 - NEUTRAL_BANDWIDTH_PERCENT / 2;
     const neutralZoneEnd = 0.5 + NEUTRAL_BANDWIDTH_PERCENT / 2;
@@ -130,20 +117,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-      // Middle/Neutral zone
       return defaultStyle;
     } else if (clampedNormalizedRank < neutralZoneStart) {
-      // Green zone
       const greenZoneWidth = neutralZoneStart;
-      // t_green = 0 for ranks closest to neutral, 1 for best rank (rank 2)
       const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1;
       const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else {
-      // Red zone
       const redZoneEffectiveStart = neutralZoneEnd;
       const redZoneWidth = 1 - redZoneEffectiveStart;
-      // t_red = 0 for ranks closest to neutral, 1 for worst rank
       const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0;
       const lightness = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
@@ -190,9 +172,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         else if (typeof valA === 'number' && typeof valB === 'number') {
             comparison = valA - valB;
         } else if (typeof valA === 'string' && typeof valB === 'string') {
-            if (config.key === 'winPct' || config.key === 'playoffRate') { // Adjusted for playoffRate
+            if (config.key === 'winPct' || config.key === 'playoffRate') { 
                 comparison = parseFloat(String(valA).replace('%', '')) - parseFloat(String(valB).replace('%', ''));
-            } else if (config.key === 'value' && ( String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/) ) ) { // Check if 'value' is numeric string
+            } else if (config.key === 'value' && ( String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/) ) ) { 
                 comparison = parseFloat(String(valA)) - parseFloat(String(valB));
             }
              else {
@@ -647,14 +629,16 @@ const SeasonDetail = () => {
             <Skeleton className="h-4 w-3/5" />
           </CardHeader>
           <CardContent className="pt-6 space-y-4">
-            <Skeleton className="h-6 w-full mb-2" /> {/* For summary/tabs list */}
-            <div className="grid grid-cols-3 gap-1 mb-4"> {/* For TabsList */}
+            <Skeleton className="h-6 w-full mb-2" /> 
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1 mb-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
             </div>
-            <Skeleton className="h-4 w-1/2 mb-2" /> {/* For "Final Standings" title */}
-            <Skeleton className="h-48 w-full" /> {/* For standings table */}
+            <Skeleton className="h-4 w-1/2 mb-2" /> 
+            <Skeleton className="h-48 w-full" /> 
           </CardContent>
         </Card>
       )}
@@ -670,13 +654,15 @@ const SeasonDetail = () => {
               </CardDescription>
             }
           </CardHeader>
-          <CardContent className="pt-6"> {/* Added pt-6 for consistent padding */}
+          <CardContent className="pt-6">
             {seasonData.summary && <p className="mb-4 text-muted-foreground">{seasonData.summary}</p>}
             
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
                 <TabsTrigger value="overview">Overview & Standings</TabsTrigger>
                 <TabsTrigger value="weekly_scores">Weekly Scores</TabsTrigger>
+                <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
+                <TabsTrigger value="waiver_pickups">Waiver Pickups</TabsTrigger>
                 <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
               </TabsList>
 
@@ -723,19 +709,33 @@ const SeasonDetail = () => {
                 )}
 
                  {seasonData.playoffBracket && (
-                    <div className="mt-4">
+                    <div className="mt-6"> {/* Increased margin top */}
                         <h3 className="text-lg font-semibold mb-2">Playoff Bracket</h3>
-                        <p className="text-muted-foreground">Playoff bracket visualization is not yet implemented for {seasonData.year}. Data may be available.</p>
+                        <p className="text-muted-foreground">Interactive playoff bracket visualization (Recharts or custom SVG) coming soon for {seasonData.year}.</p>
+                    </div>
+                 )}
+                 {!seasonData.playoffBracket && (
+                    <div className="mt-6">
+                         <h3 className="text-lg font-semibold mb-2">Playoff Bracket</h3>
+                         <p className="text-muted-foreground">Playoff bracket data not available for {seasonData.year}.</p>
                     </div>
                  )}
               </TabsContent>
               <TabsContent value="weekly_scores" className="pt-4">
                 <h3 className="text-lg font-semibold mb-2">Weekly Scores</h3>
-                <p className="text-muted-foreground">Interactive weekly scores and matchups display is not yet implemented for {seasonData.year}.</p>
+                <p className="text-muted-foreground">Recharts heatmap of weekly scores and a toggle for numerical scores vs. W/L is planned for {seasonData.year}.</p>
+              </TabsContent>
+              <TabsContent value="strength_of_schedule" className="pt-4">
+                <h3 className="text-lg font-semibold mb-2">Strength of Schedule</h3>
+                <p className="text-muted-foreground">Strength of Schedule analysis using React components and Recharts charts will be available here for {seasonData.year}.</p>
+              </TabsContent>
+              <TabsContent value="waiver_pickups" className="pt-4">
+                <h3 className="text-lg font-semibold mb-2">Waiver Pickups</h3>
+                <p className="text-muted-foreground">Data on waiver pickups for {seasonData.year}, displayed using custom table components, is coming soon.</p>
               </TabsContent>
               <TabsContent value="top_performers" className="pt-4">
                 <h3 className="text-lg font-semibold mb-2">Top Performers</h3>
-                <p className="text-muted-foreground">Display of top weekly and seasonal player performances is not yet implemented for {seasonData.year}.</p>
+                <p className="text-muted-foreground">Display of top weekly and seasonal player performances, using custom tables or lists, is planned for {seasonData.year}.</p>
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -809,8 +809,8 @@ const GMCareer = () => {
                 <Skeleton className="h-16 w-full" />
                 <Skeleton className="h-16 w-full" />
             </div>
-            <Skeleton className="h-4 w-1/2 mb-2" /> {/* For "Season-by-Season" title */}
-            <Skeleton className="h-40 w-full" /> {/* For season table */}
+            <Skeleton className="h-4 w-1/2 mb-2" /> 
+            <Skeleton className="h-40 w-full" /> 
           </CardContent>
         </Card>
       )}
@@ -831,7 +831,7 @@ const GMCareer = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-6 space-y-6"> {/* Added pt-6 and space-y-6 */}
+          <CardContent className="pt-6 space-y-6"> 
             {gmData.careerSummary && (
               <div className="p-4 border rounded-lg bg-muted/30">
                 <h3 className="text-lg font-semibold mb-3 text-center">Career Summary</h3>
@@ -910,7 +910,7 @@ export default function LeagueHistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/league_data/league-data.json') // Fetch from the new path
+    fetch('/data/league_data/league-data.json') 
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);

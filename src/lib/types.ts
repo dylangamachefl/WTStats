@@ -134,11 +134,14 @@ export interface SeasonDetailData {
   summary?: string;
   standings: SeasonStandingEntry[];
   playoffBracket?: {
-    type: string;
-    rounds: SeasonPlayoffBracketNode[][];
+    type: string; // e.g., 'single-elimination'
+    rounds: SeasonPlayoffBracketNode[][]; // Array of rounds, each round is an array of matchups
+    // Could also include specific matchup data within rounds or fetched separately
   };
-  weeklyScores?: SeasonWeeklyScores[];
-  topPerformers?: SeasonTopPerformer[];
+  weeklyScores?: SeasonWeeklyScores[]; // Array of weekly scores, each containing matchups
+  topPerformers?: SeasonTopPerformer[]; // Array of top performers (players)
+  strengthOfScheduleData?: any[]; // Placeholder for SoS data structure
+  waiverPickupsData?: any[]; // Placeholder for waiver pickup data structure
 }
 
 // For GM Career Page (e.g., Chris.json)
@@ -287,3 +290,4 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
+
