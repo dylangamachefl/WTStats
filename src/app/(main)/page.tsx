@@ -16,28 +16,21 @@ import type {
   GMCareerData,
   SeasonStandingEntry,
   PlayoffMatchup,
-  SeasonStrengthOfScheduleEntry,
-  SeasonWaiverPickupEntry,
-  BestOverallGameEntry,
-  TopPerformerPlayer,
-  // SeasonBaseData,
-  // PlayoffData,
-  // WeeklyScoresMatrixData,
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
-  // PositionalTopPerformersData,
+  TopPerformerPlayer,
   BestOverallGameEntry as SeasonBestOverallGameEntry,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
@@ -222,7 +215,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return sortedData;
     } catch (e) {
       console.error("Error in sortData:", e, { data, config });
-      return Array.isArray(data) ? data : []; // Ensure it always returns an array
+      return Array.isArray(data) ? data : []; 
     }
   };
 
@@ -316,8 +309,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           >
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
-                <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="p-1 h-full">
+                <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
+                  <div className="h-full">
                     <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
                       <div className="relative mb-3">
                         <Image
@@ -360,7 +353,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                             <ListChecks size={14} className="mr-1.5 text-primary"/> Key Players
                           </h4>
                           <ul className="space-y-0.5 text-xs text-muted-foreground">
-                            {champion.parsedRoster.slice(0, 3).map((player, idx) => (
+                            {champion.parsedRoster.slice(0, 4).map((player, idx) => (
                               <li key={idx} className="truncate" title={player}>{player}</li>
                             ))}
                           </ul>
@@ -1074,7 +1067,7 @@ const SeasonDetail = () => {
                             ) : null
                         ))
                         ) : (
-                        <p className="text-muted-foreground">No top performer data available for {seasonData?.seasonData?.year}.</p>
+                        <p className="text-muted-foreground text-center py-4">No top performer data available for {seasonData?.seasonData?.year}.</p>
                         )}
 
                         {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
@@ -1393,4 +1386,3 @@ export default function LeagueHistoryPage() {
   // Fallback or not found content if section is invalid
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
