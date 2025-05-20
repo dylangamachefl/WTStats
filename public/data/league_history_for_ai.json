@@ -1,0 +1,35 @@
+
+{
+  "seasons": [
+    {
+      "year": 2023,
+      "champion": "Alice",
+      "draftPicks": [
+        {"round": 1, "pick": 1, "player": "Star RB1", "gm": "Alice"},
+        {"round": 1, "pick": 2, "player": "Elite WR1", "gm": "Bob"},
+        {"round": 2, "pick": 1, "player": "Solid QB1", "gm": "Alice"},
+        {"round": 2, "pick": 2, "player": "Breakout RB2", "gm": "Bob"}
+      ],
+      "finalStandings": [
+        {"gm": "Alice", "rank": 1},
+        {"gm": "Bob", "rank": 2},
+        {"gm": "Charlie", "rank": 3}
+      ]
+    },
+    {
+      "year": 2022,
+      "champion": "Bob",
+      "draftPicks": [
+        {"round": 1, "pick": 1, "player": "Top WR2", "gm": "Bob"},
+        {"round": 1, "pick": 2, "player": "Consistent RB3", "gm": "Charlie"},
+        {"round": 2, "pick": 1, "player": "Steady QB2", "gm": "Bob"},
+        {"round": 2, "pick": 2, "player": "High-Upside WR3", "gm": "Charlie"}
+      ],
+      "finalStandings": [
+        {"gm": "Bob", "rank": 1},
+        {"gm": "Charlie", "rank": 2},
+        {"gm": "Alice", "rank": 3}
+      ]
+    }
+  ]
+}
