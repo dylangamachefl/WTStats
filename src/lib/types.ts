@@ -6,50 +6,98 @@ export interface GM {
   photoUrl?: string; // Optional: URL to GM's photo
 }
 
-export interface Season {
-  id: string; // e.g., "2023"
+export interface ChampionTimelineEntry {
   year: number;
-  championId?: string;
-  championName?: string;
-  championTeamName?: string;
-  championPhotoUrl?: string;
+  championName: string;
+  teamName: string;
+  imgUrl: string | null;
+  wins: number;
+  losses: number;
+  pointsFor: number;
+  pointsAgainst: number;
+  roster: string;
+  parsedRoster: string[];
 }
 
+// This replaces the old Season type for the main page context
+// export interface Season {
+//   id: string; // e.g., "2023"
+//   year: number;
+//   championId?: string;
+//   championName?: string;
+//   championTeamName?: string;
+//   championPhotoUrl?: string;
+// }
+
+
 export interface LeagueRecord {
-  id: string;
-  title: string;
+  gm_name: string;
+  seasons: string; // e.g., "2019" or "2019-2021"
+  week: string; // e.g., "5" or ""
   value: string | number;
-  holderName: string;
-  seasonYear?: number;
-  details?: string;
+  record_category: string; // e.g., "Highest Score"
 }
 
 export interface CareerStat {
-  gmId: string;
-  gmName: string;
+  name: string; // GM's name
   wins: number;
   losses: number;
   ties: number;
   championships: number;
-  playoffAppearances: number;
-  pointsFor: number;
+  pointsFor: number; // from JSON "points"
   pointsAgainst: number;
+  winPct: string; // e.g., "53.66%"
+  playoffRate: number; // e.g., 0.44
+  acquisitions: number;
+  avgRegularSeasonFinish: number;
+  avgFinalStanding: number;
 }
 
 export interface PlayoffAppearanceRate {
-  gmId: string;
-  gmName: string;
-  rate: number; // percentage, e.g. 0.75 for 75%
+  gm_name: string;
+  seasons_played: number;
+  playoff_appearances: number;
+  qualification_rate: number; // percentage, e.g. 0.75 for 75%
 }
 
-export interface FinalStanding {
+export interface FinalStandingsHeatmapEntry {
+  gm_name: string;
+  [year: string]: number | string | null; // Allows for year keys like "2009", "2010", etc.
+}
+
+export interface GMPlayoffPerformanceStat {
+  gm_name: string;
+  total_matchups: number;
+  wins: number;
+  losses: number;
+  quarterfinal_matchups: number;
+  semifinal_matchups: number;
+  championship_matchups: number;
+  avg_playoff_points_weekly: number;
+  playoff_performance_pct: number;
+}
+
+
+// Below are older types that might still be used by other pages or need updating/removal later.
+// Ensure they don't conflict if mock data is still used elsewhere.
+
+export interface Season { // Kept for other pages if they use it, but main page uses ChampionTimelineEntry
+  id: string;
+  year: number;
+  championId?: string;
+  championName?: string; // This will be from ChampionTimelineEntry on main page
+  championTeamName?: string; // This will be from ChampionTimelineEntry on main page
+  championPhotoUrl?: string; // This will be from ChampionTimelineEntry's imgUrl on main page
+}
+
+export interface FinalStanding { // Potentially for Season Detail page
   seasonYear: number;
   gmId: string;
   gmName: string;
   position: number;
 }
 
-// Data for a specific season
+// Data for a specific season (for Season Detail page)
 export interface SeasonDetailData {
   seasonId: string;
   year: number;
@@ -60,7 +108,7 @@ export interface SeasonDetailData {
   topPerformers?: Array<{ player: string; position: string; points: number; gmId: string }>;
 }
 
-// Data for a specific GM's career
+// Data for a specific GM's career (for GM Career page)
 export interface GMCareerData {
   gmId: string;
   gmName: string;
@@ -135,9 +183,6 @@ export interface H2HComparisonData {
 
 
 export interface LeagueHistoryForAI {
-  // This structure should align with what the AI flow `draftStrategyInsightsFlow` expects
-  // For now, a placeholder. It might be a stringified JSON of aggregated data.
-  // Example:
   seasons: Array<{
     year: number;
     champion: string; // GM Name
@@ -146,12 +191,20 @@ export interface LeagueHistoryForAI {
       pick: number;
       player: string;
       gm: string; // GM Name
-      // Add other relevant details like player's end-of-season rank or points
     }>;
     finalStandings: Array<{
       gm: string; // GM Name
       rank: number;
     }>;
   }>;
-  // Potentially other aggregated stats useful for draft strategy insights
+}
+
+// Structure for the entire league data JSON
+export interface LeagueData {
+  championshipTimeline: ChampionTimelineEntry[];
+  careerLeaderboard: CareerStat[];
+  leagueRecords: LeagueRecord[];
+  finalStandingsHeatmap: FinalStandingsHeatmapEntry[];
+  playoffQualificationRate: PlayoffAppearanceRate[];
+  gmPlayoffPerformance: GMPlayoffPerformanceStat[];
 }

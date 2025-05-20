@@ -1,0 +1,971 @@
+{
+    "championshipTimeline": [
+        {
+            "year": 2024,
+            "championName": "Jake",
+            "teamName": "Jam It In That Younghoe",
+            "imgUrl": "https://g.espncdn.com/lm-static/logo-packs/ffl/HelmetAlphabet-ESPN/Helmet-J.svg",
+            "wins": 8,
+            "losses": 5,
+            "pointsFor": 1391.94,
+            "pointsAgainst": 1353.34,
+            "roster": "De'Von Achane,James Conner,Kyler Murray,CeeDee Lamb",
+            "parsedRoster": [
+                "De'Von Achane",
+                "James Conner",
+                "Kyler Murray",
+                "CeeDee Lamb"
+            ]
+        },
+        {
+            "year": 2023,
+            "championName": "Zach",
+            "teamName": "MouseRat  FC",
+            "imgUrl": "https://www.supergraphictees.com/wp-content/uploads/Liverpool-F.C.-Red.jpg",
+            "wins": 7,
+            "losses": 6,
+            "pointsFor": 1490.78,
+            "pointsAgainst": 1367.52,
+            "roster": "Josh Allen,Christian McCaffrey,Travis Etienne Jr.,Brandon Aiyuk",
+            "parsedRoster": [
+                "Josh Allen",
+                "Christian McCaffrey",
+                "Travis Etienne Jr.",
+                "Brandon Aiyuk"
+            ]
+        },
+        {
+            "year": 2022,
+            "championName": "Chris",
+            "teamName": "All Madden Ultimate Team",
+            "imgUrl": "https://g.espncdn.com/lm-static/logo-packs/ffl/SmackTalk-LeoEspinosa/GOAT-08.svg",
+            "wins": 9,
+            "losses": 4,
+            "pointsFor": 1174.74,
+            "pointsAgainst": 1219.54,
+            "roster": "Joe Burrow,Christian McCaffrey,Saquon Barkley,James Conner",
+            "parsedRoster": [
+                "Joe Burrow",
+                "Christian McCaffrey",
+                "Saquon Barkley",
+                "James Conner"
+            ]
+        },
+        {
+            "year": 2021,
+            "championName": "Mark",
+            "teamName": "Jupiter Joe's",
+            "imgUrl": "https://img.customon.com/design/600/600/ffffff/13756/1485319091-Average-Joes-Gymnasium.png.jpg",
+            "wins": 9,
+            "losses": 4,
+            "pointsFor": 1316.48,
+            "pointsAgainst": 1143.36,
+            "roster": "Josh Allen,Mark Andrews,Mike Evans,Diontae Johnson",
+            "parsedRoster": [
+                "Josh Allen",
+                "Mark Andrews",
+                "Mike Evans",
+                "Diontae Johnson"
+            ]
+        },
+        {
+            "year": 2020,
+            "championName": "Sean",
+            "teamName": "Jupiter Clutch",
+            "imgUrl": "https://g.espncdn.com/lm-static/logo-packs/ffl/HelmetAlphabet-ESPN/Helmet-C.svg",
+            "wins": 9,
+            "losses": 3,
+            "pointsFor": 1200.38,
+            "pointsAgainst": 1120.7,
+            "roster": "Aaron Rodgers,Alvin Kamara,Kareem Hunt,Mike Davis",
+            "parsedRoster": [
+                "Aaron Rodgers",
+                "Alvin Kamara",
+                "Kareem Hunt",
+                "Mike Davis"
+            ]
+        },
+        {
+            "year": 2019,
+            "championName": "Chris",
+            "teamName": "All Madden Ultimate Team",
+            "imgUrl": "https://g.espncdn.com/lm-static/logo-packs/ffl/SmackTalk-LeoEspinosa/GOAT-08.svg",
+            "wins": 7,
+            "losses": 5,
+            "pointsFor": 1185.74,
+            "pointsAgainst": 1143.4,
+            "roster": "Lamar Jackson,Michael Thomas,Austin Ekeler,Julio Jones",
+            "parsedRoster": [
+                "Lamar Jackson",
+                "Michael Thomas",
+                "Austin Ekeler",
+                "Julio Jones"
+            ]
+        },
+        {
+            "year": 2018,
+            "championName": "Jake",
+            "teamName": "AP 's Daycare",
+            "imgUrl": "https://decollins1969.files.wordpress.com/2012/07/kunta-getting-whipped-1.jpg",
+            "wins": 7,
+            "losses": 5,
+            "pointsFor": 1271.8,
+            "pointsAgainst": 1184.1,
+            "roster": "Deshaun Watson,Davante Adams,James Conner,Todd Gurley II",
+            "parsedRoster": [
+                "Deshaun Watson",
+                "Davante Adams",
+                "James Conner",
+                "Todd Gurley II"
+            ]
+        },
+        {
+            "year": 2017,
+            "championName": "Josh",
+            "teamName": "Gauntlet Commish",
+            "imgUrl": "http://heavyeditorial.files.wordpress.com/2014/08/daltons.jpg?w=640&h=360&crop=1",
+            "wins": 9,
+            "losses": 4,
+            "pointsFor": 1130.0,
+            "pointsAgainst": 1087.4,
+            "roster": "Matthew Stafford,Jordan Howard,LeSean McCoy,Marvin Jones Jr.",
+            "parsedRoster": [
+                "Matthew Stafford",
+                "Jordan Howard",
+                "LeSean McCoy",
+                "Marvin Jones Jr."
+            ]
+        },
+        {
+            "year": 2016,
+            "championName": "Jack",
+            "teamName": "Ring  Count?",
+            "imgUrl": "http://thejasminebrand.com/wp-content/uploads/2014/02/ray-rice-alleged-domestic-violence-fiancee-janay-palmer-2014-the-jasmine-brand.jpg",
+            "wins": 7,
+            "losses": 6,
+            "pointsFor": 1208.9,
+            "pointsAgainst": 1212.7,
+            "roster": "Matt Ryan,Amari Cooper,Devonta Freeman,Le'Veon Bell",
+            "parsedRoster": [
+                "Matt Ryan",
+                "Amari Cooper",
+                "Devonta Freeman",
+                "Le'Veon Bell"
+            ]
+        },
+        {
+            "year": 2015,
+            "championName": "Josh",
+            "teamName": "KENDRAAAAA :)",
+            "imgUrl": "http://heavyeditorial.files.wordpress.com/2014/08/daltons.jpg?w=640&h=360&crop=1",
+            "wins": 7,
+            "losses": 6,
+            "pointsFor": 1292.0,
+            "pointsAgainst": 1197.8,
+            "roster": "Aaron Rodgers,Adrian Peterson,Devonta Freeman,Larry Fitzgerald",
+            "parsedRoster": [
+                "Aaron Rodgers",
+                "Adrian Peterson",
+                "Devonta Freeman",
+                "Larry Fitzgerald"
+            ]
+        },
+        {
+            "year": 2014,
+            "championName": "Sean",
+            "teamName": "Jupiter Clutch",
+            "imgUrl": null,
+            "wins": 9,
+            "losses": 4,
+            "pointsFor": 1433.3,
+            "pointsAgainst": 1190.8,
+            "roster": "Aaron Rodgers,Eddie Lacy,Jeremy Maclin,Le'Veon Bell",
+            "parsedRoster": [
+                "Aaron Rodgers",
+                "Eddie Lacy",
+                "Jeremy Maclin",
+                "Le'Veon Bell"
+            ]
+        },
+        {
+            "year": 2013,
+            "championName": "Sean",
+            "teamName": "Jupiter Clutch",
+            "imgUrl": null,
+            "wins": 10,
+            "losses": 3,
+            "pointsFor": 1428.0,
+            "pointsAgainst": 1132.3,
+            "roster": "Matthew Stafford,Fred Jackson,Jamaal Charles,Jimmy Graham",
+            "parsedRoster": [
+                "Matthew Stafford",
+                "Fred Jackson",
+                "Jamaal Charles",
+                "Jimmy Graham"
+            ]
+        },
+        {
+            "year": 2012,
+            "championName": "Zach",
+            "teamName": "Mouse Rat",
+            "imgUrl": "http://www.scarecrowboat.com/images/mouserat_logo_home.gif",
+            "wins": 10,
+            "losses": 3,
+            "pointsFor": 1348.0,
+            "pointsAgainst": 1098.0,
+            "roster": "Cam Newton,Dez Bryant,Doug Martin,Victor Cruz",
+            "parsedRoster": [
+                "Cam Newton",
+                "Dez Bryant",
+                "Doug Martin",
+                "Victor Cruz"
+            ]
+        },
+        {
+            "year": 2011,
+            "championName": "Mark",
+            "teamName": "Jaunty  John",
+            "imgUrl": null,
+            "wins": 8,
+            "losses": 5,
+            "pointsFor": 1299.0,
+            "pointsAgainst": 1107.0,
+            "roster": "Drew Brees,Arian Foster,Frank Gore,Ryan Mathews",
+            "parsedRoster": [
+                "Drew Brees",
+                "Arian Foster",
+                "Frank Gore",
+                "Ryan Mathews"
+            ]
+        },
+        {
+            "year": 2010,
+            "championName": "Nick",
+            "teamName": "Hey... wanna  go for a walk?!",
+            "imgUrl": null,
+            "wins": 7,
+            "losses": 6,
+            "pointsFor": 1293.0,
+            "pointsAgainst": 1152.0,
+            "roster": "Philip Rivers,Adrian Peterson,Calvin Johnson,Reggie Wayne",
+            "parsedRoster": [
+                "Philip Rivers",
+                "Adrian Peterson",
+                "Calvin Johnson",
+                "Reggie Wayne"
+            ]
+        },
+        {
+            "year": 2009,
+            "championName": "Chris",
+            "teamName": "Jupiter Yawhos",
+            "imgUrl": null,
+            "wins": 8,
+            "losses": 5,
+            "pointsFor": 1154.0,
+            "pointsAgainst": 1208.0,
+            "roster": "Joe Flacco,Chris Johnson,Frank Gore,Ricky Williams",
+            "parsedRoster": [
+                "Joe Flacco",
+                "Chris Johnson",
+                "Frank Gore",
+                "Ricky Williams"
+            ]
+        }
+    ],
+    "careerLeaderboard": [
+        {
+            "name": "Sean",
+            "wins": 110,
+            "losses": 95,
+            "ties": 0,
+            "championships": 3,
+            "points": 20001.2,
+            "pointsAgainst": 19208.9,
+            "winPct": "53.66%",
+            "playoffRate": 0.44,
+            "acquisitions": 325,
+            "avgRegularSeasonFinish": 5.1,
+            "avgFinalStanding": 5.0
+        },
+        {
+            "name": "Chris",
+            "wins": 96,
+            "losses": 105,
+            "ties": 4,
+            "championships": 3,
+            "points": 19127.1,
+            "pointsAgainst": 19788.4,
+            "winPct": "46.83%",
+            "playoffRate": 0.5,
+            "acquisitions": 349,
+            "avgRegularSeasonFinish": 6.1,
+            "avgFinalStanding": 5.1
+        },
+        {
+            "name": "Zach",
+            "wins": 121,
+            "losses": 84,
+            "ties": 0,
+            "championships": 2,
+            "points": 20443.8,
+            "pointsAgainst": 19377.7,
+            "winPct": "59.02%",
+            "playoffRate": 0.56,
+            "acquisitions": 543,
+            "avgRegularSeasonFinish": 3.4,
+            "avgFinalStanding": 4.3
+        },
+        {
+            "name": "Josh",
+            "wins": 107,
+            "losses": 97,
+            "ties": 1,
+            "championships": 2,
+            "points": 19823.0,
+            "pointsAgainst": 19661.1,
+            "winPct": "52.20%",
+            "playoffRate": 0.56,
+            "acquisitions": 252,
+            "avgRegularSeasonFinish": 4.9,
+            "avgFinalStanding": 4.8
+        },
+        {
+            "name": "Jake",
+            "wins": 101,
+            "losses": 103,
+            "ties": 1,
+            "championships": 2,
+            "points": 18953.0,
+            "pointsAgainst": 19436.7,
+            "winPct": "49.27%",
+            "playoffRate": 0.44,
+            "acquisitions": 546,
+            "avgRegularSeasonFinish": 5.7,
+            "avgFinalStanding": 5.1
+        },
+        {
+            "name": "Mark",
+            "wins": 88,
+            "losses": 116,
+            "ties": 1,
+            "championships": 2,
+            "points": 18966.5,
+            "pointsAgainst": 19771.8,
+            "winPct": "42.93%",
+            "playoffRate": 0.31,
+            "acquisitions": 224,
+            "avgRegularSeasonFinish": 6.6,
+            "avgFinalStanding": 6.3
+        },
+        {
+            "name": "Jack",
+            "wins": 102,
+            "losses": 103,
+            "ties": 0,
+            "championships": 1,
+            "points": 18889.6,
+            "pointsAgainst": 19073.4,
+            "winPct": "49.76%",
+            "playoffRate": 0.25,
+            "acquisitions": 198,
+            "avgRegularSeasonFinish": 6.6,
+            "avgFinalStanding": 6.7
+        },
+        {
+            "name": "Nick",
+            "wins": 89,
+            "losses": 115,
+            "ties": 1,
+            "championships": 1,
+            "points": 19144.0,
+            "pointsAgainst": 19417.5,
+            "winPct": "43.41%",
+            "playoffRate": 0.25,
+            "acquisitions": 163,
+            "avgRegularSeasonFinish": 6.8,
+            "avgFinalStanding": 6.6
+        },
+        {
+            "name": "Will",
+            "wins": 87,
+            "losses": 115,
+            "ties": 3,
+            "championships": 0,
+            "points": 19368.0,
+            "pointsAgainst": 19652.3,
+            "winPct": "42.44%",
+            "playoffRate": 0.25,
+            "acquisitions": 244,
+            "avgRegularSeasonFinish": 7.1,
+            "avgFinalStanding": 7.1
+        },
+        {
+            "name": "Dylan",
+            "wins": 73,
+            "losses": 66,
+            "ties": 1,
+            "championships": 0,
+            "points": 13495.0,
+            "pointsAgainst": 13512.3,
+            "winPct": "52.14%",
+            "playoffRate": 0.36,
+            "acquisitions": 546,
+            "avgRegularSeasonFinish": 5.4,
+            "avgFinalStanding": 6.3
+        },
+        {
+            "name": "Lac",
+            "wins": 39,
+            "losses": 26,
+            "ties": 0,
+            "championships": 0,
+            "points": 6269.2,
+            "pointsAgainst": 5983.7,
+            "winPct": "60.00%",
+            "playoffRate": 0.6,
+            "acquisitions": 67,
+            "avgRegularSeasonFinish": 3.6,
+            "avgFinalStanding": 4.0
+        },
+        {
+            "name": "Dan",
+            "wins": 20,
+            "losses": 6,
+            "ties": 0,
+            "championships": 0,
+            "points": 2900.6,
+            "pointsAgainst": 2472.6,
+            "winPct": "76.92%",
+            "playoffRate": 1.0,
+            "acquisitions": 31,
+            "avgRegularSeasonFinish": 1.5,
+            "avgFinalStanding": 3.5
+        },
+        {
+            "name": "Fitz",
+            "wins": 12,
+            "losses": 14,
+            "ties": 0,
+            "championships": 0,
+            "points": 2722.6,
+            "pointsAgainst": 2747.3,
+            "winPct": "46.15%",
+            "playoffRate": 1.0,
+            "acquisitions": 23,
+            "avgRegularSeasonFinish": 5.5,
+            "avgFinalStanding": 7.0
+        }
+    ],
+    "leagueRecords": [
+        {
+            "gm_name": "Jack",
+            "seasons": "2019",
+            "week": "5",
+            "value": 179.8,
+            "record_category": "Highest Score"
+        },
+        {
+            "gm_name": "Mark",
+            "seasons": "2015",
+            "week": "2",
+            "value": 30.2,
+            "record_category": "Lowest Score"
+        },
+        {
+            "gm_name": "Zach",
+            "seasons": "2023",
+            "week": "",
+            "value": 1490.78,
+            "record_category": "Most Points (Season)"
+        },
+        {
+            "gm_name": "Jack",
+            "seasons": "2019",
+            "week": "",
+            "value": 11,
+            "record_category": "Longest Win Streak"
+        },
+        {
+            "gm_name": "Sean",
+            "seasons": "2018",
+            "week": "11",
+            "value": 134.1,
+            "record_category": "Worst Beat"
+        }
+    ],
+    "finalStandingsHeatmap": [
+        {
+            "gm_name": "Chris",
+            "2009": 1,
+            "2010": 9,
+            "2011": 5,
+            "2012": 3,
+            "2013": 4,
+            "2014": 7,
+            "2015": 2,
+            "2016": 10,
+            "2017": 8,
+            "2018": 4,
+            "2019": 1,
+            "2020": 6,
+            "2021": 4,
+            "2022": 1,
+            "2023": 10,
+            "2024": 7
+        },
+        {
+            "gm_name": "Dan",
+            "2009": null,
+            "2010": null,
+            "2011": null,
+            "2012": null,
+            "2013": null,
+            "2014": null,
+            "2015": null,
+            "2016": null,
+            "2017": null,
+            "2018": null,
+            "2019": null,
+            "2020": null,
+            "2021": null,
+            "2022": null,
+            "2023": 4,
+            "2024": 3
+        },
+        {
+            "gm_name": "Dylan",
+            "2009": null,
+            "2010": null,
+            "2011": null,
+            "2012": null,
+            "2013": null,
+            "2014": 9,
+            "2015": 3,
+            "2016": 3,
+            "2017": 10,
+            "2018": 10,
+            "2019": 8,
+            "2020": 7,
+            "2021": 5,
+            "2022": 3,
+            "2023": 3,
+            "2024": 8
+        },
+        {
+            "gm_name": "Fitz",
+            "2009": null,
+            "2010": null,
+            "2011": null,
+            "2012": null,
+            "2013": null,
+            "2014": null,
+            "2015": null,
+            "2016": null,
+            "2017": null,
+            "2018": null,
+            "2019": null,
+            "2020": null,
+            "2021": null,
+            "2022": null,
+            "2023": 5,
+            "2024": 9
+        },
+        {
+            "gm_name": "Jack",
+            "2009": 9,
+            "2010": 2,
+            "2011": 8,
+            "2012": 9,
+            "2013": 3,
+            "2014": 6,
+            "2015": 8,
+            "2016": 1,
+            "2017": 5,
+            "2018": 8,
+            "2019": 4,
+            "2020": 10,
+            "2021": 8,
+            "2022": 9,
+            "2023": 11,
+            "2024": 6
+        },
+        {
+            "gm_name": "Jake",
+            "2009": 3,
+            "2010": 5,
+            "2011": 6,
+            "2012": 8,
+            "2013": 10,
+            "2014": 5,
+            "2015": 6,
+            "2016": 8,
+            "2017": 7,
+            "2018": 1,
+            "2019": 10,
+            "2020": 2,
+            "2021": 3,
+            "2022": 4,
+            "2023": 2,
+            "2024": 1
+        },
+        {
+            "gm_name": "Josh",
+            "2009": 6,
+            "2010": 8,
+            "2011": 10,
+            "2012": 4,
+            "2013": 5,
+            "2014": 2,
+            "2015": 1,
+            "2016": 4,
+            "2017": 1,
+            "2018": 2,
+            "2019": 3,
+            "2020": 3,
+            "2021": 6,
+            "2022": 7,
+            "2023": 9,
+            "2024": 5
+        },
+        {
+            "gm_name": "Lac",
+            "2009": 2,
+            "2010": 6,
+            "2011": 3,
+            "2012": 2,
+            "2013": 7,
+            "2014": null,
+            "2015": null,
+            "2016": null,
+            "2017": null,
+            "2018": null,
+            "2019": null,
+            "2020": null,
+            "2021": null,
+            "2022": null,
+            "2023": null,
+            "2024": null
+        },
+        {
+            "gm_name": "Mark",
+            "2009": 7,
+            "2010": 3,
+            "2011": 1,
+            "2012": 5,
+            "2013": 6,
+            "2014": 10,
+            "2015": 9,
+            "2016": 5,
+            "2017": 9,
+            "2018": 5,
+            "2019": 2,
+            "2020": 9,
+            "2021": 1,
+            "2022": 6,
+            "2023": 12,
+            "2024": 11
+        },
+        {
+            "gm_name": "Nick",
+            "2009": 10,
+            "2010": 1,
+            "2011": 2,
+            "2012": 10,
+            "2013": 8,
+            "2014": 3,
+            "2015": 7,
+            "2016": 2,
+            "2017": 6,
+            "2018": 7,
+            "2019": 9,
+            "2020": 8,
+            "2021": 10,
+            "2022": 5,
+            "2023": 8,
+            "2024": 10
+        },
+        {
+            "gm_name": "Sean",
+            "2009": 5,
+            "2010": 7,
+            "2011": 9,
+            "2012": 7,
+            "2013": 1,
+            "2014": 1,
+            "2015": 4,
+            "2016": 9,
+            "2017": 3,
+            "2018": 6,
+            "2019": 7,
+            "2020": 1,
+            "2021": 2,
+            "2022": 8,
+            "2023": 6,
+            "2024": 4
+        },
+        {
+            "gm_name": "Will",
+            "2009": 8,
+            "2010": 10,
+            "2011": 4,
+            "2012": 6,
+            "2013": 2,
+            "2014": 8,
+            "2015": 10,
+            "2016": 7,
+            "2017": 2,
+            "2018": 9,
+            "2019": 6,
+            "2020": 4,
+            "2021": 9,
+            "2022": 10,
+            "2023": 7,
+            "2024": 12
+        },
+        {
+            "gm_name": "Zach",
+            "2009": 4,
+            "2010": 4,
+            "2011": 7,
+            "2012": 1,
+            "2013": 9,
+            "2014": 4,
+            "2015": 5,
+            "2016": 6,
+            "2017": 4,
+            "2018": 3,
+            "2019": 5,
+            "2020": 5,
+            "2021": 7,
+            "2022": 2,
+            "2023": 1,
+            "2024": 2
+        }
+    ],
+    "playoffQualificationRate": [
+        {
+            "gm_name": "Dan",
+            "seasons_played": 2,
+            "playoff_appearances": 2,
+            "qualification_rate": 1.0
+        },
+        {
+            "gm_name": "Fitz",
+            "seasons_played": 2,
+            "playoff_appearances": 2,
+            "qualification_rate": 1.0
+        },
+        {
+            "gm_name": "Lac",
+            "seasons_played": 5,
+            "playoff_appearances": 3,
+            "qualification_rate": 0.6
+        },
+        {
+            "gm_name": "Josh",
+            "seasons_played": 16,
+            "playoff_appearances": 9,
+            "qualification_rate": 0.5625
+        },
+        {
+            "gm_name": "Zach",
+            "seasons_played": 16,
+            "playoff_appearances": 9,
+            "qualification_rate": 0.5625
+        },
+        {
+            "gm_name": "Chris",
+            "seasons_played": 16,
+            "playoff_appearances": 8,
+            "qualification_rate": 0.5
+        },
+        {
+            "gm_name": "Jake",
+            "seasons_played": 16,
+            "playoff_appearances": 7,
+            "qualification_rate": 0.4375
+        },
+        {
+            "gm_name": "Sean",
+            "seasons_played": 16,
+            "playoff_appearances": 7,
+            "qualification_rate": 0.4375
+        },
+        {
+            "gm_name": "Dylan",
+            "seasons_played": 11,
+            "playoff_appearances": 4,
+            "qualification_rate": 0.36363636363636365
+        },
+        {
+            "gm_name": "Mark",
+            "seasons_played": 16,
+            "playoff_appearances": 5,
+            "qualification_rate": 0.3125
+        },
+        {
+            "gm_name": "Jack",
+            "seasons_played": 16,
+            "playoff_appearances": 4,
+            "qualification_rate": 0.25
+        },
+        {
+            "gm_name": "Nick",
+            "seasons_played": 16,
+            "playoff_appearances": 4,
+            "qualification_rate": 0.25
+        },
+        {
+            "gm_name": "Will",
+            "seasons_played": 16,
+            "playoff_appearances": 4,
+            "qualification_rate": 0.25
+        }
+    ],
+    "gmPlayoffPerformance": [
+        {
+            "gm_name": "Jake",
+            "total_matchups": 13,
+            "wins": 8,
+            "losses": 5,
+            "quarterfinal_matchups": 2,
+            "semifinal_matchups": 7,
+            "championship_matchups": 4,
+            "avg_playoff_points_weekly": 112.41,
+            "playoff_performance_pct": 114.64
+        },
+        {
+            "gm_name": "Sean",
+            "total_matchups": 12,
+            "wins": 8,
+            "losses": 4,
+            "quarterfinal_matchups": 1,
+            "semifinal_matchups": 7,
+            "championship_matchups": 4,
+            "avg_playoff_points_weekly": 111.19,
+            "playoff_performance_pct": 107.72
+        },
+        {
+            "gm_name": "Zach",
+            "total_matchups": 14,
+            "wins": 7,
+            "losses": 7,
+            "quarterfinal_matchups": 1,
+            "semifinal_matchups": 9,
+            "championship_matchups": 4,
+            "avg_playoff_points_weekly": 100.54,
+            "playoff_performance_pct": 94.94
+        },
+        {
+            "gm_name": "Chris",
+            "total_matchups": 12,
+            "wins": 7,
+            "losses": 5,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 8,
+            "championship_matchups": 4,
+            "avg_playoff_points_weekly": 100.19,
+            "playoff_performance_pct": 103.23
+        },
+        {
+            "gm_name": "Josh",
+            "total_matchups": 13,
+            "wins": 6,
+            "losses": 7,
+            "quarterfinal_matchups": 1,
+            "semifinal_matchups": 8,
+            "championship_matchups": 4,
+            "avg_playoff_points_weekly": 89.8,
+            "playoff_performance_pct": 90.35
+        },
+        {
+            "gm_name": "Mark",
+            "total_matchups": 8,
+            "wins": 5,
+            "losses": 3,
+            "quarterfinal_matchups": 1,
+            "semifinal_matchups": 4,
+            "championship_matchups": 3,
+            "avg_playoff_points_weekly": 106.97,
+            "playoff_performance_pct": 109.79
+        },
+        {
+            "gm_name": "Nick",
+            "total_matchups": 7,
+            "wins": 4,
+            "losses": 3,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 4,
+            "championship_matchups": 3,
+            "avg_playoff_points_weekly": 97.51,
+            "playoff_performance_pct": 98.2
+        },
+        {
+            "gm_name": "Jack",
+            "total_matchups": 6,
+            "wins": 3,
+            "losses": 3,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 4,
+            "championship_matchups": 2,
+            "avg_playoff_points_weekly": 94.53,
+            "playoff_performance_pct": 91.93
+        },
+        {
+            "gm_name": "Will",
+            "total_matchups": 6,
+            "wins": 2,
+            "losses": 4,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 4,
+            "championship_matchups": 2,
+            "avg_playoff_points_weekly": 104.84,
+            "playoff_performance_pct": 106.84
+        },
+        {
+            "gm_name": "Lac",
+            "total_matchups": 5,
+            "wins": 2,
+            "losses": 3,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 3,
+            "championship_matchups": 2,
+            "avg_playoff_points_weekly": 95.0,
+            "playoff_performance_pct": 93.77
+        },
+        {
+            "gm_name": "Dan",
+            "total_matchups": 2,
+            "wins": 0,
+            "losses": 2,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 2,
+            "championship_matchups": 0,
+            "avg_playoff_points_weekly": 110.16,
+            "playoff_performance_pct": 98.34
+        },
+        {
+            "gm_name": "Fitz",
+            "total_matchups": 2,
+            "wins": 0,
+            "losses": 2,
+            "quarterfinal_matchups": 2,
+            "semifinal_matchups": 0,
+            "championship_matchups": 0,
+            "avg_playoff_points_weekly": 105.75,
+            "playoff_performance_pct": 101.07
+        },
+        {
+            "gm_name": "Dylan",
+            "total_matchups": 4,
+            "wins": 0,
+            "losses": 4,
+            "quarterfinal_matchups": 0,
+            "semifinal_matchups": 4,
+            "championship_matchups": 0,
+            "avg_playoff_points_weekly": 81.53,
+            "playoff_performance_pct": 80.31
+        }
+    ]
+}
