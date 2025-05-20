@@ -80,9 +80,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   
     if (rank === 1) {
       return {
-        textClass: 'text-neutral-800 font-semibold', // Dark text for gold background
-        borderClass: 'border-2 border-primary', // Primary color border for 1st place
-        style: { backgroundColor: 'hsl(45, 85%, 65%)' } // Gold color
+        textClass: 'text-neutral-800 font-semibold', // Dark text for yellow background
+        borderClass: 'border-2 border-foreground', // Dark foreground border for 1st place
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Bright yellow color
       };
     }
     
@@ -92,41 +92,48 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const MAX_LIGHTNESS = 92; 
     const MIN_LIGHTNESS = 78; 
   
-    if (maxRankInYear === 2 && rank === 2) {
+    if (maxRankInYear === 2 && rank === 2) { // Only one other rank, make it red
         return { 
             textClass: coloredRankedStyle.textClass, 
             borderClass: '',
             style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
         };
     }
-    if (maxRankInYear <= 2) return defaultStyle;
+    if (maxRankInYear <= 2) return defaultStyle; // If only 1st and 2nd, and rank is not 1 or 2 (should not happen)
     
-    const denominator = maxRankInYear - 2; 
-    if (denominator === 0) return defaultStyle;
+    // For ranks 2 and below in leagues with more than 2 GMs
+    const denominator = maxRankInYear - 2; // Range of ranks excluding 1st, adjusted for 0-based index
+    if (denominator === 0) return defaultStyle; // Avoid division by zero if maxRankInYear is 2 (already handled)
   
+    // Normalize rank from 0 (for 2nd place) to 1 (for last place among the 2nd-to-last group)
     const normalizedRank = (rank - 2) / denominator;
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Ensure it's between 0 and 1
   
-    const NEUTRAL_CENTER = 0.5;
-    const NEUTRAL_BANDWIDTH = 0.15; 
-  
+    const NEUTRAL_CENTER = 0.5; // Mid-point of the normalized scale
+    const NEUTRAL_BANDWIDTH = 0.15; // Percentage of ranks around the center that remain neutral
+    
     const GREEN_HUE = 120;
     const RED_HUE = 0;
     
     let backgroundColor = '';
   
+    // Check if the rank falls within the neutral band
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
-      return defaultStyle;
+      return defaultStyle; // Use default (no specific color) for mid-tier ranks
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
+      // Green zone (better ranks, closer to 2nd)
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
-      const t_green = green_zone_width > 0 ? clampedNormalizedRank / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
+      // t_green will be 0 for rank at the edge of neutral band, up to 1 for 2nd place
+      const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for better ranks
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else { 
+      // Red zone (worse ranks, closer to last)
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
+      // t_red will be 0 for rank at the edge of neutral band, up to 1 for last place
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Darker (more saturated red, less light) for worse ranks
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
@@ -402,7 +409,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. 1st place is gold with a primary border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
+          <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -622,5 +629,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
-    
