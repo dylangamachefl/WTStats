@@ -21,13 +21,14 @@ import type {
   BestOverallGameEntry,
   PositionalTopPerformersData,
   WeeklyScoresMatrixData,
+  TopPerformerPlayer,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell as RechartsCell } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChartIcon, ClipboardList, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, TrendingUp, DollarSign, BarChart2, Users2, ShieldAlert, CalendarDays, LineChartIcon, ClipboardList, CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
@@ -162,13 +163,17 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
 
-  const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
-    if (!config || !config.key || !data || !Array.isArray(data)) {
-        return Array.isArray(data) ? data : [];
+ const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
+    if (!config || !config.key || !data) {
+      return Array.isArray(data) ? data : [];
+    }
+    if (!Array.isArray(data)) {
+      console.warn("sortData received non-array data:", data);
+      return [];
     }
     try {
-        const sortedData = [...data];
-        sortedData.sort((a, b) => {
+      const sortedData = [...data];
+      sortedData.sort((a, b) => {
         const valA = a[config.key!];
         const valB = b[config.key!];
         let comparison = 0;
@@ -176,25 +181,25 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         if (valA === null || valA === undefined) comparison = 1;
         else if (valB === null || valB === undefined) comparison = -1;
         else if (typeof valA === 'number' && typeof valB === 'number') {
-            comparison = valA - valB;
+          comparison = valA - valB;
         } else if (typeof valA === 'string' && typeof valB === 'string') {
-            if (config.key === 'winPct' || config.key === 'playoffRate' || (config.key as string) === 'qualification_rate') {
-                 const numA = parseFloat(String(valA).replace('%', ''));
-                 const numB = parseFloat(String(valB).replace('%', ''));
-                 if (!isNaN(numA) && !isNaN(numB)) {
-                    comparison = numA - numB;
-                 } else {
-                    comparison = String(valA).localeCompare(String(valB));
-                 }
-            } else if (config.key === 'value' && ( String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/) ) ) {
-                comparison = parseFloat(String(valA)) - parseFloat(String(valB));
-            } else if (config.key === 'value' && typeof valA === 'number' && typeof valB === 'number') {
-                 comparison = valA - valB;
+          if (config.key === 'winPct' || config.key === 'playoffRate' || (config.key as string) === 'qualification_rate') {
+            const numA = parseFloat(String(valA).replace('%', ''));
+            const numB = parseFloat(String(valB).replace('%', ''));
+            if (!isNaN(numA) && !isNaN(numB)) {
+              comparison = numA - numB;
+            } else {
+              comparison = String(valA).localeCompare(String(valB));
             }
-             else {
-                comparison = String(valA).localeCompare(String(valB));
-            }
-        } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) {
+          } else if (config.key === 'value' && String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/)) {
+             // Check if values are purely numeric strings
+            const numA = parseFloat(String(valA));
+            const numB = parseFloat(String(valB));
+            comparison = numA - numB;
+          } else {
+            comparison = String(valA).localeCompare(String(valB));
+          }
+        } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || (typeof valA === 'string' && String(valA).match(/^-?\d+(\.\d+)?$/)) || (typeof valB === 'string' && String(valB).match(/^-?\d+(\.\d+)?$/)))) {
             const numA = parseFloat(String(valA));
             const numB = parseFloat(String(valB));
             if (!isNaN(numA) && !isNaN(numB)) {
@@ -202,16 +207,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             } else {
                 comparison = String(valA).localeCompare(String(valB));
             }
-        }
-        else {
-            comparison = String(valA).localeCompare(String(valB));
+        } else {
+          comparison = String(valA).localeCompare(String(valB));
         }
         return config.direction === 'asc' ? comparison : -comparison;
-        });
-        return sortedData;
+      });
+      return sortedData;
     } catch (e) {
-        console.error("Error in sortData:", e, {data, config});
-        return Array.isArray(data) ? data : [];
+      console.error("Error in sortData:", e, { data, config });
+      return data; // Return original data on error
     }
   };
 
@@ -597,6 +601,28 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   );
 };
 
+interface HeatmapTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string; // Week number
+}
+
+const HeatmapTooltip: React.FC<HeatmapTooltipProps> = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload; // The data object for the cell
+    return (
+      <div className="bg-popover text-popover-foreground border border-border p-2 rounded shadow-lg text-xs">
+        <p className="font-bold">{data.teamName}</p>
+        <p>Week {data.week}</p>
+        {data.score !== undefined && <p>Score: {data.score.toFixed(1)}</p>}
+        {data.result && <p>Result: {data.result}</p>}
+      </div>
+    );
+  }
+  return null;
+};
+
+
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
@@ -628,7 +654,7 @@ const SeasonDetail = () => {
           
           if (!data || !data.seasonData || !data.standingsData) {
             console.error("[SeasonDetail] Fetched data is missing crucial fields (e.g. seasonData or standingsData). Full data:", data);
-            setSeasonData(null); // Explicitly set to null if essential data is missing
+            setSeasonData(null); 
             throw new Error(`Fetched data for ${selectedSeason} is incomplete. Essential fields like 'seasonData' or 'standingsData' are missing.`);
           }
           setSeasonData(data);
@@ -668,18 +694,88 @@ const SeasonDetail = () => {
     </div>
   );
 
+  const transformedHeatmapData = useMemo(() => {
+    if (!seasonData?.weeklyScoresData?.scores || !seasonData.weeklyScoresData.teams) {
+      return [];
+    }
+    const flatData: Array<{
+      week: number;
+      teamName: string;
+      score: number | undefined;
+      result: string | undefined;
+    }> = [];
+
+    const teams = seasonData.weeklyScoresData.teams;
+    seasonData.weeklyScoresData.scores.forEach((weekScores, weekIndex) => {
+      teams.forEach((teamName, teamIndex) => {
+        const score = weekScores[teamIndex];
+        const result = seasonData.weeklyScoresData!.results?.[weekIndex]?.[teamIndex];
+        flatData.push({
+          week: weekIndex + 1,
+          teamName: teamName,
+          score: score,
+          result: result,
+        });
+      });
+    });
+    return flatData;
+  }, [seasonData?.weeklyScoresData]);
+
+  const { minScore, maxScore } = useMemo(() => {
+    if (!seasonData?.weeklyScoresData?.scores) return { minScore: 60, maxScore: 180 }; // Default range
+    let minS = Infinity;
+    let maxS = -Infinity;
+    let hasScores = false;
+    seasonData.weeklyScoresData.scores.flat().forEach(score => {
+      if (score !== null && score !== undefined) {
+        hasScores = true;
+        if (score < minS) minS = score;
+        if (score > maxS) maxS = score;
+      }
+    });
+    if (!hasScores) return { minScore: 60, maxScore: 180 };
+    return { minScore: minS, maxScore: maxS };
+  }, [seasonData?.weeklyScoresData?.scores]);
+
+  const getScoreColor = (score?: number) => {
+    if (score === undefined || score === null) return 'hsl(var(--muted))';
+    const range = maxScore - minScore;
+    if (range === 0) return 'hsl(90, 70%, 55%)'; // All scores are same, make them neutral green
+
+    const normalized = (score - minScore) / range;
+    
+    let hue;
+    // Red (0) -> Yellow (60) -> Green (120)
+    if (normalized < 0.5) { // Red to Yellow
+        hue = normalized * 2 * 60; // Scale 0-0.5 to 0-60
+    } else { // Yellow to Green
+        hue = 60 + (normalized - 0.5) * 2 * 60; // Scale 0.5-1 to 60-120
+    }
+    hue = Math.max(0, Math.min(120, hue)); // Clamp hue
+    return `hsl(${hue}, 70%, 60%)`;
+  };
+
+  const getResultColor = (result?: string) => {
+    if (result === 'W') return 'hsl(var(--chart-2))'; // Green
+    if (result === 'L') return 'hsl(var(--destructive))'; // Red
+    if (result === 'T') return 'hsl(var(--muted-foreground))'; // Gray
+    return 'hsl(var(--muted))'; // Default for no result
+  };
+
+  const heatmapCellSize = 25; // Adjust for desired cell size
+  const chartHeight = (seasonData?.weeklyScoresData?.teams?.length || 10) * heatmapCellSize + 80; // +80 for margins/axes
 
   return (
     <div className="space-y-6">
-        <Card className="overflow-visible"> {/* Added overflow-visible for Select to not be clipped */}
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="overflow-visible">
+          <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
                 <CardTitle className="flex items-center gap-2">
-                <CalendarDays className="text-primary" /> 
+                <CalendarDays className="text-primary h-6 w-6" /> 
                 {seasonData?.seasonData?.year || selectedSeason || ""} Season Detail
                 </CardTitle>
                 {seasonData?.seasonData && (
-                <CardDescription>
+                <CardDescription className="mt-1.5">
                     Champion: {seasonData.seasonData.championName}
                     {seasonData.seasonData.runnerUp && `, Runner-up: ${seasonData.seasonData.runnerUp}`}
                     {seasonData.seasonData.teams && `. Teams: ${seasonData.seasonData.teams}`}
@@ -687,7 +783,7 @@ const SeasonDetail = () => {
                 )}
             </div>
             <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-                <SelectTrigger className="w-[220px]">
+                <SelectTrigger className="w-[220px] shrink-0">
                 <SelectValue placeholder="Select a season" />
                 </SelectTrigger>
                 <SelectContent>
@@ -715,7 +811,7 @@ const SeasonDetail = () => {
           {error && <CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent>}
 
           {!loading && !error && seasonData && (
-             <CardContent className="pt-0"> {/* Changed from pt-6 to pt-0 because tabs will handle padding */}
+             <CardContent className="pt-0">
                 <Tabs defaultValue="overview" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -727,7 +823,7 @@ const SeasonDetail = () => {
 
                 <TabsContent value="overview" className="pt-4 space-y-6">
                     <Card>
-                        <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Regular Season Standings</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Season Standings</CardTitle></CardHeader>
                         <CardContent>
                         {seasonData.standingsData && Array.isArray(seasonData.standingsData) && seasonData.standingsData.length > 0 ? (
                             <Table>
@@ -775,7 +871,7 @@ const SeasonDetail = () => {
                     <Card>
                         <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Playoff Bracket</CardTitle></CardHeader>
                         <CardContent>
-                        {seasonData.playoffData ? (
+                        {seasonData.playoffData && (seasonData.playoffData.semiFinals?.length || seasonData.playoffData.championship?.length) ? (
                             <div className="space-y-6">
                             {seasonData.playoffData.quarterFinals && Array.isArray(seasonData.playoffData.quarterFinals) && seasonData.playoffData.quarterFinals.length > 0 && (
                                 <div>
@@ -808,74 +904,76 @@ const SeasonDetail = () => {
                                 </div>
                                 </div>
                             )}
-                            {(!seasonData.playoffData.quarterFinals || seasonData.playoffData.quarterFinals.length === 0) &&
-                            (!seasonData.playoffData.semiFinals || seasonData.playoffData.semiFinals.length === 0) &&
-                            (!seasonData.playoffData.championship || seasonData.playoffData.championship.length === 0) &&
-                                <p className="text-muted-foreground text-center py-4">No playoff matchup data available for {seasonData.seasonData.year}.</p>
-                            }
                             </div>
                         ) : (
-                            <p className="text-muted-foreground text-center py-4">Playoff bracket data not available for {seasonData.seasonData.year}.</p>
+                            <p className="text-muted-foreground text-center py-4">No playoff matchup data available for {seasonData.seasonData.year}.</p>
                         )}
                         </CardContent>
                     </Card>
                 </TabsContent>
 
                 <TabsContent value="weekly_scores" className="pt-4 space-y-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center"><BarChart2 className="mr-2 h-5 w-5 text-primary" />Weekly Scores</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {seasonData.weeklyScoresData && seasonData.weeklyScoresData.teams && seasonData.weeklyScoresData.scores && Array.isArray(seasonData.weeklyScoresData.teams) && Array.isArray(seasonData.weeklyScoresData.scores) && Array.isArray(seasonData.weeklyScoresData.results) && seasonData.weeklyScoresData.scores.length > 0 ? (
-                        <>
-                            <Tabs defaultValue="scores" onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')} className="mb-4 w-full sm:w-auto">
-                                <TabsList className="grid w-full grid-cols-2 sm:inline-flex">
-                                    <TabsTrigger value="scores">Show Scores</TabsTrigger>
-                                    <TabsTrigger value="results">Show W/L/T</TabsTrigger>
-                                </TabsList>
-                            </Tabs>
-                            <div className="overflow-x-auto">
-                            <Table>
-                                <TableHeader>
-                                <TableRow>
-                                    <TableHead className="sticky left-0 bg-card z-10">Week</TableHead>
-                                    {seasonData.weeklyScoresData.teams.map(teamName => <TableHead key={teamName} className="text-right whitespace-nowrap min-w-[120px] truncate" title={teamName}>{teamName.length > 15 ? teamName.substring(0,12) + "..." : teamName}</TableHead>)}
-                                </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                {seasonData.weeklyScoresData.scores.map((weekScores, weekIndex) => (
-                                    <TableRow key={`week-${weekIndex + 1}`}>
-                                    <TableCell className="font-medium sticky left-0 bg-card z-10">Week {weekIndex + 1}</TableCell>
-                                    {weekScores.map((score, teamIndex) => {
-                                        const result = seasonData.weeklyScoresData!.results[weekIndex]?.[teamIndex];
-                                        return (
-                                        <TableCell key={`${weekIndex + 1}-${seasonData.weeklyScoresData!.teams[teamIndex]}`} className="text-right">
-                                            {weeklyScoresDisplayMode === 'scores' ? (
-                                                score?.toFixed(1) ?? 'N/A'
-                                            ) : result === 'W' ? (
-                                                <span className="flex items-center justify-end text-green-600"><CheckCircle2 className="h-4 w-4 mr-1" /> W</span>
-                                            ) : result === 'L' ? (
-                                                <span className="flex items-center justify-end text-red-600"><XCircle className="h-4 w-4 mr-1" /> L</span>
-                                            ) : result === 'T' ? (
-                                                <span className="text-muted-foreground">T</span>
-                                            ) : (
-                                                'N/A'
-                                            )}
-                                        </TableCell>
-                                        );
-                                    })}
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
-                            </div>
-                        </>
-                        ) : (
-                        <p className="text-muted-foreground">No weekly scores data available for {seasonData.seasonData.year}.</p>
-                        )}
-                    </CardContent>
-                </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center"><BarChart2 className="mr-2 h-5 w-5 text-primary" />Weekly Scores Heatmap</CardTitle>
+                            <CardDescription>Visualize scores or W/L/T results across weeks and teams.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {seasonData.weeklyScoresData && transformedHeatmapData.length > 0 ? (
+                            <>
+                                <Tabs defaultValue="scores" onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')} className="mb-4 w-full sm:w-auto">
+                                    <TabsList className="grid w-full grid-cols-2 sm:inline-flex">
+                                        <TabsTrigger value="scores">Show Scores Heatmap</TabsTrigger>
+                                        <TabsTrigger value="results">Show W/L/T Heatmap</TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
+                                <ResponsiveContainer width="100%" height={chartHeight}>
+                                    <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 80 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                                        <XAxis 
+                                            dataKey="week" 
+                                            type="number" 
+                                            name="Week" 
+                                            label={{ value: 'Week', position: 'insideBottom', offset: -10 }}
+                                            domain={['dataMin', 'dataMax']}
+                                            tickFormatter={(val) => `Wk ${val}`}
+                                            allowDecimals={false}
+                                            tickCount={seasonData.weeklyScoresData.scores.length || 13}
+                                        />
+                                        <YAxis 
+                                            dataKey="teamName" 
+                                            type="category" 
+                                            name="Team"
+                                            width={100}
+                                            tick={{ fontSize: 10 }}
+                                            interval={0}
+                                        />
+                                        <ZAxis dataKey="score" range={[heatmapCellSize * heatmapCellSize * 0.8, heatmapCellSize * heatmapCellSize * 0.8]} /> 
+                                        <Tooltip content={<HeatmapTooltip />} cursor={{ strokeDasharray: '3 3' }} />
+                                        <Scatter 
+                                            name="Weekly Data" 
+                                            data={transformedHeatmapData} 
+                                            shape="square"
+                                        >
+                                        {transformedHeatmapData.map((entry, index) => (
+                                            <RechartsCell
+                                            key={`cell-${index}`}
+                                            fill={
+                                                weeklyScoresDisplayMode === 'scores'
+                                                ? getScoreColor(entry.score)
+                                                : getResultColor(entry.result)
+                                            }
+                                            />
+                                        ))}
+                                        </Scatter>
+                                    </ScatterChart>
+                                </ResponsiveContainer>
+                            </>
+                            ) : (
+                            <p className="text-muted-foreground">No weekly scores data available for {seasonData.seasonData.year} to display heatmap.</p>
+                            )}
+                        </CardContent>
+                    </Card>
                 </TabsContent>
                 
                 <TabsContent value="top_performers" className="pt-4 space-y-6">
@@ -898,7 +996,7 @@ const SeasonDetail = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {players.map((player, idx) => (
+                                    {players.map((player : TopPerformerPlayer, idx) => (
                                     <TableRow key={`${position}-${idx}`}>
                                         <TableCell>{player.player}</TableCell>
                                         <TableCell>{player.team}</TableCell>
@@ -1301,4 +1399,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
