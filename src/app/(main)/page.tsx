@@ -12,17 +12,17 @@ import type {
   PlayoffAppearanceRate,
   FinalStandingsHeatmapEntry,
   GMPlayoffPerformanceStat,
-  SeasonDetailData, // New
-  GMCareerData,    // New
-  SeasonStandingEntry, // New
-  GMCareerSeasonSummary // New
+  SeasonDetailData,
+  GMCareerData,
+  SeasonStandingEntry,
+  GMCareerSeasonSummary
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Trophy, Users, CalendarDays, LineChart as LineChartIcon } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
@@ -30,40 +30,12 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
 
 // These mocks are used for populating the Select dropdowns.
-// In a real app, these might come from an API endpoint or be derived from available data files.
 const mockSeasonsForTabs: SeasonType_Mock[] = [
-  { id: "2024", year: 2024 },
-  { id: "2023", year: 2023 },
-  { id: "2022", year: 2022 },
-  { id: "2021", year: 2021 },
-  { id: "2020", year: 2020 },
-  { id: "2019", year: 2019 },
-  { id: "2018", year: 2018 },
-  { id: "2017", year: 2017 },
-  { id: "2016", year: 2016 },
-  { id: "2015", year: 2015 },
-  { id: "2014", year: 2014 },
-  { id: "2013", year: 2013 },
-  { id: "2012", year: 2012 },
-  { id: "2011", year: 2011 },
-  { id: "2010", year: 2010 },
-  { id: "2009", year: 2009 },
+  { id: "2024", year: 2024 }, { id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }, { id: "2020", year: 2020 }, { id: "2019", year: 2019 }, { id: "2018", year: 2018 }, { id: "2017", year: 2017 }, { id: "2016", year: 2016 }, { id: "2015", year: 2015 }, { id: "2014", year: 2014 }, { id: "2013", year: 2013 }, { id: "2012", year: 2012 }, { id: "2011", year: 2011 }, { id: "2010", year: 2010 }, { id: "2009", year: 2009 },
 ];
 
 const mockGmsForTabs: GM_Mock[] = [
-  { id: "chris", name: "Chris" },
-  { id: "dan", name: "Dan" },
-  { id: "dylan", name: "Dylan" },
-  { id: "fitz", name: "Fitz" },
-  { id: "jack", name: "Jack" },
-  { id: "jake", name: "Jake" },
-  { id: "josh", name: "Josh" },
-  { id: "lac", name: "Lac" },
-  { id: "mark", name: "Mark" },
-  { id: "nick", name: "Nick" },
-  { id: "sean", name: "Sean" },
-  { id: "will", name: "Will" },
-  { id: "zach", name: "Zach" },
+  { id: "chris", name: "Chris" }, { id: "dan", name: "Dan" }, { id: "dylan", name: "Dylan" }, { id: "fitz", name: "Fitz" }, { id: "jack", name: "Jack" }, { id: "jake", name: "Jake" }, { id: "josh", name: "Josh" }, { id: "lac", name: "Lac" }, { id: "mark", name: "Mark" }, { id: "nick", name: "Nick" }, { id: "sean", name: "Sean" }, { id: "will", name: "Will" }, { id: "zach", name: "Zach" },
 ];
 
 
@@ -88,7 +60,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       const years = new Set<string>();
       const currentMaxRanks: { [year: string]: number } = {};
       leagueData.finalStandingsHeatmap.forEach(gm => {
-        if (typeof gm === 'object' && gm !== null && Array.isArray(leagueData.finalStandingsHeatmap)) { // Added Array.isArray check
+        if (typeof gm === 'object' && gm !== null) {
           Object.keys(gm).forEach(key => {
             if (key !== 'gm_name' && !isNaN(Number(key))) {
               years.add(key);
@@ -106,7 +78,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       setHeatmapYears([]);
       setMaxRankPerYear({});
     }
-  }, [leagueData]);
+  }, [leagueData?.finalStandingsHeatmap]);
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
     const defaultStyle = { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
@@ -193,7 +165,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
-
+  
   const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
     if (!config || !config.key || !data || !Array.isArray(data)) {
         return Array.isArray(data) ? data : [];
@@ -216,20 +188,20 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 const numA = parseFloat(String(valA));
                 const numB = parseFloat(String(valB));
                 if (!isNaN(numA) && !isNaN(numB)) {
-                comparison = numA - numB;
+                    comparison = numA - numB;
                 } else {
-                comparison = String(valA).localeCompare(String(valB));
+                    comparison = String(valA).localeCompare(String(valB));
                 }
             } else {
-            comparison = String(valA).localeCompare(String(valB));
+                comparison = String(valA).localeCompare(String(valB));
             }
         } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) {
             const numA = parseFloat(String(valA));
             const numB = parseFloat(String(valB));
             if (!isNaN(numA) && !isNaN(numB)) {
-            comparison = numA - numB;
+                comparison = numA - numB;
             } else {
-            comparison = String(valA).localeCompare(String(valB));
+                comparison = String(valA).localeCompare(String(valB));
             }
         }
         else {
@@ -280,8 +252,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <div className="space-y-8">
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
-          <CardContent className="h-60 flex items-center justify-center">
-            <Skeleton className="w-full h-[14rem]" />
+          <CardContent className="px-0 sm:px-6 flex items-center justify-center">
+            <Skeleton className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl h-[14rem] mx-auto" />
           </CardContent>
         </Card>
         <Card>
@@ -325,7 +297,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <Carousel
             opts={{
               align: "start",
-              loop: leagueData.championshipTimeline && Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.length > 1,
+              loop: Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.length > 1,
             }}
             className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
           >
@@ -369,7 +341,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         </div>
                       </div>
 
-                      {champion.parsedRoster && Array.isArray(champion.parsedRoster) && champion.parsedRoster.length > 0 && (
+                      {Array.isArray(champion.parsedRoster) && champion.parsedRoster.length > 0 && (
                         <div className="w-full pt-2 mt-2 border-t border-border/60">
                           <h4 className="text-xs font-semibold text-foreground mb-1 flex items-center justify-center">
                             <ListChecks size={14} className="mr-1.5 text-primary"/> Key Players
@@ -456,7 +428,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <TableCell>{stat.championships}</TableCell>
                   <TableCell>{stat.pointsFor?.toFixed(2) ?? 'N/A'}</TableCell>
                   <TableCell>{stat.pointsAgainst?.toFixed(2) ?? 'N/A'}</TableCell>
-                  <TableCell>{stat.playoffRate !== undefined ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                  <TableCell>{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -694,7 +666,7 @@ const SeasonDetail = () => {
                 <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="pt-4">
-                {seasonData.standings && Array.isArray(seasonData.standings) && (
+                {Array.isArray(seasonData.standings) && (
                   <>
                     <h3 className="text-lg font-semibold mb-2">Final Standings</h3>
                     <Table>
@@ -723,16 +695,13 @@ const SeasonDetail = () => {
                     </Table>
                   </>
                 )}
-                 {/* Placeholder for Playoff Bracket */}
                  {seasonData.playoffBracket && <p className="mt-4 text-muted-foreground">Playoff bracket visualization coming soon.</p>}
               </TabsContent>
               <TabsContent value="weekly_scores" className="pt-4">
                 <p className="text-muted-foreground">Weekly scores visualization coming soon for {seasonData.year}.</p>
-                {/* TODO: Implement weekly scores display using seasonData.weeklyScores */}
               </TabsContent>
               <TabsContent value="top_performers" className="pt-4">
                 <p className="text-muted-foreground">Top performers display coming soon for {seasonData.year}.</p>
-                {/* TODO: Implement top performers display using seasonData.topPerformers */}
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -753,30 +722,27 @@ const GMCareer = () => {
 
   useEffect(() => {
     if (selectedGmId) {
-      const gm = mockGmsForTabs.find(g => g.id === selectedGmId);
-      if (gm) {
-        const gmFileName = `${gm.name}.json`; // Assumes GM name is the filename (e.g., "Chris.json")
-        setLoading(true);
-        setError(null);
-        setGmData(null);
-        fetch(`/data/league_data/${gmFileName}`)
-          .then(res => {
-            if (!res.ok) {
-              throw new Error(`HTTP error! status: ${res.status} for GM ${gm.name}`);
-            }
-            return res.json();
-          })
-          .then((data: GMCareerData) => {
-            setGmData(data);
-          })
-          .catch(err => {
-            console.error(`Failed to load GM data for ${gm.name}:`, err);
-            setError(`Failed to load data for ${gm.name}. Please ensure '${gmFileName}' exists in 'public/data/league_data/'.`);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
+      setLoading(true);
+      setError(null);
+      setGmData(null);
+      const gmFilePath = `/data/league_data/${selectedGmId}/${selectedGmId}.json`;
+      fetch(gmFilePath)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status} for GM ${selectedGmId} at ${gmFilePath}`);
+          }
+          return res.json();
+        })
+        .then((data: GMCareerData) => {
+          setGmData(data);
+        })
+        .catch(err => {
+          console.error(`Failed to load GM data for ${selectedGmId} from ${gmFilePath}:`, err);
+          setError(`Failed to load data for ${selectedGmId}. Please ensure '${selectedGmId}/${selectedGmId}.json' exists in 'public/data/league_data/'.`);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [selectedGmId]);
   
@@ -817,7 +783,7 @@ const GMCareer = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {gmData.photoUrl ? (
-                <Image src={gmData.photoUrl} alt={`${gmData.gmName} photo`} width={40} height={40} className="rounded-full" data-ai-hint="person avatar" />
+                <Image src={gmData.photoUrl} alt={`${gmData.gmName} photo`} width={40} height={40} className="rounded-full" data-ai-hint="person avatar"/>
               ) : (
                 <Users className="h-8 w-8 text-muted-foreground" />
               )}
@@ -848,7 +814,7 @@ const GMCareer = () => {
               </div>
             )}
 
-            {gmData.seasonBySeason && Array.isArray(gmData.seasonBySeason) && gmData.seasonBySeason.length > 0 && (
+            {Array.isArray(gmData.seasonBySeason) && gmData.seasonBySeason.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold mb-2">Season-by-Season</h3>
                 <div className="overflow-x-auto">
@@ -883,7 +849,6 @@ const GMCareer = () => {
                 </div>
               </div>
             )}
-            {/* Placeholders for other sections like Awards, Rivalries, Draft Summary */}
             {gmData.awards && <p className="mt-4 text-muted-foreground">Awards display coming soon.</p>}
             {gmData.rivalries && <p className="mt-4 text-muted-foreground">Rivalries display coming soon.</p>}
             {gmData.draftHistorySummary && <p className="mt-4 text-muted-foreground">Draft History Summary coming soon.</p>}
@@ -902,7 +867,7 @@ export default function LeagueHistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/league_data/league-data.json') // Updated path
+    fetch('/data/league_data/league-data.json')
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -912,7 +877,7 @@ export default function LeagueHistoryPage() {
       .then((data: any) => {
         const mappedCareerLeaderboard = (Array.isArray(data.careerLeaderboard) ? data.careerLeaderboard : []).map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, 
+          pointsFor: stat.pointsFor ?? stat.points, 
           pointsAgainst: stat.pointsAgainst,
         }));
 
@@ -954,3 +919,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
