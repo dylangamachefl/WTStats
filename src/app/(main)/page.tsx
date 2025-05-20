@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { 
-  LeagueData, 
+import type {
+  LeagueData,
   CareerStat,
   Season as SeasonType,
   ChampionTimelineEntry,
@@ -19,9 +19,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks } from 'lucide-react'; // Added ListChecks for Key Players
+import { ArrowUpDown, ListChecks } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"; // Import Carousel
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 // Mock data for SeasonDetail and GMCareer tabs (until they are also updated)
 const mockSeasonsForTabs: SeasonType[] = [
@@ -52,7 +52,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const [playoffPerfSortConfig, setPlayoffPerfSortConfig] = useState<SortConfig<GMPlayoffPerformanceStat>>({ key: 'gm_name', direction: 'asc' });
   const [heatmapSortConfig, setHeatmapSortConfig] = useState<SortConfig<FinalStandingsHeatmapEntry>>({ key: 'gm_name', direction: 'asc' });
 
-
   useEffect(() => {
     if (leagueData?.finalStandingsHeatmap) {
       const years = new Set<string>();
@@ -68,7 +67,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           }
         });
       });
-      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))); 
+      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a)));
       setMaxRankPerYear(currentMaxRanks);
     }
   }, [leagueData]);
@@ -76,68 +75,68 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
     const defaultStyle = { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
     const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', borderClass: '', style: {} };
-  
+
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
-  
+
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground', 
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
+        borderClass: 'border-2 border-foreground',
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' }
       };
     }
-    
+
     if (maxRankInYear <= 1) return defaultStyle;
-  
+
     const SATURATION = 60;
-    const MAX_LIGHTNESS = 92; 
-    const MIN_LIGHTNESS = 78; 
-  
-    if (maxRankInYear === 2 && rank === 2) { 
-        return { 
-            textClass: coloredRankedStyle.textClass, 
+    const MAX_LIGHTNESS = 92;
+    const MIN_LIGHTNESS = 78;
+
+    if (maxRankInYear === 2 && rank === 2) {
+        return {
+            textClass: coloredRankedStyle.textClass,
             borderClass: '',
-            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
+            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` }
         };
     }
-    if (maxRankInYear <= 2) return defaultStyle; 
-    
-    const denominator = maxRankInYear - 2; 
-    if (denominator === 0) return defaultStyle; 
-  
+    if (maxRankInYear <= 2) return defaultStyle;
+
+    const denominator = maxRankInYear - 2;
+    if (denominator === 0) return defaultStyle;
+
     const normalizedRank = (rank - 2) / denominator;
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); 
-  
-    const NEUTRAL_CENTER = 0.5; 
-    const NEUTRAL_BANDWIDTH = 0.25; // Increased bandwidth for neutral zone
-    
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
+
+    const NEUTRAL_CENTER = 0.5;
+    const NEUTRAL_BANDWIDTH = 0.25;
+
     const GREEN_HUE = 120;
     const RED_HUE = 0;
-    
+
     let backgroundColor = '';
-  
+
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
-      return defaultStyle; 
+      return defaultStyle;
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
-    } else { 
+    } else {
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
-    
+
     return {
       textClass: coloredRankedStyle.textClass,
       borderClass: '',
       style: { backgroundColor }
     };
   };
-  
+
   const createSortHandler = <T,>(
     config: SortConfig<T>,
     setConfig: React.Dispatch<React.SetStateAction<SortConfig<T>>>
@@ -155,7 +154,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
-  
+
   const sortData = <T,>(data: T[], config: SortConfig<T>): T[] => {
     if (!config.key || !data) return data;
     const sortedData = [...data];
@@ -169,28 +168,28 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
-        if (config.key === 'winPct') { 
+        if (config.key === 'winPct') {
             comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
-        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { 
+        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) {
             comparison = parseFloat(valA) - parseFloat(valB);
         }
         else {
             comparison = valA.localeCompare(valB);
         }
-      } else { 
+      } else {
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
     });
     return sortedData;
   };
-  
+
   const sortedCareerLeaderboard = useMemo(() => sortData(leagueData?.careerLeaderboard || [], careerSortConfig), [leagueData?.careerLeaderboard, careerSortConfig]);
   const requestCareerSort = createSortHandler(careerSortConfig, setCareerSortConfig);
 
   const sortedLeagueRecords = useMemo(() => sortData(leagueData?.leagueRecords || [], recordsSortConfig), [leagueData?.leagueRecords, recordsSortConfig]);
   const requestRecordsSort = createSortHandler(recordsSortConfig, setRecordsSortConfig);
-  
+
   const sortedGmPlayoffPerformance = useMemo(() => sortData(leagueData?.gmPlayoffPerformance || [], playoffPerfSortConfig), [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
   const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig, setPlayoffPerfSortConfig);
 
@@ -203,8 +202,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <div className="space-y-6">
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
-          <CardContent className="h-72 flex items-center justify-center">
-            <Skeleton className="w-full h-64" />
+          <CardContent className="h-96 flex items-center justify-center">
+            <Skeleton className="w-full h-[28rem]" />
           </CardContent>
         </Card>
         <Card>
@@ -236,7 +235,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   if (!leagueData) {
     return <Card><CardContent className="pt-6 text-center">Failed to load league data.</CardContent></Card>;
   }
-  
+
   const sortedPlayoffRates = leagueData.playoffQualificationRate && [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
 
   return (
@@ -247,31 +246,31 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardDescription>A chronological display of league champions and their key players.</CardDescription>
         </CardHeader>
         <CardContent className="px-0 sm:px-6">
-          <Carousel 
+          <Carousel
             opts={{
               align: "start",
               loop: true,
             }}
-            className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto"
+            className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
           >
             <CarouselContent>
               {leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1">
-                    <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out rounded-xl overflow-hidden h-full">
+                <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1 h-full">
+                    <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
                       <div className="relative mb-3">
                         <Image
                           data-ai-hint="team logo"
                           src={champion.imgUrl || "https://placehold.co/80x80.png"}
                           alt={`${champion.teamName || champion.championName} logo`}
                           width={72} height={72}
-                          className="rounded-full border-2 border-primary object-contain shadow-sm"
+                          className="rounded-full border-2 border-primary object-contain shadow-md"
                         />
                         <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-semibold px-2 py-0.5 rounded-full shadow">
                           {champion.year}
                         </span>
                       </div>
-                      
+
                       <h3 className="text-lg font-bold text-foreground">
                         {champion.championName}
                       </h3>
@@ -279,18 +278,18 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         {champion.teamName || "Team Name N/A"}
                       </p>
 
-                      <div className="w-full pt-2 mt-2 border-t border-border/60 text-xs text-muted-foreground space-y-1 text-left px-1">
+                      <div className="w-full pt-2 mt-auto border-t border-border/60 text-xs text-muted-foreground space-y-1 text-left px-1">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-foreground/80">Record:</span> 
+                          <span className="font-medium text-foreground/80">Record:</span>
                           <span className="font-semibold text-foreground/90">{champion.wins}-{champion.losses}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-foreground/80">PF:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsFor.toFixed(1)}</span>
+                          <span className="font-semibold text-foreground/90">{champion.pointsFor.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-foreground/80">PA:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsAgainst.toFixed(1)}</span>
+                          <span className="font-semibold text-foreground/90">{champion.pointsAgainst.toFixed(2)}</span>
                         </div>
                       </div>
 
@@ -300,7 +299,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                             <ListChecks size={14} className="mr-1.5 text-primary"/> Key Players
                           </h4>
                           <ul className="space-y-0.5 text-xs text-muted-foreground">
-                            {champion.parsedRoster.slice(0, 3).map((player, idx) => ( // Show up to 3 key players
+                            {champion.parsedRoster.slice(0, 3).map((player, idx) => (
                               <li key={idx} className="truncate" title={player}>{player}</li>
                             ))}
                           </ul>
@@ -431,7 +430,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             </Table>
           </CardContent>
         </Card>
-        
+
         {leagueData.playoffQualificationRate && leagueData.playoffQualificationRate.length > 0 && (
           <Card>
               <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
@@ -479,10 +478,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       const rank = gmEntry[year] as number | null | undefined;
                       const { textClass, borderClass, style } = getRankStyle(rank, maxRankPerYear[year] || 0);
                       const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
-                      
+
                       return (
-                        <TableCell 
-                          key={year} 
+                        <TableCell
+                          key={year}
                           className={cn(
                             "text-center py-2 px-1 text-xs md:text-sm min-w-[40px] md:min-w-[50px]",
                             textClass,
@@ -630,7 +629,7 @@ export default function LeagueHistoryPage() {
       .then((data: any) => {
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, 
+          pointsFor: stat.points,
           pointsAgainst: stat.pointsAgainst,
         }));
 
@@ -643,12 +642,12 @@ export default function LeagueHistoryPage() {
           playoffQualificationRate: data.playoffQualificationRate || [],
           gmPlayoffPerformance: data.gmPlayoffPerformance || [],
         };
-        
+
         setLeagueData(processedData);
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
-        setLeagueData(null); 
+        setLeagueData(null);
       })
       .finally(() => {
         setLoading(false);
