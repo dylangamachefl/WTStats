@@ -6,10 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { 
   LeagueData, 
-  ChampionTimelineEntry, 
-  CareerStat, 
-  PlayoffAppearanceRate, 
-  LeagueRecord,
+  CareerStat, // Added CareerStat for mapping
   Season as SeasonType // For SeasonDetail and GMCareer mocks
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -75,7 +72,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <Image 
                 data-ai-hint="team logo" 
                 src={champion.imgUrl || "https://placehold.co/80x80.png"} 
-                alt={champion.championName} 
+                alt={champion.teamName || champion.championName} // Use teamName if available for alt
                 width={80} height={80} 
                 className="rounded-full mb-2 border-2 border-primary object-contain" 
               />
@@ -162,7 +159,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                     <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
                     <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
                     <Legend />
-                    <Bar dataKey="qualification_rate" fill="var(--chart-1)" name="Playoff Rate" />
+                    <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
                 </BarChart>
                 </ResponsiveContainer>
             </CardContent>
@@ -253,14 +250,24 @@ export default function LeagueHistoryPage() {
         }
         return res.json();
       })
-      .then((data: LeagueData) => {
-        setLeagueData(data);
+      .then((data: any) => { // Use 'any' for raw data before mapping
+        // Explicitly type the incoming careerLeaderboard items for mapping
+        type RawCareerStat = Omit<CareerStat, 'pointsFor'> & { points: number };
+
+        const mappedData: LeagueData = {
+          ...data,
+          careerLeaderboard: data.careerLeaderboard.map((stat: RawCareerStat) => ({
+            ...stat,
+            pointsFor: stat.points, // Map 'points' to 'pointsFor'
+          })),
+        };
+        setLeagueData(mappedData);
         setLoading(false);
       })
       .catch(error => {
-        console.error("Failed to load league data:", error);
+        console.error("Failed to load or process league data:", error);
+        setLeagueData(null); // Set to null on error to trigger 'Failed to load' message
         setLoading(false);
-        // Optionally set an error state here to display a more specific error message to the user
       });
   }, []);
 
@@ -283,3 +290,6 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
+
+    
