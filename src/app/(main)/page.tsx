@@ -67,61 +67,80 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           }
         });
       });
-      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a)));
+      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))); // Sort years descending
       setMaxRankPerYear(currentMaxRanks);
     }
   }, [leagueData]);
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; style: React.CSSProperties } => {
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', style: {} };
-    
+  
     if (rank === 1) {
       return { 
         textClass: 'text-primary-foreground font-semibold', 
         style: { backgroundColor: 'hsl(var(--primary))' } 
       };
     }
-
-    // For ranks 2 and above, use a diverging green-yellow-red scale
-    if (maxRankInYear <= 1) { // Should not happen if rank > 1, but as a fallback
-      return { textClass: 'text-neutral-900 font-semibold', style: { backgroundColor: `hsl(120, 70%, 70%)` } }; // Default green
+  
+    // Handle cases where maxRankInYear is too small for a meaningful scale
+    if (maxRankInYear <= 1) { 
+        return { textClass: 'font-semibold text-foreground', style: {} }; // Default for safety
+    }
+    if (maxRankInYear === 2 && rank === 2) { // Only 1st and 2nd, rank 2 is "worst"
+      return { textClass: 'text-neutral-900 font-semibold', style: { backgroundColor: `hsl(0, 70%, 65%)` } }; // Red
+    }
+     // If maxRankInYear is 2, but rank is not 2 (e.g. an invalid rank for that year), default styling
+    if (maxRankInYear <= 2) {
+        return { textClass: 'font-semibold text-foreground', style: {} };
     }
   
-    let normalizedRank: number;
-    if (maxRankInYear === 2) { // Only 1st (primary handled) and 2nd place. Rank 2 is "worst".
-      normalizedRank = 1; // Full red
-    } else if (maxRankInYear > 2) {
-      // Normalize rank (from 2 to maxRankInYear) to a 0-1 scale
-      // 0 is best (greenest, rank 2), 1 is worst (reddest, rank maxRankInYear).
-      normalizedRank = (rank - 2) / (maxRankInYear - 2);
-    } else {
-      // Fallback for maxRankInYear being unexpectedly small (e.g. 0 or 1) when rank > 1
-      normalizedRank = 0; // Default to greenest
+    // Normalize rank (from 2 to maxRankInYear) to a 0-1 scale
+    // 0 is best (greenest, rank 2), 1 is worst (reddest, rank maxRankInYear).
+    const denominator = maxRankInYear - 2;
+    // This check should ideally not be hit if maxRankInYear > 2 logic above is sound
+    if (denominator === 0) { 
+        return { textClass: 'font-semibold text-foreground', style: {} }; 
     }
-    
-    normalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Clamp between 0 and 1
+  
+    const normalizedRank = (rank - 2) / denominator;
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Clamp between 0 and 1
   
     let hue: number;
     const saturation: number = 70;
-    const lightness: number = 65; // Adjusted lightness
+    const lightness: number = 65; // Adjusted lightness for better color visibility
+    let backgroundColor = '';
+    let textColor = 'text-neutral-900'; // Default for light HSL backgrounds, contrast is important
   
-    if (normalizedRank <= 0.5) {
-      // Green (120) to Yellow (60)
-      const t = normalizedRank * 2; // Scale to 0-1 for this half
-      hue = 120 - (t * 60); 
-    } else {
-      // Yellow (60) to Red (0)
-      const t = (normalizedRank - 0.5) * 2; // Scale to 0-1 for this half
-      hue = 60 - (t * 60);
+    // Define the center and the width of the neutral band
+    const NEUTRAL_CENTER = 0.5;
+    // Neutral band, e.g. ranks between 45% and 55% of the normalized scale
+    const NEUTRAL_BANDWIDTH = 0.1; // Ranks very close to the middle get no specific color
+  
+    if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
+      // Neutral zone - use default cell styling
+      return { textClass: 'font-semibold text-foreground', style: {} };
+    } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
+      // Green spectrum (normalizedRank from 0 up to NEUTRAL_CENTER - BANDWIDTH/2)
+      // Map [0, NEUTRAL_CENTER - BANDWIDTH/2) to a hue range for green.
+      // t goes from 0 (best in green range, full green) to 1 (edge of green range, less green)
+      const t = clampedNormalizedRank / (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2);
+      hue = 120 - (t * 40); // Interpolate hue from 120 (green) down to 80 (greenish-yellow/lime)
+      backgroundColor = `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`;
+    } else { // clampedNormalizedRank > NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2
+      // Red spectrum (normalizedRank from NEUTRAL_CENTER + BANDWIDTH/2 up to 1)
+      // Map [NEUTRAL_CENTER + BANDWIDTH/2, 1] to a hue range for red.
+      // t goes from 0 (edge of red range, less red) to 1 (worst in red range, full red)
+      const t = (clampedNormalizedRank - (NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2)) / (1 - (NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2));
+      hue = 40 - (t * 40); // Interpolate hue from 40 (orange-ish) down to 0 (red)
+      backgroundColor = `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`;
     }
     
-    const textColor = lightness > 55 ? 'text-neutral-900' : 'text-white';
+    // For HSL lightness 65, a dark text color generally works.
+    // If lightness were to vary more, this would need to be more dynamic.
   
     return {
       textClass: `${textColor} font-semibold`,
-      style: {
-        backgroundColor: `hsl(${hue.toFixed(0)}, ${saturation}%, ${lightness}%)`,
-      }
+      style: { backgroundColor }
     };
   };
   
@@ -138,16 +157,13 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const getSortIcon = <T,>(config: SortConfig<T>, columnKey: keyof T) => {
     if (config.key === columnKey) {
-      // Ideally, you'd have separate up and down arrow icons.
-      // For simplicity, ArrowUpDown is used and implies sortability.
-      // Visual distinction for direction can be added by changing icon based on config.direction.
       return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
     }
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
   
   const sortData = <T,>(data: T[], config: SortConfig<T>): T[] => {
-    if (!config.key || !data) return data; // Added !data check
+    if (!config.key || !data) return data;
     const sortedData = [...data];
     sortedData.sort((a, b) => {
       const valA = a[config.key!];
@@ -159,15 +175,17 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
+        // Specific handling for string-based numbers like percentages or values with units
         if (config.key === 'winPct') { 
             comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
-        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { 
+        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) { // For LeagueRecord value
             comparison = parseFloat(valA) - parseFloat(valB);
         }
         else {
             comparison = valA.localeCompare(valB);
         }
       } else { 
+        // Fallback for other types or mixed types, convert to string for comparison
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
@@ -393,7 +411,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card>
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. Primary color (1st), Green (better) to Yellow (neutral) to Red (worse) scale for others.</CardDescription>
+          <CardDescription>GM finishing positions by year. Primary color (1st), Green (better) to Neutral to Red (worse) scale for others.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -566,9 +584,11 @@ export default function LeagueHistoryPage() {
         return res.json();
       })
       .then((data: any) => {
+        // Map 'points' to 'pointsFor' in careerLeaderboard
         const mappedCareerLeaderboard = data.careerLeaderboard.map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, 
+          pointsFor: stat.points, // Assuming 'points' from JSON is total points for
+          // pointsAgainst is already in the JSON with the correct name
         }));
 
         const processedData: LeagueData = {
@@ -611,7 +631,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
-    
-
-    
