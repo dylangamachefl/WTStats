@@ -6,8 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { 
   LeagueData, 
-  CareerStat, // Added CareerStat for mapping
-  Season as SeasonType // For SeasonDetail and GMCareer mocks
+  CareerStat,
+  FinalStandingsHeatmapEntry,
+  GMPlayoffPerformanceStat,
+  Season as SeasonType
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -28,6 +30,22 @@ const mockGmsForTabs: { id: string; name: string }[] = [
 ];
 
 const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | null; loading: boolean }) => {
+  const [heatmapYears, setHeatmapYears] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (leagueData?.finalStandingsHeatmap) {
+      const years = new Set<string>();
+      leagueData.finalStandingsHeatmap.forEach(gm => {
+        Object.keys(gm).forEach(key => {
+          if (key !== 'gm_name' && !isNaN(Number(key))) {
+            years.add(key);
+          }
+        });
+      });
+      setHeatmapYears(Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))); // Sort descending
+    }
+  }, [leagueData]);
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -41,13 +59,23 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
           <CardContent><Skeleton className="h-64" /></CardContent>
         </Card>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader><CardTitle>League Records</CardTitle></CardHeader>
+            <CardContent><Skeleton className="h-40" /></CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+            <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
+          </Card>
+        </div>
         <Card>
-          <CardHeader><CardTitle>League Records</CardTitle></CardHeader>
-          <CardContent><Skeleton className="h-40" /></CardContent>
+          <CardHeader><CardTitle>Final Standings Heatmap</CardTitle></CardHeader>
+          <CardContent><Skeleton className="h-64" /></CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-          <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
+          <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
+          <CardContent><Skeleton className="h-64" /></CardContent>
         </Card>
       </div>
     );
@@ -72,7 +100,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <Image 
                 data-ai-hint="team logo" 
                 src={champion.imgUrl || "https://placehold.co/80x80.png"} 
-                alt={champion.teamName || champion.championName} // Use teamName if available for alt
+                alt={champion.teamName || champion.championName}
                 width={80} height={80} 
                 className="rounded-full mb-2 border-2 border-primary object-contain" 
               />
@@ -151,7 +179,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         
         <Card>
             <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-            <CardContent className="h-[300px] pt-6"> {/* Added pt-6 for better spacing */}
+            <CardContent className="h-[300px] pt-6">
                 <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sortedPlayoffRates}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -165,6 +193,79 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Final Standings Heatmap</CardTitle>
+          <CardDescription>GM finishing positions by year.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="sticky left-0 bg-card z-10">GM</TableHead>
+                  {heatmapYears.map(year => (
+                    <TableHead key={year} className="text-center">{year}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {leagueData.finalStandingsHeatmap.map(gmEntry => (
+                  <TableRow key={gmEntry.gm_name}>
+                    <TableCell className="font-medium sticky left-0 bg-card z-10">{gmEntry.gm_name}</TableCell>
+                    {heatmapYears.map(year => (
+                      <TableCell key={year} className="text-center">
+                        {gmEntry[year] !== undefined && gmEntry[year] !== null ? gmEntry[year] : '-'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>GM Playoff Performance</CardTitle>
+          <CardDescription>Statistics from playoff appearances.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>GM</TableHead>
+                <TableHead className="text-right">Total Matchups</TableHead>
+                <TableHead className="text-right">Wins</TableHead>
+                <TableHead className="text-right">Losses</TableHead>
+                <TableHead className="text-right">Quarterfinals</TableHead>
+                <TableHead className="text-right">Semifinals</TableHead>
+                <TableHead className="text-right">Championships</TableHead>
+                <TableHead className="text-right">Avg Pts</TableHead>
+                <TableHead className="text-right">Perf %</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {leagueData.gmPlayoffPerformance.sort((a,b) => b.playoff_performance_pct - a.playoff_performance_pct).map(gmPerf => (
+                <TableRow key={gmPerf.gm_name}>
+                  <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
+                  <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
+                  <TableCell className="text-right">{gmPerf.wins}</TableCell>
+                  <TableCell className="text-right">{gmPerf.losses}</TableCell>
+                  <TableCell className="text-right">{gmPerf.quarterfinal_matchups}</TableCell>
+                  <TableCell className="text-right">{gmPerf.semifinal_matchups}</TableCell>
+                  <TableCell className="text-right">{gmPerf.championship_matchups}</TableCell>
+                  <TableCell className="text-right">{gmPerf.avg_playoff_points_weekly.toFixed(2)}</TableCell>
+                  <TableCell className="text-right">{gmPerf.playoff_performance_pct.toFixed(2)}%</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
     </div>
   );
 };
@@ -250,15 +351,14 @@ export default function LeagueHistoryPage() {
         }
         return res.json();
       })
-      .then((data: any) => { // Use 'any' for raw data before mapping
-        // Explicitly type the incoming careerLeaderboard items for mapping
+      .then((data: any) => {
         type RawCareerStat = Omit<CareerStat, 'pointsFor'> & { points: number };
 
         const mappedData: LeagueData = {
           ...data,
           careerLeaderboard: data.careerLeaderboard.map((stat: RawCareerStat) => ({
             ...stat,
-            pointsFor: stat.points, // Map 'points' to 'pointsFor'
+            pointsFor: stat.points,
           })),
         };
         setLeagueData(mappedData);
@@ -266,7 +366,7 @@ export default function LeagueHistoryPage() {
       })
       .catch(error => {
         console.error("Failed to load or process league data:", error);
-        setLeagueData(null); // Set to null on error to trigger 'Failed to load' message
+        setLeagueData(null); 
         setLoading(false);
       });
   }, []);
@@ -290,6 +390,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
-
-    
