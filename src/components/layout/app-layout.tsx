@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ListChecks, Users, FileText, Home, Settings, ShieldQuestion } from "lucide-react";
+import { BarChart3, ListChecks, Users, FileText, Settings, ShieldQuestion } from "lucide-react"; // Home icon removed
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -30,8 +30,8 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/", label: "Dashboard", icon: <Home />, matchSegments: 1 },
-  { href: "/league-history", label: "League History", icon: <BarChart3 />, matchSegments: 2 },
+  // Dashboard item removed
+  { href: "/", label: "League History", icon: <BarChart3 />, matchSegments: 1 }, // Was /league-history, now / and acts as homepage
   { href: "/draft-history", label: "Draft History", icon: <ListChecks />, matchSegments: 2 },
   { href: "/h2h", label: "Head-to-Head", icon: <Users />, matchSegments: 2 },
   { href: "/deep-dives", label: "Deep Dives", icon: <FileText />, matchSegments: 2 },

@@ -5,11 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import type { Season, GM, SeasonDraftData, GMDraftHistoryData, LeagueHistoryForAI } from '@/lib/types';
-import { getDraftStrategyInsights, type DraftStrategyInsightsOutput } from '@/ai/flows/draft-strategy-insights';
-import { Loader2, Zap } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { Season, GM, SeasonDraftData, GMDraftHistoryData } from '@/lib/types';
+// Removed AI related imports: getDraftStrategyInsights, DraftStrategyInsightsOutput, Loader2, Zap, Textarea, Alert
 
 // Mock Data
 const mockSeasons: Season[] = [
@@ -42,23 +39,6 @@ const mockGMDraftHistory: GMDraftHistoryData = {
   roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
   positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
 };
-
-// Mock league history data for AI - In a real app, this would be fetched from public/data
-const mockLeagueHistoryForAI: LeagueHistoryForAI = {
-  seasons: [
-    {
-      year: 2023, champion: "Alice",
-      draftPicks: mockSeasonDraftData.draftPicks.map(p => ({ round: p.round, pick: p.pickOverall, player: p.playerName, gm: p.pickedByGmName })),
-      finalStandings: mockGms.map((gm, i) => ({ gm: gm.name, rank: i + 1 }))
-    },
-    {
-      year: 2022, champion: "Bob",
-      draftPicks: mockSeasonDraftData.draftPicks.slice(0,20).map(p => ({ round: p.round, pick: p.pickOverall, player: p.playerName, gm: p.pickedByGmName })), // fewer picks for variety
-      finalStandings: mockGms.map((gm, i) => ({ gm: gm.name, rank: (i+1 % mockGms.length) +1 })) // different ranks
-    }
-  ]
-};
-
 
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
@@ -141,103 +121,15 @@ const GMDraftHistory = () => {
   );
 };
 
-const DraftStrategyAIInsights = () => {
-  const [insights, setInsights] = useState<DraftStrategyInsightsOutput | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [leagueHistoryJson, setLeagueHistoryJson] = useState<string>(JSON.stringify(mockLeagueHistoryForAI, null, 2));
-
-  const handleGenerateInsights = async () => {
-    setLoading(true);
-    setError(null);
-    setInsights(null);
-    try {
-      // In a real app, fetch leagueHistory from a file or construct it dynamically
-      // For this example, we use mock data stringified from state.
-      // const response = await fetch('/data/league_history_for_ai.json');
-      // if (!response.ok) throw new Error('Failed to load league history data');
-      // const leagueHistoryData = await response.json();
-      
-      // The AI flow expects a stringified JSON
-      const result = await getDraftStrategyInsights({ leagueHistory: leagueHistoryJson });
-      setInsights(result);
-    } catch (e) {
-      console.error(e);
-      setError(e instanceof Error ? e.message : "An unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Zap className="text-primary" /> AI-Powered Draft Strategy Insights</CardTitle>
-        <CardDescription>Analyze historical league data to uncover optimal drafting strategies. Provide league history JSON below (or it will use mock data).</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <label htmlFor="leagueHistoryJson" className="block text-sm font-medium text-gray-700 mb-1">
-            League History Data (JSON format for AI)
-          </label>
-          <Textarea 
-            id="leagueHistoryJson"
-            value={leagueHistoryJson}
-            onChange={(e) => setLeagueHistoryJson(e.target.value)}
-            rows={8}
-            className="font-mono text-xs"
-            placeholder="Paste league history JSON here..."
-          />
-           <p className="mt-1 text-xs text-muted-foreground">Edit the mock data or paste your league's historical data in JSON format to get tailored insights.</p>
-        </div>
-        <Button onClick={handleGenerateInsights} disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Generate Insights
-        </Button>
-        {error && (
-          <Alert variant="destructive">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        {insights && (
-          <div className="space-y-6 pt-4">
-            <Card className="bg-primary/5 border-primary/20">
-              <CardHeader>
-                <CardTitle>Overall Strategy Grade: <span className="text-primary">{insights.overallGrade}</span></CardTitle>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle>Key Insights</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="list-disc pl-5 space-y-1 text-sm">
-                  {insights.keyInsights.map((insight, index) => <li key={index}>{insight}</li>)}
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle>Suggested Strategies</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="list-disc pl-5 space-y-1 text-sm">
-                  {insights.suggestedStrategies.map((strategy, index) => <li key={index}>{strategy}</li>)}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
+// DraftStrategyAIInsights component removed
 
 export default function DraftHistoryPage() {
   return (
     <Tabs defaultValue="season-draft" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-6">
+      <TabsList className="grid w-full grid-cols-2 mb-6"> {/* Changed grid-cols-3 to grid-cols-2 */}
         <TabsTrigger value="season-draft">Season Draft Detail</TabsTrigger>
         <TabsTrigger value="gm-draft-history">GM Draft History</TabsTrigger>
-        <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
+        {/* AI Insights TabTrigger removed */}
       </TabsList>
       <TabsContent value="season-draft">
         <SeasonDraftDetail />
@@ -245,9 +137,7 @@ export default function DraftHistoryPage() {
       <TabsContent value="gm-draft-history">
         <GMDraftHistory />
       </TabsContent>
-      <TabsContent value="ai-insights">
-        <DraftStrategyAIInsights />
-      </TabsContent>
+      {/* AI Insights TabsContent removed */}
     </Tabs>
   );
 }
