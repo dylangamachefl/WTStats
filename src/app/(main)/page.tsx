@@ -80,9 +80,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   
     if (rank === 1) {
       return {
-        textClass: 'text-neutral-800 font-semibold', // Dark text for yellow background
-        borderClass: 'border-2 border-foreground', // Dark foreground border for 1st place
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Bright yellow color
+        textClass: 'text-neutral-800 font-semibold',
+        borderClass: 'border-2 border-foreground', 
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Bright yellow
       };
     }
     
@@ -99,41 +99,34 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
         };
     }
-    if (maxRankInYear <= 2) return defaultStyle; // If only 1st and 2nd, and rank is not 1 or 2 (should not happen)
+    if (maxRankInYear <= 2) return defaultStyle; 
     
-    // For ranks 2 and below in leagues with more than 2 GMs
-    const denominator = maxRankInYear - 2; // Range of ranks excluding 1st, adjusted for 0-based index
-    if (denominator === 0) return defaultStyle; // Avoid division by zero if maxRankInYear is 2 (already handled)
+    const denominator = maxRankInYear - 2; 
+    if (denominator === 0) return defaultStyle; 
   
-    // Normalize rank from 0 (for 2nd place) to 1 (for last place among the 2nd-to-last group)
     const normalizedRank = (rank - 2) / denominator;
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); // Ensure it's between 0 and 1
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); 
   
-    const NEUTRAL_CENTER = 0.5; // Mid-point of the normalized scale
-    const NEUTRAL_BANDWIDTH = 0.15; // Percentage of ranks around the center that remain neutral
+    const NEUTRAL_CENTER = 0.5; 
+    const NEUTRAL_BANDWIDTH = 0.15; 
     
     const GREEN_HUE = 120;
     const RED_HUE = 0;
     
     let backgroundColor = '';
   
-    // Check if the rank falls within the neutral band
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
-      return defaultStyle; // Use default (no specific color) for mid-tier ranks
+      return defaultStyle; 
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
-      // Green zone (better ranks, closer to 2nd)
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
-      // t_green will be 0 for rank at the edge of neutral band, up to 1 for 2nd place
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for better ranks
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else { 
-      // Red zone (worse ranks, closer to last)
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
-      // t_red will be 0 for rank at the edge of neutral band, up to 1 for last place
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Darker (more saturated red, less light) for worse ranks
+      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
@@ -210,7 +203,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1,2,3].map(i => <Skeleton key={i} className="h-48" />)}
+            {[1,2,3].map(i => <Skeleton key={i} className="h-60" />)}
           </CardContent>
         </Card>
         <Card>
@@ -252,21 +245,46 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardTitle>Championship Timeline</CardTitle>
           <CardDescription>A chronological display of league champions.</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {leagueData.championshipTimeline.map((champion: ChampionTimelineEntry) => (
-            <Card key={champion.year} className="flex flex-col items-center p-4 text-center bg-card hover:shadow-lg transition-shadow">
-              <Image 
-                data-ai-hint="team logo" 
-                src={champion.imgUrl || "https://placehold.co/80x80.png"} 
-                alt={`${champion.teamName || champion.championName} logo`}
-                width={80} height={80} 
-                className="rounded-full mb-2 border-2 border-primary object-contain" 
-              />
-              <p className="font-semibold text-lg">{champion.championName}</p>
-              <p className="text-sm text-muted-foreground">{champion.teamName}</p>
-              <p className="text-xs text-muted-foreground">Champion of {champion.year}</p>
-              <p className="text-xs text-muted-foreground mt-1">Record: {champion.wins}-{champion.losses}</p>
-              <p className="text-xs text-muted-foreground">PF: {champion.pointsFor.toFixed(2)} | PA: {champion.pointsAgainst.toFixed(2)}</p>
+            <Card 
+              key={champion.year} 
+              className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 rounded-xl overflow-hidden"
+            >
+              <div className="relative mb-4">
+                <Image
+                  data-ai-hint="team logo"
+                  src={champion.imgUrl || "https://placehold.co/80x80.png"}
+                  alt={`${champion.teamName || champion.championName} logo`}
+                  width={80} height={80}
+                  className="rounded-full border-2 border-primary object-contain shadow-sm"
+                />
+                <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-semibold px-2 py-0.5 rounded-full shadow">
+                  {champion.year}
+                </span>
+              </div>
+              
+              <h3 className="text-xl font-bold text-foreground">
+                {champion.championName}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                {champion.teamName || "Team Name N/A"}
+              </p>
+
+              <div className="w-full pt-3 mt-auto border-t border-border/60 text-xs text-muted-foreground space-y-1.5 text-left px-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-foreground/80">Record:</span> 
+                  <span className="font-semibold text-foreground/90">{champion.wins}-{champion.losses}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-foreground/80">Points For:</span>
+                  <span className="font-semibold text-foreground/90">{champion.pointsFor.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-foreground/80">Points Against:</span>
+                  <span className="font-semibold text-foreground/90">{champion.pointsAgainst.toFixed(2)}</span>
+                </div>
+              </div>
             </Card>
           ))}
         </CardContent>
@@ -629,3 +647,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
