@@ -82,31 +82,33 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground', // Dark border
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Vibrant yellow
+        borderClass: 'border-2 border-foreground', 
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
       };
     }
 
-    if (maxRankInYear <= 1) return defaultStyle; 
+    if (maxRankInYear <= 1) return defaultStyle;
 
-    const SATURATION = 60; 
-    const MAX_LIGHTNESS = 92; 
-    const MIN_LIGHTNESS = 78; 
+    const SATURATION = 60;
+    const MAX_LIGHTNESS = 92;
+    const MIN_LIGHTNESS = 78;
 
-    if (maxRankInYear === 2 && rank === 2) { 
-        return {
-            textClass: coloredRankedStyle.textClass,
-            borderClass: '', 
-            style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
-        };
+    if (maxRankInYear === 2 && rank === 2) { // Last place in a 2-team year (treated as "worst")
+      return {
+        textClass: coloredRankedStyle.textClass,
+        borderClass: '',
+        style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } // Lightest red
+      };
     }
-    if (maxRankInYear <= 2) return defaultStyle; 
+    if (maxRankInYear <= 2) return defaultStyle;
 
     const denominator = maxRankInYear - 2; 
-    if (denominator === 0) return defaultStyle; 
+    if (denominator === 0) { 
+        return defaultStyle;
+    }
 
     const normalizedRank = (rank - 2) / denominator; 
-    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank)); 
+    const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
     const NEUTRAL_CENTER = 0.5; 
     const NEUTRAL_BANDWIDTH = 0.25; 
@@ -121,14 +123,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else {
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness = MIN_LIGHTNESS + t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
-      backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
+      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);                                                                        
+      backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness_pastel_red.toFixed(0)}%)`;
     }
 
     return {
@@ -169,15 +171,29 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       else if (typeof valA === 'number' && typeof valB === 'number') {
         comparison = valA - valB;
       } else if (typeof valA === 'string' && typeof valB === 'string') {
-        if (config.key === 'winPct') {
-            comparison = parseFloat(valA.replace('%','')) - parseFloat(valB.replace('%',''));
-        } else if (config.key === 'value' && !isNaN(parseFloat(valA)) && !isNaN(parseFloat(valB))) {
-            comparison = parseFloat(valA) - parseFloat(valB);
+        if (config.key === 'winPct') { 
+          comparison = parseFloat(valA.replace('%', '')) - parseFloat(valB.replace('%', ''));
+        } else if (config.key === 'value') { 
+          const numA = parseFloat(valA);
+          const numB = parseFloat(valB);
+          if (!isNaN(numA) && !isNaN(numB)) {
+            comparison = numA - numB;
+          } else {
+            comparison = valA.localeCompare(valB); 
+          }
+        } else {
+          comparison = valA.localeCompare(valB);
         }
-        else {
-            comparison = valA.localeCompare(valB);
+      } else if (config.key === 'value' && (typeof valA === 'number' || typeof valB === 'number' || typeof valA === 'string' || typeof valB === 'string')) { 
+        const numA = parseFloat(String(valA));
+        const numB = parseFloat(String(valB));
+        if (!isNaN(numA) && !isNaN(numB)) {
+          comparison = numA - numB;
+        } else {
+           comparison = String(valA).localeCompare(String(valB));
         }
-      } else {
+      }
+      else { 
         comparison = String(valA).localeCompare(String(valB));
       }
       return config.direction === 'asc' ? comparison : -comparison;
@@ -196,7 +212,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const sortedFinalStandingsHeatmap = useMemo(() => sortData(leagueData?.finalStandingsHeatmap || [], heatmapSortConfig), [leagueData?.finalStandingsHeatmap, heatmapSortConfig]);
   const requestHeatmapSort = createSortHandler(heatmapSortConfig, setHeatmapSortConfig);
-
 
   if (loading) {
     return (
@@ -237,7 +252,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <Card><CardContent className="pt-6 text-center">Failed to load league data.</CardContent></Card>;
   }
 
-  const sortedPlayoffRates = leagueData.playoffQualificationRate && [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
+  const sortedPlayoffRates = useMemo(() => {
+    if (!leagueData?.playoffQualificationRate) return [];
+    return [...leagueData.playoffQualificationRate].sort((a, b) => b.qualification_rate - a.qualification_rate);
+  }, [leagueData?.playoffQualificationRate]);
 
   return (
     <div className="space-y-8">
@@ -434,19 +452,19 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
         {leagueData.playoffQualificationRate && leagueData.playoffQualificationRate.length > 0 && (
           <Card>
-              <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-              <CardContent className="h-[300px] pt-6">
-                  <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={sortedPlayoffRates}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="gm_name" />
-                      <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
-                      <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
-                      <Legend />
-                      <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
-                  </BarChart>
-                  </ResponsiveContainer>
-              </CardContent>
+            <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+            <CardContent className="h-[300px] pt-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={sortedPlayoffRates}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="gm_name" />
+                  <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
+                  <Tooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
+                  <Legend />
+                  <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
           </Card>
         )}
       </div>
@@ -462,9 +480,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <TableHeader>
                 <TableRow>
                   <TableHead className="sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">
-                     <Button variant="ghost" onClick={() => requestHeatmapSort('gm_name')} className="px-1 group">
-                        GM {getSortIcon(heatmapSortConfig, 'gm_name')}
-                      </Button>
+                    <Button variant="ghost" onClick={() => requestHeatmapSort('gm_name')} className="px-1 group">
+                      GM {getSortIcon(heatmapSortConfig, 'gm_name')}
+                    </Button>
                   </TableHead>
                   {heatmapYears.map(year => (
                     <TableHead key={year} className="text-center py-2 px-1 text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
@@ -674,3 +692,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+    
