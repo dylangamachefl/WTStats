@@ -16,12 +16,8 @@ import type {
   GMCareerData,
   SeasonStandingEntry,
   PlayoffMatchup,
-  // GMCareerSeasonSummary, // Already imported via GMCareerData
-  // SeasonWeeklyScoresData, // Not directly used, part of SeasonDetailData
-  // TopPerformerPlayer, // Part of PositionalTopPerformersData
-  StrengthOfScheduleEntry as SeasonStrengthOfScheduleEntry, // Alias to avoid conflict if used elsewhere
-  WaiverPickupEntry as SeasonWaiverPickupEntry, // Alias
-  // SeasonPlayoffBracketNode // Replaced by PlayoffData structure
+  StrengthOfScheduleEntry as SeasonStrengthOfScheduleEntry,
+  WaiverPickupEntry as SeasonWaiverPickupEntry,
   BestOverallGameEntry,
   PositionalTopPerformersData,
   WeeklyScoresMatrixData,
@@ -96,10 +92,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
 
     if (rank === 1) {
-      return { // Vibrant Yellow with Dark Border
-        textClass: 'text-neutral-800 font-semibold', // Dark text for contrast
-        borderClass: 'border-2 border-foreground', // Dark foreground color for border
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Vibrant Yellow
+      return { 
+        textClass: 'text-neutral-800 font-semibold', 
+        borderClass: 'border-2 border-foreground', 
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
       };
     }
 
@@ -108,12 +104,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const SATURATION = 60;
     const MAX_LIGHTNESS = 92;
     const MIN_LIGHTNESS = 78;
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25;
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
 
-    const numRanksToScale = maxRankInYear - 1;
+    const numRanksToScale = maxRankInYear - 1; 
     if (numRanksToScale <= 0) return defaultStyle;
 
-    const rankPositionInScale = rank - 2;
+    const rankPositionInScale = rank - 2; 
     const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5;
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
@@ -126,24 +122,24 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-      return defaultStyle;
+      return defaultStyle; 
     } else if (clampedNormalizedRank < neutralZoneStart) {
       const greenZoneWidth = neutralZoneStart;
       const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1;
       const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
-    } else {
+    } else { 
       const redZoneEffectiveStart = neutralZoneEnd;
       const redZoneWidth = 1 - redZoneEffectiveStart;
       const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0;
       const lightness = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
-
-    return {
-      textClass: coloredRankedStyle.textClass,
-      borderClass: '',
-      style: { backgroundColor }
+    
+    return { 
+      textClass: coloredRankedStyle.textClass, 
+      borderClass: '', 
+      style: { backgroundColor } 
     };
   };
 
@@ -192,6 +188,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                  }
             } else if (config.key === 'value' && ( String(valA).match(/^-?\d+(\.\d+)?$/) && String(valB).match(/^-?\d+(\.\d+)?$/) ) ) {
                 comparison = parseFloat(String(valA)) - parseFloat(String(valB));
+            } else if (config.key === 'value' && typeof valA === 'number' && typeof valB === 'number') {
+                 comparison = valA - valB;
             }
              else {
                 comparison = String(valA).localeCompare(String(valB));
@@ -244,7 +242,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const sortedPlayoffRates = useMemo(() => {
     if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) return [];
-    return sortData([...leagueData.playoffQualificationRate], { key: 'qualification_rate', direction: 'desc' });
+    // Ensure qualification_rate is treated as a number for sorting
+    const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
+      ...item,
+      qualification_rate: Number(item.qualification_rate) || 0
+    }));
+    return sortData([...dataWithNumericRate], { key: 'qualification_rate', direction: 'desc' });
   }, [leagueData?.playoffQualificationRate]);
 
 
@@ -599,6 +602,8 @@ const SeasonDetail = () => {
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [weeklyScoresDisplayMode, setWeeklyScoresDisplayMode] = useState<'scores' | 'results'>('scores');
+
 
  useEffect(() => {
     if (selectedSeason) {
@@ -623,6 +628,7 @@ const SeasonDetail = () => {
           
           if (!data || !data.seasonData || !data.standingsData) {
             console.error("[SeasonDetail] Fetched data is missing crucial fields (e.g. seasonData or standingsData). Full data:", data);
+            setSeasonData(null); // Explicitly set to null if essential data is missing
             throw new Error(`Fetched data for ${selectedSeason} is incomplete. Essential fields like 'seasonData' or 'standingsData' are missing.`);
           }
           setSeasonData(data);
@@ -665,348 +671,363 @@ const SeasonDetail = () => {
 
   return (
     <div className="space-y-6">
-      <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-        <SelectTrigger className="w-[280px] ml-auto">
-          <SelectValue placeholder="Select a season" />
-        </SelectTrigger>
-        <SelectContent>
-          {mockSeasonsForTabs.map(season => (
-            <SelectItem key={season.id} value={season.id}>{season.year} Season</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {loading && (
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-4/5 mb-2" />
-            <Skeleton className="h-4 w-3/5" />
-          </CardHeader>
-          <CardContent className="pt-6 space-y-4">
-            <Skeleton className="h-6 w-full mb-2" />
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
-                {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
+        <Card className="overflow-visible"> {/* Added overflow-visible for Select to not be clipped */}
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+                <CardTitle className="flex items-center gap-2">
+                <CalendarDays className="text-primary" /> 
+                {seasonData?.seasonData?.year || selectedSeason || ""} Season Detail
+                </CardTitle>
+                {seasonData?.seasonData && (
+                <CardDescription>
+                    Champion: {seasonData.seasonData.championName}
+                    {seasonData.seasonData.runnerUp && `, Runner-up: ${seasonData.seasonData.runnerUp}`}
+                    {seasonData.seasonData.teams && `. Teams: ${seasonData.seasonData.teams}`}
+                </CardDescription>
+                )}
             </div>
-            {[...Array(3)].map((_, i) => (
-                <div key={i} className="space-y-2">
-                    <Skeleton className="h-6 w-1/3 mb-2" />
-                    <Skeleton className="h-32 w-full" />
-                </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-      {error && <Card><CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent></Card>}
-
-      {!loading && !error && seasonData && seasonData.seasonData && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarDays className="text-primary" /> 
-              {seasonData.seasonData.year} Season Detail
-            </CardTitle>
-            <CardDescription>
-              Champion: {seasonData.seasonData.championName}
-              {seasonData.seasonData.runnerUp && `, Runner-up: ${seasonData.seasonData.runnerUp}`}
-              {seasonData.seasonData.teams && `. Teams: ${seasonData.seasonData.teams}`}
-            </CardDescription>
+            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                <SelectTrigger className="w-[220px]">
+                <SelectValue placeholder="Select a season" />
+                </SelectTrigger>
+                <SelectContent>
+                {mockSeasonsForTabs.map(season => (
+                    <SelectItem key={season.id} value={season.id}>{season.year} Season</SelectItem>
+                ))}
+                </SelectContent>
+            </Select>
           </CardHeader>
-          <CardContent className="pt-6">
-            <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="weekly_scores">Weekly Scores</TabsTrigger>
-                <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
-                <TabsTrigger value="waiver_pickups">Waiver Pickups</TabsTrigger>
-                <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
-              </TabsList>
+          
+          {loading && (
+            <CardContent className="pt-6 space-y-4">
+                <Skeleton className="h-6 w-full mb-2" />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
+                    {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
+                </div>
+                {[...Array(3)].map((_, i) => (
+                    <div key={i} className="space-y-2">
+                        <Skeleton className="h-6 w-1/3 mb-2" />
+                        <Skeleton className="h-32 w-full" />
+                    </div>
+                ))}
+            </CardContent>
+          )}
+          {error && <CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent>}
 
-              <TabsContent value="overview" className="pt-4 space-y-6">
-                 <Card>
-                    <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Regular Season Standings</CardTitle></CardHeader>
-                    <CardContent>
-                      {seasonData.standingsData && Array.isArray(seasonData.standingsData) && seasonData.standingsData.length > 0 ? (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="w-[50px]">POS</TableHead>
-                              <TableHead>TEAM</TableHead>
-                              <TableHead>OWNER</TableHead>
-                              <TableHead className="text-center">W</TableHead>
-                              <TableHead className="text-center">L</TableHead>
-                              <TableHead className="text-right">PF</TableHead>
-                              <TableHead className="text-right">PA</TableHead>
-                              {/* STREAK column omitted as data not available in 2009.json example */}
-                              <TableHead className="text-center">LAST 5</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {seasonData.standingsData.map((s: SeasonStandingEntry) => (
-                              <TableRow key={s.owner_name}>
-                                <TableCell className="font-medium">
-                                  {s.regular_season_finish === 1 ? <Trophy className="h-5 w-5 text-yellow-500 inline-block" /> : s.regular_season_finish}
-                                </TableCell>
-                                <TableCell>{s.wt_team_name}</TableCell>
-                                <TableCell>{s.owner_name}</TableCell>
-                                <TableCell className="text-center">{s.regular_season_wins}</TableCell>
-                                <TableCell className="text-center">{s.regular_season_losses}</TableCell>
-                                <TableCell className="text-right">{s.regular_season_points_for?.toFixed(1)}</TableCell>
-                                <TableCell className="text-right">{s.regular_season_points_against?.toFixed(1)}</TableCell>
-                                <TableCell className="text-center">
-                                  <div className="flex justify-center space-x-1">
-                                    {s.lastFive?.map((gameResult, index) => (
-                                      <span key={index} className={cn("h-3 w-3 rounded-full inline-block", gameResult === 1 ? "bg-green-500" : "bg-red-500")} title={gameResult === 1 ? 'Win' : 'Loss'}></span>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      ) : (
-                        <p className="text-muted-foreground">No standings data available for {seasonData.seasonData.year}.</p>
-                      )}
-                    </CardContent>
-                 </Card>
-                 
-                 <Card>
-                    <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Playoff Bracket</CardTitle></CardHeader>
-                    <CardContent>
-                      {seasonData.playoffData ? (
-                        <div className="space-y-6">
-                          {seasonData.playoffData.quarterFinals && Array.isArray(seasonData.playoffData.quarterFinals) && seasonData.playoffData.quarterFinals.length > 0 && (
-                            <div>
-                              <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Quarterfinals</h4>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                {seasonData.playoffData.quarterFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Quarterfinal ${idx + 1}`))}
-                              </div>
-                            </div>
-                          )}
-                          {seasonData.playoffData.semiFinals && Array.isArray(seasonData.playoffData.semiFinals) && seasonData.playoffData.semiFinals.length > 0 && (
-                            <div>
-                              <h4 className="text-lg font-semibold mb-2 mt-4 text-center text-foreground/80">Semifinals</h4>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                {seasonData.playoffData.semiFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Semifinal ${idx + 1}`))}
-                              </div>
-                            </div>
-                          )}
-                          {seasonData.playoffData.championship && Array.isArray(seasonData.playoffData.championship) && seasonData.playoffData.championship.length > 0 && (
-                            <div className="mt-4">
-                              <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Championship</h4>
-                              <div className="max-w-md mx-auto">
-                                {seasonData.playoffData.championship.map((matchup) => renderPlayoffMatchup(matchup, "Championship Game", true))}
-                              </div>
-                               <div className="text-center mt-4">
-                                <p className="text-lg font-semibold">League Champion:</p>
-                                <p className="text-xl text-primary font-bold flex items-center justify-center">
-                                  <Trophy className="mr-2 h-6 w-6 text-yellow-500" />
-                                  {seasonData.seasonData.championName}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                          {(!seasonData.playoffData.quarterFinals || seasonData.playoffData.quarterFinals.length === 0) &&
-                           (!seasonData.playoffData.semiFinals || seasonData.playoffData.semiFinals.length === 0) &&
-                           (!seasonData.playoffData.championship || seasonData.playoffData.championship.length === 0) &&
-                            <p className="text-muted-foreground text-center py-4">No playoff matchup data available for {seasonData.seasonData.year}.</p>
-                          }
-                        </div>
-                      ) : (
-                        <p className="text-muted-foreground text-center py-4">Playoff bracket data not available for {seasonData.seasonData.year}.</p>
-                      )}
-                    </CardContent>
-                 </Card>
-              </TabsContent>
+          {!loading && !error && seasonData && (
+             <CardContent className="pt-0"> {/* Changed from pt-6 to pt-0 because tabs will handle padding */}
+                <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-4">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="weekly_scores">Weekly Scores</TabsTrigger>
+                    <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
+                    <TabsTrigger value="waiver_pickups">Waiver Pickups</TabsTrigger>
+                    <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
+                </TabsList>
 
-              <TabsContent value="weekly_scores" className="pt-4 space-y-4">
-                <Card>
-                  <CardHeader><CardTitle className="flex items-center"><BarChart2 className="mr-2 h-5 w-5 text-primary" />Weekly Scores</CardTitle></CardHeader>
-                  <CardContent>
-                    {seasonData.weeklyScoresData && seasonData.weeklyScoresData.teams && seasonData.weeklyScoresData.scores && Array.isArray(seasonData.weeklyScoresData.teams) && Array.isArray(seasonData.weeklyScoresData.scores) && Array.isArray(seasonData.weeklyScoresData.results) && seasonData.weeklyScoresData.scores.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="sticky left-0 bg-card z-10">Week</TableHead>
-                              {seasonData.weeklyScoresData.teams.map(teamName => <TableHead key={teamName} className="text-right whitespace-nowrap min-w-[120px] truncate" title={teamName}>{teamName.length > 15 ? teamName.substring(0,12) + "..." : teamName}</TableHead>)}
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {seasonData.weeklyScoresData.scores.map((weekScores, weekIndex) => (
-                              <TableRow key={`week-${weekIndex + 1}`}>
-                                <TableCell className="font-medium sticky left-0 bg-card z-10">Week {weekIndex + 1}</TableCell>
-                                {weekScores.map((score, teamIndex) => (
-                                  <TableCell key={`${weekIndex + 1}-${seasonData.weeklyScoresData!.teams[teamIndex]}`} className="text-right">
-                                    {score?.toFixed(1) ?? 'N/A'}
-                                    {seasonData.weeklyScoresData!.results[weekIndex] && seasonData.weeklyScoresData!.results[weekIndex][teamIndex] &&
-                                      <span className={cn("ml-1 text-xs font-semibold", seasonData.weeklyScoresData!.results[weekIndex][teamIndex] === "W" ? "text-green-600" : seasonData.weeklyScoresData!.results[weekIndex][teamIndex] === "L" ? "text-red-600" : "text-muted-foreground")}>
-                                        ({seasonData.weeklyScoresData!.results[weekIndex][teamIndex]})
-                                      </span>
-                                    }
-                                  </TableCell>
-                                ))}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground">No weekly scores data available for {seasonData.seasonData.year}.</p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="top_performers" className="pt-4 space-y-6">
-                <Card>
-                  <CardHeader><CardTitle className="flex items-center"><Trophy className="mr-2 h-5 w-5 text-primary" />Top Seasonal Performers</CardTitle></CardHeader>
-                  <CardContent>
-                    {seasonData.topPerformersData && typeof seasonData.topPerformersData === 'object' && Object.keys(seasonData.topPerformersData).length > 0 ? (
-                      Object.entries(seasonData.topPerformersData).map(([position, players]) => (
-                        Array.isArray(players) && players.length > 0 ? (
-                          <div key={position} className="mb-6">
-                            <h4 className="text-md font-semibold mb-1 capitalize text-foreground/90">{position}</h4>
+                <TabsContent value="overview" className="pt-4 space-y-6">
+                    <Card>
+                        <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Regular Season Standings</CardTitle></CardHeader>
+                        <CardContent>
+                        {seasonData.standingsData && Array.isArray(seasonData.standingsData) && seasonData.standingsData.length > 0 ? (
                             <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead>Player</TableHead>
-                                  <TableHead>NFL Team</TableHead>
-                                  <TableHead>Managed By</TableHead>
-                                  <TableHead className="text-right">Total Points</TableHead>
-                                  <TableHead className="text-right">PPG</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {players.map((player, idx) => (
-                                  <TableRow key={`${position}-${idx}`}>
-                                    <TableCell>{player.player}</TableCell>
-                                    <TableCell>{player.team}</TableCell>
-                                    <TableCell>{player.fantasyTeam || 'Unmanaged'}</TableCell>
-                                    <TableCell className="text-right">{player.totalPoints?.toFixed(1) ?? 'N/A'}</TableCell>
-                                    <TableCell className="text-right">{player.ppg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        ) : null
-                      ))
-                    ) : (
-                      <p className="text-muted-foreground">No top performer data available for {seasonData.seasonData.year}.</p>
-                    )}
-
-                    {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
-                      <div>
-                        <h4 className="text-md font-semibold my-2 text-foreground/90">Best Overall Games This Season</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Rank</TableHead>
-                              <TableHead>Player</TableHead>
-                              <TableHead>Position</TableHead>
-                              <TableHead>NFL Team</TableHead>
-                              <TableHead>Managed By</TableHead>
-                              <TableHead>Week</TableHead>
-                              <TableHead className="text-right">Points</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {seasonData.bestOverallGamesData.map((game) => (
-                              <TableRow key={game.rank}>
-                                <TableCell>{game.rank}</TableCell>
-                                <TableCell>{game.player}</TableCell>
-                                <TableCell>{game.position}</TableCell>
-                                <TableCell>{game.team}</TableCell>
-                                <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
-                                <TableCell>{game.week}</TableCell>
-                                <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="strength_of_schedule" className="pt-4 space-y-6">
-                 <Card>
-                    <CardHeader><CardTitle className="flex items-center"><LineChartIcon className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle></CardHeader>
-                    <CardContent>
-                        {seasonData.strengthOfScheduleData && Array.isArray(seasonData.strengthOfScheduleData) && seasonData.strengthOfScheduleData.length > 0 ? (
-                        <Table>
                             <TableHeader>
-                            <TableRow>
-                                <TableHead>Rank</TableHead>
-                                <TableHead>Owner</TableHead>
-                                <TableHead>Team</TableHead>
-                                <TableHead className="text-right">Opp. PPG</TableHead>
-                                <TableHead>Rating</TableHead>
-                            </TableRow>
+                                <TableRow>
+                                <TableHead className="w-[50px]">POS</TableHead>
+                                <TableHead>TEAM</TableHead>
+                                <TableHead>OWNER</TableHead>
+                                <TableHead className="text-center">W</TableHead>
+                                <TableHead className="text-center">L</TableHead>
+                                <TableHead className="text-right">PF</TableHead>
+                                <TableHead className="text-right">PA</TableHead>
+                                <TableHead className="text-center">LAST 5</TableHead>
+                                </TableRow>
                             </TableHeader>
                             <TableBody>
-                            {seasonData.strengthOfScheduleData.map((sos: SeasonStrengthOfScheduleEntry) => (
-                                <TableRow key={sos.owner}>
-                                <TableCell>{sos.rank}</TableCell>
-                                <TableCell>{sos.owner}</TableCell>
-                                <TableCell>{sos.team}</TableCell>
-                                <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                <TableCell>{sos.rating || '-'}</TableCell>
+                                {seasonData.standingsData.map((s: SeasonStandingEntry) => (
+                                <TableRow key={s.owner_name}>
+                                    <TableCell className="font-medium">
+                                    {s.regular_season_finish === 1 ? <Trophy className="h-5 w-5 text-yellow-500 inline-block" /> : s.regular_season_finish}
+                                    </TableCell>
+                                    <TableCell>{s.wt_team_name}</TableCell>
+                                    <TableCell>{s.owner_name}</TableCell>
+                                    <TableCell className="text-center">{s.regular_season_wins}</TableCell>
+                                    <TableCell className="text-center">{s.regular_season_losses}</TableCell>
+                                    <TableCell className="text-right">{s.regular_season_points_for?.toFixed(1)}</TableCell>
+                                    <TableCell className="text-right">{s.regular_season_points_against?.toFixed(1)}</TableCell>
+                                    <TableCell className="text-center">
+                                    <div className="flex justify-center space-x-1">
+                                        {s.lastFive?.map((gameResult, index) => (
+                                        <span key={index} className={cn("h-3 w-3 rounded-full inline-block", gameResult === 1 ? "bg-green-500" : gameResult === 0 ? "bg-red-500" : "bg-gray-300")} title={gameResult === 1 ? 'Win' : gameResult === 0 ? 'Loss' : 'Tie'}></span>
+                                        ))}
+                                    </div>
+                                    </TableCell>
                                 </TableRow>
-                            ))}
+                                ))}
                             </TableBody>
-                        </Table>
+                            </Table>
                         ) : (
-                        <p className="text-muted-foreground">Strength of Schedule data not available for {seasonData.seasonData.year}.</p>
+                            <p className="text-muted-foreground">No standings data available for {seasonData.seasonData.year}.</p>
+                        )}
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Playoff Bracket</CardTitle></CardHeader>
+                        <CardContent>
+                        {seasonData.playoffData ? (
+                            <div className="space-y-6">
+                            {seasonData.playoffData.quarterFinals && Array.isArray(seasonData.playoffData.quarterFinals) && seasonData.playoffData.quarterFinals.length > 0 && (
+                                <div>
+                                <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Quarterfinals</h4>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    {seasonData.playoffData.quarterFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Quarterfinal ${idx + 1}`))}
+                                </div>
+                                </div>
+                            )}
+                            {seasonData.playoffData.semiFinals && Array.isArray(seasonData.playoffData.semiFinals) && seasonData.playoffData.semiFinals.length > 0 && (
+                                <div>
+                                <h4 className="text-lg font-semibold mb-2 mt-4 text-center text-foreground/80">Semifinals</h4>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    {seasonData.playoffData.semiFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Semifinal ${idx + 1}`))}
+                                </div>
+                                </div>
+                            )}
+                            {seasonData.playoffData.championship && Array.isArray(seasonData.playoffData.championship) && seasonData.playoffData.championship.length > 0 && (
+                                <div className="mt-4">
+                                <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Championship</h4>
+                                <div className="max-w-md mx-auto">
+                                    {seasonData.playoffData.championship.map((matchup) => renderPlayoffMatchup(matchup, "Championship Game", true))}
+                                </div>
+                                <div className="text-center mt-4">
+                                    <p className="text-lg font-semibold">League Champion:</p>
+                                    <p className="text-xl text-primary font-bold flex items-center justify-center">
+                                    <Trophy className="mr-2 h-6 w-6 text-yellow-500" />
+                                    {seasonData.seasonData.championName}
+                                    </p>
+                                </div>
+                                </div>
+                            )}
+                            {(!seasonData.playoffData.quarterFinals || seasonData.playoffData.quarterFinals.length === 0) &&
+                            (!seasonData.playoffData.semiFinals || seasonData.playoffData.semiFinals.length === 0) &&
+                            (!seasonData.playoffData.championship || seasonData.playoffData.championship.length === 0) &&
+                                <p className="text-muted-foreground text-center py-4">No playoff matchup data available for {seasonData.seasonData.year}.</p>
+                            }
+                            </div>
+                        ) : (
+                            <p className="text-muted-foreground text-center py-4">Playoff bracket data not available for {seasonData.seasonData.year}.</p>
+                        )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="weekly_scores" className="pt-4 space-y-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center"><BarChart2 className="mr-2 h-5 w-5 text-primary" />Weekly Scores</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {seasonData.weeklyScoresData && seasonData.weeklyScoresData.teams && seasonData.weeklyScoresData.scores && Array.isArray(seasonData.weeklyScoresData.teams) && Array.isArray(seasonData.weeklyScoresData.scores) && Array.isArray(seasonData.weeklyScoresData.results) && seasonData.weeklyScoresData.scores.length > 0 ? (
+                        <>
+                            <Tabs defaultValue="scores" onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')} className="mb-4 w-full sm:w-auto">
+                                <TabsList className="grid w-full grid-cols-2 sm:inline-flex">
+                                    <TabsTrigger value="scores">Show Scores</TabsTrigger>
+                                    <TabsTrigger value="results">Show W/L/T</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                <TableRow>
+                                    <TableHead className="sticky left-0 bg-card z-10">Week</TableHead>
+                                    {seasonData.weeklyScoresData.teams.map(teamName => <TableHead key={teamName} className="text-right whitespace-nowrap min-w-[120px] truncate" title={teamName}>{teamName.length > 15 ? teamName.substring(0,12) + "..." : teamName}</TableHead>)}
+                                </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                {seasonData.weeklyScoresData.scores.map((weekScores, weekIndex) => (
+                                    <TableRow key={`week-${weekIndex + 1}`}>
+                                    <TableCell className="font-medium sticky left-0 bg-card z-10">Week {weekIndex + 1}</TableCell>
+                                    {weekScores.map((score, teamIndex) => {
+                                        const result = seasonData.weeklyScoresData!.results[weekIndex]?.[teamIndex];
+                                        return (
+                                        <TableCell key={`${weekIndex + 1}-${seasonData.weeklyScoresData!.teams[teamIndex]}`} className="text-right">
+                                            {weeklyScoresDisplayMode === 'scores' ? (
+                                                score?.toFixed(1) ?? 'N/A'
+                                            ) : result === 'W' ? (
+                                                <span className="flex items-center justify-end text-green-600"><CheckCircle2 className="h-4 w-4 mr-1" /> W</span>
+                                            ) : result === 'L' ? (
+                                                <span className="flex items-center justify-end text-red-600"><XCircle className="h-4 w-4 mr-1" /> L</span>
+                                            ) : result === 'T' ? (
+                                                <span className="text-muted-foreground">T</span>
+                                            ) : (
+                                                'N/A'
+                                            )}
+                                        </TableCell>
+                                        );
+                                    })}
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </div>
+                        </>
+                        ) : (
+                        <p className="text-muted-foreground">No weekly scores data available for {seasonData.seasonData.year}.</p>
                         )}
                     </CardContent>
                 </Card>
-              </TabsContent>
-              <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
-                <Card>
-                    <CardHeader><CardTitle className="flex items-center"><ClipboardList className="mr-2 h-5 w-5 text-primary"/>Top Waiver Pickups (League-wide)</CardTitle></CardHeader>
+                </TabsContent>
+                
+                <TabsContent value="top_performers" className="pt-4 space-y-6">
+                    <Card>
+                    <CardHeader><CardTitle className="flex items-center"><Trophy className="mr-2 h-5 w-5 text-primary" />Top Seasonal Performers</CardTitle></CardHeader>
                     <CardContent>
-                        {seasonData.waiverPickupsData && Array.isArray(seasonData.waiverPickupsData) && seasonData.waiverPickupsData.length > 0 ? (
-                        <Table>
+                        {seasonData.topPerformersData && typeof seasonData.topPerformersData === 'object' && Object.keys(seasonData.topPerformersData).length > 0 ? (
+                        Object.entries(seasonData.topPerformersData).map(([position, players]) => (
+                            Array.isArray(players) && players.length > 0 ? (
+                            <div key={position} className="mb-6">
+                                <h4 className="text-md font-semibold mb-1 capitalize text-foreground/90">{position}</h4>
+                                <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                    <TableHead>Player</TableHead>
+                                    <TableHead>NFL Team</TableHead>
+                                    <TableHead>Managed By</TableHead>
+                                    <TableHead className="text-right">Total Points</TableHead>
+                                    <TableHead className="text-right">PPG</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {players.map((player, idx) => (
+                                    <TableRow key={`${position}-${idx}`}>
+                                        <TableCell>{player.player}</TableCell>
+                                        <TableCell>{player.team}</TableCell>
+                                        <TableCell>{player.fantasyTeam || 'Unmanaged'}</TableCell>
+                                        <TableCell className="text-right">{player.totalPoints?.toFixed(1) ?? 'N/A'}</TableCell>
+                                        <TableCell className="text-right">{player.ppg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                    </TableRow>
+                                    ))}
+                                </TableBody>
+                                </Table>
+                            </div>
+                            ) : null
+                        ))
+                        ) : (
+                        <p className="text-muted-foreground">No top performer data available for {seasonData.seasonData.year}.</p>
+                        )}
+
+                        {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
+                        <div>
+                            <h4 className="text-md font-semibold my-2 text-foreground/90">Best Overall Games This Season</h4>
+                            <Table>
                             <TableHeader>
-                            <TableRow>
+                                <TableRow>
                                 <TableHead>Rank</TableHead>
                                 <TableHead>Player</TableHead>
                                 <TableHead>Position</TableHead>
                                 <TableHead>NFL Team</TableHead>
-                                <TableHead className="text-right">Total Pts</TableHead>
-                            </TableRow>
+                                <TableHead>Managed By</TableHead>
+                                <TableHead>Week</TableHead>
+                                <TableHead className="text-right">Points</TableHead>
+                                </TableRow>
                             </TableHeader>
                             <TableBody>
-                            {seasonData.waiverPickupsData.map((pickup: SeasonWaiverPickupEntry) => (
-                                <TableRow key={pickup.player}>
-                                <TableCell>{pickup.rank ?? '-'}</TableCell>
-                                <TableCell>{pickup.player}</TableCell>
-                                <TableCell>{pickup.position}</TableCell>
-                                <TableCell>{pickup.team}</TableCell>
-                                <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
+                                {seasonData.bestOverallGamesData.map((game) => (
+                                <TableRow key={game.rank}>
+                                    <TableCell>{game.rank}</TableCell>
+                                    <TableCell>{game.player}</TableCell>
+                                    <TableCell>{game.position}</TableCell>
+                                    <TableCell>{game.team}</TableCell>
+                                    <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
+                                    <TableCell>{game.week}</TableCell>
+                                    <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
                                 </TableRow>
-                            ))}
+                                ))}
                             </TableBody>
-                        </Table>
-                        ) : (
-                        <p className="text-muted-foreground">Waiver pickup data not available for {seasonData.seasonData.year}.</p>
+                            </Table>
+                        </div>
                         )}
                     </CardContent>
-                </Card>
-              </TabsContent>
+                    </Card>
+                </TabsContent>
 
-            </Tabs>
-          </CardContent>
+                <TabsContent value="strength_of_schedule" className="pt-4 space-y-6">
+                    <Card>
+                        <CardHeader><CardTitle className="flex items-center"><LineChartIcon className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle></CardHeader>
+                        <CardContent>
+                            {seasonData.strengthOfScheduleData && Array.isArray(seasonData.strengthOfScheduleData) && seasonData.strengthOfScheduleData.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                <TableRow>
+                                    <TableHead>Rank</TableHead>
+                                    <TableHead>Owner</TableHead>
+                                    <TableHead>Team</TableHead>
+                                    <TableHead className="text-right">Opp. PPG</TableHead>
+                                    <TableHead>Rating</TableHead>
+                                </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                {seasonData.strengthOfScheduleData.map((sos: SeasonStrengthOfScheduleEntry) => (
+                                    <TableRow key={sos.owner}>
+                                    <TableCell>{sos.rank}</TableCell>
+                                    <TableCell>{sos.owner}</TableCell>
+                                    <TableCell>{sos.team}</TableCell>
+                                    <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                    <TableCell>{sos.rating || '-'}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            ) : (
+                            <p className="text-muted-foreground">Strength of Schedule data not available for {seasonData.seasonData.year}.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
+                    <Card>
+                        <CardHeader><CardTitle className="flex items-center"><ClipboardList className="mr-2 h-5 w-5 text-primary"/>Top Waiver Pickups (League-wide)</CardTitle></CardHeader>
+                        <CardContent>
+                            {seasonData.waiverPickupsData && Array.isArray(seasonData.waiverPickupsData) && seasonData.waiverPickupsData.length > 0 ? (
+                            <Table>
+                                <TableHeader>
+                                <TableRow>
+                                    <TableHead>Rank</TableHead>
+                                    <TableHead>Player</TableHead>
+                                    <TableHead>Position</TableHead>
+                                    <TableHead>NFL Team</TableHead>
+                                    <TableHead className="text-right">Total Pts</TableHead>
+                                </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                {seasonData.waiverPickupsData.map((pickup: SeasonWaiverPickupEntry) => (
+                                    <TableRow key={pickup.player}>
+                                    <TableCell>{pickup.rank ?? '-'}</TableCell>
+                                    <TableCell>{pickup.player}</TableCell>
+                                    <TableCell>{pickup.position}</TableCell>
+                                    <TableCell>{pickup.team}</TableCell>
+                                    <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            ) : (
+                            <p className="text-muted-foreground">Waiver pickup data not available for {seasonData.seasonData.year}.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                </Tabs>
+            </CardContent>
+          )}
+          {!loading && !error && !seasonData && selectedSeason && (
+            <CardContent className="pt-6 text-center text-muted-foreground">No data found for the {selectedSeason} season. Please ensure the file '{selectedSeason}.json' exists in 'public/data/league_data/seasons/' and is correctly formatted according to the expected structure.</CardContent>
+          )}
+          {!loading && !error && !seasonData && !selectedSeason && (
+            <CardContent className="pt-6 text-center text-muted-foreground">Please select a season to view details.</CardContent>
+          )}
         </Card>
-      )}
-       {!loading && !error && !seasonData && selectedSeason && (
-         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for the {selectedSeason} season. Please ensure the file '{selectedSeason}.json' exists in 'public/data/league_data/seasons/' and is correctly formatted according to the expected structure.</CardContent></Card>
-       )}
-       {!loading && !error && !seasonData && !selectedSeason && (
-         <Card><CardContent className="pt-6 text-center text-muted-foreground">Please select a season to view details.</CardContent></Card>
-       )}
     </div>
   );
 };
@@ -1040,6 +1061,7 @@ const GMCareer = () => {
           
           if (!data || !data.gmName || !data.careerSummary || !data.seasonBySeason) {
             console.error("[GMCareer] Fetched data is missing crucial fields (gmName, careerSummary, or seasonBySeason). Full data:", data);
+            setGmData(null);
             throw new Error(`Fetched data for ${selectedGmId} is incomplete.`);
           }
           setGmData(data);
@@ -1279,3 +1301,4 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
+
