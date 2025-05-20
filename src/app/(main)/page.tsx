@@ -20,17 +20,20 @@ import type {
   WaiverPickupEntry,
   TopPerformerPlayer,
   BestOverallGameEntry as SeasonBestOverallGameEntry,
+  WeeklyScoresMatrixData,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { BarChart, Bar, ScatterChart, Scatter, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Cell as RechartsCell, ZAxis } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
@@ -310,57 +313,62 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                  <div className="h-full">
-                    <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
-                      <div className="relative mb-3">
-                        <Image
+                  <Card className="flex flex-col p-4 h-full gap-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-12 w-12 border-2 border-muted">
+                        <AvatarImage 
                           data-ai-hint="team logo"
-                          src={champion.imgUrl || "https://placehold.co/80x80.png"}
-                          alt={`${champion.teamName || champion.championName} logo`}
-                          width={72} height={72}
-                          className="rounded-full border-2 border-primary object-contain shadow-md"
+                          src={champion.imgUrl || undefined} 
+                          alt={champion.teamName ? `${champion.teamName} logo` : 'Champion logo'}
                         />
-                        <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-semibold px-2 py-0.5 rounded-full shadow">
+                        <AvatarFallback className="text-lg">
+                          {champion.championName ? champion.championName.charAt(0).toUpperCase() : '?'}
+                        </AvatarFallback>
+                        <Badge 
+                          variant="default" 
+                          className="absolute -top-2 -right-2 text-xs bg-accent text-accent-foreground px-1.5 py-0.5"
+                        >
                           {champion.year}
-                        </span>
+                        </Badge>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-foreground leading-tight">{champion.championName}</h3>
+                        <p className="text-xs text-muted-foreground">{champion.teamName || "Team Name N/A"}</p>
                       </div>
+                    </div>
 
-                      <h3 className="text-lg font-bold text-foreground">
-                        {champion.championName}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {champion.teamName || "Team Name N/A"}
-                      </p>
-
-                      <div className="w-full pt-2 mt-auto border-t border-border/60 text-xs text-muted-foreground space-y-1 text-left px-1">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-foreground/80">Record:</span>
-                          <span className="font-semibold text-foreground/90">{champion.wins}-{champion.losses}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-foreground/80">PF:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsFor?.toFixed(2) ?? 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-foreground/80">PA:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsAgainst?.toFixed(2) ?? 'N/A'}</span>
+                    <div className="grid grid-cols-3 gap-2 text-center border-t border-b py-3">
+                      <div>
+                        <Zap size={18} className="mx-auto mb-0.5 text-primary" />
+                        <p className="text-xs uppercase text-muted-foreground font-medium">RECORD</p>
+                        <p className="text-sm font-semibold">{champion.wins}-{champion.losses}</p>
+                      </div>
+                      <div>
+                        <ArrowUp size={18} className="mx-auto mb-0.5 text-green-500" />
+                        <p className="text-xs uppercase text-muted-foreground font-medium">PF</p>
+                        <p className="text-sm font-semibold">{champion.pointsFor?.toFixed(2) ?? 'N/A'}</p>
+                      </div>
+                      <div>
+                        <ArrowDown size={18} className="mx-auto mb-0.5 text-red-500" />
+                        <p className="text-xs uppercase text-muted-foreground font-medium">PA</p>
+                        <p className="text-sm font-semibold">{champion.pointsAgainst?.toFixed(2) ?? 'N/A'}</p>
+                      </div>
+                    </div>
+                    
+                    {Array.isArray(champion.parsedRoster) && champion.parsedRoster.length > 0 && (
+                      <div className="space-y-1.5">
+                        <h4 className="text-sm font-medium text-foreground">Key Players</h4>
+                        <div className="flex flex-col gap-1.5">
+                          {champion.parsedRoster.slice(0, 4).map((player, idx) => (
+                            <div key={idx} className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-md text-xs">
+                              <UserRound size={14} className="text-muted-foreground" />
+                              <span className="text-foreground truncate" title={player}>{player}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
-
-                      {Array.isArray(champion.parsedRoster) && champion.parsedRoster.length > 0 && (
-                        <div className="w-full pt-2 mt-2 border-t border-border/60">
-                          <h4 className="text-xs font-semibold text-foreground mb-1 flex items-center justify-center">
-                            <ListChecks size={14} className="mr-1.5 text-primary"/> Key Players
-                          </h4>
-                          <ul className="space-y-0.5 text-xs text-muted-foreground">
-                            {champion.parsedRoster.slice(0, 4).map((player, idx) => (
-                              <li key={idx} className="truncate" title={player}>{player}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </Card>
-                  </div>
+                    )}
+                  </Card>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -599,6 +607,21 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   );
 };
 
+const HeatmapTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-popover text-popover-foreground border rounded-md shadow-md p-2 text-xs">
+        <p className="font-semibold">{data.teamName}</p>
+        <p>Week {data.week}</p>
+        <p>Score: {data.score?.toFixed(1) ?? 'N/A'}</p>
+        <p>Result: {data.result || 'N/A'}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
@@ -661,9 +684,11 @@ const SeasonDetail = () => {
           <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
           <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
-        </p>
+        {matchup.home.score !== undefined && matchup.away.score !== undefined && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -884,7 +909,7 @@ const SeasonDetail = () => {
                             </RadioGroup>
                         </CardHeader>
                         <CardContent>
-                            {seasonData.weeklyScoresData && Array.isArray(seasonData.weeklyScoresData.teams) && seasonData.weeklyScoresData.teams.length > 0 && Array.isArray(seasonData.weeklyScoresData.scores) ? (
+                            {seasonData.weeklyScoresData && Array.isArray(seasonData.weeklyScoresData.teams) && seasonData.weeklyScoresData.teams.length > 0 && Array.isArray(seasonData.weeklyScoresData.scores) && Array.isArray(seasonData.weeklyScoresData.results) ? (
                                 <>
                                 <div className="overflow-x-auto">
                                     <Table className="min-w-full table-fixed">
@@ -906,13 +931,12 @@ const SeasonDetail = () => {
                                                         const result = Array.isArray(seasonData.weeklyScoresData!.results) && Array.isArray(seasonData.weeklyScoresData!.results[weekIndex]) ? seasonData.weeklyScoresData!.results[weekIndex][teamIndex] : undefined;
                                                         
                                                         let cellContent;
-                                                        let cellClasses = "p-0.5";
                                                         let innerDivClasses = "p-1.5 text-center text-xs rounded-md w-full h-full flex items-center justify-center";
 
                                                         if (weeklyScoresDisplayMode === 'scores') {
                                                             cellContent = score?.toFixed(1) ?? '-';
                                                             innerDivClasses = cn(innerDivClasses, getScoreCellClass(score));
-                                                        } else {
+                                                        } else { // W/L/T mode
                                                             if (result === 'W') {
                                                                 cellContent = 'W';
                                                                 innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
@@ -928,7 +952,7 @@ const SeasonDetail = () => {
                                                             }
                                                         }
                                                         return (
-                                                            <TableCell key={`wk-${weekIndex}-team-${teamIndex}`} className={cn(cellClasses, "align-middle")}>
+                                                            <TableCell key={`wk-${weekIndex}-team-${teamIndex}`} className="p-0.5 align-middle">
                                                               <div className={innerDivClasses}>{cellContent}</div>
                                                             </TableCell>
                                                         );
@@ -944,16 +968,11 @@ const SeasonDetail = () => {
                                     </Table>
                                 </div>
                                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-                                  {weeklyScoresDisplayMode === 'scores' ? weeklyScoreLegendItems.map(item => (
+                                  {(weeklyScoresDisplayMode === 'scores' ? weeklyScoreLegendItems : weeklyResultLegendItems).map(item => (
                                       <div key={item.label} className="flex items-center gap-1.5">
                                           <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
                                           <span>{item.label}</span>
                                       </div>
-                                  )) : weeklyResultLegendItems.map(item => (
-                                    <div key={item.label} className="flex items-center gap-1.5">
-                                        <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
-                                        <span>{item.label}</span>
-                                    </div>
                                   ))}
                                 </div>
                                 </>
@@ -1386,3 +1405,4 @@ export default function LeagueHistoryPage() {
   // Fallback or not found content if section is invalid
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
