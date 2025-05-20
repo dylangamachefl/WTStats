@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 4,
+    "owner_name": "Mark"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 2,
+    "owner2_wins": 0,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 225.68,
+    "owner2_total_points_scored_in_h2h": 215.95999999999998,
+    "owner1_average_score_in_h2h": 112.84,
+    "owner2_average_score_in_h2h": 107.98,
+    "average_margin_of_victory_owner1": 4.86,
+    "average_margin_of_victory_owner2": 0.0,
+    "closest_matchup_margin": 0.26,
+    "largest_blowout_margin": 9.46
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1086,
+      "season_id": 2023,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 125.96,
+      "owner2_score": 116.5,
+      "owner1_team_name": "Jupiter Joe's",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1176,
+      "season_id": 2024,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 99.72,
+      "owner2_score": 99.46,
+      "owner1_team_name": "Jupiter Joe's",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

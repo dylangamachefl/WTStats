@@ -1,0 +1,72 @@
+{
+  "owner1_info": {
+    "owner_id": 5,
+    "owner_name": "Sean"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 1,
+    "owner2_wins": 2,
+    "ties": 0,
+    "total_matchups": 3,
+    "owner1_total_points_scored_in_h2h": 490.74,
+    "owner2_total_points_scored_in_h2h": 551.0799999999999,
+    "owner1_average_score_in_h2h": 163.58,
+    "owner2_average_score_in_h2h": 183.69,
+    "average_margin_of_victory_owner1": 52.18,
+    "average_margin_of_victory_owner2": 56.26,
+    "closest_matchup_margin": 50.7,
+    "largest_blowout_margin": 61.82
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1061,
+      "season_id": 2023,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 111.42,
+      "owner2_score": 162.12,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1151,
+      "season_id": 2024,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 153.62,
+      "owner2_score": 101.44,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 5,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1211,
+      "season_id": 2024,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 225.7,
+      "owner2_score": 287.52,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

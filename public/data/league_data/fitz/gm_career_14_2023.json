@@ -1,0 +1,1641 @@
+{
+  "seasonSummary": {
+    "seasonPerformance": {
+      "wins": 6,
+      "losses": 6,
+      "ties": 0,
+      "pointsFor": 1247.9,
+      "pointsAgainst": 1258.6,
+      "avgPointsPerGame": 104.0,
+      "avgPointsAgainstPerGame": 104.9,
+      "regularSeasonFinish": 6,
+      "finalStanding": 5,
+      "sosDifferential": 1.25,
+      "sosRating": "Above Avg"
+    },
+    "gameByGame": [
+      {
+        "week": 1,
+        "opponent": "Josh",
+        "points": 92.1,
+        "opponent_points": 102.9,
+        "result": "L",
+        "difference": -10.8
+      },
+      {
+        "week": 2,
+        "opponent": "Dan",
+        "points": 84.9,
+        "opponent_points": 84.7,
+        "result": "W",
+        "difference": 0.2
+      },
+      {
+        "week": 3,
+        "opponent": "Sean",
+        "points": 89.2,
+        "opponent_points": 118.9,
+        "result": "L",
+        "difference": -29.6
+      },
+      {
+        "week": 4,
+        "opponent": "Dylan",
+        "points": 121.6,
+        "opponent_points": 131.1,
+        "result": "L",
+        "difference": -9.5
+      },
+      {
+        "week": 5,
+        "opponent": "Jake",
+        "points": 87.0,
+        "opponent_points": 106.2,
+        "result": "L",
+        "difference": -19.2
+      },
+      {
+        "week": 6,
+        "opponent": "Jack",
+        "points": 91.8,
+        "opponent_points": 87.1,
+        "result": "W",
+        "difference": 4.7
+      },
+      {
+        "week": 7,
+        "opponent": "Zach",
+        "points": 128.7,
+        "opponent_points": 107.4,
+        "result": "W",
+        "difference": 21.3
+      },
+      {
+        "week": 8,
+        "opponent": "Chris",
+        "points": 110.3,
+        "opponent_points": 112.6,
+        "result": "L",
+        "difference": -2.3
+      },
+      {
+        "week": 9,
+        "opponent": "Mark",
+        "points": 116.5,
+        "opponent_points": 126.0,
+        "result": "L",
+        "difference": -9.5
+      },
+      {
+        "week": 10,
+        "opponent": "Will",
+        "points": 101.9,
+        "opponent_points": 93.4,
+        "result": "W",
+        "difference": 8.5
+      },
+      {
+        "week": 11,
+        "opponent": "Nick",
+        "points": 95.0,
+        "opponent_points": 94.6,
+        "result": "W",
+        "difference": 0.5
+      },
+      {
+        "week": 12,
+        "opponent": "Josh",
+        "points": 128.7,
+        "opponent_points": 93.7,
+        "result": "W",
+        "difference": 34.9
+      }
+    ]
+  },
+  "rosterBreakdown": {
+    "positionContributionData": [
+      {
+        "name": "QB",
+        "startedPoints": 231.5
+      },
+      {
+        "name": "RB",
+        "startedPoints": 294.4
+      },
+      {
+        "name": "WR",
+        "startedPoints": 294.1
+      },
+      {
+        "name": "TE",
+        "startedPoints": 88.3
+      },
+      {
+        "name": "FLEX",
+        "startedPoints": 111.1
+      },
+      {
+        "name": "K",
+        "startedPoints": 105.5
+      },
+      {
+        "name": "DST",
+        "startedPoints": 123.0
+      }
+    ],
+    "leagueAvgPositionData": [
+      {
+        "name": "QB",
+        "leagueAvg": 226.6
+      },
+      {
+        "name": "RB",
+        "leagueAvg": 289.0
+      },
+      {
+        "name": "WR",
+        "leagueAvg": 302.9
+      },
+      {
+        "name": "TE",
+        "leagueAvg": 104.1
+      },
+      {
+        "name": "FLEX",
+        "leagueAvg": 129.0
+      },
+      {
+        "name": "K",
+        "leagueAvg": 94.7
+      },
+      {
+        "name": "DST",
+        "leagueAvg": 97.2
+      }
+    ],
+    "rosterPlayerData": [
+      {
+        "id": 23200,
+        "name": "Jahmyr Gibbs",
+        "position": "RB",
+        "finish": "RB10",
+        "gamesStarted": 9,
+        "totalPoints": 134.9
+      },
+      {
+        "id": 18878,
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "finish": "RB24",
+        "gamesStarted": 8,
+        "totalPoints": 132.2
+      },
+      {
+        "id": 19802,
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "finish": "WR17",
+        "gamesStarted": 11,
+        "totalPoints": 124.6
+      },
+      {
+        "id": 3,
+        "name": "Ravens D/ST",
+        "position": "DST",
+        "finish": "DST1",
+        "gamesStarted": 12,
+        "totalPoints": 123.0
+      },
+      {
+        "id": 23239,
+        "name": "C.J. Stroud",
+        "position": "QB",
+        "finish": "QB9",
+        "gamesStarted": 5,
+        "totalPoints": 121.9
+      },
+      {
+        "id": 14688,
+        "name": "Justin Tucker",
+        "position": "K",
+        "finish": "K5",
+        "gamesStarted": 12,
+        "totalPoints": 105.5
+      },
+      {
+        "id": 21685,
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "finish": "WR26",
+        "gamesStarted": 5,
+        "totalPoints": 92.1
+      },
+      {
+        "id": 19800,
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "finish": "WR28",
+        "gamesStarted": 7,
+        "totalPoints": 77.3
+      },
+      {
+        "id": 24117,
+        "name": "Anthony Richardson",
+        "position": "QB",
+        "finish": "QB39",
+        "gamesStarted": 4,
+        "totalPoints": 73.7
+      },
+      {
+        "id": 19863,
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "finish": "TE15",
+        "gamesStarted": 9,
+        "totalPoints": 72.0
+      },
+      {
+        "id": 23120,
+        "name": "Zay Flowers",
+        "position": "WR",
+        "finish": "WR30",
+        "gamesStarted": 7,
+        "totalPoints": 66.6
+      },
+      {
+        "id": 21077,
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "finish": "WR43",
+        "gamesStarted": 5,
+        "totalPoints": 36.6
+      },
+      {
+        "id": 14895,
+        "name": "Geno Smith",
+        "position": "QB",
+        "finish": "QB19",
+        "gamesStarted": 2,
+        "totalPoints": 25.8
+      },
+      {
+        "id": 16656,
+        "name": "Logan Thomas",
+        "position": "TE",
+        "finish": "TE17",
+        "gamesStarted": 3,
+        "totalPoints": 16.3
+      },
+      {
+        "id": 21564,
+        "name": "Craig Reynolds",
+        "position": "RB",
+        "finish": "RB81",
+        "gamesStarted": 1,
+        "totalPoints": 11.2
+      },
+      {
+        "id": 19790,
+        "name": "Baker Mayfield",
+        "position": "QB",
+        "finish": "QB10",
+        "gamesStarted": 1,
+        "totalPoints": 10.0
+      },
+      {
+        "id": 21861,
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "finish": "RB45",
+        "gamesStarted": 2,
+        "totalPoints": 8.2
+      },
+      {
+        "id": 24180,
+        "name": "DeMario Douglas",
+        "position": "WR",
+        "finish": "WR74",
+        "gamesStarted": 1,
+        "totalPoints": 8.0
+      },
+      {
+        "id": 24238,
+        "name": "Kendre Miller",
+        "position": "RB",
+        "finish": "RB71",
+        "gamesStarted": 1,
+        "totalPoints": 3.9
+      },
+      {
+        "id": 24609,
+        "name": "Emari Demercado",
+        "position": "RB",
+        "finish": "RB60",
+        "gamesStarted": 1,
+        "totalPoints": 2.2
+      },
+      {
+        "id": 20159,
+        "name": "Mike Boone",
+        "position": "RB",
+        "finish": "RB114",
+        "gamesStarted": 1,
+        "totalPoints": 1.0
+      },
+      {
+        "id": 22560,
+        "name": "Keaontay Ingram",
+        "position": "RB",
+        "finish": "RB104",
+        "gamesStarted": 1,
+        "totalPoints": 0.8
+      }
+    ]
+  },
+  "playerPerformance": {
+    "playerSummaryPerformance": [
+      {
+        "playerId": 23239,
+        "name": "C.J. Stroud",
+        "position": "QB",
+        "avgActual": 24.4,
+        "avgProjected": 18.5,
+        "avgDifference": 5.8,
+        "percentBeatProjection": 60.0,
+        "boomWeeks": 2,
+        "bustWeeks": 2
+      },
+      {
+        "playerId": 21685,
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "avgActual": 18.4,
+        "avgProjected": 14.9,
+        "avgDifference": 3.5,
+        "percentBeatProjection": 80.0,
+        "boomWeeks": 3,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 24117,
+        "name": "Anthony Richardson",
+        "position": "QB",
+        "avgActual": 18.4,
+        "avgProjected": 14.8,
+        "avgDifference": 3.6,
+        "percentBeatProjection": 50.0,
+        "boomWeeks": 2,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 18878,
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "avgActual": 16.5,
+        "avgProjected": 14.6,
+        "avgDifference": 1.9,
+        "percentBeatProjection": 62.5,
+        "boomWeeks": 2,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 23200,
+        "name": "Jahmyr Gibbs",
+        "position": "RB",
+        "avgActual": 15.0,
+        "avgProjected": 11.8,
+        "avgDifference": 3.2,
+        "percentBeatProjection": 55.6,
+        "boomWeeks": 4,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 14895,
+        "name": "Geno Smith",
+        "position": "QB",
+        "avgActual": 12.9,
+        "avgProjected": 16.8,
+        "avgDifference": -3.9,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 19802,
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "avgActual": 11.3,
+        "avgProjected": 10.4,
+        "avgDifference": 0.9,
+        "percentBeatProjection": 45.5,
+        "boomWeeks": 4,
+        "bustWeeks": 5
+      },
+      {
+        "playerId": 21564,
+        "name": "Craig Reynolds",
+        "position": "RB",
+        "avgActual": 11.2,
+        "avgProjected": 5.1,
+        "avgDifference": 6.1,
+        "percentBeatProjection": 100.0,
+        "boomWeeks": 1,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 19800,
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "avgActual": 11.0,
+        "avgProjected": 10.1,
+        "avgDifference": 0.9,
+        "percentBeatProjection": 42.9,
+        "boomWeeks": 2,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 3,
+        "name": "Ravens D/ST",
+        "position": "DST",
+        "avgActual": 10.2,
+        "avgProjected": 6.2,
+        "avgDifference": 4.1,
+        "percentBeatProjection": 58.3,
+        "boomWeeks": 6,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 19790,
+        "name": "Baker Mayfield",
+        "position": "QB",
+        "avgActual": 10.0,
+        "avgProjected": 15.2,
+        "avgDifference": -5.2,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 23120,
+        "name": "Zay Flowers",
+        "position": "WR",
+        "avgActual": 9.5,
+        "avgProjected": 10.8,
+        "avgDifference": -1.3,
+        "percentBeatProjection": 42.9,
+        "boomWeeks": 1,
+        "bustWeeks": 2
+      },
+      {
+        "playerId": 14688,
+        "name": "Justin Tucker",
+        "position": "K",
+        "avgActual": 8.8,
+        "avgProjected": 8.7,
+        "avgDifference": 0.1,
+        "percentBeatProjection": 41.7,
+        "boomWeeks": 2,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 19863,
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "avgActual": 8.0,
+        "avgProjected": 7.3,
+        "avgDifference": 0.7,
+        "percentBeatProjection": 22.2,
+        "boomWeeks": 2,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 24180,
+        "name": "DeMario Douglas",
+        "position": "WR",
+        "avgActual": 8.0,
+        "avgProjected": 8.7,
+        "avgDifference": -0.7,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 21077,
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "avgActual": 7.3,
+        "avgProjected": 8.2,
+        "avgDifference": -0.9,
+        "percentBeatProjection": 40.0,
+        "boomWeeks": 2,
+        "bustWeeks": 2
+      },
+      {
+        "playerId": 16656,
+        "name": "Logan Thomas",
+        "position": "TE",
+        "avgActual": 5.4,
+        "avgProjected": 7.3,
+        "avgDifference": -1.9,
+        "percentBeatProjection": 33.3,
+        "boomWeeks": 0,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 21861,
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "avgActual": 4.1,
+        "avgProjected": 3.6,
+        "avgDifference": 0.5,
+        "percentBeatProjection": 50.0,
+        "boomWeeks": 0,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 24238,
+        "name": "Kendre Miller",
+        "position": "RB",
+        "avgActual": 3.9,
+        "avgProjected": 7.1,
+        "avgDifference": -3.2,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 24609,
+        "name": "Emari Demercado",
+        "position": "RB",
+        "avgActual": 2.2,
+        "avgProjected": 9.0,
+        "avgDifference": -6.8,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 1
+      },
+      {
+        "playerId": 20159,
+        "name": "Mike Boone",
+        "position": "RB",
+        "avgActual": 1.0,
+        "avgProjected": 5.9,
+        "avgDifference": -4.9,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 0
+      },
+      {
+        "playerId": 22560,
+        "name": "Keaontay Ingram",
+        "position": "RB",
+        "avgActual": 0.8,
+        "avgProjected": 8.7,
+        "avgDifference": -7.9,
+        "percentBeatProjection": 0.0,
+        "boomWeeks": 0,
+        "bustWeeks": 1
+      }
+    ],
+    "overPerformer": {
+      "name": "C.J. Stroud",
+      "avgDifference": 5.8
+    },
+    "underPerformer": {
+      "name": "Logan Thomas",
+      "avgDifference": -1.9
+    }
+  },
+  "lineupOptimization": {
+    "weeklyOptimization": [
+      {
+        "week": 1,
+        "optimal": 101.32,
+        "actual": 92.12,
+        "efficiency": 90.9,
+        "pointsLeft": 9.2,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 2,
+        "optimal": 91.94,
+        "actual": 84.94,
+        "efficiency": 92.4,
+        "pointsLeft": 7.0,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 3,
+        "optimal": 89.24,
+        "actual": 89.24,
+        "efficiency": 100.0,
+        "pointsLeft": 0.0,
+        "correctDecisions": 9,
+        "totalDecisions": 9
+      },
+      {
+        "week": 4,
+        "optimal": 121.6,
+        "actual": 121.6,
+        "efficiency": 100.0,
+        "pointsLeft": 0.0,
+        "correctDecisions": 9,
+        "totalDecisions": 9
+      },
+      {
+        "week": 5,
+        "optimal": 101.72,
+        "actual": 87.02,
+        "efficiency": 85.5,
+        "pointsLeft": 14.7,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 6,
+        "optimal": 100.86,
+        "actual": 91.84,
+        "efficiency": 91.1,
+        "pointsLeft": 9.0,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 7,
+        "optimal": 138.06,
+        "actual": 128.66,
+        "efficiency": 93.2,
+        "pointsLeft": 9.4,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 8,
+        "optimal": 119.36,
+        "actual": 110.3,
+        "efficiency": 92.4,
+        "pointsLeft": 9.1,
+        "correctDecisions": 7,
+        "totalDecisions": 9
+      },
+      {
+        "week": 9,
+        "optimal": 119.3,
+        "actual": 116.5,
+        "efficiency": 97.7,
+        "pointsLeft": 2.8,
+        "correctDecisions": 8,
+        "totalDecisions": 9
+      },
+      {
+        "week": 10,
+        "optimal": 125.46,
+        "actual": 101.94,
+        "efficiency": 81.3,
+        "pointsLeft": 23.5,
+        "correctDecisions": 6,
+        "totalDecisions": 9
+      },
+      {
+        "week": 11,
+        "optimal": 107.04,
+        "actual": 95.04,
+        "efficiency": 88.8,
+        "pointsLeft": 12.0,
+        "correctDecisions": 8,
+        "totalDecisions": 9
+      },
+      {
+        "week": 12,
+        "optimal": 129.56,
+        "actual": 128.66,
+        "efficiency": 99.3,
+        "pointsLeft": 0.9,
+        "correctDecisions": 8,
+        "totalDecisions": 9
+      }
+    ],
+    "feelingItSummary": {
+      "totalStarts": 2,
+      "successRate": 50.0,
+      "avgPointsGainedLost": -1.1,
+      "avgProjectionDifference": -1.5,
+      "details": [
+        {
+          "week": 3,
+          "starterName": "Kendre Miller",
+          "starterActual": 3.9,
+          "starterProjected": 7.1,
+          "benchName": "Craig Reynolds",
+          "benchActual": 1.5,
+          "benchProjected": 8.7,
+          "pointsDifference": 2.4,
+          "projectionDifference": -1.6
+        },
+        {
+          "week": 10,
+          "starterName": "Zay Flowers",
+          "starterActual": 9.8,
+          "starterProjected": 8.9,
+          "benchName": "Courtland Sutton",
+          "benchActual": 14.3,
+          "benchProjected": 10.3,
+          "pointsDifference": -4.5,
+          "projectionDifference": -1.4
+        }
+      ]
+    }
+  },
+  "positionalAdvantage": {
+    "weeklyPositionalAdvantage": [
+      {
+        "week": 1,
+        "QB": 1.4,
+        "RB": -11.2,
+        "WR": 29.5,
+        "TE": -6.8,
+        "FLEX": 1.6,
+        "K": 2.7,
+        "DST": -28.0,
+        "total_diff": -10.8
+      },
+      {
+        "week": 2,
+        "QB": -7.5,
+        "RB": 1.7,
+        "WR": 6.1,
+        "TE": 0.7,
+        "FLEX": 2.3,
+        "K": -1.1,
+        "DST": -2.0,
+        "total_diff": 0.2
+      },
+      {
+        "week": 3,
+        "QB": -18.3,
+        "RB": -17.2,
+        "WR": 10.4,
+        "TE": -4.2,
+        "FLEX": 10.6,
+        "K": -6.9,
+        "DST": -4.0,
+        "total_diff": -29.6
+      },
+      {
+        "week": 4,
+        "QB": 7.2,
+        "RB": -18.6,
+        "WR": -6.6,
+        "TE": 2.9,
+        "FLEX": -0.5,
+        "K": -6.9,
+        "DST": 13.0,
+        "total_diff": -9.5
+      },
+      {
+        "week": 5,
+        "QB": -21.0,
+        "RB": 22.4,
+        "WR": -6.4,
+        "TE": 3.5,
+        "FLEX": -13.0,
+        "K": 1.3,
+        "DST": -6.0,
+        "total_diff": -19.2
+      },
+      {
+        "week": 6,
+        "QB": -2.8,
+        "RB": 0.9,
+        "WR": -4.7,
+        "TE": -5.6,
+        "FLEX": 0.8,
+        "K": 10.1,
+        "DST": 6.0,
+        "total_diff": 4.7
+      },
+      {
+        "week": 7,
+        "QB": -10.5,
+        "RB": 13.1,
+        "WR": 3.6,
+        "TE": 12.0,
+        "FLEX": -12.6,
+        "K": 1.7,
+        "DST": 14.0,
+        "total_diff": 21.3
+      },
+      {
+        "week": 8,
+        "QB": -6.4,
+        "RB": 33.6,
+        "WR": -12.0,
+        "TE": -7.2,
+        "FLEX": -4.4,
+        "K": 1.1,
+        "DST": -7.0,
+        "total_diff": -2.3
+      },
+      {
+        "week": 9,
+        "QB": 13.4,
+        "RB": -19.3,
+        "WR": -19.5,
+        "TE": 3.6,
+        "FLEX": -3.9,
+        "K": 1.2,
+        "DST": 15.0,
+        "total_diff": -9.5
+      },
+      {
+        "week": 10,
+        "QB": 8.0,
+        "RB": 16.4,
+        "WR": -11.7,
+        "TE": 1.1,
+        "FLEX": -14.9,
+        "K": 1.6,
+        "DST": 8.0,
+        "total_diff": 8.5
+      },
+      {
+        "week": 11,
+        "QB": -5.8,
+        "RB": -13.4,
+        "WR": 11.5,
+        "TE": 3.8,
+        "FLEX": 1.4,
+        "K": 1.0,
+        "DST": 2.0,
+        "total_diff": 0.5
+      },
+      {
+        "week": 12,
+        "QB": 10.0,
+        "RB": 7.3,
+        "WR": 1.6,
+        "TE": -3.5,
+        "FLEX": 16.2,
+        "K": 4.3,
+        "DST": -1.0,
+        "total_diff": 34.9
+      },
+      {
+        "QB": -32.3,
+        "RB": 15.7,
+        "WR": 1.8,
+        "TE": 0.3,
+        "FLEX": -16.4,
+        "K": 10.1,
+        "DST": 10.0,
+        "total_diff": -10.8,
+        "week": "Total"
+      }
+    ],
+    "cumulativeWeeklyPositionalAdvantage": [
+      {
+        "position": "QB",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": 1.4
+          },
+          {
+            "week": 2,
+            "value": -6.1
+          },
+          {
+            "week": 3,
+            "value": -24.4
+          },
+          {
+            "week": 4,
+            "value": -17.2
+          },
+          {
+            "week": 5,
+            "value": -38.2
+          },
+          {
+            "week": 6,
+            "value": -41.0
+          },
+          {
+            "week": 7,
+            "value": -51.5
+          },
+          {
+            "week": 8,
+            "value": -57.9
+          },
+          {
+            "week": 9,
+            "value": -44.5
+          },
+          {
+            "week": 10,
+            "value": -36.5
+          },
+          {
+            "week": 11,
+            "value": -42.3
+          },
+          {
+            "week": 12,
+            "value": -32.3
+          }
+        ]
+      },
+      {
+        "position": "RB",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": -11.2
+          },
+          {
+            "week": 2,
+            "value": -9.5
+          },
+          {
+            "week": 3,
+            "value": -26.7
+          },
+          {
+            "week": 4,
+            "value": -45.3
+          },
+          {
+            "week": 5,
+            "value": -22.9
+          },
+          {
+            "week": 6,
+            "value": -22.0
+          },
+          {
+            "week": 7,
+            "value": -8.9
+          },
+          {
+            "week": 8,
+            "value": 24.7
+          },
+          {
+            "week": 9,
+            "value": 5.4
+          },
+          {
+            "week": 10,
+            "value": 21.8
+          },
+          {
+            "week": 11,
+            "value": 8.4
+          },
+          {
+            "week": 12,
+            "value": 15.7
+          }
+        ]
+      },
+      {
+        "position": "WR",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": 29.5
+          },
+          {
+            "week": 2,
+            "value": 35.6
+          },
+          {
+            "week": 3,
+            "value": 46.0
+          },
+          {
+            "week": 4,
+            "value": 39.4
+          },
+          {
+            "week": 5,
+            "value": 33.0
+          },
+          {
+            "week": 6,
+            "value": 28.3
+          },
+          {
+            "week": 7,
+            "value": 31.9
+          },
+          {
+            "week": 8,
+            "value": 19.9
+          },
+          {
+            "week": 9,
+            "value": 0.4
+          },
+          {
+            "week": 10,
+            "value": -11.3
+          },
+          {
+            "week": 11,
+            "value": 0.2
+          },
+          {
+            "week": 12,
+            "value": 1.8
+          }
+        ]
+      },
+      {
+        "position": "TE",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": -6.8
+          },
+          {
+            "week": 2,
+            "value": -6.1
+          },
+          {
+            "week": 3,
+            "value": -10.3
+          },
+          {
+            "week": 4,
+            "value": -7.4
+          },
+          {
+            "week": 5,
+            "value": -3.9
+          },
+          {
+            "week": 6,
+            "value": -9.5
+          },
+          {
+            "week": 7,
+            "value": 2.5
+          },
+          {
+            "week": 8,
+            "value": -4.7
+          },
+          {
+            "week": 9,
+            "value": -1.1
+          },
+          {
+            "week": 10,
+            "value": 0.0
+          },
+          {
+            "week": 11,
+            "value": 3.8
+          },
+          {
+            "week": 12,
+            "value": 0.3
+          }
+        ]
+      },
+      {
+        "position": "FLEX",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": 1.6
+          },
+          {
+            "week": 2,
+            "value": 3.9
+          },
+          {
+            "week": 3,
+            "value": 14.5
+          },
+          {
+            "week": 4,
+            "value": 14.0
+          },
+          {
+            "week": 5,
+            "value": 1.0
+          },
+          {
+            "week": 6,
+            "value": 1.8
+          },
+          {
+            "week": 7,
+            "value": -10.8
+          },
+          {
+            "week": 8,
+            "value": -15.2
+          },
+          {
+            "week": 9,
+            "value": -19.1
+          },
+          {
+            "week": 10,
+            "value": -34.0
+          },
+          {
+            "week": 11,
+            "value": -32.6
+          },
+          {
+            "week": 12,
+            "value": -16.4
+          }
+        ]
+      },
+      {
+        "position": "K",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": 2.7
+          },
+          {
+            "week": 2,
+            "value": 1.6
+          },
+          {
+            "week": 3,
+            "value": -5.3
+          },
+          {
+            "week": 4,
+            "value": -12.2
+          },
+          {
+            "week": 5,
+            "value": -10.9
+          },
+          {
+            "week": 6,
+            "value": -0.8
+          },
+          {
+            "week": 7,
+            "value": 0.9
+          },
+          {
+            "week": 8,
+            "value": 2.0
+          },
+          {
+            "week": 9,
+            "value": 3.2
+          },
+          {
+            "week": 10,
+            "value": 4.8
+          },
+          {
+            "week": 11,
+            "value": 5.8
+          },
+          {
+            "week": 12,
+            "value": 10.1
+          }
+        ]
+      },
+      {
+        "position": "DST",
+        "data": [
+          {
+            "week": 0,
+            "value": 0.0
+          },
+          {
+            "week": 1,
+            "value": -28.0
+          },
+          {
+            "week": 2,
+            "value": -30.0
+          },
+          {
+            "week": 3,
+            "value": -34.0
+          },
+          {
+            "week": 4,
+            "value": -21.0
+          },
+          {
+            "week": 5,
+            "value": -27.0
+          },
+          {
+            "week": 6,
+            "value": -21.0
+          },
+          {
+            "week": 7,
+            "value": -7.0
+          },
+          {
+            "week": 8,
+            "value": -14.0
+          },
+          {
+            "week": 9,
+            "value": 1.0
+          },
+          {
+            "week": 10,
+            "value": 9.0
+          },
+          {
+            "week": 11,
+            "value": 11.0
+          },
+          {
+            "week": 12,
+            "value": 10.0
+          }
+        ]
+      }
+    ]
+  },
+  "streamingSuccess": {
+    "streamingSummary": [
+      {
+        "position": "QB",
+        "status": "streaming_detected",
+        "uniqueStarters": 4,
+        "streamedStartsCount": 1,
+        "avgPtsGm": 10.0,
+        "avgPtsLeague": 19.9,
+        "netPtsVsAvg": -9.8,
+        "hitRate": 0.0
+      },
+      {
+        "position": "TE",
+        "status": "streaming_detected",
+        "uniqueStarters": 2,
+        "streamedStartsCount": 3,
+        "avgPtsGm": 5.4,
+        "avgPtsLeague": 7.4,
+        "netPtsVsAvg": -2.0,
+        "hitRate": 33.3
+      },
+      {
+        "position": "K",
+        "status": "no_streaming_starts_qualified",
+        "uniqueStarters": 1,
+        "streamedStartsCount": 0,
+        "avgPtsGm": null,
+        "avgPtsLeague": null,
+        "netPtsVsAvg": null,
+        "hitRate": null
+      },
+      {
+        "position": "DST",
+        "status": "no_streaming_starts_qualified",
+        "uniqueStarters": 1,
+        "streamedStartsCount": 0,
+        "avgPtsGm": null,
+        "avgPtsLeague": null,
+        "netPtsVsAvg": null,
+        "hitRate": null
+      }
+    ],
+    "streamingWeeklyPerformance": {
+      "QB": [
+        {
+          "week": 1,
+          "gmStarterPts": 20.9,
+          "leagueAvgPts": 14.0,
+          "playerName": "Anthony Richardson"
+        },
+        {
+          "week": 2,
+          "gmStarterPts": 17.7,
+          "leagueAvgPts": 17.8,
+          "playerName": "Anthony Richardson"
+        },
+        {
+          "week": 3,
+          "gmStarterPts": 10.0,
+          "leagueAvgPts": 19.9,
+          "playerName": "Baker Mayfield"
+        },
+        {
+          "week": 4,
+          "gmStarterPts": 30.6,
+          "leagueAvgPts": 21.3,
+          "playerName": "Anthony Richardson"
+        },
+        {
+          "week": 5,
+          "gmStarterPts": 4.4,
+          "leagueAvgPts": 19.8,
+          "playerName": "Anthony Richardson"
+        },
+        {
+          "week": 6,
+          "gmStarterPts": 11.0,
+          "leagueAvgPts": 15.4,
+          "playerName": "Geno Smith"
+        },
+        {
+          "week": 7,
+          "gmStarterPts": 14.8,
+          "leagueAvgPts": 17.9,
+          "playerName": "Geno Smith"
+        },
+        {
+          "week": 8,
+          "gmStarterPts": 12.9,
+          "leagueAvgPts": 19.3,
+          "playerName": "C.J. Stroud"
+        },
+        {
+          "week": 9,
+          "gmStarterPts": 41.8,
+          "leagueAvgPts": 19.6,
+          "playerName": "C.J. Stroud"
+        },
+        {
+          "week": 10,
+          "gmStarterPts": 21.0,
+          "leagueAvgPts": 18.8,
+          "playerName": "C.J. Stroud"
+        },
+        {
+          "week": 11,
+          "gmStarterPts": 15.3,
+          "leagueAvgPts": 19.4,
+          "playerName": "C.J. Stroud"
+        },
+        {
+          "week": 12,
+          "gmStarterPts": 30.9,
+          "leagueAvgPts": 20.0,
+          "playerName": "C.J. Stroud"
+        }
+      ],
+      "TE": [
+        {
+          "week": 1,
+          "gmStarterPts": 0.0,
+          "leagueAvgPts": 4.8,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 2,
+          "gmStarterPts": 5.2,
+          "leagueAvgPts": 8.3,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 3,
+          "gmStarterPts": 6.6,
+          "leagueAvgPts": 8.5,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 4,
+          "gmStarterPts": 3.5,
+          "leagueAvgPts": 6.1,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 5,
+          "gmStarterPts": 21.7,
+          "leagueAvgPts": 12.4,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 6,
+          "gmStarterPts": 6.7,
+          "leagueAvgPts": 6.2,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 7,
+          "gmStarterPts": 16.2,
+          "leagueAvgPts": 12.0,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 8,
+          "gmStarterPts": 5.6,
+          "leagueAvgPts": 11.5,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 9,
+          "gmStarterPts": 6.5,
+          "leagueAvgPts": 12.2,
+          "playerName": "Dallas Goedert"
+        },
+        {
+          "week": 10,
+          "gmStarterPts": 6.5,
+          "leagueAvgPts": 8.8,
+          "playerName": "Logan Thomas"
+        },
+        {
+          "week": 11,
+          "gmStarterPts": 7.3,
+          "leagueAvgPts": 6.8,
+          "playerName": "Logan Thomas"
+        },
+        {
+          "week": 12,
+          "gmStarterPts": 2.5,
+          "leagueAvgPts": 6.8,
+          "playerName": "Logan Thomas"
+        }
+      ],
+      "K": [
+        {
+          "week": 1,
+          "gmStarterPts": 5.9,
+          "leagueAvgPts": 8.7,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 2,
+          "gmStarterPts": 10.4,
+          "leagueAvgPts": 8.7,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 3,
+          "gmStarterPts": 6.0,
+          "leagueAvgPts": 9.6,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 4,
+          "gmStarterPts": 4.0,
+          "leagueAvgPts": 8.1,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 5,
+          "gmStarterPts": 3.3,
+          "leagueAvgPts": 6.4,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 6,
+          "gmStarterPts": 16.7,
+          "leagueAvgPts": 9.5,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 7,
+          "gmStarterPts": 8.2,
+          "leagueAvgPts": 5.9,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 8,
+          "gmStarterPts": 7.8,
+          "leagueAvgPts": 8.1,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 9,
+          "gmStarterPts": 15.3,
+          "leagueAvgPts": 7.4,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 10,
+          "gmStarterPts": 6.7,
+          "leagueAvgPts": 8.2,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 11,
+          "gmStarterPts": 11.2,
+          "leagueAvgPts": 7.1,
+          "playerName": "Justin Tucker"
+        },
+        {
+          "week": 12,
+          "gmStarterPts": 10.0,
+          "leagueAvgPts": 7.0,
+          "playerName": "Justin Tucker"
+        }
+      ],
+      "DST": [
+        {
+          "week": 1,
+          "gmStarterPts": 11.0,
+          "leagueAvgPts": 10.2,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 2,
+          "gmStarterPts": 2.0,
+          "leagueAvgPts": 6.5,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 3,
+          "gmStarterPts": 7.0,
+          "leagueAvgPts": 7.2,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 4,
+          "gmStarterPts": 17.0,
+          "leagueAvgPts": 6.9,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 5,
+          "gmStarterPts": 6.0,
+          "leagueAvgPts": 5.7,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 6,
+          "gmStarterPts": 10.0,
+          "leagueAvgPts": 7.3,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 7,
+          "gmStarterPts": 16.0,
+          "leagueAvgPts": 8.5,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 8,
+          "gmStarterPts": 6.0,
+          "leagueAvgPts": 7.1,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 9,
+          "gmStarterPts": 15.0,
+          "leagueAvgPts": 10.4,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 10,
+          "gmStarterPts": 13.0,
+          "leagueAvgPts": 8.2,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 11,
+          "gmStarterPts": 5.0,
+          "leagueAvgPts": 8.4,
+          "playerName": "Ravens D/ST"
+        },
+        {
+          "week": 12,
+          "gmStarterPts": 15.0,
+          "leagueAvgPts": 10.8,
+          "playerName": "Ravens D/ST"
+        }
+      ]
+    }
+  }
+}

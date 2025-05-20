@@ -1,0 +1,138 @@
+{
+  "owner1_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "owner2_info": {
+    "owner_id": 11,
+    "owner_name": "Chris"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 3,
+    "owner2_wins": 4,
+    "ties": 0,
+    "total_matchups": 7,
+    "owner1_total_points_scored_in_h2h": 737.0,
+    "owner2_total_points_scored_in_h2h": 683.7,
+    "owner1_average_score_in_h2h": 105.29,
+    "owner2_average_score_in_h2h": 97.67,
+    "average_margin_of_victory_owner1": 33.33,
+    "average_margin_of_victory_owner2": 11.68,
+    "closest_matchup_margin": 3.0,
+    "largest_blowout_margin": 54.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 5,
+      "season_id": 2009,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 85.0,
+      "owner2_score": 88.0,
+      "owner1_team_name": "It'sColdOutside AndInMyHeart",
+      "owner2_team_name": "Jupiter Yawhos",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 20,
+      "season_id": 2009,
+      "nfl_week": 4,
+      "fantasy_week": "4",
+      "owner1_score": 103.0,
+      "owner2_score": 91.0,
+      "owner1_team_name": "It'sColdOutside AndInMyHeart",
+      "owner2_team_name": "Jupiter Yawhos",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 71,
+      "season_id": 2009,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 179.0,
+      "owner2_score": 187.0,
+      "owner1_team_name": "It'sColdOutside AndInMyHeart",
+      "owner2_team_name": "Jupiter Yawhos",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": true
+    },
+    {
+      "matchup_id": 120,
+      "season_id": 2010,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 66.0,
+      "owner2_score": 90.0,
+      "owner1_team_name": "A LAC Thumper",
+      "owner2_team_name": "OMG.... CUBBBBSSSS!!!",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 195,
+      "season_id": 2011,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 104.0,
+      "owner2_score": 70.0,
+      "owner1_team_name": "WutsItCalledWen UAlmostWin.....",
+      "owner2_team_name": "Mr. Spoiler",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 270,
+      "season_id": 2012,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 106.0,
+      "owner2_score": 52.0,
+      "owner1_team_name": "Mexico Madness",
+      "owner2_team_name": "Most  Hated",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 345,
+      "season_id": 2013,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 94.0,
+      "owner2_score": 105.7,
+      "owner1_team_name": "Better Than Jake",
+      "owner2_team_name": "Most  Hated",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 1,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 1,
+    "matchups_details": [
+      {
+        "matchup_id": 71,
+        "season_id": 2009,
+        "nfl_week": "(16,17)",
+        "fantasy_week": "Round 2",
+        "owner1_score": 179.0,
+        "owner2_score": 187.0,
+        "owner1_team_name": "It'sColdOutside AndInMyHeart",
+        "owner2_team_name": "Jupiter Yawhos",
+        "winner_owner_id": 11,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": true
+      }
+    ]
+  }
+}

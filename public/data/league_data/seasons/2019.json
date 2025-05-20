@@ -1,0 +1,1132 @@
+{
+  "seasonData": {
+    "year": 2019,
+    "championName": "Chris",
+    "runnerUp": "Mark",
+    "teams": 10,
+    "regularSeasonWeeks": 12
+  },
+  "standingsData": [
+    {
+      "season_id": 2019,
+      "owner_name": "Jack",
+      "wt_team_name": "Jupiter Jay Joy",
+      "regular_season_wins": 11,
+      "regular_season_losses": 1,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1423.36,
+      "regular_season_points_against": 1093.92,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Josh",
+      "wt_team_name": "Gauntlet Commish",
+      "regular_season_wins": 7,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1230.28,
+      "regular_season_points_against": 1125.36,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 7,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1185.74,
+      "regular_season_points_against": 1143.4,
+      "regular_season_finish": 3,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Mark",
+      "wt_team_name": "Jupiter Joe's",
+      "regular_season_wins": 7,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1175.0,
+      "regular_season_points_against": 1143.76,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Dylan",
+      "wt_team_name": "We did it baby leh goooooo",
+      "regular_season_wins": 7,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1159.5,
+      "regular_season_points_against": 1091.1,
+      "regular_season_finish": 5,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Will",
+      "wt_team_name": "Mahomies .",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1166.24,
+      "regular_season_points_against": 1120.58,
+      "regular_season_finish": 6,
+      "lastFive": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Zach",
+      "wt_team_name": "MouseRat  FC",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1106.08,
+      "regular_season_points_against": 1174.24,
+      "regular_season_finish": 7,
+      "lastFive": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Sean",
+      "wt_team_name": "2007 New York Giants",
+      "regular_season_wins": 5,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1203.6,
+      "regular_season_points_against": 1211.26,
+      "regular_season_finish": 8,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Nick",
+      "wt_team_name": "Jupiter's Finest",
+      "regular_season_wins": 2,
+      "regular_season_losses": 10,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1029.18,
+      "regular_season_points_against": 1233.4,
+      "regular_season_finish": 9,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2019,
+      "owner_name": "Jake",
+      "wt_team_name": "AP 's Daycare",
+      "regular_season_wins": 2,
+      "regular_season_losses": 10,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 897.08,
+      "regular_season_points_against": 1239.04,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Jupiter Jay Joy",
+          "owner": "Jack",
+          "score": 170.5
+        },
+        "away": {
+          "seed": 4,
+          "name": "Jupiter Joe's",
+          "owner": "Mark",
+          "score": 227.2
+        }
+      },
+      {
+        "home": {
+          "seed": 2,
+          "name": "Gauntlet Commish",
+          "owner": "Josh",
+          "score": 180.3
+        },
+        "away": {
+          "seed": 3,
+          "name": "All Madden Ultimate Team",
+          "owner": "Chris",
+          "score": 223.2
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 3,
+          "name": "All Madden Ultimate Team",
+          "owner": "Chris",
+          "score": 267.4
+        },
+        "away": {
+          "seed": 4,
+          "name": "Jupiter Joe's",
+          "owner": "Mark",
+          "score": 201.7
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Jupiter Jay Joy",
+      "Gauntlet Commish",
+      "All Madden Ultimate Team",
+      "Jupiter Joe's",
+      "We did it baby leh goooooo",
+      "Mahomies .",
+      "MouseRat  FC",
+      "2007 New York Giants",
+      "Jupiter's Finest",
+      "AP 's Daycare"
+    ],
+    "scores": [
+      [
+        143.3,
+        134.02,
+        128.8,
+        87.4,
+        68.26,
+        98.72,
+        97.14,
+        80.3,
+        72.14,
+        86.62
+      ],
+      [
+        122.36,
+        96.56,
+        78.52,
+        61.34,
+        85.92,
+        113.42,
+        72.52,
+        81.92,
+        82.2,
+        77.96
+      ],
+      [
+        121.54,
+        139.24,
+        119.48,
+        77.66,
+        100.92,
+        80.16,
+        78.32,
+        164.54,
+        81.8,
+        75.14
+      ],
+      [
+        105.22,
+        77.5,
+        95.58,
+        83.3,
+        103.3,
+        85.1,
+        94.98,
+        81.1,
+        88.44,
+        92.28
+      ],
+      [
+        179.8,
+        143.94,
+        107.74,
+        109.76,
+        111.26,
+        102.74,
+        93.92,
+        78.94,
+        116.04,
+        45.92
+      ],
+      [
+        103.84,
+        99.9,
+        89.34,
+        101.74,
+        117.72,
+        101.32,
+        105.4,
+        90.6,
+        80.56,
+        104.32
+      ],
+      [
+        84.46,
+        93.92,
+        88.32,
+        94.64,
+        90.78,
+        59.64,
+        70.26,
+        129.04,
+        83.14,
+        40.62
+      ],
+      [
+        141.94,
+        112.46,
+        99.88,
+        92.48,
+        88.46,
+        93.4,
+        116.48,
+        110.08,
+        88.58,
+        82.2
+      ],
+      [
+        127.98,
+        75.74,
+        86.92,
+        120.14,
+        83.9,
+        119.7,
+        73.56,
+        116.82,
+        58.66,
+        98.34
+      ],
+      [
+        109.82,
+        61.82,
+        97.42,
+        116.44,
+        87.14,
+        118.04,
+        112.16,
+        101.68,
+        105.02,
+        42.62
+      ],
+      [
+        99.06,
+        105.16,
+        108.28,
+        88.86,
+        131.84,
+        87.58,
+        101.52,
+        79.68,
+        79.92,
+        87.3
+      ],
+      [
+        84.04,
+        90.02,
+        85.46,
+        141.24,
+        90.0,
+        106.42,
+        89.82,
+        88.9,
+        92.68,
+        63.76
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "AP 's Daycare",
+      "owner": "Jake",
+      "leagueAvgPpg": 96.5,
+      "differential": 6.8,
+      "actualOpponentsPpg": 103.2,
+      "rank": 1,
+      "rating": "Hard"
+    },
+    {
+      "team": "Jupiter's Finest",
+      "owner": "Nick",
+      "leagueAvgPpg": 96.5,
+      "differential": 6.3,
+      "actualOpponentsPpg": 102.8,
+      "rank": 2,
+      "rating": "Hard"
+    },
+    {
+      "team": "2007 New York Giants",
+      "owner": "Sean",
+      "leagueAvgPpg": 96.5,
+      "differential": 4.5,
+      "actualOpponentsPpg": 100.9,
+      "rank": 3,
+      "rating": "Hard"
+    },
+    {
+      "team": "MouseRat  FC",
+      "owner": "Zach",
+      "leagueAvgPpg": 96.5,
+      "differential": 1.4,
+      "actualOpponentsPpg": 97.8,
+      "rank": 4,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "Jupiter Joe's",
+      "owner": "Mark",
+      "leagueAvgPpg": 96.5,
+      "differential": -1.2,
+      "actualOpponentsPpg": 95.3,
+      "rank": 5,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 96.5,
+      "differential": -1.2,
+      "actualOpponentsPpg": 95.3,
+      "rank": 6,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Gauntlet Commish",
+      "owner": "Josh",
+      "leagueAvgPpg": 96.5,
+      "differential": -2.7,
+      "actualOpponentsPpg": 93.8,
+      "rank": 7,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Mahomies .",
+      "owner": "Will",
+      "leagueAvgPpg": 96.5,
+      "differential": -3.1,
+      "actualOpponentsPpg": 93.4,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Jay Joy",
+      "owner": "Jack",
+      "leagueAvgPpg": 96.5,
+      "differential": -5.3,
+      "actualOpponentsPpg": 91.2,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "We did it baby leh goooooo",
+      "owner": "Dylan",
+      "leagueAvgPpg": 96.5,
+      "differential": -5.5,
+      "actualOpponentsPpg": 90.9,
+      "rank": 10,
+      "rating": "Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "DeVante Parker",
+      "position": "WR",
+      "team": "Miami Dolphins",
+      "pickedUpBy": "Jake",
+      "week": 10,
+      "totalPoints": 174.2,
+      "rank": 1
+    },
+    {
+      "player": "A.J. Brown",
+      "position": "WR",
+      "team": "Tennessee Titans",
+      "pickedUpBy": "Jake",
+      "week": 15,
+      "totalPoints": 165.1,
+      "rank": 2
+    },
+    {
+      "player": "DJ Chark Jr.",
+      "position": "WR",
+      "team": "Jacksonville Jaguars",
+      "pickedUpBy": "Josh",
+      "week": 3,
+      "totalPoints": 152.8,
+      "rank": 3
+    },
+    {
+      "player": "Raheem Mostert",
+      "position": "RB",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": "Josh",
+      "week": 3,
+      "totalPoints": 151.2,
+      "rank": 4
+    },
+    {
+      "player": "John Brown",
+      "position": "WR",
+      "team": "Buffalo Bills",
+      "pickedUpBy": "Dylan",
+      "week": 2,
+      "totalPoints": 147.8,
+      "rank": 5
+    },
+    {
+      "player": "Terry McLaurin",
+      "position": "WR",
+      "team": "Washington Commanders",
+      "pickedUpBy": "Dylan",
+      "week": 2,
+      "totalPoints": 133.9,
+      "rank": 6
+    },
+    {
+      "player": "Steelers D/ST",
+      "position": "DST",
+      "team": "Pittsburgh Steelers",
+      "pickedUpBy": "Will",
+      "week": 5,
+      "totalPoints": 180.0,
+      "rank": 7
+    },
+    {
+      "player": "49ers D/ST",
+      "position": "DST",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": "Nick",
+      "week": 2,
+      "totalPoints": 163.0,
+      "rank": 8
+    },
+    {
+      "player": "Darren Waller",
+      "position": "TE",
+      "team": "Las Vegas Raiders",
+      "pickedUpBy": "Sean",
+      "week": 2,
+      "totalPoints": 131.0,
+      "rank": 9
+    },
+    {
+      "player": "Tyler Higbee",
+      "position": "TE",
+      "team": "Los Angeles Rams",
+      "pickedUpBy": "Chris",
+      "week": 15,
+      "totalPoints": 91.4,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Lamar Jackson",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 415.7,
+        "ppg": 27.7,
+        "bestGame": {
+          "week": 15,
+          "points": 37.1
+        }
+      },
+      {
+        "player": "Dak Prescott",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 337.8,
+        "ppg": 21.1,
+        "bestGame": {
+          "week": 1,
+          "points": 33.4
+        }
+      },
+      {
+        "player": "Russell Wilson",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": "2007 New York Giants",
+        "totalPoints": 328.6,
+        "ppg": 20.5,
+        "bestGame": {
+          "week": 3,
+          "points": 41.3
+        }
+      },
+      {
+        "player": "Deshaun Watson",
+        "team": "Houston Texans",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 320.5,
+        "ppg": 21.4,
+        "bestGame": {
+          "week": 5,
+          "points": 41.7
+        }
+      },
+      {
+        "player": "Jameis Winston",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 305.4,
+        "ppg": 19.1,
+        "bestGame": {
+          "week": 14,
+          "points": 34.7
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Christian McCaffrey",
+        "team": "Carolina Panthers",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 355.2,
+        "ppg": 22.2,
+        "bestGame": {
+          "week": 5,
+          "points": 41.7
+        }
+      },
+      {
+        "player": "Derrick Henry",
+        "team": "Tennessee Titans",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 276.6,
+        "ppg": 18.4,
+        "bestGame": {
+          "week": 17,
+          "points": 39.1
+        }
+      },
+      {
+        "player": "Aaron Jones",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter's Finest",
+        "totalPoints": 265.8,
+        "ppg": 16.6,
+        "bestGame": {
+          "week": 5,
+          "points": 42.2
+        }
+      },
+      {
+        "player": "Ezekiel Elliott",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": "We did it baby leh goooooo",
+        "totalPoints": 257.7,
+        "ppg": 16.1,
+        "bestGame": {
+          "week": 15,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Dalvin Cook",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 239.4,
+        "ppg": 17.1,
+        "bestGame": {
+          "week": 7,
+          "points": 26.9
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Michael Thomas",
+        "team": "New Orleans Saints",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 225.6,
+        "ppg": 14.1,
+        "bestGame": {
+          "week": 5,
+          "points": 30.2
+        }
+      },
+      {
+        "player": "Chris Godwin",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 190.1,
+        "ppg": 13.6,
+        "bestGame": {
+          "week": 12,
+          "points": 30.4
+        }
+      },
+      {
+        "player": "Kenny Golladay",
+        "team": "Detroit Lions",
+        "fantasyTeam": "Mahomies .",
+        "totalPoints": 183.0,
+        "ppg": 11.4,
+        "bestGame": {
+          "week": 8,
+          "points": 22.3
+        }
+      },
+      {
+        "player": "Cooper Kupp",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 176.5,
+        "ppg": 11.0,
+        "bestGame": {
+          "week": 8,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Julio Jones",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 175.1,
+        "ppg": 11.7,
+        "bestGame": {
+          "week": 15,
+          "points": 25.4
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Travis Kelce",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "Jupiter's Finest",
+        "totalPoints": 157.3,
+        "ppg": 9.8,
+        "bestGame": {
+          "week": 2,
+          "points": 16.7
+        }
+      },
+      {
+        "player": "Mark Andrews",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 143.2,
+        "ppg": 9.5,
+        "bestGame": {
+          "week": 16,
+          "points": 21.3
+        }
+      },
+      {
+        "player": "George Kittle",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": "AP 's Daycare",
+        "totalPoints": 137.5,
+        "ppg": 9.8,
+        "bestGame": {
+          "week": 12,
+          "points": 18.9
+        }
+      },
+      {
+        "player": "Darren Waller",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": "2007 New York Giants",
+        "totalPoints": 131.0,
+        "ppg": 8.2,
+        "bestGame": {
+          "week": 7,
+          "points": 24.6
+        }
+      },
+      {
+        "player": "Zach Ertz",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": "Mahomies .",
+        "totalPoints": 127.6,
+        "ppg": 8.5,
+        "bestGame": {
+          "week": 14,
+          "points": 21.1
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Harrison Butker",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "2007 New York Giants",
+        "totalPoints": 153.0,
+        "ppg": 9.6,
+        "bestGame": {
+          "week": 1,
+          "points": 16.0
+        }
+      },
+      {
+        "player": "Wil Lutz",
+        "team": "New Orleans Saints",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 150.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 1,
+          "points": 14.0
+        }
+      },
+      {
+        "player": "Justin Tucker",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 143.0,
+        "ppg": 8.9,
+        "bestGame": {
+          "week": 5,
+          "points": 14.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Patriots D/ST",
+        "team": "New England Patriots",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 224.0,
+        "ppg": 14.0,
+        "bestGame": {
+          "week": 2,
+          "points": 37.0
+        }
+      },
+      {
+        "player": "Steelers D/ST",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": "Mahomies .",
+        "totalPoints": 180.0,
+        "ppg": 11.2,
+        "bestGame": {
+          "week": 10,
+          "points": 25.0
+        }
+      },
+      {
+        "player": "49ers D/ST",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": "We did it baby leh goooooo",
+        "totalPoints": 163.0,
+        "ppg": 10.2,
+        "bestGame": {
+          "week": 1,
+          "points": 27.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Aaron Rodgers",
+      "position": "QB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": "AP 's Daycare",
+      "week": 7,
+      "points": 43.8
+    },
+    {
+      "rank": 2,
+      "player": "Aaron Jones",
+      "position": "RB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": "Jupiter's Finest",
+      "week": 5,
+      "points": 42.2
+    },
+    {
+      "rank": 3,
+      "player": "Deshaun Watson",
+      "position": "QB",
+      "team": "Houston Texans",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 5,
+      "points": 41.7
+    },
+    {
+      "rank": 4,
+      "player": "Christian McCaffrey",
+      "position": "RB",
+      "team": "Carolina Panthers",
+      "fantasyTeam": "Jupiter Jay Joy",
+      "week": 5,
+      "points": 41.7
+    },
+    {
+      "rank": 5,
+      "player": "Russell Wilson",
+      "position": "QB",
+      "team": "Seattle Seahawks",
+      "fantasyTeam": "2007 New York Giants",
+      "week": 3,
+      "points": 41.3
+    },
+    {
+      "rank": 6,
+      "player": "Drew Brees",
+      "position": "QB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": "All Madden Ultimate Team",
+      "week": 14,
+      "points": 40.1
+    },
+    {
+      "rank": 7,
+      "player": "Saquon Barkley",
+      "position": "RB",
+      "team": "New York Giants",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 16,
+      "points": 39.9
+    },
+    {
+      "rank": 8,
+      "player": "Will Fuller V",
+      "position": "WR",
+      "team": "Houston Texans",
+      "fantasyTeam": "Jupiter's Finest",
+      "week": 5,
+      "points": 39.7
+    },
+    {
+      "rank": 9,
+      "player": "Derrick Henry",
+      "position": "RB",
+      "team": "Tennessee Titans",
+      "fantasyTeam": "Jupiter Joe's",
+      "week": 17,
+      "points": 39.1
+    },
+    {
+      "rank": 10,
+      "player": "Kenyan Drake",
+      "position": "RB",
+      "team": "Arizona Cardinals",
+      "fantasyTeam": "Jupiter's Finest",
+      "week": 15,
+      "points": 38.6
+    }
+  ]
+}

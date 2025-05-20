@@ -1,0 +1,85 @@
+{
+  "owner1_info": {
+    "owner_id": 7,
+    "owner_name": "Will"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 0,
+    "owner2_wins": 4,
+    "ties": 0,
+    "total_matchups": 4,
+    "owner1_total_points_scored_in_h2h": 328.34,
+    "owner2_total_points_scored_in_h2h": 441.09999999999997,
+    "owner1_average_score_in_h2h": 82.08,
+    "owner2_average_score_in_h2h": 110.27,
+    "average_margin_of_victory_owner1": 0.0,
+    "average_margin_of_victory_owner2": 28.19,
+    "closest_matchup_margin": 0.88,
+    "largest_blowout_margin": 53.42
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1039,
+      "season_id": 2023,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 68.66,
+      "owner2_score": 120.6,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1105,
+      "season_id": 2023,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 67.48,
+      "owner2_score": 120.9,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1129,
+      "season_id": 2024,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 86.64,
+      "owner2_score": 87.52,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1195,
+      "season_id": 2024,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 105.56,
+      "owner2_score": 112.08,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

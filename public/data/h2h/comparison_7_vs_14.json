@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 7,
+    "owner_name": "Will"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 1,
+    "owner2_wins": 1,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 188.66,
+    "owner2_total_points_scored_in_h2h": 190.32,
+    "owner1_average_score_in_h2h": 94.33,
+    "owner2_average_score_in_h2h": 95.16,
+    "average_margin_of_victory_owner1": 6.86,
+    "average_margin_of_victory_owner2": 8.52,
+    "closest_matchup_margin": 6.86,
+    "largest_blowout_margin": 8.52
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1091,
+      "season_id": 2023,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 93.42,
+      "owner2_score": 101.94,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1181,
+      "season_id": 2024,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 95.24,
+      "owner2_score": 88.38,
+      "owner1_team_name": "Will  Beattie",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 7,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

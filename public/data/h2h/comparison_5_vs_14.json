@@ -1,0 +1,99 @@
+{
+  "owner1_info": {
+    "owner_id": 5,
+    "owner_name": "Sean"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 2,
+    "owner2_wins": 2,
+    "ties": 0,
+    "total_matchups": 4,
+    "owner1_total_points_scored_in_h2h": 549.42,
+    "owner2_total_points_scored_in_h2h": 524.14,
+    "owner1_average_score_in_h2h": 137.35,
+    "owner2_average_score_in_h2h": 131.03,
+    "average_margin_of_victory_owner1": 30.08,
+    "average_margin_of_victory_owner2": 17.44,
+    "closest_matchup_margin": 10.9,
+    "largest_blowout_margin": 30.54
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1051,
+      "season_id": 2023,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 118.86,
+      "owner2_score": 89.24,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 5,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1122,
+      "season_id": 2023,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 197.4,
+      "owner2_score": 221.38,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1141,
+      "season_id": 2024,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 82.88,
+      "owner2_score": 93.78,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1201,
+      "season_id": 2024,
+      "nfl_week": 13,
+      "fantasy_week": "13",
+      "owner1_score": 150.28,
+      "owner2_score": 119.74,
+      "owner1_team_name": "Jupiter Clutch",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 5,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 1,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 1,
+    "matchups_details": [
+      {
+        "matchup_id": 1201,
+        "season_id": 2024,
+        "nfl_week": 13,
+        "fantasy_week": "13",
+        "owner1_score": 150.28,
+        "owner2_score": 119.74,
+        "owner1_team_name": "Jupiter Clutch",
+        "owner2_team_name": "Never Zay Never",
+        "winner_owner_id": 5,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": false
+      }
+    ]
+  }
+}

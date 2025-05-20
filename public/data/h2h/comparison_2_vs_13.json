@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 2,
+    "owner_name": "Josh"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 1,
+    "owner2_wins": 1,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 225.54000000000002,
+    "owner2_total_points_scored_in_h2h": 264.74,
+    "owner1_average_score_in_h2h": 112.77,
+    "owner2_average_score_in_h2h": 132.37,
+    "average_margin_of_victory_owner1": 2.6,
+    "average_margin_of_victory_owner2": 41.8,
+    "closest_matchup_margin": 2.6,
+    "largest_blowout_margin": 41.8
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1049,
+      "season_id": 2023,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 107.78,
+      "owner2_score": 105.18,
+      "owner1_team_name": "Gauntlet Commish",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 2,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1139,
+      "season_id": 2024,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 117.76,
+      "owner2_score": 159.56,
+      "owner1_team_name": "Gauntlet Commish",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

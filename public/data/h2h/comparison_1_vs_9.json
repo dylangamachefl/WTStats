@@ -1,0 +1,111 @@
+{
+  "owner1_info": {
+    "owner_id": 1,
+    "owner_name": "Jack"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 3,
+    "owner2_wins": 3,
+    "ties": 0,
+    "total_matchups": 6,
+    "owner1_total_points_scored_in_h2h": 594.3,
+    "owner2_total_points_scored_in_h2h": 532.8,
+    "owner1_average_score_in_h2h": 99.05,
+    "owner2_average_score_in_h2h": 88.8,
+    "average_margin_of_victory_owner1": 37.17,
+    "average_margin_of_victory_owner2": 16.67,
+    "closest_matchup_margin": 1.0,
+    "largest_blowout_margin": 43.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 37,
+      "season_id": 2009,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 92.0,
+      "owner2_score": 64.0,
+      "owner1_team_name": "dontgotaheisman butgotmydignity",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 1,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 49,
+      "season_id": 2009,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 70.0,
+      "owner2_score": 102.0,
+      "owner1_team_name": "dontgotaheisman butgotmydignity",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 108,
+      "season_id": 2010,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 133.0,
+      "owner2_score": 90.0,
+      "owner1_team_name": "Never coming to my house again",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 1,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 183,
+      "season_id": 2011,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 98.0,
+      "owner2_score": 99.0,
+      "owner1_team_name": "CAM NEWTON  FOR SALE!!!!!!!",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 258,
+      "season_id": 2012,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 81.0,
+      "owner2_score": 98.0,
+      "owner1_team_name": "This Ones For Lil Sebastian",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 333,
+      "season_id": 2013,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 120.3,
+      "owner2_score": 79.8,
+      "owner1_team_name": "This Ones For Lil Sebastian",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 1,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

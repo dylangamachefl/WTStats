@@ -1,0 +1,368 @@
+{
+  "gmInfo": {
+    "id": 3,
+    "name": "Jake",
+    "slug": "jake",
+    "yearsActive": "2009-2024",
+    "championshipYears": [
+      2018,
+      2024
+    ]
+  },
+  "careerStats": {
+    "wins": 101,
+    "losses": 103,
+    "ties": 1,
+    "winPct": 0.493,
+    "totalPointsFor": 18952.98,
+    "totalPointsAgainst": 19436.68,
+    "avgPointsPerGame": 92.45,
+    "playoffAppearances": 7,
+    "totalSeasons": 16,
+    "playoffWins": 8,
+    "playoffLosses": 5
+  },
+  "careerExtremes": {
+    "highs": {
+      "mostPointsGame": {
+        "value": 162.8,
+        "season": 2015,
+        "week": "7"
+      },
+      "biggestWinMargin": {
+        "value": 81.6,
+        "season": 2014,
+        "week": "9",
+        "opponentName": "Jack"
+      },
+      "bestSeasonRecord": {
+        "wins": 10,
+        "losses": 3,
+        "season": 2009,
+        "isChampion": false
+      }
+    },
+    "lows": {
+      "fewestPointsGame": {
+        "value": 40.62,
+        "season": 2019,
+        "week": "7"
+      },
+      "worstLossMargin": {
+        "value": 76.32,
+        "season": 2023,
+        "week": "4",
+        "opponentName": "Will"
+      },
+      "worstSeasonRecord": {
+        "wins": 2,
+        "losses": 10,
+        "season": 2019,
+        "isChampion": false
+      }
+    }
+  },
+  "seasonProgression": [
+    {
+      "year": 2009,
+      "finalStanding": 3,
+      "pointsForRank": 3,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2010,
+      "finalStanding": 5,
+      "pointsForRank": 8,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2011,
+      "finalStanding": 6,
+      "pointsForRank": 8,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2012,
+      "finalStanding": 8,
+      "pointsForRank": 7,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2013,
+      "finalStanding": 10,
+      "pointsForRank": 10,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2014,
+      "finalStanding": 5,
+      "pointsForRank": 4,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2015,
+      "finalStanding": 6,
+      "pointsForRank": 8,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2016,
+      "finalStanding": 8,
+      "pointsForRank": 9,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2017,
+      "finalStanding": 7,
+      "pointsForRank": 3,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2018,
+      "finalStanding": 1,
+      "pointsForRank": 3,
+      "madePlayoffs": true,
+      "isChampion": true
+    },
+    {
+      "year": 2019,
+      "finalStanding": 10,
+      "pointsForRank": 10,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2020,
+      "finalStanding": 2,
+      "pointsForRank": 8,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2021,
+      "finalStanding": 3,
+      "pointsForRank": 5,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2022,
+      "finalStanding": 4,
+      "pointsForRank": 4,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2023,
+      "finalStanding": 2,
+      "pointsForRank": 7,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2024,
+      "finalStanding": 1,
+      "pointsForRank": 4,
+      "madePlayoffs": true,
+      "isChampion": true
+    }
+  ],
+  "positionStrength": [
+    {
+      "position": "QB",
+      "value": -3.8
+    },
+    {
+      "position": "RB",
+      "value": -7.4
+    },
+    {
+      "position": "WR",
+      "value": -8.8
+    },
+    {
+      "position": "TE",
+      "value": 3.9
+    },
+    {
+      "position": "FLEX",
+      "value": 2.2
+    },
+    {
+      "position": "K",
+      "value": -10.3
+    },
+    {
+      "position": "DST",
+      "value": -1.2
+    }
+  ],
+  "franchisePlayers": [
+    {
+      "playerId": 13791,
+      "name": "Lamar Miller",
+      "position": "RB",
+      "seasonsWithGm": [
+        2014,
+        2015,
+        2016,
+        2018
+      ],
+      "totalPointsForGm": 678.0,
+      "gamesStartedForGm": 47
+    },
+    {
+      "playerId": 11056,
+      "name": "Antonio Brown",
+      "position": "WR",
+      "seasonsWithGm": [
+        2012,
+        2013,
+        2014,
+        2021
+      ],
+      "totalPointsForGm": 571.2,
+      "gamesStartedForGm": 38
+    },
+    {
+      "playerId": 12841,
+      "name": "Andy Dalton",
+      "position": "QB",
+      "seasonsWithGm": [
+        2014,
+        2017
+      ],
+      "totalPointsForGm": 435.8,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 14269,
+      "name": "Alfred Morris",
+      "position": "RB",
+      "seasonsWithGm": [
+        2013,
+        2014
+      ],
+      "totalPointsForGm": 340.2,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 7580,
+      "name": "DeAngelo Williams",
+      "position": "RB",
+      "seasonsWithGm": [
+        2011,
+        2015
+      ],
+      "totalPointsForGm": 330.5,
+      "gamesStartedForGm": 26
+    }
+  ],
+  "rivalryPerformance": [
+    {
+      "opponentId": 8,
+      "opponentName": "Zach",
+      "wins": 12,
+      "losses": 20,
+      "avgPointsFor": 110.62,
+      "avgPointsAgainst": 121.44
+    },
+    {
+      "opponentId": 6,
+      "opponentName": "Nick",
+      "wins": 18,
+      "losses": 13,
+      "avgPointsFor": 106.38,
+      "avgPointsAgainst": 104.01
+    },
+    {
+      "opponentId": 1,
+      "opponentName": "Jack",
+      "wins": 10,
+      "losses": 17,
+      "avgPointsFor": 97.48,
+      "avgPointsAgainst": 103.71
+    },
+    {
+      "opponentId": 11,
+      "opponentName": "Chris",
+      "wins": 13,
+      "losses": 13,
+      "avgPointsFor": 117.1,
+      "avgPointsAgainst": 116.56
+    },
+    {
+      "opponentId": 7,
+      "opponentName": "Will",
+      "wins": 12,
+      "losses": 14,
+      "avgPointsFor": 100.72,
+      "avgPointsAgainst": 104.62
+    },
+    {
+      "opponentId": 4,
+      "opponentName": "Mark",
+      "wins": 16,
+      "losses": 8,
+      "avgPointsFor": 100.22,
+      "avgPointsAgainst": 95.76
+    },
+    {
+      "opponentId": 5,
+      "opponentName": "Sean",
+      "wins": 11,
+      "losses": 10,
+      "avgPointsFor": 113.04,
+      "avgPointsAgainst": 111.57
+    },
+    {
+      "opponentId": 2,
+      "opponentName": "Josh",
+      "wins": 10,
+      "losses": 10,
+      "avgPointsFor": 100.39,
+      "avgPointsAgainst": 102.56
+    },
+    {
+      "opponentId": 12,
+      "opponentName": "Dylan",
+      "wins": 7,
+      "losses": 9,
+      "avgPointsFor": 97.56,
+      "avgPointsAgainst": 103.79
+    },
+    {
+      "opponentId": 9,
+      "opponentName": "Lac",
+      "wins": 4,
+      "losses": 2,
+      "avgPointsFor": 108.47,
+      "avgPointsAgainst": 97.98
+    },
+    {
+      "opponentId": 13,
+      "opponentName": "Dan",
+      "wins": 2,
+      "losses": 2,
+      "avgPointsFor": 178.69,
+      "avgPointsAgainst": 158.26
+    },
+    {
+      "opponentId": 14,
+      "opponentName": "Fitz",
+      "wins": 3,
+      "losses": 0,
+      "avgPointsFor": 105.97,
+      "avgPointsAgainst": 90.67
+    }
+  ]
+}

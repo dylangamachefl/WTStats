@@ -1,0 +1,85 @@
+{
+  "owner1_info": {
+    "owner_id": 6,
+    "owner_name": "Nick"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 0,
+    "owner2_wins": 4,
+    "ties": 0,
+    "total_matchups": 4,
+    "owner1_total_points_scored_in_h2h": 526.26,
+    "owner2_total_points_scored_in_h2h": 636.8199999999999,
+    "owner1_average_score_in_h2h": 131.56,
+    "owner2_average_score_in_h2h": 159.2,
+    "average_margin_of_victory_owner1": 0.0,
+    "average_margin_of_victory_owner2": 27.64,
+    "closest_matchup_margin": 0.48,
+    "largest_blowout_margin": 73.34
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1096,
+      "season_id": 2023,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 94.56,
+      "owner2_score": 95.04,
+      "owner1_team_name": "He went to Jared",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1116,
+      "season_id": 2023,
+      "nfl_week": "(14,15)",
+      "fantasy_week": "Round 1",
+      "owner1_score": 164.96,
+      "owner2_score": 175.44,
+      "owner1_team_name": "He went to Jared",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1186,
+      "season_id": 2024,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 82.68,
+      "owner2_score": 108.94,
+      "owner1_team_name": "He went to Jared",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1214,
+      "season_id": 2024,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 184.06,
+      "owner2_score": 257.4,
+      "owner1_team_name": "He went to Jared",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

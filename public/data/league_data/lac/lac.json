@@ -1,0 +1,260 @@
+{
+  "gmInfo": {
+    "id": 9,
+    "name": "Lac",
+    "slug": "lac",
+    "yearsActive": "2009-2013",
+    "championshipYears": []
+  },
+  "careerStats": {
+    "wins": 39,
+    "losses": 26,
+    "ties": 0,
+    "winPct": 0.6,
+    "totalPointsFor": 6269.2,
+    "totalPointsAgainst": 5983.7,
+    "avgPointsPerGame": 96.45,
+    "playoffAppearances": 3,
+    "totalSeasons": 5,
+    "playoffWins": 2,
+    "playoffLosses": 3
+  },
+  "careerExtremes": {
+    "highs": {
+      "mostPointsGame": {
+        "value": 147.0,
+        "season": 2011,
+        "week": "13"
+      },
+      "biggestWinMargin": {
+        "value": 85.0,
+        "season": 2011,
+        "week": "6",
+        "opponentName": "Josh"
+      },
+      "bestSeasonRecord": {
+        "wins": 11,
+        "losses": 2,
+        "season": 2011,
+        "isChampion": false
+      }
+    },
+    "lows": {
+      "fewestPointsGame": {
+        "value": 64.0,
+        "season": 2009,
+        "week": "8"
+      },
+      "worstLossMargin": {
+        "value": 60.0,
+        "season": 2010,
+        "week": "2",
+        "opponentName": "Will"
+      },
+      "worstSeasonRecord": {
+        "wins": 5,
+        "losses": 8,
+        "season": 2013,
+        "isChampion": false
+      }
+    }
+  },
+  "seasonProgression": [
+    {
+      "year": 2009,
+      "finalStanding": 2,
+      "pointsForRank": 2,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2010,
+      "finalStanding": 6,
+      "pointsForRank": 6,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2011,
+      "finalStanding": 3,
+      "pointsForRank": 1,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2012,
+      "finalStanding": 2,
+      "pointsForRank": 2,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2013,
+      "finalStanding": 7,
+      "pointsForRank": 6,
+      "madePlayoffs": false,
+      "isChampion": false
+    }
+  ],
+  "positionStrength": [
+    {
+      "position": "QB",
+      "value": 0.0
+    },
+    {
+      "position": "RB",
+      "value": 0.0
+    },
+    {
+      "position": "WR",
+      "value": 0.0
+    },
+    {
+      "position": "TE",
+      "value": 0.0
+    },
+    {
+      "position": "FLEX",
+      "value": 0.0
+    },
+    {
+      "position": "K",
+      "value": 0.0
+    },
+    {
+      "position": "DST",
+      "value": 0.0
+    }
+  ],
+  "franchisePlayers": [
+    {
+      "playerId": 4314,
+      "name": "Tom Brady",
+      "position": "QB",
+      "seasonsWithGm": [
+        2009,
+        2012
+      ],
+      "totalPointsForGm": 610.6,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 4633,
+      "name": "Matt Schaub",
+      "position": "QB",
+      "seasonsWithGm": [
+        2010,
+        2012
+      ],
+      "totalPointsForGm": 468.9,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 8529,
+      "name": "Mike Wallace",
+      "position": "WR",
+      "seasonsWithGm": [
+        2010,
+        2011
+      ],
+      "totalPointsForGm": 360.6,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 5571,
+      "name": "Larry Fitzgerald",
+      "position": "WR",
+      "seasonsWithGm": [
+        2009,
+        2010
+      ],
+      "totalPointsForGm": 338.9,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 8399,
+      "name": "Shonn Greene",
+      "position": "RB",
+      "seasonsWithGm": [
+        2010,
+        2011
+      ],
+      "totalPointsForGm": 259.1,
+      "gamesStartedForGm": 25
+    }
+  ],
+  "rivalryPerformance": [
+    {
+      "opponentId": 8,
+      "opponentName": "Zach",
+      "wins": 9,
+      "losses": 3,
+      "avgPointsFor": 111.45,
+      "avgPointsAgainst": 105.03
+    },
+    {
+      "opponentId": 7,
+      "opponentName": "Will",
+      "wins": 6,
+      "losses": 4,
+      "avgPointsFor": 107.98,
+      "avgPointsAgainst": 104.59
+    },
+    {
+      "opponentId": 4,
+      "opponentName": "Mark",
+      "wins": 6,
+      "losses": 3,
+      "avgPointsFor": 100.36,
+      "avgPointsAgainst": 88.36
+    },
+    {
+      "opponentId": 5,
+      "opponentName": "Sean",
+      "wins": 5,
+      "losses": 4,
+      "avgPointsFor": 98.46,
+      "avgPointsAgainst": 98.52
+    },
+    {
+      "opponentId": 2,
+      "opponentName": "Josh",
+      "wins": 5,
+      "losses": 4,
+      "avgPointsFor": 128.18,
+      "avgPointsAgainst": 113.72
+    },
+    {
+      "opponentId": 6,
+      "opponentName": "Nick",
+      "wins": 5,
+      "losses": 2,
+      "avgPointsFor": 122.64,
+      "avgPointsAgainst": 115.33
+    },
+    {
+      "opponentId": 11,
+      "opponentName": "Chris",
+      "wins": 3,
+      "losses": 4,
+      "avgPointsFor": 105.29,
+      "avgPointsAgainst": 97.67
+    },
+    {
+      "opponentId": 1,
+      "opponentName": "Jack",
+      "wins": 3,
+      "losses": 3,
+      "avgPointsFor": 88.8,
+      "avgPointsAgainst": 99.05
+    },
+    {
+      "opponentId": 3,
+      "opponentName": "Jake",
+      "wins": 2,
+      "losses": 4,
+      "avgPointsFor": 97.98,
+      "avgPointsAgainst": 108.47
+    }
+  ]
+}

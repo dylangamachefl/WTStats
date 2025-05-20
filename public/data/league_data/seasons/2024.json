@@ -1,0 +1,1243 @@
+{
+  "seasonData": {
+    "year": 2024,
+    "championName": "Jake",
+    "runnerUp": "Zach",
+    "teams": 12,
+    "regularSeasonWeeks": 12
+  },
+  "standingsData": [
+    {
+      "season_id": 2024,
+      "owner_name": "Dan",
+      "wt_team_name": "Girls Ruin Bowling",
+      "regular_season_wins": 9,
+      "regular_season_losses": 3,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1330.78,
+      "regular_season_points_against": 1227.52,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Zach",
+      "wt_team_name": "MouseRat  FC",
+      "regular_season_wins": 8,
+      "regular_season_losses": 4,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1283.58,
+      "regular_season_points_against": 1202.2,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Jake",
+      "wt_team_name": "Jam It In That Younghoe",
+      "regular_season_wins": 7,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1244.44,
+      "regular_season_points_against": 1261.38,
+      "regular_season_finish": 3,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Sean",
+      "wt_team_name": "Jupiter Clutch",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1317.92,
+      "regular_season_points_against": 1266.68,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Fitz",
+      "wt_team_name": "Never Zay Never",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1263.24,
+      "regular_season_points_against": 1232.92,
+      "regular_season_finish": 5,
+      "lastFive": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Mark",
+      "wt_team_name": "Jupiter Joe's",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1253.38,
+      "regular_season_points_against": 1229.18,
+      "regular_season_finish": 6,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Dylan",
+      "wt_team_name": "Flip Flip Flipadelphia",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1224.1,
+      "regular_season_points_against": 1182.46,
+      "regular_season_finish": 7,
+      "lastFive": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1153.08,
+      "regular_season_points_against": 1233.86,
+      "regular_season_finish": 8,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Jack",
+      "wt_team_name": "Jupiter Jay Joy",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1150.84,
+      "regular_season_points_against": 1199.22,
+      "regular_season_finish": 9,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Josh",
+      "wt_team_name": "Gauntlet Commish",
+      "regular_season_wins": 5,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1308.68,
+      "regular_season_points_against": 1307.02,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Nick",
+      "wt_team_name": "He went to Jared",
+      "regular_season_wins": 4,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1222.38,
+      "regular_season_points_against": 1303.18,
+      "regular_season_finish": 11,
+      "lastFive": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2024,
+      "owner_name": "Will",
+      "wt_team_name": "Will  Beattie",
+      "regular_season_wins": 3,
+      "regular_season_losses": 9,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1109.88,
+      "regular_season_points_against": 1216.68,
+      "regular_season_finish": 12,
+      "lastFive": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [
+      {
+        "home": {
+          "seed": 3,
+          "name": "Jam It In That Younghoe",
+          "owner": "Jake",
+          "score": 147.5
+        },
+        "away": {
+          "seed": 6,
+          "name": "Jupiter Joe's",
+          "owner": "Mark",
+          "score": 92.0
+        }
+      },
+      {
+        "home": {
+          "seed": 4,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 150.3
+        },
+        "away": {
+          "seed": 5,
+          "name": "Never Zay Never",
+          "owner": "Fitz",
+          "score": 119.7
+        }
+      }
+    ],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Girls Ruin Bowling",
+          "owner": "Dan",
+          "score": 239.3
+        },
+        "away": {
+          "seed": 3,
+          "name": "Jam It In That Younghoe",
+          "owner": "Jake",
+          "score": 274.7
+        }
+      },
+      {
+        "home": {
+          "seed": 4,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 210.1
+        },
+        "away": {
+          "seed": 2,
+          "name": "MouseRat  FC",
+          "owner": "Zach",
+          "score": 281.1
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 3,
+          "name": "Jam It In That Younghoe",
+          "owner": "Jake",
+          "score": 270.2
+        },
+        "away": {
+          "seed": 2,
+          "name": "MouseRat  FC",
+          "owner": "Zach",
+          "score": 229.6
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Girls Ruin Bowling",
+      "MouseRat  FC",
+      "Jam It In That Younghoe",
+      "Jupiter Clutch",
+      "Never Zay Never",
+      "Jupiter Joe's",
+      "Flip Flip Flipadelphia",
+      "All Madden Ultimate Team",
+      "Jupiter Jay Joy",
+      "Gauntlet Commish",
+      "He went to Jared",
+      "Will  Beattie"
+    ],
+    "scores": [
+      [
+        87.52,
+        100.68,
+        87.18,
+        111.02,
+        122.86,
+        84.78,
+        101.72,
+        89.16,
+        110.3,
+        118.86,
+        101.46,
+        86.64
+      ],
+      [
+        125.58,
+        93.86,
+        159.44,
+        106.28,
+        99.94,
+        102.26,
+        87.22,
+        99.44,
+        130.08,
+        99.62,
+        79.0,
+        95.14
+      ],
+      [
+        159.56,
+        90.52,
+        69.08,
+        82.88,
+        93.78,
+        142.78,
+        100.74,
+        67.02,
+        104.66,
+        117.76,
+        100.2,
+        73.28
+      ],
+      [
+        130.24,
+        103.68,
+        88.68,
+        89.54,
+        90.02,
+        78.12,
+        86.22,
+        83.48,
+        87.56,
+        112.58,
+        110.4,
+        106.8
+      ],
+      [
+        101.44,
+        122.44,
+        106.2,
+        153.62,
+        93.22,
+        94.36,
+        84.66,
+        106.9,
+        96.26,
+        126.98,
+        99.94,
+        87.74
+      ],
+      [
+        97.62,
+        113.2,
+        87.06,
+        119.72,
+        123.46,
+        87.5,
+        115.76,
+        117.3,
+        97.12,
+        85.72,
+        135.18,
+        90.16
+      ],
+      [
+        97.38,
+        132.22,
+        78.0,
+        95.74,
+        107.44,
+        109.46,
+        93.16,
+        71.28,
+        126.2,
+        95.64,
+        84.44,
+        65.36
+      ],
+      [
+        112.94,
+        107.42,
+        154.58,
+        129.76,
+        126.14,
+        86.0,
+        140.74,
+        134.24,
+        51.84,
+        98.96,
+        109.5,
+        98.18
+      ],
+      [
+        121.1,
+        97.3,
+        111.26,
+        102.1,
+        99.46,
+        99.72,
+        127.8,
+        132.46,
+        86.42,
+        98.84,
+        123.92,
+        115.44
+      ],
+      [
+        94.64,
+        116.6,
+        95.54,
+        105.5,
+        88.38,
+        118.32,
+        100.28,
+        88.44,
+        71.6,
+        139.42,
+        75.98,
+        95.24
+      ],
+      [
+        90.68,
+        116.88,
+        116.92,
+        99.38,
+        108.94,
+        122.26,
+        93.24,
+        65.2,
+        113.04,
+        142.34,
+        82.68,
+        90.34
+      ],
+      [
+        112.08,
+        88.78,
+        90.5,
+        122.38,
+        109.6,
+        127.82,
+        92.56,
+        98.16,
+        75.76,
+        71.96,
+        119.68,
+        105.56
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "Gauntlet Commish",
+      "owner": "Josh",
+      "leagueAvgPpg": 103.2,
+      "differential": 5.7,
+      "actualOpponentsPpg": 108.9,
+      "rank": 1,
+      "rating": "Hard"
+    },
+    {
+      "team": "He went to Jared",
+      "owner": "Nick",
+      "leagueAvgPpg": 103.2,
+      "differential": 5.4,
+      "actualOpponentsPpg": 108.6,
+      "rank": 2,
+      "rating": "Hard"
+    },
+    {
+      "team": "Jupiter Clutch",
+      "owner": "Sean",
+      "leagueAvgPpg": 103.2,
+      "differential": 2.4,
+      "actualOpponentsPpg": 105.6,
+      "rank": 3,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "Jam It In That Younghoe",
+      "owner": "Jake",
+      "leagueAvgPpg": 103.2,
+      "differential": 1.9,
+      "actualOpponentsPpg": 105.1,
+      "rank": 4,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 103.2,
+      "differential": -0.4,
+      "actualOpponentsPpg": 102.8,
+      "rank": 5,
+      "rating": "Average"
+    },
+    {
+      "team": "Never Zay Never",
+      "owner": "Fitz",
+      "leagueAvgPpg": 103.2,
+      "differential": -0.5,
+      "actualOpponentsPpg": 102.7,
+      "rank": 6,
+      "rating": "Average"
+    },
+    {
+      "team": "Jupiter Joe's",
+      "owner": "Mark",
+      "leagueAvgPpg": 103.2,
+      "differential": -0.8,
+      "actualOpponentsPpg": 102.4,
+      "rank": 7,
+      "rating": "Average"
+    },
+    {
+      "team": "Girls Ruin Bowling",
+      "owner": "Dan",
+      "leagueAvgPpg": 103.2,
+      "differential": -0.9,
+      "actualOpponentsPpg": 102.3,
+      "rank": 8,
+      "rating": "Average"
+    },
+    {
+      "team": "Will  Beattie",
+      "owner": "Will",
+      "leagueAvgPpg": 103.2,
+      "differential": -1.8,
+      "actualOpponentsPpg": 101.4,
+      "rank": 9,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "MouseRat  FC",
+      "owner": "Zach",
+      "leagueAvgPpg": 103.2,
+      "differential": -3.0,
+      "actualOpponentsPpg": 100.2,
+      "rank": 10,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Jay Joy",
+      "owner": "Jack",
+      "leagueAvgPpg": 103.2,
+      "differential": -3.3,
+      "actualOpponentsPpg": 99.9,
+      "rank": 11,
+      "rating": "Easy"
+    },
+    {
+      "team": "Flip Flip Flipadelphia",
+      "owner": "Dylan",
+      "leagueAvgPpg": 103.2,
+      "differential": -4.7,
+      "actualOpponentsPpg": 98.5,
+      "rank": 12,
+      "rating": "Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Kareem Hunt",
+      "position": "RB",
+      "team": "Kansas City Chiefs",
+      "pickedUpBy": "Dylan",
+      "week": 3,
+      "totalPoints": 132.4,
+      "rank": 1
+    },
+    {
+      "player": "Baker Mayfield",
+      "position": "QB",
+      "team": "Tampa Bay Buccaneers",
+      "pickedUpBy": "Chris",
+      "week": 2,
+      "totalPoints": 365.8,
+      "rank": 2
+    },
+    {
+      "player": "Broncos D/ST",
+      "position": "DST",
+      "team": "Denver Broncos",
+      "pickedUpBy": "Josh",
+      "week": 2,
+      "totalPoints": 179.0,
+      "rank": 3
+    },
+    {
+      "player": "Bo Nix",
+      "position": "QB",
+      "team": "Denver Broncos",
+      "pickedUpBy": "Mark",
+      "week": 9,
+      "totalPoints": 316.7,
+      "rank": 4
+    },
+    {
+      "player": "Vikings D/ST",
+      "position": "DST",
+      "team": "Minnesota Vikings",
+      "pickedUpBy": "Jack",
+      "week": 3,
+      "totalPoints": 158.0,
+      "rank": 5
+    },
+    {
+      "player": "Sam Darnold",
+      "position": "QB",
+      "team": "Minnesota Vikings",
+      "pickedUpBy": "Dylan",
+      "week": 4,
+      "totalPoints": 308.0,
+      "rank": 6
+    },
+    {
+      "player": "Chris Boswell",
+      "position": "K",
+      "team": "Pittsburgh Steelers",
+      "pickedUpBy": "Nick",
+      "week": 5,
+      "totalPoints": 184.0,
+      "rank": 7
+    },
+    {
+      "player": "Tucker Kraft",
+      "position": "TE",
+      "team": "Green Bay Packers",
+      "pickedUpBy": "Dan",
+      "week": 5,
+      "totalPoints": 113.3,
+      "rank": 8
+    },
+    {
+      "player": "Zach Ertz",
+      "position": "TE",
+      "team": "Washington Commanders",
+      "pickedUpBy": "Dylan",
+      "week": 7,
+      "totalPoints": 111.4,
+      "rank": 9
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Lamar Jackson",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 430.4,
+        "ppg": 25.3,
+        "bestGame": null
+      },
+      {
+        "player": "Josh Allen",
+        "team": "Buffalo Bills",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 379.0,
+        "ppg": 22.3,
+        "bestGame": null
+      },
+      {
+        "player": "Joe Burrow",
+        "team": "Cincinnati Bengals",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 372.8,
+        "ppg": 21.9,
+        "bestGame": null
+      },
+      {
+        "player": "Baker Mayfield",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 365.8,
+        "ppg": 21.5,
+        "bestGame": null
+      },
+      {
+        "player": "Jayden Daniels",
+        "team": "Washington Commanders",
+        "fantasyTeam": "Never Zay Never",
+        "totalPoints": 355.8,
+        "ppg": 20.9,
+        "bestGame": null
+      }
+    ],
+    "RB": [
+      {
+        "player": "Saquon Barkley",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 322.3,
+        "ppg": 20.1,
+        "bestGame": {
+          "week": 12,
+          "points": 42.2
+        }
+      },
+      {
+        "player": "Derrick Henry",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Girls Ruin Bowling",
+        "totalPoints": 317.4,
+        "ppg": 18.7,
+        "bestGame": {
+          "week": 4,
+          "points": 32.9
+        }
+      },
+      {
+        "player": "Jahmyr Gibbs",
+        "team": "Detroit Lions",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 310.9,
+        "ppg": 18.3,
+        "bestGame": {
+          "week": 18,
+          "points": 41.0
+        }
+      },
+      {
+        "player": "Bijan Robinson",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": "Never Zay Never",
+        "totalPoints": 280.7,
+        "ppg": 16.5,
+        "bestGame": {
+          "week": 18,
+          "points": 29.3
+        }
+      },
+      {
+        "player": "Josh Jacobs",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 257.1,
+        "ppg": 15.1,
+        "bestGame": {
+          "week": 12,
+          "points": 28.6
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Ja'Marr Chase",
+        "team": "Cincinnati Bengals",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 276.0,
+        "ppg": 16.2,
+        "bestGame": {
+          "week": 10,
+          "points": 44.4
+        }
+      },
+      {
+        "player": "Justin Jefferson",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": "He went to Jared",
+        "totalPoints": 214.5,
+        "ppg": 12.6,
+        "bestGame": {
+          "week": 16,
+          "points": 26.4
+        }
+      },
+      {
+        "player": "Amon-Ra St. Brown",
+        "team": "Detroit Lions",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 201.2,
+        "ppg": 11.8,
+        "bestGame": {
+          "week": 11,
+          "points": 27.7
+        }
+      },
+      {
+        "player": "Brian Thomas Jr.",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": "Jam It In That Younghoe",
+        "totalPoints": 197.0,
+        "ppg": 11.6,
+        "bestGame": {
+          "week": 15,
+          "points": 22.5
+        }
+      },
+      {
+        "player": "Terry McLaurin",
+        "team": "Washington Commanders",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 185.8,
+        "ppg": 10.9,
+        "bestGame": {
+          "week": 13,
+          "points": 19.3
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "George Kittle",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 158.6,
+        "ppg": 10.6,
+        "bestGame": {
+          "week": 8,
+          "points": 18.8
+        }
+      },
+      {
+        "player": "Brock Bowers",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": "Never Zay Never",
+        "totalPoints": 150.7,
+        "ppg": 8.9,
+        "bestGame": {
+          "week": 13,
+          "points": 20.2
+        }
+      },
+      {
+        "player": "Trey McBride",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": "Jam It In That Younghoe",
+        "totalPoints": 138.8,
+        "ppg": 8.7,
+        "bestGame": {
+          "week": 17,
+          "points": 18.3
+        }
+      },
+      {
+        "player": "Jonnu Smith",
+        "team": "Miami Dolphins",
+        "fantasyTeam": "Never Zay Never",
+        "totalPoints": 134.3,
+        "ppg": 7.9,
+        "bestGame": {
+          "week": 11,
+          "points": 22.1
+        }
+      },
+      {
+        "player": "Mark Andrews",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 133.8,
+        "ppg": 7.9,
+        "bestGame": {
+          "week": 7,
+          "points": 16.1
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Chris Boswell",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": "He went to Jared",
+        "totalPoints": 184.0,
+        "ppg": 10.8,
+        "bestGame": {
+          "week": 1,
+          "points": 24.0
+        }
+      },
+      {
+        "player": "Brandon Aubrey",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 178.0,
+        "ppg": 10.5,
+        "bestGame": {
+          "week": 16,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "Cameron Dicker",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": "Girls Ruin Bowling",
+        "totalPoints": 168.0,
+        "ppg": 9.9,
+        "bestGame": {
+          "week": 7,
+          "points": 19.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Broncos D/ST",
+        "team": "Denver Broncos",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 179.0,
+        "ppg": 10.5,
+        "bestGame": {
+          "week": 7,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "Vikings D/ST",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 158.0,
+        "ppg": 9.3,
+        "bestGame": {
+          "week": 1,
+          "points": 22.0
+        }
+      },
+      {
+        "player": "Packers D/ST",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 144.0,
+        "ppg": 8.5,
+        "bestGame": {
+          "week": 3,
+          "points": 21.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "Cincinnati Bengals",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 10,
+      "points": 44.4
+    },
+    {
+      "rank": 2,
+      "player": "Saquon Barkley",
+      "position": "RB",
+      "team": "Philadelphia Eagles",
+      "fantasyTeam": "Jupiter Joe's",
+      "week": 12,
+      "points": 42.2
+    },
+    {
+      "rank": 3,
+      "player": "Alvin Kamara",
+      "position": "RB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": "Will  Beattie",
+      "week": 2,
+      "points": 42.0
+    },
+    {
+      "rank": 4,
+      "player": "Jahmyr Gibbs",
+      "position": "RB",
+      "team": "Detroit Lions",
+      "fantasyTeam": "All Madden Ultimate Team",
+      "week": 18,
+      "points": 41.0
+    },
+    {
+      "rank": 5,
+      "player": "Jonathan Taylor",
+      "position": "RB",
+      "team": "Indianapolis Colts",
+      "fantasyTeam": "Girls Ruin Bowling",
+      "week": 16,
+      "points": 39.8
+    },
+    {
+      "rank": 6,
+      "player": "Jauan Jennings",
+      "position": "WR",
+      "team": "San Francisco 49ers",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 3,
+      "points": 35.5
+    },
+    {
+      "rank": 7,
+      "player": "Davante Adams",
+      "position": "WR",
+      "team": "New York Jets",
+      "fantasyTeam": "Jupiter Jay Joy",
+      "week": 15,
+      "points": 33.8
+    },
+    {
+      "rank": 8,
+      "player": "Joe Mixon",
+      "position": "RB",
+      "team": "Houston Texans",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 11,
+      "points": 33.3
+    },
+    {
+      "rank": 9,
+      "player": "Derrick Henry",
+      "position": "RB",
+      "team": "Baltimore Ravens",
+      "fantasyTeam": "Girls Ruin Bowling",
+      "week": 4,
+      "points": 32.9
+    },
+    {
+      "rank": 10,
+      "player": "Jerry Jeudy",
+      "position": "WR",
+      "team": "Cleveland Browns",
+      "fantasyTeam": "Jam It In That Younghoe",
+      "week": 13,
+      "points": 31.5
+    }
+  ]
+}

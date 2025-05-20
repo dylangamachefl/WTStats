@@ -1,0 +1,138 @@
+{
+  "owner1_info": {
+    "owner_id": 6,
+    "owner_name": "Nick"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 2,
+    "owner2_wins": 5,
+    "ties": 0,
+    "total_matchups": 7,
+    "owner1_total_points_scored_in_h2h": 807.3,
+    "owner2_total_points_scored_in_h2h": 858.5,
+    "owner1_average_score_in_h2h": 115.33,
+    "owner2_average_score_in_h2h": 122.64,
+    "average_margin_of_victory_owner1": 16.0,
+    "average_margin_of_victory_owner2": 16.64,
+    "closest_matchup_margin": 2.1,
+    "largest_blowout_margin": 33.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 23,
+      "season_id": 2009,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 80.0,
+      "owner2_score": 90.0,
+      "owner1_team_name": "Jupiter's Finest",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 114,
+      "season_id": 2010,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 123.0,
+      "owner2_score": 95.0,
+      "owner1_team_name": "Hey... wanna  go for a walk?!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 6,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 189,
+      "season_id": 2011,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 89.0,
+      "owner2_score": 97.0,
+      "owner1_team_name": "History in the Making",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 216,
+      "season_id": 2011,
+      "nfl_week": "(14,15)",
+      "fantasy_week": "Round 1",
+      "owner1_score": 245.0,
+      "owner2_score": 241.0,
+      "owner1_team_name": "History in the Making",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 6,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 264,
+      "season_id": 2012,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 74.0,
+      "owner2_score": 107.0,
+      "owner1_team_name": "Fan Favorites",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 339,
+      "season_id": 2013,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 74.8,
+      "owner2_score": 76.9,
+      "owner1_team_name": "Fan Favorites",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 374,
+      "season_id": 2013,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 121.5,
+      "owner2_score": 151.6,
+      "owner1_team_name": "Fan Favorites",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 1,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 1,
+    "matchups_details": [
+      {
+        "matchup_id": 216,
+        "season_id": 2011,
+        "nfl_week": "(14,15)",
+        "fantasy_week": "Round 1",
+        "owner1_score": 245.0,
+        "owner2_score": 241.0,
+        "owner1_team_name": "History in the Making",
+        "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+        "winner_owner_id": 6,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": false
+      }
+    ]
+  }
+}

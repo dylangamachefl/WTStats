@@ -1,0 +1,150 @@
+{
+  "owner1_info": {
+    "owner_id": 4,
+    "owner_name": "Mark"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 3,
+    "owner2_wins": 6,
+    "ties": 0,
+    "total_matchups": 9,
+    "owner1_total_points_scored_in_h2h": 795.2,
+    "owner2_total_points_scored_in_h2h": 903.2,
+    "owner1_average_score_in_h2h": 88.36,
+    "owner2_average_score_in_h2h": 100.36,
+    "average_margin_of_victory_owner1": 17.0,
+    "average_margin_of_victory_owner2": 26.5,
+    "closest_matchup_margin": 1.5,
+    "largest_blowout_margin": 50.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 35,
+      "season_id": 2009,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 77.0,
+      "owner2_score": 122.0,
+      "owner1_team_name": "Jupiter Joes",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 78,
+      "season_id": 2010,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 69.0,
+      "owner2_score": 77.0,
+      "owner1_team_name": "Seriously What U Ganna Do?!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 124,
+      "season_id": 2010,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 81.0,
+      "owner2_score": 131.0,
+      "owner1_team_name": "Seriously What U Ganna Do?!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 153,
+      "season_id": 2011,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 66.0,
+      "owner2_score": 109.0,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 199,
+      "season_id": 2011,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 100.0,
+      "owner2_score": 102.0,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 228,
+      "season_id": 2012,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 65.0,
+      "owner2_score": 76.0,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 274,
+      "season_id": 2012,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 97.0,
+      "owner2_score": 76.0,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 303,
+      "season_id": 2013,
+      "nfl_week": 1,
+      "fantasy_week": "1",
+      "owner1_score": 126.1,
+      "owner2_score": 124.6,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 349,
+      "season_id": 2013,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 114.1,
+      "owner2_score": 85.6,
+      "owner1_team_name": "Jaunty  John",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

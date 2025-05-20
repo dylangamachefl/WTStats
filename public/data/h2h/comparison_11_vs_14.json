@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 11,
+    "owner_name": "Chris"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 2,
+    "owner2_wins": 0,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 246.84,
+    "owner2_total_points_scored_in_h2h": 236.44,
+    "owner1_average_score_in_h2h": 123.42,
+    "owner2_average_score_in_h2h": 118.22,
+    "average_margin_of_victory_owner1": 5.2,
+    "average_margin_of_victory_owner2": 0.0,
+    "closest_matchup_margin": 2.3,
+    "largest_blowout_margin": 8.1
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1081,
+      "season_id": 2023,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 112.6,
+      "owner2_score": 110.3,
+      "owner1_team_name": "All Madden Ultimate Team",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1171,
+      "season_id": 2024,
+      "nfl_week": 8,
+      "fantasy_week": "8",
+      "owner1_score": 134.24,
+      "owner2_score": 126.14,
+      "owner1_team_name": "All Madden Ultimate Team",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 11,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

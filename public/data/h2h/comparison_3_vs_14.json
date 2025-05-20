@@ -1,0 +1,86 @@
+{
+  "owner1_info": {
+    "owner_id": 3,
+    "owner_name": "Jake"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 3,
+    "owner2_wins": 0,
+    "ties": 0,
+    "total_matchups": 3,
+    "owner1_total_points_scored_in_h2h": 317.9,
+    "owner2_total_points_scored_in_h2h": 272.0,
+    "owner1_average_score_in_h2h": 105.97,
+    "owner2_average_score_in_h2h": 90.67,
+    "average_margin_of_victory_owner1": 15.3,
+    "average_margin_of_victory_owner2": 0.0,
+    "closest_matchup_margin": 12.98,
+    "largest_blowout_margin": 19.2
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1065,
+      "season_id": 2023,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 106.22,
+      "owner2_score": 87.02,
+      "owner1_team_name": "Jam It In That Younghoe",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1109,
+      "season_id": 2023,
+      "nfl_week": 13,
+      "fantasy_week": "13",
+      "owner1_score": 105.48,
+      "owner2_score": 91.76,
+      "owner1_team_name": "Jam It In That Younghoe",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1155,
+      "season_id": 2024,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 106.2,
+      "owner2_score": 93.22,
+      "owner1_team_name": "Jam It In That Younghoe",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 1,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 1,
+    "matchups_details": [
+      {
+        "matchup_id": 1109,
+        "season_id": 2023,
+        "nfl_week": 13,
+        "fantasy_week": "13",
+        "owner1_score": 105.48,
+        "owner2_score": 91.76,
+        "owner1_team_name": "Jam It In That Younghoe",
+        "owner2_team_name": "Kendra :))",
+        "winner_owner_id": 3,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": false
+      }
+    ]
+  }
+}

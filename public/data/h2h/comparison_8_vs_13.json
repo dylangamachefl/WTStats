@@ -1,0 +1,72 @@
+{
+  "owner1_info": {
+    "owner_id": 8,
+    "owner_name": "Zach"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 0,
+    "owner2_wins": 3,
+    "ties": 0,
+    "total_matchups": 3,
+    "owner1_total_points_scored_in_h2h": 268.94,
+    "owner2_total_points_scored_in_h2h": 351.84,
+    "owner1_average_score_in_h2h": 89.65,
+    "owner2_average_score_in_h2h": 117.28,
+    "average_margin_of_victory_owner1": 0.0,
+    "average_margin_of_victory_owner2": 27.63,
+    "closest_matchup_margin": 5.54,
+    "largest_blowout_margin": 53.56
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1089,
+      "season_id": 2023,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 76.32,
+      "owner2_score": 129.88,
+      "owner1_team_name": "MouseRat  FC",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1179,
+      "season_id": 2024,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 97.3,
+      "owner2_score": 121.1,
+      "owner1_team_name": "MouseRat  FC",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1198,
+      "season_id": 2024,
+      "nfl_week": 13,
+      "fantasy_week": "13",
+      "owner1_score": 95.32,
+      "owner2_score": 100.86,
+      "owner1_team_name": "MouseRat  FC",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

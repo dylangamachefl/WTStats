@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 4,
+    "owner_name": "Mark"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 1,
+    "owner2_wins": 1,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 216.32,
+    "owner2_total_points_scored_in_h2h": 194.08,
+    "owner1_average_score_in_h2h": 108.16,
+    "owner2_average_score_in_h2h": 97.04,
+    "average_margin_of_victory_owner1": 31.58,
+    "average_margin_of_victory_owner2": 9.34,
+    "closest_matchup_margin": 9.34,
+    "largest_blowout_margin": 31.58
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1100,
+      "season_id": 2023,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 94.06,
+      "owner2_score": 103.4,
+      "owner1_team_name": "Jupiter Joe's",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1190,
+      "season_id": 2024,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 122.26,
+      "owner2_score": 90.68,
+      "owner1_team_name": "Jupiter Joe's",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 4,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

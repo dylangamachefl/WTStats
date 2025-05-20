@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 8,
+    "owner_name": "Zach"
+  },
+  "owner2_info": {
+    "owner_id": 14,
+    "owner_name": "Fitz"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 1,
+    "owner2_wins": 1,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 239.62,
+    "owner2_total_points_scored_in_h2h": 236.1,
+    "owner1_average_score_in_h2h": 119.81,
+    "owner2_average_score_in_h2h": 118.05,
+    "average_margin_of_victory_owner1": 24.78,
+    "average_margin_of_victory_owner2": 21.26,
+    "closest_matchup_margin": 21.26,
+    "largest_blowout_margin": 24.78
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1076,
+      "season_id": 2023,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 107.4,
+      "owner2_score": 128.66,
+      "owner1_team_name": "MouseRat  FC",
+      "owner2_team_name": "Kendra :))",
+      "winner_owner_id": 14,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1166,
+      "season_id": 2024,
+      "nfl_week": 7,
+      "fantasy_week": "7",
+      "owner1_score": 132.22,
+      "owner2_score": 107.44,
+      "owner1_team_name": "MouseRat  FC",
+      "owner2_team_name": "Never Zay Never",
+      "winner_owner_id": 8,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

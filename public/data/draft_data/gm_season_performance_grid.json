@@ -1,0 +1,1642 @@
+[
+  {
+    "season_id": 2024,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 16,
+    "avg_pvdre": 18.64,
+    "total_pvdre": 298.17,
+    "pvdre_hit_rate": 0.63,
+    "avg_value_vs_adp": 0.6
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 16,
+    "avg_pvdre": 4.71,
+    "total_pvdre": 75.34,
+    "pvdre_hit_rate": 0.5,
+    "avg_value_vs_adp": -7.0
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 14,
+    "gm_name": "Fitz",
+    "total_picks": 16,
+    "avg_pvdre": -9.48,
+    "total_pvdre": -151.74,
+    "pvdre_hit_rate": 0.38,
+    "avg_value_vs_adp": -6.6
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 16,
+    "avg_pvdre": -12.45,
+    "total_pvdre": -199.12,
+    "pvdre_hit_rate": 0.44,
+    "avg_value_vs_adp": 2.8
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 16,
+    "avg_pvdre": -17.64,
+    "total_pvdre": -282.26,
+    "pvdre_hit_rate": 0.44,
+    "avg_value_vs_adp": -3.8
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 16,
+    "avg_pvdre": -18.55,
+    "total_pvdre": -296.83,
+    "pvdre_hit_rate": 0.31,
+    "avg_value_vs_adp": 0.6
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 16,
+    "avg_pvdre": -19.94,
+    "total_pvdre": -319.09,
+    "pvdre_hit_rate": 0.31,
+    "avg_value_vs_adp": -17.9
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 13,
+    "gm_name": "Dan",
+    "total_picks": 16,
+    "avg_pvdre": -20.1,
+    "total_pvdre": -321.65,
+    "pvdre_hit_rate": 0.25,
+    "avg_value_vs_adp": 2.0
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 16,
+    "avg_pvdre": -21.58,
+    "total_pvdre": -345.32,
+    "pvdre_hit_rate": 0.44,
+    "avg_value_vs_adp": -0.4
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 16,
+    "avg_pvdre": -35.51,
+    "total_pvdre": -568.2,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -13.2
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 16,
+    "avg_pvdre": -35.63,
+    "total_pvdre": -570.13,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -5.4
+  },
+  {
+    "season_id": 2024,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 16,
+    "avg_pvdre": -45.11,
+    "total_pvdre": -721.81,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -9.8
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": 10.55,
+    "total_pvdre": 179.41,
+    "pvdre_hit_rate": 0.65,
+    "avg_value_vs_adp": -2.6
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": 4.94,
+    "total_pvdre": 83.98,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 0.6
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -6.81,
+    "total_pvdre": -115.82,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 1.9
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -8.84,
+    "total_pvdre": -150.31,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -8.1
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -20.06,
+    "total_pvdre": -341.01,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 2.3
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -20.1,
+    "total_pvdre": -341.75,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -9.3
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 13,
+    "gm_name": "Dan",
+    "total_picks": 17,
+    "avg_pvdre": -23.68,
+    "total_pvdre": -402.53,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -6.1
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -23.73,
+    "total_pvdre": -403.33,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -7.2
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -24.91,
+    "total_pvdre": -423.47,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -19.6
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -37.83,
+    "total_pvdre": -643.18,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -24.7
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -41.69,
+    "total_pvdre": -708.69,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -1.4
+  },
+  {
+    "season_id": 2023,
+    "gm_id": 14,
+    "gm_name": "Fitz",
+    "total_picks": 17,
+    "avg_pvdre": -43.7,
+    "total_pvdre": -742.89,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": -13.3
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": 11.55,
+    "total_pvdre": 196.42,
+    "pvdre_hit_rate": 0.59,
+    "avg_value_vs_adp": -2.4
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": 2.25,
+    "total_pvdre": 38.19,
+    "pvdre_hit_rate": 0.53,
+    "avg_value_vs_adp": 4.2
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -7.09,
+    "total_pvdre": -120.58,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -17.3
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -13.28,
+    "total_pvdre": -225.81,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 0.1
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -23.74,
+    "total_pvdre": -403.54,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -16.2
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -26.8,
+    "total_pvdre": -455.64,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -14.4
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -28.01,
+    "total_pvdre": -476.24,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -13.9
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -31.07,
+    "total_pvdre": -528.17,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -12.9
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -33.05,
+    "total_pvdre": -561.8,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": -0.4
+  },
+  {
+    "season_id": 2022,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -33.17,
+    "total_pvdre": -563.83,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -4.3
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": 5.96,
+    "total_pvdre": 101.32,
+    "pvdre_hit_rate": 0.53,
+    "avg_value_vs_adp": 0.6
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -2.14,
+    "total_pvdre": -36.44,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -16.0
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -7.41,
+    "total_pvdre": -125.95,
+    "pvdre_hit_rate": 0.59,
+    "avg_value_vs_adp": 6.0
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -12.89,
+    "total_pvdre": -219.13,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -6.2
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -21.82,
+    "total_pvdre": -370.91,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -5.0
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -22.8,
+    "total_pvdre": -387.55,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -1.5
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -26.16,
+    "total_pvdre": -444.72,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -2.0
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -29.94,
+    "total_pvdre": -508.94,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -15.4
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -39.09,
+    "total_pvdre": -664.53,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": -15.5
+  },
+  {
+    "season_id": 2021,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -57.63,
+    "total_pvdre": -979.71,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -7.8
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -7.52,
+    "total_pvdre": -127.79,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -16.8
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -8.73,
+    "total_pvdre": -148.4,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 0.6
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -9.69,
+    "total_pvdre": -164.74,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -5.8
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -12.8,
+    "total_pvdre": -217.59,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 1.9
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -15.39,
+    "total_pvdre": -261.6,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -15.9
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -19.23,
+    "total_pvdre": -326.84,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -4.3
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -21.53,
+    "total_pvdre": -366.01,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -3.9
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -24.98,
+    "total_pvdre": -424.63,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -15.9
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -32.1,
+    "total_pvdre": -545.64,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -0.1
+  },
+  {
+    "season_id": 2020,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -48.64,
+    "total_pvdre": -826.89,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": -13.0
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": 2.34,
+    "total_pvdre": 39.78,
+    "pvdre_hit_rate": 0.53,
+    "avg_value_vs_adp": -13.7
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -6.9,
+    "total_pvdre": -117.22,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 3.5
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -13.71,
+    "total_pvdre": -233.04,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -2.8
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -15.58,
+    "total_pvdre": -264.82,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -2.3
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -15.74,
+    "total_pvdre": -267.6,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 1.9
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -25.44,
+    "total_pvdre": -432.51,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -8.5
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 16,
+    "avg_pvdre": -30.09,
+    "total_pvdre": -481.5,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -10.4
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -31.44,
+    "total_pvdre": -534.49,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -12.2
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -31.71,
+    "total_pvdre": -539.09,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -3.1
+  },
+  {
+    "season_id": 2019,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -33.89,
+    "total_pvdre": -576.13,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -17.4
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -2.01,
+    "total_pvdre": -34.1,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -5.2
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -5.08,
+    "total_pvdre": -86.34,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -5.5
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -7.87,
+    "total_pvdre": -133.87,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -9.4
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -11.39,
+    "total_pvdre": -193.68,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -11.2
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -14.79,
+    "total_pvdre": -251.42,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 3.6
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -15.93,
+    "total_pvdre": -270.89,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -8.1
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 16,
+    "avg_pvdre": -20.24,
+    "total_pvdre": -323.81,
+    "pvdre_hit_rate": 0.38,
+    "avg_value_vs_adp": -4.1
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -21.6,
+    "total_pvdre": -367.14,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -4.0
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -34.7,
+    "total_pvdre": -589.94,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -4.4
+  },
+  {
+    "season_id": 2018,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -55.41,
+    "total_pvdre": -942.04,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -11.6
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -14.74,
+    "total_pvdre": -250.65,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 0.4
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -16.84,
+    "total_pvdre": -286.32,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -4.9
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -19.61,
+    "total_pvdre": -333.43,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -7.4
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -21.54,
+    "total_pvdre": -366.25,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -5.5
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -24.12,
+    "total_pvdre": -410.09,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -11.1
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -25.04,
+    "total_pvdre": -425.75,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -0.1
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -27.05,
+    "total_pvdre": -459.9,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": -8.1
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -32.99,
+    "total_pvdre": -560.9,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -0.3
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -37.17,
+    "total_pvdre": -631.92,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -5.6
+  },
+  {
+    "season_id": 2017,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -49.06,
+    "total_pvdre": -833.95,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": -7.0
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": 16.96,
+    "total_pvdre": 288.38,
+    "pvdre_hit_rate": 0.65,
+    "avg_value_vs_adp": -10.1
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -7.7,
+    "total_pvdre": -130.91,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 3.2
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -10.56,
+    "total_pvdre": -179.49,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -0.7
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -15.66,
+    "total_pvdre": -266.24,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -6.6
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -20.59,
+    "total_pvdre": -350.05,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -6.8
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -25.23,
+    "total_pvdre": -428.99,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 2.1
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -25.96,
+    "total_pvdre": -441.4,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -6.7
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -30.62,
+    "total_pvdre": -520.47,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 6.3
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -39.18,
+    "total_pvdre": -666.05,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": -8.2
+  },
+  {
+    "season_id": 2016,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -49.0,
+    "total_pvdre": -832.96,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": 2.4
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -6.17,
+    "total_pvdre": -104.83,
+    "pvdre_hit_rate": 0.59,
+    "avg_value_vs_adp": 5.7
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -10.46,
+    "total_pvdre": -177.75,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -5.4
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -16.92,
+    "total_pvdre": -287.56,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -17.7
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -18.71,
+    "total_pvdre": -318.03,
+    "pvdre_hit_rate": 0.53,
+    "avg_value_vs_adp": 3.4
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -22.5,
+    "total_pvdre": -382.46,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -1.2
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -23.84,
+    "total_pvdre": -405.21,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -3.9
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 16,
+    "avg_pvdre": -36.43,
+    "total_pvdre": -582.83,
+    "pvdre_hit_rate": 0.25,
+    "avg_value_vs_adp": -5.5
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -38.81,
+    "total_pvdre": -659.84,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": -17.2
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -40.11,
+    "total_pvdre": -681.83,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 3.9
+  },
+  {
+    "season_id": 2015,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -41.94,
+    "total_pvdre": -713.0,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -0.2
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": 7.06,
+    "total_pvdre": 120.02,
+    "pvdre_hit_rate": 0.53,
+    "avg_value_vs_adp": -4.7
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -4.62,
+    "total_pvdre": -78.49,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 2.3
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -7.42,
+    "total_pvdre": -126.08,
+    "pvdre_hit_rate": 0.59,
+    "avg_value_vs_adp": 4.7
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 12,
+    "gm_name": "Dylan",
+    "total_picks": 17,
+    "avg_pvdre": -11.42,
+    "total_pvdre": -194.17,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 7.3
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -23.84,
+    "total_pvdre": -405.2,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -2.8
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -26.49,
+    "total_pvdre": -450.38,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 0.9
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -33.91,
+    "total_pvdre": -576.55,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -3.4
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -36.86,
+    "total_pvdre": -626.55,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 4.3
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -37.75,
+    "total_pvdre": -641.81,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 2.1
+  },
+  {
+    "season_id": 2014,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -43.28,
+    "total_pvdre": -735.84,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 0.9
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -9.53,
+    "total_pvdre": -162.0,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 6.8
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -10.41,
+    "total_pvdre": -177.05,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 0.4
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -19.54,
+    "total_pvdre": -332.15,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -6.4
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -21.06,
+    "total_pvdre": -358.03,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -5.2
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -22.0,
+    "total_pvdre": -374.02,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -5.0
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -24.76,
+    "total_pvdre": -420.93,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -0.1
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -29.85,
+    "total_pvdre": -507.44,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -9.2
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -30.4,
+    "total_pvdre": -516.75,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 3.9
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -45.68,
+    "total_pvdre": -776.57,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": -8.6
+  },
+  {
+    "season_id": 2013,
+    "gm_id": 9,
+    "gm_name": "Lac",
+    "total_picks": 17,
+    "avg_pvdre": -53.08,
+    "total_pvdre": -902.39,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 0.1
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -13.98,
+    "total_pvdre": -237.64,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 12.3
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -14.19,
+    "total_pvdre": -241.21,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 8.2
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -15.36,
+    "total_pvdre": -261.13,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 10.3
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 9,
+    "gm_name": "Lac",
+    "total_picks": 17,
+    "avg_pvdre": -15.56,
+    "total_pvdre": -264.6,
+    "pvdre_hit_rate": 0.59,
+    "avg_value_vs_adp": 5.6
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -18.5,
+    "total_pvdre": -314.56,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 6.8
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -21.05,
+    "total_pvdre": -357.88,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": 5.2
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -25.42,
+    "total_pvdre": -432.09,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": -3.9
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": -27.95,
+    "total_pvdre": -475.09,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 17.4
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 16,
+    "avg_pvdre": -31.49,
+    "total_pvdre": -503.83,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -8.7
+  },
+  {
+    "season_id": 2012,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -45.35,
+    "total_pvdre": -770.97,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": 1.7
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 9,
+    "gm_name": "Lac",
+    "total_picks": 17,
+    "avg_pvdre": -4.26,
+    "total_pvdre": -72.5,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": 21.7
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -5.25,
+    "total_pvdre": -89.24,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 9.6
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -14.56,
+    "total_pvdre": -247.48,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": 1.2
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -16.44,
+    "total_pvdre": -279.53,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -1.3
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 16,
+    "avg_pvdre": -19.09,
+    "total_pvdre": -305.49,
+    "pvdre_hit_rate": 0.44,
+    "avg_value_vs_adp": -2.7
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": -20.75,
+    "total_pvdre": -352.78,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 1.9
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -22.93,
+    "total_pvdre": -389.74,
+    "pvdre_hit_rate": 0.24,
+    "avg_value_vs_adp": -7.8
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 16,
+    "avg_pvdre": -32.47,
+    "total_pvdre": -519.53,
+    "pvdre_hit_rate": 0.25,
+    "avg_value_vs_adp": -1.2
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -49.4,
+    "total_pvdre": -839.87,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -11.4
+  },
+  {
+    "season_id": 2011,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 17,
+    "avg_pvdre": -51.93,
+    "total_pvdre": -882.76,
+    "pvdre_hit_rate": 0.12,
+    "avg_value_vs_adp": 3.8
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 16,
+    "avg_pvdre": -3.77,
+    "total_pvdre": -60.25,
+    "pvdre_hit_rate": 0.5,
+    "avg_value_vs_adp": 3.7
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 9,
+    "gm_name": "Lac",
+    "total_picks": 16,
+    "avg_pvdre": -11.15,
+    "total_pvdre": -178.35,
+    "pvdre_hit_rate": 0.44,
+    "avg_value_vs_adp": -2.6
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 16,
+    "avg_pvdre": -12.46,
+    "total_pvdre": -199.42,
+    "pvdre_hit_rate": 0.31,
+    "avg_value_vs_adp": 3.4
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 16,
+    "avg_pvdre": -23.46,
+    "total_pvdre": -375.3,
+    "pvdre_hit_rate": 0.25,
+    "avg_value_vs_adp": -8.5
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 15,
+    "avg_pvdre": -25.79,
+    "total_pvdre": -386.91,
+    "pvdre_hit_rate": 0.13,
+    "avg_value_vs_adp": -7.1
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 16,
+    "avg_pvdre": -29.59,
+    "total_pvdre": -473.5,
+    "pvdre_hit_rate": 0.38,
+    "avg_value_vs_adp": 0.9
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 16,
+    "avg_pvdre": -39.79,
+    "total_pvdre": -636.58,
+    "pvdre_hit_rate": 0.31,
+    "avg_value_vs_adp": -6.1
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 16,
+    "avg_pvdre": -39.91,
+    "total_pvdre": -638.52,
+    "pvdre_hit_rate": 0.13,
+    "avg_value_vs_adp": -7.3
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 16,
+    "avg_pvdre": -42.35,
+    "total_pvdre": -677.62,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": 1.8
+  },
+  {
+    "season_id": 2010,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 16,
+    "avg_pvdre": -47.64,
+    "total_pvdre": -762.28,
+    "pvdre_hit_rate": 0.19,
+    "avg_value_vs_adp": -21.9
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 11,
+    "gm_name": "Chris",
+    "total_picks": 17,
+    "avg_pvdre": 5.26,
+    "total_pvdre": 89.36,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -13.2
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 4,
+    "gm_name": "Mark",
+    "total_picks": 17,
+    "avg_pvdre": 1.02,
+    "total_pvdre": 17.29,
+    "pvdre_hit_rate": 0.47,
+    "avg_value_vs_adp": -5.1
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 8,
+    "gm_name": "Zach",
+    "total_picks": 17,
+    "avg_pvdre": -6.21,
+    "total_pvdre": -105.51,
+    "pvdre_hit_rate": 0.35,
+    "avg_value_vs_adp": -1.3
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 3,
+    "gm_name": "Jake",
+    "total_picks": 16,
+    "avg_pvdre": -14.56,
+    "total_pvdre": -233.02,
+    "pvdre_hit_rate": 0.31,
+    "avg_value_vs_adp": -10.0
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 7,
+    "gm_name": "Will",
+    "total_picks": 17,
+    "avg_pvdre": -21.32,
+    "total_pvdre": -362.45,
+    "pvdre_hit_rate": 0.41,
+    "avg_value_vs_adp": 7.7
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 1,
+    "gm_name": "Jack",
+    "total_picks": 17,
+    "avg_pvdre": -21.57,
+    "total_pvdre": -366.67,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": 1.9
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 5,
+    "gm_name": "Sean",
+    "total_picks": 17,
+    "avg_pvdre": -22.29,
+    "total_pvdre": -378.87,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -3.1
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 9,
+    "gm_name": "Lac",
+    "total_picks": 17,
+    "avg_pvdre": -23.98,
+    "total_pvdre": -407.7,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -8.7
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 2,
+    "gm_name": "Josh",
+    "total_picks": 17,
+    "avg_pvdre": -31.78,
+    "total_pvdre": -540.2,
+    "pvdre_hit_rate": 0.18,
+    "avg_value_vs_adp": 5.7
+  },
+  {
+    "season_id": 2009,
+    "gm_id": 6,
+    "gm_name": "Nick",
+    "total_picks": 17,
+    "avg_pvdre": -38.37,
+    "total_pvdre": -652.31,
+    "pvdre_hit_rate": 0.29,
+    "avg_value_vs_adp": -14.2
+  }
+]

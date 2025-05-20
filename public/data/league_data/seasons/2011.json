@@ -1,0 +1,1156 @@
+{
+  "seasonData": {
+    "year": 2011,
+    "championName": "Mark",
+    "runnerUp": "Nick",
+    "teams": 10,
+    "regularSeasonWeeks": 13
+  },
+  "standingsData": [
+    {
+      "season_id": 2011,
+      "owner_name": "Lac",
+      "wt_team_name": "WutsItCalledWen UAlmostWin.....",
+      "regular_season_wins": 11,
+      "regular_season_losses": 2,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1439.0,
+      "regular_season_points_against": 1164.0,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Mark",
+      "wt_team_name": "Jaunty  John",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1299.0,
+      "regular_season_points_against": 1107.0,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Nick",
+      "wt_team_name": "History in the Making",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1230.0,
+      "regular_season_points_against": 1199.0,
+      "regular_season_finish": 3,
+      "lastFive": [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Will",
+      "wt_team_name": "Ratchet Randy",
+      "regular_season_wins": 6,
+      "regular_season_losses": 5,
+      "regular_season_ties": 2,
+      "regular_season_points_for": 1188.0,
+      "regular_season_points_against": 1292.0,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        1,
+        0,
+        null,
+        null
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Zach",
+      "wt_team_name": "Gabby's Gobblers",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1170.0,
+      "regular_season_points_against": 1160.0,
+      "regular_season_finish": 5,
+      "lastFive": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Sean",
+      "wt_team_name": "Jupiter Clutch",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1155.0,
+      "regular_season_points_against": 1118.0,
+      "regular_season_finish": 6,
+      "lastFive": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Chris",
+      "wt_team_name": "Mr. Spoiler",
+      "regular_season_wins": 5,
+      "regular_season_losses": 6,
+      "regular_season_ties": 2,
+      "regular_season_points_for": 1207.0,
+      "regular_season_points_against": 1319.0,
+      "regular_season_finish": 7,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        null
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Jake",
+      "wt_team_name": "MVP Back On The Team",
+      "regular_season_wins": 5,
+      "regular_season_losses": 7,
+      "regular_season_ties": 1,
+      "regular_season_points_for": 1130.0,
+      "regular_season_points_against": 1137.0,
+      "regular_season_finish": 8,
+      "lastFive": [
+        0,
+        1,
+        0,
+        null,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Jack",
+      "wt_team_name": "CAM NEWTON  FOR SALE!!!!!!!",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1060.0,
+      "regular_season_points_against": 1218.0,
+      "regular_season_finish": 9,
+      "lastFive": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2011,
+      "owner_name": "Josh",
+      "wt_team_name": "SHUT UP.... GRANDMA!!",
+      "regular_season_wins": 4,
+      "regular_season_losses": 8,
+      "regular_season_ties": 1,
+      "regular_season_points_for": 1002.0,
+      "regular_season_points_against": 1166.0,
+      "regular_season_finish": 10,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "WutsItCalledWen UAlmostWin.....",
+          "owner": "Lac",
+          "score": 241.0
+        },
+        "away": {
+          "seed": 3,
+          "name": "History in the Making",
+          "owner": "Nick",
+          "score": 245.0
+        }
+      },
+      {
+        "home": {
+          "seed": 4,
+          "name": "Ratchet Randy",
+          "owner": "Will",
+          "score": 216.0
+        },
+        "away": {
+          "seed": 2,
+          "name": "Jaunty  John",
+          "owner": "Mark",
+          "score": 223.0
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 2,
+          "name": "Jaunty  John",
+          "owner": "Mark",
+          "score": 224.0
+        },
+        "away": {
+          "seed": 3,
+          "name": "History in the Making",
+          "owner": "Nick",
+          "score": 222.0
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "WutsItCalledWen UAlmostWin.....",
+      "Jaunty  John",
+      "History in the Making",
+      "Ratchet Randy",
+      "Gabby's Gobblers",
+      "Jupiter Clutch",
+      "Mr. Spoiler",
+      "MVP Back On The Team",
+      "CAM NEWTON  FOR SALE!!!!!!!",
+      "SHUT UP.... GRANDMA!!"
+    ],
+    "scores": [
+      [
+        109.0,
+        66.0,
+        111.0,
+        112.0,
+        79.0,
+        82.0,
+        84.0,
+        113.0,
+        84.0,
+        85.0
+      ],
+      [
+        115.0,
+        100.0,
+        90.0,
+        119.0,
+        115.0,
+        118.0,
+        121.0,
+        127.0,
+        84.0,
+        70.0
+      ],
+      [
+        113.0,
+        127.0,
+        78.0,
+        77.0,
+        75.0,
+        55.0,
+        104.0,
+        76.0,
+        123.0,
+        64.0
+      ],
+      [
+        108.0,
+        91.0,
+        113.0,
+        89.0,
+        124.0,
+        105.0,
+        111.0,
+        78.0,
+        97.0,
+        63.0
+      ],
+      [
+        92.0,
+        97.0,
+        62.0,
+        80.0,
+        101.0,
+        80.0,
+        94.0,
+        104.0,
+        61.0,
+        94.0
+      ],
+      [
+        145.0,
+        81.0,
+        72.0,
+        83.0,
+        83.0,
+        104.0,
+        89.0,
+        61.0,
+        58.0,
+        60.0
+      ],
+      [
+        99.0,
+        142.0,
+        81.0,
+        62.0,
+        104.0,
+        58.0,
+        59.0,
+        50.0,
+        98.0,
+        69.0
+      ],
+      [
+        97.0,
+        94.0,
+        89.0,
+        108.0,
+        102.0,
+        103.0,
+        75.0,
+        83.0,
+        55.0,
+        58.0
+      ],
+      [
+        104.0,
+        101.0,
+        93.0,
+        53.0,
+        86.0,
+        127.0,
+        70.0,
+        65.0,
+        129.0,
+        96.0
+      ],
+      [
+        102.0,
+        100.0,
+        139.0,
+        85.0,
+        93.0,
+        83.0,
+        83.0,
+        92.0,
+        61.0,
+        79.0
+      ],
+      [
+        114.0,
+        74.0,
+        113.0,
+        111.0,
+        76.0,
+        72.0,
+        110.0,
+        77.0,
+        37.0,
+        97.0
+      ],
+      [
+        94.0,
+        95.0,
+        89.0,
+        102.0,
+        77.0,
+        78.0,
+        100.0,
+        102.0,
+        97.0,
+        86.0
+      ],
+      [
+        147.0,
+        131.0,
+        100.0,
+        107.0,
+        55.0,
+        90.0,
+        107.0,
+        102.0,
+        76.0,
+        81.0
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "T",
+        "W",
+        "L",
+        "T"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "T",
+        "L",
+        "L",
+        "W",
+        "T",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "T",
+        "L",
+        "L",
+        "T",
+        "W",
+        "L",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "Mr. Spoiler",
+      "owner": "Chris",
+      "leagueAvgPpg": 91.4,
+      "differential": 10.1,
+      "actualOpponentsPpg": 101.5,
+      "rank": 1,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Ratchet Randy",
+      "owner": "Will",
+      "leagueAvgPpg": 91.4,
+      "differential": 8.0,
+      "actualOpponentsPpg": 99.4,
+      "rank": 2,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "CAM NEWTON  FOR SALE!!!!!!!",
+      "owner": "Jack",
+      "leagueAvgPpg": 91.4,
+      "differential": 2.3,
+      "actualOpponentsPpg": 93.7,
+      "rank": 3,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "History in the Making",
+      "owner": "Nick",
+      "leagueAvgPpg": 91.4,
+      "differential": 0.8,
+      "actualOpponentsPpg": 92.2,
+      "rank": 4,
+      "rating": "Average"
+    },
+    {
+      "team": "SHUT UP.... GRANDMA!!",
+      "owner": "Josh",
+      "leagueAvgPpg": 91.4,
+      "differential": -1.7,
+      "actualOpponentsPpg": 89.7,
+      "rank": 5,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "WutsItCalledWen UAlmostWin.....",
+      "owner": "Lac",
+      "leagueAvgPpg": 91.4,
+      "differential": -1.8,
+      "actualOpponentsPpg": 89.5,
+      "rank": 6,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Gabby's Gobblers",
+      "owner": "Zach",
+      "leagueAvgPpg": 91.4,
+      "differential": -2.1,
+      "actualOpponentsPpg": 89.2,
+      "rank": 7,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "MVP Back On The Team",
+      "owner": "Jake",
+      "leagueAvgPpg": 91.4,
+      "differential": -3.9,
+      "actualOpponentsPpg": 87.5,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Clutch",
+      "owner": "Sean",
+      "leagueAvgPpg": 91.4,
+      "differential": -5.4,
+      "actualOpponentsPpg": 86.0,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jaunty  John",
+      "owner": "Mark",
+      "leagueAvgPpg": 91.4,
+      "differential": -6.2,
+      "actualOpponentsPpg": 85.2,
+      "rank": 10,
+      "rating": "Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Victor Cruz",
+      "position": "WR",
+      "team": "New York Giants",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 206.8,
+      "rank": 1
+    },
+    {
+      "player": "Darren Sproles",
+      "position": "RB",
+      "team": "New Orleans Saints",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 185.3,
+      "rank": 2
+    },
+    {
+      "player": "Laurent Robinson",
+      "position": "WR",
+      "team": "Dallas Cowboys",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 151.8,
+      "rank": 3
+    },
+    {
+      "player": "Nate Washington",
+      "position": "WR",
+      "team": "Tennessee Titans",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 150.8,
+      "rank": 4
+    },
+    {
+      "player": "Antonio Brown",
+      "position": "WR",
+      "team": "Pittsburgh Steelers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 126.9,
+      "rank": 5
+    },
+    {
+      "player": "Ben Tate",
+      "position": "RB",
+      "team": "Houston Texans",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 122.0,
+      "rank": 6
+    },
+    {
+      "player": "DeMarco Murray",
+      "position": "RB",
+      "team": "Dallas Cowboys",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 119.8,
+      "rank": 7
+    },
+    {
+      "player": "49ers D/ST",
+      "position": "DST",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 184.0,
+      "rank": 8
+    },
+    {
+      "player": "Seahawks D/ST",
+      "position": "DST",
+      "team": "Seattle Seahawks",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 151.0,
+      "rank": 9
+    },
+    {
+      "player": "David Akers",
+      "position": "K",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 184.6,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Aaron Rodgers",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 397.2,
+        "ppg": 26.5,
+        "bestGame": {
+          "week": 4,
+          "points": 45.9
+        }
+      },
+      {
+        "player": "Drew Brees",
+        "team": "New Orleans Saints",
+        "fantasyTeam": null,
+        "totalPoints": 391.6,
+        "ppg": 24.5,
+        "bestGame": {
+          "week": 12,
+          "points": 37.3
+        }
+      },
+      {
+        "player": "Cam Newton",
+        "team": "Carolina Panthers",
+        "fantasyTeam": null,
+        "totalPoints": 370.1,
+        "ppg": 23.1,
+        "bestGame": {
+          "week": 13,
+          "points": 38.3
+        }
+      },
+      {
+        "player": "Tom Brady",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 366.3,
+        "ppg": 22.9,
+        "bestGame": {
+          "week": 1,
+          "points": 35.0
+        }
+      },
+      {
+        "player": "Matthew Stafford",
+        "team": "Detroit Lions",
+        "fantasyTeam": null,
+        "totalPoints": 343.3,
+        "ppg": 21.5,
+        "bestGame": {
+          "week": 17,
+          "points": 38.8
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Ray Rice",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": null,
+        "totalPoints": 296.6,
+        "ppg": 18.5,
+        "bestGame": {
+          "week": 17,
+          "points": 31.9
+        }
+      },
+      {
+        "player": "LeSean McCoy",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": null,
+        "totalPoints": 280.4,
+        "ppg": 18.7,
+        "bestGame": {
+          "week": 8,
+          "points": 32.0
+        }
+      },
+      {
+        "player": "Maurice Jones-Drew",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": null,
+        "totalPoints": 262.0,
+        "ppg": 16.4,
+        "bestGame": {
+          "week": 14,
+          "points": 37.6
+        }
+      },
+      {
+        "player": "Arian Foster",
+        "team": "Houston Texans",
+        "fantasyTeam": null,
+        "totalPoints": 250.1,
+        "ppg": 19.2,
+        "bestGame": {
+          "week": 7,
+          "points": 41.4
+        }
+      },
+      {
+        "player": "Marshawn Lynch",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": null,
+        "totalPoints": 215.6,
+        "ppg": 14.4,
+        "bestGame": {
+          "week": 13,
+          "points": 26.8
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Calvin Johnson",
+        "team": "Detroit Lions",
+        "fantasyTeam": null,
+        "totalPoints": 263.2,
+        "ppg": 16.4,
+        "bestGame": {
+          "week": 15,
+          "points": 33.4
+        }
+      },
+      {
+        "player": "Jordy Nelson",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 216.3,
+        "ppg": 13.5,
+        "bestGame": {
+          "week": 17,
+          "points": 34.2
+        }
+      },
+      {
+        "player": "Wes Welker",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 213.9,
+        "ppg": 13.4,
+        "bestGame": {
+          "week": 3,
+          "points": 35.6
+        }
+      },
+      {
+        "player": "Victor Cruz",
+        "team": "New York Giants",
+        "fantasyTeam": null,
+        "totalPoints": 206.8,
+        "ppg": 12.9,
+        "bestGame": {
+          "week": 12,
+          "points": 27.7
+        }
+      },
+      {
+        "player": "Larry Fitzgerald",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": null,
+        "totalPoints": 189.1,
+        "ppg": 11.8,
+        "bestGame": {
+          "week": 10,
+          "points": 26.6
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Rob Gronkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 240.9,
+        "ppg": 15.1,
+        "bestGame": {
+          "week": 14,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Jimmy Graham",
+        "team": "New Orleans Saints",
+        "fantasyTeam": null,
+        "totalPoints": 195.0,
+        "ppg": 12.2,
+        "bestGame": {
+          "week": 12,
+          "points": 20.4
+        }
+      },
+      {
+        "player": "Aaron Hernandez",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 135.5,
+        "ppg": 9.7,
+        "bestGame": {
+          "week": 17,
+          "points": 22.4
+        }
+      },
+      {
+        "player": "Tony Gonzalez",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": null,
+        "totalPoints": 129.5,
+        "ppg": 8.1,
+        "bestGame": {
+          "week": 2,
+          "points": 20.3
+        }
+      },
+      {
+        "player": "Jermichael Finley",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 124.7,
+        "ppg": 7.8,
+        "bestGame": {
+          "week": 3,
+          "points": 26.5
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "David Akers",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": null,
+        "totalPoints": 184.6,
+        "ppg": 11.5,
+        "bestGame": {
+          "week": 1,
+          "points": 15.0
+        }
+      },
+      {
+        "player": "John Kasay",
+        "team": "New Orleans Saints",
+        "fantasyTeam": null,
+        "totalPoints": 151.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 10,
+          "points": 16.0
+        }
+      },
+      {
+        "player": "Mason Crosby",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 144.0,
+        "ppg": 9.0,
+        "bestGame": {
+          "week": 7,
+          "points": 17.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "49ers D/ST",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": null,
+        "totalPoints": 184.0,
+        "ppg": 11.5,
+        "bestGame": {
+          "week": 1,
+          "points": 24.0
+        }
+      },
+      {
+        "player": "Bears D/ST",
+        "team": "Chicago Bears",
+        "fantasyTeam": null,
+        "totalPoints": 175.0,
+        "ppg": 10.9,
+        "bestGame": {
+          "week": 10,
+          "points": 36.0
+        }
+      },
+      {
+        "player": "Ravens D/ST",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": null,
+        "totalPoints": 164.0,
+        "ppg": 10.2,
+        "bestGame": {
+          "week": 4,
+          "points": 32.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Aaron Rodgers",
+      "position": "QB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": null,
+      "week": 4,
+      "points": 45.9
+    },
+    {
+      "rank": 2,
+      "player": "Arian Foster",
+      "position": "RB",
+      "team": "Houston Texans",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 41.4
+    },
+    {
+      "rank": 3,
+      "player": "Matt Flynn",
+      "position": "QB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": null,
+      "week": 17,
+      "points": 39.2
+    },
+    {
+      "rank": 4,
+      "player": "Matthew Stafford",
+      "position": "QB",
+      "team": "Detroit Lions",
+      "fantasyTeam": null,
+      "week": 17,
+      "points": 38.8
+    },
+    {
+      "rank": 5,
+      "player": "Cam Newton",
+      "position": "QB",
+      "team": "Carolina Panthers",
+      "fantasyTeam": null,
+      "week": 13,
+      "points": 38.3
+    },
+    {
+      "rank": 6,
+      "player": "Kevin Smith",
+      "position": "RB",
+      "team": "Detroit Lions",
+      "fantasyTeam": null,
+      "week": 11,
+      "points": 38.1
+    },
+    {
+      "rank": 7,
+      "player": "Maurice Jones-Drew",
+      "position": "RB",
+      "team": "Jacksonville Jaguars",
+      "fantasyTeam": null,
+      "week": 14,
+      "points": 37.6
+    },
+    {
+      "rank": 8,
+      "player": "Drew Brees",
+      "position": "QB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": null,
+      "week": 12,
+      "points": 37.3
+    },
+    {
+      "rank": 9,
+      "player": "Bears D/ST",
+      "position": "DST",
+      "team": "Chicago Bears",
+      "fantasyTeam": null,
+      "week": 10,
+      "points": 36.0
+    },
+    {
+      "rank": 10,
+      "player": "Wes Welker",
+      "position": "WR",
+      "team": "New England Patriots",
+      "fantasyTeam": null,
+      "week": 3,
+      "points": 35.6
+    }
+  ]
+}

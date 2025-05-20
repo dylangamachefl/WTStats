@@ -1,0 +1,111 @@
+{
+  "owner1_info": {
+    "owner_id": 3,
+    "owner_name": "Jake"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 4,
+    "owner2_wins": 2,
+    "ties": 0,
+    "total_matchups": 6,
+    "owner1_total_points_scored_in_h2h": 650.8,
+    "owner2_total_points_scored_in_h2h": 587.9,
+    "owner1_average_score_in_h2h": 108.47,
+    "owner2_average_score_in_h2h": 97.98,
+    "average_margin_of_victory_owner1": 28.47,
+    "average_margin_of_victory_owner2": 25.5,
+    "closest_matchup_margin": 10.0,
+    "largest_blowout_margin": 46.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 55,
+      "season_id": 2009,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 85.0,
+      "owner2_score": 116.0,
+      "owner1_team_name": "cant think of a name",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 99,
+      "season_id": 2010,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 114.0,
+      "owner2_score": 68.0,
+      "owner1_team_name": "VICK !!!!!!!!!!!!!!!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 148,
+      "season_id": 2010,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 150.0,
+      "owner2_score": 140.0,
+      "owner1_team_name": "VICK !!!!!!!!!!!!!!!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 174,
+      "season_id": 2011,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 104.0,
+      "owner2_score": 92.0,
+      "owner1_team_name": "MVP Back On The Team",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 249,
+      "season_id": 2012,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 87.0,
+      "owner2_score": 107.0,
+      "owner1_team_name": "On The Road To  Vicktory",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 324,
+      "season_id": 2013,
+      "nfl_week": 5,
+      "fantasy_week": "5",
+      "owner1_score": 110.8,
+      "owner2_score": 64.9,
+      "owner1_team_name": "No Named  Starters",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 3,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

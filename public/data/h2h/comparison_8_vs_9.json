@@ -1,0 +1,216 @@
+{
+  "owner1_info": {
+    "owner_id": 8,
+    "owner_name": "Zach"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 3,
+    "owner2_wins": 9,
+    "ties": 0,
+    "total_matchups": 12,
+    "owner1_total_points_scored_in_h2h": 1260.3999999999999,
+    "owner2_total_points_scored_in_h2h": 1337.4,
+    "owner1_average_score_in_h2h": 105.03,
+    "owner2_average_score_in_h2h": 111.45,
+    "average_margin_of_victory_owner1": 25.67,
+    "average_margin_of_victory_owner2": 17.11,
+    "closest_matchup_margin": 7.0,
+    "largest_blowout_margin": 47.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 44,
+      "season_id": 2009,
+      "nfl_week": 9,
+      "fantasy_week": "9",
+      "owner1_score": 105.0,
+      "owner2_score": 97.0,
+      "owner1_team_name": "Free Agent Schaefer Slayer",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 8,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 64,
+      "season_id": 2009,
+      "nfl_week": 13,
+      "fantasy_week": "13",
+      "owner1_score": 108.0,
+      "owner2_score": 122.0,
+      "owner1_team_name": "Free Agent Schaefer Slayer",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 67,
+      "season_id": 2009,
+      "nfl_week": "(14,15)",
+      "fantasy_week": "Round 1",
+      "owner1_score": 158.0,
+      "owner2_score": 171.0,
+      "owner1_team_name": "Free Agent Schaefer Slayer",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 90,
+      "season_id": 2010,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 90.0,
+      "owner2_score": 97.0,
+      "owner1_team_name": "Felix Me!!!!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 131,
+      "season_id": 2010,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 92.0,
+      "owner2_score": 99.0,
+      "owner1_team_name": "Felix Me!!!!",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 165,
+      "season_id": 2011,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 75.0,
+      "owner2_score": 113.0,
+      "owner1_team_name": "Gabby's Gobblers",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 206,
+      "season_id": 2011,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 77.0,
+      "owner2_score": 94.0,
+      "owner1_team_name": "Gabby's Gobblers",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 240,
+      "season_id": 2012,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 66.0,
+      "owner2_score": 91.0,
+      "owner1_team_name": "Mouse Rat",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 281,
+      "season_id": 2012,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 138.0,
+      "owner2_score": 116.0,
+      "owner1_team_name": "Mouse Rat",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 8,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 296,
+      "season_id": 2012,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 216.0,
+      "owner2_score": 169.0,
+      "owner1_team_name": "Mouse Rat",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 8,
+      "is_playoff_matchup": true,
+      "is_championship_matchup": true
+    },
+    {
+      "matchup_id": 315,
+      "season_id": 2013,
+      "nfl_week": 3,
+      "fantasy_week": "3",
+      "owner1_score": 50.3,
+      "owner2_score": 73.5,
+      "owner1_team_name": "Mouse Rat",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 356,
+      "season_id": 2013,
+      "nfl_week": 12,
+      "fantasy_week": "12",
+      "owner1_score": 85.1,
+      "owner2_score": 94.9,
+      "owner1_team_name": "Mouse Rat",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 1,
+    "owner2_playoff_wins": 1,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 2,
+    "matchups_details": [
+      {
+        "matchup_id": 67,
+        "season_id": 2009,
+        "nfl_week": "(14,15)",
+        "fantasy_week": "Round 1",
+        "owner1_score": 158.0,
+        "owner2_score": 171.0,
+        "owner1_team_name": "Free Agent Schaefer Slayer",
+        "owner2_team_name": "It'sColdOutside AndInMyHeart",
+        "winner_owner_id": 9,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": false
+      },
+      {
+        "matchup_id": 296,
+        "season_id": 2012,
+        "nfl_week": "(16,17)",
+        "fantasy_week": "Round 2",
+        "owner1_score": 216.0,
+        "owner2_score": 169.0,
+        "owner1_team_name": "Mouse Rat",
+        "owner2_team_name": "Mexico Madness",
+        "winner_owner_id": 8,
+        "is_playoff_matchup": true,
+        "is_championship_matchup": true
+      }
+    ]
+  }
+}

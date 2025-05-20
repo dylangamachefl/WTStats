@@ -1,0 +1,163 @@
+{
+  "owner1_info": {
+    "owner_id": 7,
+    "owner_name": "Will"
+  },
+  "owner2_info": {
+    "owner_id": 9,
+    "owner_name": "Lac"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 4,
+    "owner2_wins": 6,
+    "ties": 0,
+    "total_matchups": 10,
+    "owner1_total_points_scored_in_h2h": 1045.9,
+    "owner2_total_points_scored_in_h2h": 1079.8,
+    "owner1_average_score_in_h2h": 104.59,
+    "owner2_average_score_in_h2h": 107.98,
+    "average_margin_of_victory_owner1": 25.97,
+    "average_margin_of_victory_owner2": 22.97,
+    "closest_matchup_margin": 3.0,
+    "largest_blowout_margin": 60.0
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 10,
+      "season_id": 2009,
+      "nfl_week": 2,
+      "fantasy_week": "2",
+      "owner1_score": 79.0,
+      "owner2_score": 103.0,
+      "owner1_team_name": "Team Real",
+      "owner2_team_name": "It'sColdOutside AndInMyHeart",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 85,
+      "season_id": 2010,
+      "nfl_week": 2,
+      "fantasy_week": "2",
+      "owner1_score": 128.0,
+      "owner2_score": 68.0,
+      "owner1_team_name": "She's got the  Nicest Legs",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 7,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 130,
+      "season_id": 2010,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 82.0,
+      "owner2_score": 99.0,
+      "owner1_team_name": "She's got the  Nicest Legs",
+      "owner2_team_name": "A LAC Thumper",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 160,
+      "season_id": 2011,
+      "nfl_week": 2,
+      "fantasy_week": "2",
+      "owner1_score": 119.0,
+      "owner2_score": 115.0,
+      "owner1_team_name": "Ratchet Randy",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 7,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 205,
+      "season_id": 2011,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 111.0,
+      "owner2_score": 114.0,
+      "owner1_team_name": "Ratchet Randy",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 222,
+      "season_id": 2011,
+      "nfl_week": "(16,17)",
+      "fantasy_week": "Round 2",
+      "owner1_score": 166.0,
+      "owner2_score": 196.0,
+      "owner1_team_name": "Ratchet Randy",
+      "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 235,
+      "season_id": 2012,
+      "nfl_week": 2,
+      "fantasy_week": "2",
+      "owner1_score": 74.0,
+      "owner2_score": 116.0,
+      "owner1_team_name": "Ratchet Randy",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 280,
+      "season_id": 2012,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 92.0,
+      "owner2_score": 77.0,
+      "owner1_team_name": "Ratchet Randy",
+      "owner2_team_name": "Mexico Madness",
+      "winner_owner_id": 7,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 310,
+      "season_id": 2013,
+      "nfl_week": 2,
+      "fantasy_week": "2",
+      "owner1_score": 104.6,
+      "owner2_score": 79.7,
+      "owner1_team_name": "Pimpin is a Habit",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 7,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 355,
+      "season_id": 2013,
+      "nfl_week": 11,
+      "fantasy_week": "11",
+      "owner1_score": 90.3,
+      "owner2_score": 112.1,
+      "owner1_team_name": "Pimpin is a Habit",
+      "owner2_team_name": "Better Than Jake",
+      "winner_owner_id": 9,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

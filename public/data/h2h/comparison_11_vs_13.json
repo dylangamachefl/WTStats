@@ -1,0 +1,59 @@
+{
+  "owner1_info": {
+    "owner_id": 11,
+    "owner_name": "Chris"
+  },
+  "owner2_info": {
+    "owner_id": 13,
+    "owner_name": "Dan"
+  },
+  "rivalry_summary": {
+    "owner1_wins": 0,
+    "owner2_wins": 2,
+    "ties": 0,
+    "total_matchups": 2,
+    "owner1_total_points_scored_in_h2h": 184.66,
+    "owner2_total_points_scored_in_h2h": 193.76,
+    "owner1_average_score_in_h2h": 92.33,
+    "owner2_average_score_in_h2h": 96.88,
+    "average_margin_of_victory_owner1": 0.0,
+    "average_margin_of_victory_owner2": 4.55,
+    "closest_matchup_margin": 2.9,
+    "largest_blowout_margin": 6.2
+  },
+  "matchup_timeline": [
+    {
+      "matchup_id": 1095,
+      "season_id": 2023,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 96.22,
+      "owner2_score": 99.12,
+      "owner1_team_name": "All Madden Ultimate Team",
+      "owner2_team_name": "Team Irion",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    },
+    {
+      "matchup_id": 1185,
+      "season_id": 2024,
+      "nfl_week": 10,
+      "fantasy_week": "10",
+      "owner1_score": 88.44,
+      "owner2_score": 94.64,
+      "owner1_team_name": "All Madden Ultimate Team",
+      "owner2_team_name": "Girls Ruin Bowling",
+      "winner_owner_id": 13,
+      "is_playoff_matchup": false,
+      "is_championship_matchup": false
+    }
+  ],
+  "playoff_meetings": {
+    "owner1_playoff_wins": 0,
+    "owner2_playoff_wins": 0,
+    "playoff_ties": 0,
+    "total_playoff_matchups": 0,
+    "matchups_details": []
+  }
+}

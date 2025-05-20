@@ -11,31 +11,61 @@ import type {
   LeagueRecord,
   PlayoffAppearanceRate,
   FinalStandingsHeatmapEntry,
-  GMPlayoffPerformanceStat
+  GMPlayoffPerformanceStat,
+  SeasonDetailData, // New
+  GMCareerData,    // New
+  SeasonStandingEntry, // New
+  GMCareerSeasonSummary // New
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Trophy, Users, CalendarDays, LineChart as LineChartIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
 
+// These mocks are used for populating the Select dropdowns.
+// In a real app, these might come from an API endpoint or be derived from available data files.
 const mockSeasonsForTabs: SeasonType_Mock[] = [
-  { id: "2023", year: 2023, championId: "gm1", championName: "The Champs", championTeamName: "Victorious Secret", championPhotoUrl: "https://placehold.co/60x60.png" },
+  { id: "2024", year: 2024 },
+  { id: "2023", year: 2023 },
   { id: "2022", year: 2022 },
   { id: "2021", year: 2021 },
+  { id: "2020", year: 2020 },
+  { id: "2019", year: 2019 },
+  { id: "2018", year: 2018 },
+  { id: "2017", year: 2017 },
+  { id: "2016", year: 2016 },
+  { id: "2015", year: 2015 },
+  { id: "2014", year: 2014 },
+  { id: "2013", year: 2013 },
+  { id: "2012", year: 2012 },
+  { id: "2011", year: 2011 },
+  { id: "2010", year: 2010 },
+  { id: "2009", year: 2009 },
 ];
 
 const mockGmsForTabs: GM_Mock[] = [
-  { id: "gm1", name: "Alice" },
-  { id: "gm2", name: "Bob" },
-  { id: "gm3", name: "Charlie" },
+  { id: "chris", name: "Chris" },
+  { id: "dan", name: "Dan" },
+  { id: "dylan", name: "Dylan" },
+  { id: "fitz", name: "Fitz" },
+  { id: "jack", name: "Jack" },
+  { id: "jake", name: "Jake" },
+  { id: "josh", name: "Josh" },
+  { id: "lac", name: "Lac" },
+  { id: "mark", name: "Mark" },
+  { id: "nick", name: "Nick" },
+  { id: "sean", name: "Sean" },
+  { id: "will", name: "Will" },
+  { id: "zach", name: "Zach" },
 ];
+
 
 type SortDirection = 'asc' | 'desc';
 
@@ -44,7 +74,7 @@ interface SortConfig<T> {
   direction: SortDirection;
 }
 
-const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | null; loading: boolean }) => {
+const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | null; loading: boolean; }) => {
   const [heatmapYears, setHeatmapYears] = useState<string[]>([]);
   const [maxRankPerYear, setMaxRankPerYear] = useState<{ [year: string]: number }>({});
 
@@ -58,7 +88,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       const years = new Set<string>();
       const currentMaxRanks: { [year: string]: number } = {};
       leagueData.finalStandingsHeatmap.forEach(gm => {
-        if (typeof gm === 'object' && gm !== null) {
+        if (typeof gm === 'object' && gm !== null && Array.isArray(leagueData.finalStandingsHeatmap)) { // Added Array.isArray check
           Object.keys(gm).forEach(key => {
             if (key !== 'gm_name' && !isNaN(Number(key))) {
               years.add(key);
@@ -87,41 +117,37 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return {
         textClass: 'text-neutral-800 font-semibold',
-        borderClass: 'border-2 border-foreground', // Dark border
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Vibrant yellow
+        borderClass: 'border-2 border-foreground',
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
       };
     }
 
     if (maxRankInYear <= 1) return defaultStyle;
 
-    const SATURATION = 60; // Adjusted for pastel
-    const MAX_LIGHTNESS = 92; // Lighter end for pastel
-    const MIN_LIGHTNESS = 78; // Darker end for pastel (but still light)
+    const SATURATION = 60; 
+    const MAX_LIGHTNESS = 92; 
+    const MIN_LIGHTNESS = 78; 
 
-
-    if (maxRankInYear === 2 && rank === 2) { // Last place in a 2-team year (treated as "worst")
+    if (maxRankInYear === 2 && rank === 2) { 
       return {
         textClass: coloredRankedStyle.textClass,
         borderClass: '',
-        style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } // Lightest red
+        style: { backgroundColor: `hsl(0, ${SATURATION}%, ${MAX_LIGHTNESS}%)` } 
       };
     }
-    if (maxRankInYear <= 2) return defaultStyle; // Not enough ranks to show a scale meaningfully
+    if (maxRankInYear <= 2) return defaultStyle;
 
-    // Normalize rank from 0 (best non-1st) to 1 (worst)
-    // Ranks are 2, 3, ..., maxRankInYear. Total items in this range: maxRankInYear - 2 + 1 = maxRankInYear - 1
-    const denominator = maxRankInYear - 2; // Range of ranks from 2nd to worst (e.g. if maxRank is 10, ranks 2-10, denominator is 8)
+    const denominator = maxRankInYear - 2; 
     
-    if (denominator === 0) { // Only 1st and 2nd place exist, 2nd is handled if maxRankInYear is 2.
+    if (denominator === 0) { 
         return defaultStyle;
     }
 
-    const normalizedRank = (rank - 2) / denominator; // rank 2 -> 0, rank maxRankInYear -> 1
+    const normalizedRank = (rank - 2) / denominator; 
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
-    // Define the neutral zone (e.g., middle 25% of ranks)
     const NEUTRAL_CENTER = 0.5;
-    const NEUTRAL_BANDWIDTH = 0.25; // Middle 25% will be neutral
+    const NEUTRAL_BANDWIDTH = 0.25; 
 
     const GREEN_HUE = 120;
     const RED_HUE = 0;
@@ -129,22 +155,17 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (Math.abs(clampedNormalizedRank - NEUTRAL_CENTER) <= NEUTRAL_BANDWIDTH / 2) {
-      // Rank is in the neutral zone
       return defaultStyle;
     } else if (clampedNormalizedRank < NEUTRAL_CENTER) {
-      // Rank is in the green zone
-      // Calculate how far into the green zone (0 = edge of neutral, 1 = best possible green)
       const green_zone_width = NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2;
       const t_green = green_zone_width > 0 ? (NEUTRAL_CENTER - NEUTRAL_BANDWIDTH / 2 - clampedNormalizedRank) / green_zone_width : 1;
-      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for better ranks
+      const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else {
-      // Rank is in the red zone
-      // Calculate how far into the red zone (0 = edge of neutral, 1 = worst possible red)
       const red_zone_start = NEUTRAL_CENTER + NEUTRAL_BANDWIDTH / 2;
       const red_zone_width = 1 - red_zone_start;
       const t_red = red_zone_width > 0 ? (clampedNormalizedRank - red_zone_start) / red_zone_width : 0;
-      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); // Lighter for "less bad" reds
+      const lightness_pastel_red = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS); 
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness_pastel_red.toFixed(0)}%)`;
     }
 
@@ -290,9 +311,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }
 
   if (!leagueData) {
-    return <Card><CardContent className="pt-6 text-center">Failed to load league data.</CardContent></Card>;
+    return <Card><CardContent className="pt-6 text-center">Failed to load league data. Check console for errors.</CardContent></Card>;
   }
-
 
   return (
     <div className="space-y-8">
@@ -310,7 +330,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto"
           >
             <CarouselContent>
-              {leagueData.championshipTimeline && Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
+              {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="sm:basis-1/2 md:basis-1/2 lg:basis-1/3">
                   <div className="p-1 h-full">
                     <Card className="flex flex-col items-center p-4 text-center shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out rounded-xl overflow-hidden h-full transform hover:-translate-y-1">
@@ -341,11 +361,11 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-foreground/80">PF:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsFor.toFixed(2)}</span>
+                          <span className="font-semibold text-foreground/90">{champion.pointsFor?.toFixed(2) ?? 'N/A'}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-foreground/80">PA:</span>
-                          <span className="font-semibold text-foreground/90">{champion.pointsAgainst.toFixed(2)}</span>
+                          <span className="font-semibold text-foreground/90">{champion.pointsAgainst?.toFixed(2) ?? 'N/A'}</span>
                         </div>
                       </div>
 
@@ -426,7 +446,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedCareerLeaderboard.map((stat: CareerStat) => (
+              {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                 <TableRow key={stat.name}>
                   <TableCell className="font-medium">{stat.name}</TableCell>
                   <TableCell>{stat.wins}</TableCell>
@@ -474,7 +494,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
+                {Array.isArray(sortedLeagueRecords) && sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
                   <TableRow key={index}>
                     <TableCell className="font-medium">{record.record_category}</TableCell>
                     <TableCell>{record.gm_name}</TableCell>
@@ -527,7 +547,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedFinalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
+                {Array.isArray(sortedFinalStandingsHeatmap) && sortedFinalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
                   <TableRow key={gmEntry.gm_name}>
                     <TableCell className="font-medium sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm whitespace-nowrap">{gmEntry.gm_name}</TableCell>
                     {heatmapYears.map(year => {
@@ -579,7 +599,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
+                {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                   <TableRow key={gmPerf.gm_name}>
                     <TableCell className="font-medium">{gmPerf.gm_name}</TableCell>
                     <TableCell className="text-right">{gmPerf.total_matchups}</TableCell>
@@ -603,6 +623,34 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
+  const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedSeason) {
+      setLoading(true);
+      setError(null);
+      setSeasonData(null);
+      fetch(`/data/league_data/seasons/${selectedSeason}.json`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status} for season ${selectedSeason}`);
+          }
+          return res.json();
+        })
+        .then((data: SeasonDetailData) => {
+          setSeasonData(data);
+        })
+        .catch(err => {
+          console.error(`Failed to load season data for ${selectedSeason}:`, err);
+          setError(`Failed to load data for ${selectedSeason} season. Please ensure '${selectedSeason}.json' exists in 'public/data/league_data/seasons/'.`);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [selectedSeason]);
 
   return (
     <div className="space-y-6">
@@ -616,39 +664,127 @@ const SeasonDetail = () => {
           ))}
         </SelectContent>
       </Select>
-      {selectedSeason && (
+
+      {loading && (
         <Card>
-          <CardHeader><CardTitle>{mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year} Season Details</CardTitle></CardHeader>
+          <CardHeader><Skeleton className="h-8 w-1/2" /></CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-40 w-full" />
+          </CardContent>
+        </Card>
+      )}
+      {error && <Card><CardContent className="pt-6 text-destructive">{error}</CardContent></Card>}
+      
+      {!loading && !error && seasonData && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{seasonData.year} Season Details</CardTitle>
+            {seasonData.champion && <CardDescription>Champion: {seasonData.champion.gmName} ({seasonData.champion.teamName})</CardDescription>}
+          </CardHeader>
           <CardContent>
-            <Tabs defaultValue="overview">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
+            {seasonData.summary && <p className="mb-4 text-muted-foreground">{seasonData.summary}</p>}
+            
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="overview">Overview & Standings</TabsTrigger>
                 <TabsTrigger value="weekly_scores">Weekly Scores</TabsTrigger>
                 <TabsTrigger value="top_performers">Top Performers</TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="pt-4">
-                <p>Standings and playoff bracket for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
+                {seasonData.standings && Array.isArray(seasonData.standings) && (
+                  <>
+                    <h3 className="text-lg font-semibold mb-2">Final Standings</h3>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Rank</TableHead>
+                          <TableHead>GM</TableHead>
+                          <TableHead>Team Name</TableHead>
+                          <TableHead>W-L-T</TableHead>
+                          <TableHead>PF</TableHead>
+                          <TableHead>PA</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {seasonData.standings.map((s: SeasonStandingEntry) => (
+                          <TableRow key={s.gmId}>
+                            <TableCell>{s.rank}</TableCell>
+                            <TableCell>{s.gmName}</TableCell>
+                            <TableCell>{s.teamName}</TableCell>
+                            <TableCell>{s.wins}-{s.losses}-{s.ties}</TableCell>
+                            <TableCell>{s.pointsFor.toFixed(2)}</TableCell>
+                            <TableCell>{s.pointsAgainst.toFixed(2)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </>
+                )}
+                 {/* Placeholder for Playoff Bracket */}
+                 {seasonData.playoffBracket && <p className="mt-4 text-muted-foreground">Playoff bracket visualization coming soon.</p>}
               </TabsContent>
               <TabsContent value="weekly_scores" className="pt-4">
-                <p>Weekly scores heatmap for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
+                <p className="text-muted-foreground">Weekly scores visualization coming soon for {seasonData.year}.</p>
+                {/* TODO: Implement weekly scores display using seasonData.weeklyScores */}
               </TabsContent>
               <TabsContent value="top_performers" className="pt-4">
-                <p>Top performing players for {mockSeasonsForTabs.find(s => s.id === selectedSeason)?.year}. (Mock Data)</p>
+                <p className="text-muted-foreground">Top performers display coming soon for {seasonData.year}.</p>
+                {/* TODO: Implement top performers display using seasonData.topPerformers */}
               </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
       )}
+       {!loading && !error && !seasonData && selectedSeason && (
+         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedSeason} season. Ensure the file exists and is correctly formatted.</CardContent></Card>
+       )}
     </div>
   );
 };
 
 const GMCareer = () => {
-  const [selectedGm, setSelectedGm] = useState<string | undefined>(mockGmsForTabs[0]?.id);
+  const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGmsForTabs[0]?.id);
+  const [gmData, setGmData] = useState<GMCareerData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedGmId) {
+      const gm = mockGmsForTabs.find(g => g.id === selectedGmId);
+      if (gm) {
+        const gmFileName = `${gm.name}.json`; // Assumes GM name is the filename (e.g., "Chris.json")
+        setLoading(true);
+        setError(null);
+        setGmData(null);
+        fetch(`/data/league_data/${gmFileName}`)
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status} for GM ${gm.name}`);
+            }
+            return res.json();
+          })
+          .then((data: GMCareerData) => {
+            setGmData(data);
+          })
+          .catch(err => {
+            console.error(`Failed to load GM data for ${gm.name}:`, err);
+            setError(`Failed to load data for ${gm.name}. Please ensure '${gmFileName}' exists in 'public/data/league_data/'.`);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    }
+  }, [selectedGmId]);
+  
+  const selectedGmName = mockGmsForTabs.find(g => g.id === selectedGmId)?.name;
 
   return (
     <div className="space-y-6">
-      <Select value={selectedGm} onValueChange={setSelectedGm}>
+      <Select value={selectedGmId} onValueChange={setSelectedGmId}>
         <SelectTrigger className="w-[280px]">
           <SelectValue placeholder="Select a GM" />
         </SelectTrigger>
@@ -658,13 +794,104 @@ const GMCareer = () => {
           ))}
         </SelectContent>
       </Select>
-      {selectedGm && (
-        <Card>
-          <CardHeader><CardTitle>{mockGmsForTabs.find(g => g.id === selectedGm)?.name}'s Career</CardTitle></CardHeader>
-          <CardContent>
-            <p>Detailed career statistics, season progression, and more for {mockGmsForTabs.find(g => g.id === selectedGm)?.name}. (Mock Data)</p>
+
+      {loading && (
+         <Card>
+          <CardHeader><Skeleton className="h-8 w-1/2" /></CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-6 w-3/4" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+            </div>
+            <Skeleton className="h-40 w-full" />
           </CardContent>
         </Card>
+      )}
+      {error && <Card><CardContent className="pt-6 text-destructive">{error}</CardContent></Card>}
+
+      {!loading && !error && gmData && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              {gmData.photoUrl ? (
+                <Image src={gmData.photoUrl} alt={`${gmData.gmName} photo`} width={40} height={40} className="rounded-full" data-ai-hint="person avatar" />
+              ) : (
+                <Users className="h-8 w-8 text-muted-foreground" />
+              )}
+              {gmData.gmName}'s Career
+            </CardTitle>
+            {gmData.bio && <CardDescription>{gmData.bio}</CardDescription>}
+          </CardHeader>
+          <CardContent>
+            {gmData.careerSummary && (
+              <div className="mb-6 p-4 border rounded-lg bg-muted/50">
+                <h3 className="text-lg font-semibold mb-3 text-center">Career Summary</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm">
+                  <div><strong className="block text-foreground">Seasons:</strong> {gmData.careerSummary.totalSeasons}</div>
+                  <div><strong className="block text-foreground">Champs:</strong> {gmData.careerSummary.championships}</div>
+                   {gmData.careerSummary.runnerUps !== undefined && <div><strong className="block text-foreground">Runner Ups:</strong> {gmData.careerSummary.runnerUps}</div>}
+                  <div><strong className="block text-foreground">Playoffs:</strong> {gmData.careerSummary.playoffAppearances}</div>
+                  <div><strong className="block text-foreground">Reg. Wins:</strong> {gmData.careerSummary.regularSeasonWins}</div>
+                  <div><strong className="block text-foreground">Reg. Losses:</strong> {gmData.careerSummary.regularSeasonLosses}</div>
+                  <div><strong className="block text-foreground">Reg. Ties:</strong> {gmData.careerSummary.regularSeasonTies}</div>
+                  <div><strong className="block text-foreground">Reg. Win %:</strong> {gmData.careerSummary.regularSeasonWinPct}</div>
+                  {gmData.careerSummary.playoffWins !== undefined && <div><strong className="block text-foreground">Playoff Wins:</strong> {gmData.careerSummary.playoffWins}</div>}
+                  {gmData.careerSummary.playoffLosses !== undefined && <div><strong className="block text-foreground">Playoff Losses:</strong> {gmData.careerSummary.playoffLosses}</div>}
+                   {gmData.careerSummary.playoffWinPct !== undefined && <div><strong className="block text-foreground">Playoff Win %:</strong> {gmData.careerSummary.playoffWinPct}</div>}
+                  <div><strong className="block text-foreground">Total PF:</strong> {gmData.careerSummary.totalPointsFor.toFixed(2)}</div>
+                  <div><strong className="block text-foreground">Total PA:</strong> {gmData.careerSummary.totalPointsAgainst.toFixed(2)}</div>
+                  <div><strong className="block text-foreground">Avg Finish:</strong> {gmData.careerSummary.avgFinalStanding.toFixed(1)}</div>
+                </div>
+              </div>
+            )}
+
+            {gmData.seasonBySeason && Array.isArray(gmData.seasonBySeason) && gmData.seasonBySeason.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Season-by-Season</h3>
+                <div className="overflow-x-auto">
+                    <Table>
+                    <TableHeader>
+                        <TableRow>
+                        <TableHead>Year</TableHead>
+                        <TableHead>Team Name</TableHead>
+                        <TableHead>Rank</TableHead>
+                        <TableHead>Record</TableHead>
+                        <TableHead>PF</TableHead>
+                        <TableHead>PA</TableHead>
+                        <TableHead>Playoffs?</TableHead>
+                        <TableHead>Outcome</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {gmData.seasonBySeason.map((s: GMCareerSeasonSummary) => (
+                        <TableRow key={s.year}>
+                            <TableCell>{s.year}</TableCell>
+                            <TableCell>{s.teamName}</TableCell>
+                            <TableCell>{s.rank}</TableCell>
+                            <TableCell>{s.wins}-{s.losses}-{s.ties}</TableCell>
+                            <TableCell>{s.pointsFor.toFixed(2)}</TableCell>
+                            <TableCell>{s.pointsAgainst.toFixed(2)}</TableCell>
+                            <TableCell>{s.madePlayoffs ? 'Yes' : 'No'}</TableCell>
+                            <TableCell>{s.championshipResult || '-'}</TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </div>
+              </div>
+            )}
+            {/* Placeholders for other sections like Awards, Rivalries, Draft Summary */}
+            {gmData.awards && <p className="mt-4 text-muted-foreground">Awards display coming soon.</p>}
+            {gmData.rivalries && <p className="mt-4 text-muted-foreground">Rivalries display coming soon.</p>}
+            {gmData.draftHistorySummary && <p className="mt-4 text-muted-foreground">Draft History Summary coming soon.</p>}
+          </CardContent>
+        </Card>
+      )}
+      {!loading && !error && !gmData && selectedGmId && (
+         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file exists and is correctly formatted.</CardContent></Card>
       )}
     </div>
   );
@@ -675,7 +902,7 @@ export default function LeagueHistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/league-data.json')
+    fetch('/data/league_data/league-data.json') // Updated path
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -685,7 +912,7 @@ export default function LeagueHistoryPage() {
       .then((data: any) => {
         const mappedCareerLeaderboard = (Array.isArray(data.careerLeaderboard) ? data.careerLeaderboard : []).map((stat: any) => ({
           ...stat,
-          pointsFor: stat.points, // Assuming 'points' is 'pointsFor'
+          pointsFor: stat.points, 
           pointsAgainst: stat.pointsAgainst,
         }));
 
@@ -700,8 +927,8 @@ export default function LeagueHistoryPage() {
         setLeagueData(processedData);
       })
       .catch(error => {
-        console.error("Failed to load or process league data:", error);
-        setLeagueData(null); // Ensure leagueData is null on error
+        console.error("Failed to load or process league-data.json:", error);
+        setLeagueData(null); 
       })
       .finally(() => {
         setLoading(false);
@@ -727,4 +954,3 @@ export default function LeagueHistoryPage() {
     </Tabs>
   );
 }
-
