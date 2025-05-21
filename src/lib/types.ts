@@ -116,11 +116,17 @@ export interface PlayoffData {
   championship?: PlayoffMatchup[];
 }
 
-export interface WeeklyScoresMatrixData {
+export interface WeeklyScoresMatrixTeamEntry {
+  teamName: string;
+  scores: (number | null)[];
+  results: (string | null)[];
+}
+export interface WeeklyScoresData {
   teams: string[];
   scores: (number | null)[][];
   results: (string | null)[][];
 }
+
 
 export interface StrengthOfScheduleEntry {
   team: string;
@@ -179,7 +185,7 @@ export interface SeasonDetailData {
   seasonData: SeasonBaseData;
   standingsData: SeasonStandingEntry[];
   playoffData?: PlayoffData;
-  weeklyScoresData?: WeeklyScoresMatrixData;
+  weeklyScoresData?: WeeklyScoresData;
   strengthOfScheduleData?: StrengthOfScheduleEntry[];
   waiverPickupsData?: WaiverPickupEntry[];
   topPerformersData?: PositionalTopPerformersData;
@@ -451,11 +457,11 @@ export interface GMDraftSeasonPerformance {
   gmId: string;
   gmName: string;
   seasonYear: number;
-  draftGrade: string; // e.g., "A-", "B+"
-  draftPosition: number; // Overall draft position (e.g., 1st pick, 10th pick)
-  avgPickValueScore?: number; // A numerical score representing draft value
-  topRookiePoints?: number; // Points from best rookie
-  valuePicksCount?: number; // Number of picks considered "value"
+  draftGrade: string; 
+  draftPosition: number;
+  avg_pvdre?: number; // Points Over Expected (Draft Value)
+  topRookiePoints?: number; 
+  valuePicksCount?: number; 
 }
 
 // Old types - re-evaluate if still needed by other pages or can be removed
