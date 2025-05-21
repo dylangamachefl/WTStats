@@ -19,29 +19,33 @@ import type {
   WaiverPickupEntry,
   TopPerformerPlayer,
   SeasonBestOverallGameEntry,
-  PositionalTopPerformersData,
+  // PositionalTopPerformersData, // Covered by SeasonDetailData
   GMCareerData,
-  GMInfo as GMInfoType,
-  CareerStats as CareerStatsType,
-  CareerExtremes as CareerExtremesType,
-  SeasonProgressionEntry as SeasonProgressionEntryType,
-  PositionStrengthEntry as PositionStrengthEntryType,
-  FranchisePlayerEntry as FranchisePlayerEntryType,
-  RivalryPerformanceEntry as RivalryPerformanceEntryType,
+  // GMInfo as GMInfoType, // Covered by GMCareerData
+  // CareerStats as CareerStatsType, // Covered by GMCareerData
+  // CareerExtremes as CareerExtremesType, // Covered by GMCareerData
+  // SeasonProgressionEntry as SeasonProgressionEntryType, // Covered by GMCareerData
+  // PositionStrengthEntry as PositionStrengthEntryType, // Covered by GMCareerData
+  // FranchisePlayerEntry as FranchisePlayerEntryType, // Covered by GMCareerData
+  // RivalryPerformanceEntry as RivalryPerformanceEntryType, // Covered by GMCareerData
   GMIndividualSeasonDetailData,
   GMSeasonPerformance,
   GMGameByGame,
   GMRosterPlayer,
-  GMPositionContribution,
-  GMLeagueAvgPositionData,
-  GMPlayerPerformanceData,
-
+  GMPositionalAdvantageWeeklyEntry,
+  GMLineupOptimizationWeekly,
+  GMLineupOptimizationFeelingItDetail,
+  GMStreamingSummaryEntry,
+  GMStreamingWeeklyPerformanceEntry,
+  // GMPositionContribution, // Covered by GMIndividualSeasonDetailData
+  // GMLeagueAvgPositionData, // Covered by GMIndividualSeasonDetailData
+  // GMPlayerPerformanceData, // Covered by GMIndividualSeasonDetailData
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -117,7 +121,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return { 
         textClass: 'text-neutral-800 font-semibold', 
         borderClass: 'border-2 border-foreground', 
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Yellow for 1st place
       };
     }
 
@@ -1248,13 +1252,13 @@ const SeasonDetail = () => {
 };
 
 const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(var(--chart-1))', 
-  RB: 'hsl(var(--chart-2))', 
-  WR: 'hsl(var(--chart-3))', 
-  TE: 'hsl(var(--chart-4))', 
-  FLEX: 'hsl(var(--chart-5))',
-  K: 'hsl(39, 100%, 50%)',  
-  DST: 'hsl(27, 100%, 50%)', 
+  QB: 'hsl(var(--chart-4))', // purple 
+  RB: 'hsl(var(--chart-1))', // primary blue
+  WR: 'hsl(var(--chart-2))', // accent green
+  TE: 'hsl(var(--chart-5))', // pink/magenta
+  FLEX: 'hsl(var(--chart-3))', // orange/yellow
+  K: 'hsl(39, 100%, 50%)',  // A distinct yellow/gold
+  DST: 'hsl(27, 100%, 50%)', // A distinct orange
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -1281,11 +1285,10 @@ const GMCareer = () => {
       setLoading(true);
       setError(null);
       setGmData(null);
-      // Reset individual season view when GM changes
       setSelectedViewOption("all-seasons"); 
       setGmIndividualSeasonData(null); 
       setErrorGmIndividualSeason(null);
-      setActiveGmSeasonTab("season-summary"); // Reset active tab for new GM
+      setActiveGmSeasonTab("season-summary");
 
       const gmSlug = mockGmsForTabs.find(g => g.id === selectedGmId)?.name.toLowerCase() || selectedGmId;
       const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
@@ -1319,7 +1322,6 @@ const GMCareer = () => {
           setLoading(false);
         });
     } else {
-        // GM is deselected
         setGmData(null);
         setLoading(false);
         setError(null);
@@ -1330,15 +1332,13 @@ const GMCareer = () => {
   }, [selectedGmId]);
 
   useEffect(() => {
-    // Fetch individual season data when selectedViewOption changes to a specific year
-    // and we have the necessary gmData (for slug and ID)
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
-      setGmIndividualSeasonData(null); // Clear previous season data
+      setGmIndividualSeasonData(null); 
 
       const gmSlug = gmData.gmInfo.slug;
-      const gmNumericId = gmData.gmInfo.id; // Assuming gmInfo.id is the numeric ID like '11'
+      const gmNumericId = gmData.gmInfo.id; 
       const year = selectedViewOption;
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
@@ -1354,7 +1354,7 @@ const GMCareer = () => {
           }
           const data: GMIndividualSeasonDetailData = await res.json();
           console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
-          if (!data || !data.seasonSummary || !data.rosterBreakdown) { // Add more checks as needed
+          if (!data || !data.seasonSummary || !data.rosterBreakdown) { 
              console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
              throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
           }
@@ -1369,11 +1369,14 @@ const GMCareer = () => {
           setLoadingGmIndividualSeason(false);
         });
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); // Clear individual season data if "All Seasons" is selected
+        setGmIndividualSeasonData(null); 
     }
   }, [selectedViewOption, gmData]);
 
-  const selectedGmName = gmData?.gmInfo?.name || mockGmsForTabs.find(g => g.id === selectedGmId)?.name || selectedGmId || "Selected GM";
+  const selectedGmName = useMemo(() => {
+    return gmData?.gmInfo?.name || mockGmsForTabs.find(g => g.id === selectedGmId)?.name || selectedGmId || "Selected GM";
+  }, [gmData?.gmInfo?.name, selectedGmId]);
+
 
   const CustomizedDot = (props: any) => {
     const { cx, cy, stroke, payload } = props;
@@ -1390,18 +1393,16 @@ const GMCareer = () => {
     return <circle cx={cx} cy={cy} r={3} stroke={stroke} fill="#fff" />;
   };
 
-  // Memoize the list of available seasons for the dropdown
   const availableGmSeasonsForDropdown = useMemo(() => {
     if (gmData?.seasonProgression && Array.isArray(gmData.seasonProgression)) {
       return gmData.seasonProgression
-        .map(s => String(s.year)) // Ensure years are strings for SelectItem value
-        .filter(year => parseInt(year) >= 2019) // Filter for 2019 onwards
-        .sort((a, b) => Number(b) - Number(a)); // Sort descending
+        .map(s => String(s.year)) 
+        .filter(year => parseInt(year) >= 2019) 
+        .sort((a, b) => Number(b) - Number(a)); 
     }
     return [];
   }, [gmData?.seasonProgression]);
 
-  // Sub-components for GM Individual Season View
   const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
     const winRate = (performance.wins + performance.losses + performance.ties > 0) 
       ? (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100 
@@ -1409,8 +1410,7 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
-        // Negative SOS Diff is "easier" (good luck), so green. Positive is "harder" (bad luck), so red.
-        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600"; 
+        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"; 
     }
 
     return (
@@ -1492,7 +1492,7 @@ const GMCareer = () => {
                     {game.result}
                   </Badge>
                 </TableCell>
-                <TableCell className={cn("text-right", game.difference >= 0 ? "text-green-600" : "text-red-600")}>
+                <TableCell className={cn("text-right", game.difference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
                   {game.difference >= 0 ? '+' : ''}{game.difference.toFixed(1)}
                 </TableCell>
               </TableRow>
@@ -1550,48 +1550,61 @@ const GMCareer = () => {
   );
 
   const pieChartData = useMemo(() => {
-    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData) return [];
-    const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + p.startedPoints, 0);
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
+    const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints || 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
-      name: `${p.name} ${totalPoints > 0 ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
-      value: p.startedPoints,
-      fill: CHART_COLORS[p.name.toUpperCase()] || CHART_COLORS.DEFAULT,
+      name: `${p.name} ${totalPoints > 0 && p.startedPoints ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
+      value: p.startedPoints || 0,
+      fill: CHART_COLORS[p.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT,
     }));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
 
   const pieChartCells = useMemo(() => {
-    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData) return [];
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map((entry) => (
-        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT} />
+        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT} />
     ));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
 
   const barChartData = useMemo(() => {
-    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData) return [];
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData) || !gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData)) return [];
     
     const mergedData: any[] = [];
-    const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints]));
+    const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints || 0]));
     
     gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData.forEach(lgAvg => {
         mergedData.push({
             position: lgAvg.name,
             "GM Started Pts": gmPointsMap.get(lgAvg.name) || 0,
-            "League Avg Pts": lgAvg.leagueAvg,
+            "League Avg Pts": lgAvg.leagueAvg || 0,
         });
     });
-    // Ensure all positions from GM's data are included, even if not in league average (unlikely but possible)
     gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
         if (!mergedData.find(d => d.position === gmPos.name)) {
             mergedData.push({
                 position: gmPos.name,
-                "GM Started Pts": gmPos.startedPoints,
-                "League Avg Pts": 0, // Default if no league avg data for this specific GM position
+                "GM Started Pts": gmPos.startedPoints || 0, 
+                "League Avg Pts": 0, 
             });
         }
     });
-    // Sort by GM Started Pts for better visualization
     return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]);
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
+
+  const positionalAdvantageBarData = useMemo(() => {
+    if (!gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage || !Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage)) {
+      return [];
+    }
+    const totalRow = gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.find(row => row.week === "Total");
+    if (!totalRow) return [];
+
+    return Object.entries(totalRow)
+      .filter(([key]) => key !== 'week' && key !== 'total_diff')
+      .map(([key, value]) => ({
+        position: key.toUpperCase(),
+        value: Number(value) || 0,
+      }));
+  }, [gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage]);
 
 
   return (
@@ -1610,7 +1623,7 @@ const GMCareer = () => {
                     </SelectContent>
                 </Select>
             </div>
-            {gmData && ( // Only show season select if GM data is loaded
+            {gmData && ( 
                 <div className="space-y-1.5">
                     <Label htmlFor="view-select">Select View</Label>
                     <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
@@ -1628,7 +1641,6 @@ const GMCareer = () => {
             )}
         </div>
 
-      {/* Loading and Error states for main GM career data */}
       {loading && (
          <Card>
           <CardHeader className="flex-row items-center gap-4">
@@ -1656,7 +1668,6 @@ const GMCareer = () => {
       )}
       {error && <Card><CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent></Card>}
 
-      {/* Content for "All Seasons" view */}
       {!loading && !error && gmData && selectedViewOption === "all-seasons" && (
         <>
         <Card>
@@ -1791,7 +1802,7 @@ const GMCareer = () => {
                 <CardHeader><CardTitle className="text-xl">Career Highs & Lows</CardTitle></CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-6 text-sm">
                   <div>
-                    <h4 className="font-semibold text-lg mb-2 text-green-600">Highs</h4>
+                    <h4 className="font-semibold text-lg mb-2 text-green-600 dark:text-green-400">Highs</h4>
                     <ul className="space-y-1.5">
                       <li><strong>Most Points (Game):</strong> {gmData.careerExtremes.highs.mostPointsGame.value.toFixed(1)} ({gmData.careerExtremes.highs.mostPointsGame.season} Wk {gmData.careerExtremes.highs.mostPointsGame.week})</li>
                       <li><strong>Biggest Win Margin:</strong> +{gmData.careerExtremes.highs.biggestWinMargin.value.toFixed(1)} (vs {gmData.careerExtremes.highs.biggestWinMargin.opponentName}, {gmData.careerExtremes.highs.biggestWinMargin.season} Wk {gmData.careerExtremes.highs.biggestWinMargin.week})</li>
@@ -1799,10 +1810,10 @@ const GMCareer = () => {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-lg mb-2 text-red-600">Lows</h4>
+                    <h4 className="font-semibold text-lg mb-2 text-red-600 dark:text-red-400">Lows</h4>
                     <ul className="space-y-1.5">
                       <li><strong>Fewest Points (Game):</strong> {gmData.careerExtremes.lows.fewestPointsGame.value.toFixed(1)} ({gmData.careerExtremes.lows.fewestPointsGame.season} Wk {gmData.careerExtremes.lows.fewestPointsGame.week})</li>
-                      <li><strong>Worst Loss Margin:</strong> -{gmData.careerExtremes.lows.worstLossMargin.value.toFixed(1)} (vs {gmData.careerExtremes.lows.worstLossMargin.opponentName}, {gmData.careerExtremes.lows.worstLossMargin.season} Wk {gmData.careerExtremes.lows.worstLossMargin.week})</li>
+                      <li><strong>Worst Loss Margin:</strong> -{Math.abs(gmData.careerExtremes.lows.worstLossMargin.value).toFixed(1)} (vs {gmData.careerExtremes.lows.worstLossMargin.opponentName}, {gmData.careerExtremes.lows.worstLossMargin.season} Wk {gmData.careerExtremes.lows.worstLossMargin.week})</li>
                       <li><strong>Worst Season Record:</strong> {gmData.careerExtremes.lows.worstSeasonRecord.wins}-{gmData.careerExtremes.lows.worstSeasonRecord.losses} ({gmData.careerExtremes.lows.worstSeasonRecord.season})</li>
                     </ul>
                   </div>
@@ -1894,7 +1905,6 @@ const GMCareer = () => {
           </>
       )}
 
-      {/* Content for Individual Season View */}
       {!loading && !error && selectedViewOption !== "all-seasons" && (
         loadingGmIndividualSeason ? (
             <Card className="mt-6">
@@ -1975,11 +1985,11 @@ const GMCareer = () => {
                                                         <Tooltip />
                                                          <RechartsLegend 
                                                             payload={
-                                                                gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(entry => ({
+                                                                (gmIndividualSeasonData.rosterBreakdown.positionContributionData || []).map(entry => ({
                                                                     value: entry.name,
                                                                     type: 'square',
                                                                     id: entry.name,
-                                                                    color: CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT,
+                                                                    color: CHART_COLORS[entry.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT,
                                                                 }))
                                                             }
                                                             wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}
@@ -2095,12 +2105,12 @@ const GMCareer = () => {
                                                             </TableCell>
                                                             <TableCell className="text-right">{player.avgActual.toFixed(1)}</TableCell>
                                                             <TableCell className="text-right">{player.avgProjected.toFixed(1)}</TableCell>
-                                                            <TableCell className={cn("text-right font-semibold", player.avgDifference >= 0 ? "text-green-600" : "text-red-600")}>
+                                                            <TableCell className={cn("text-right font-semibold", player.avgDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
                                                                 {player.avgDifference >= 0 ? '+' : ''}{player.avgDifference.toFixed(1)}
                                                             </TableCell>
                                                             <TableCell className="text-right">{player.percentBeatProjection.toFixed(1)}%</TableCell>
-                                                            <TableCell className="text-center text-green-600 font-semibold">{player.boomWeeks}</TableCell>
-                                                            <TableCell className="text-center text-red-600 font-semibold">{player.bustWeeks}</TableCell>
+                                                            <TableCell className="text-center text-green-600 dark:text-green-400 font-semibold">{player.boomWeeks}</TableCell>
+                                                            <TableCell className="text-center text-red-600 dark:text-red-400 font-semibold">{player.bustWeeks}</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -2112,13 +2122,227 @@ const GMCareer = () => {
                         ) : <p className="text-muted-foreground text-center py-4">Player performance data not available for this season.</p>}
                     </TabsContent>
                     <TabsContent value="positional-advantage">
-                        <Card><CardHeader><CardTitle>Positional Advantage Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Weekly and cumulative positional advantage data coming soon.</p></CardContent></Card>
+                        <Card>
+                            <CardHeader><CardTitle className="flex items-center text-lg"><BarChartHorizontal className="mr-2 h-5 w-5 text-primary"/>Weekly Positional Advantage vs. Opponent</CardTitle></CardHeader>
+                            <CardContent>
+                                {gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage && Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage) && gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.length > 0 ? (
+                                    <>
+                                    <div className="overflow-x-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead className="text-center">WK</TableHead>
+                                                    {['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'TOTAL DIFF'].map(pos => <TableHead key={pos} className="text-right">{pos}</TableHead>)}
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.map((weekData, index) => (
+                                                    weekData.week !== "Total" && (
+                                                        <TableRow key={index}>
+                                                            <TableCell className="text-center font-medium">{weekData.week}</TableCell>
+                                                            {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
+                                                                const value = weekData[posKey];
+                                                                return (
+                                                                    <TableCell key={posKey} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
+                                                                        {typeof value === 'number' ? (value > 0 ? '+' : '') + value.toFixed(1) : value ?? '-'}
+                                                                    </TableCell>
+                                                                );
+                                                            })}
+                                                        </TableRow>
+                                                    )
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-4">* Requires weekly lineup data for both GM and opponent. FLEX advantage is placeholder.</p>
+                                    </>
+                                ) : <p className="text-muted-foreground text-center py-4">Weekly positional advantage data not available.</p>}
+                            </CardContent>
+                        </Card>
+                        
+                        {gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage && positionalAdvantageBarData.length > 0 && (
+                            <Card className="mt-6">
+                                <CardHeader><CardTitle className="flex items-center text-lg"><BarChart2 className="mr-2 h-5 w-5 text-primary"/>Total Positional Advantage (Season)</CardTitle></CardHeader>
+                                <CardContent className="h-[300px] pt-6">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={positionalAdvantageBarData} layout="vertical" margin={{ left: 10, right: 10 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                            <XAxis type="number" />
+                                            <YAxis type="category" dataKey="position" width={60} tick={{fontSize: 10}} />
+                                            <Tooltip formatter={(value: number) => value.toFixed(1)} />
+                                            <Bar dataKey="value" name="Total Advantage">
+                                                {positionalAdvantageBarData.map((entry, index) => (
+                                                    <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+                        )}
                     </TabsContent>
                     <TabsContent value="lineup-optimization">
-                        <Card><CardHeader><CardTitle>Lineup Optimization Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Lineup efficiency and 'feeling it' summary coming soon.</p></CardContent></Card>
+                        {gmIndividualSeasonData?.lineupOptimization ? (
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader><CardTitle className="flex items-center text-lg"><Target className="mr-2 h-5 w-5 text-primary"/>Weekly Lineup Efficiency</CardTitle></CardHeader>
+                                    <CardContent>
+                                    {gmIndividualSeasonData.lineupOptimization.weeklyOptimization && Array.isArray(gmIndividualSeasonData.lineupOptimization.weeklyOptimization) && gmIndividualSeasonData.lineupOptimization.weeklyOptimization.length > 0 ? (
+                                        <div className="overflow-x-auto">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="text-center">WK</TableHead>
+                                                        <TableHead className="text-right">Optimal</TableHead>
+                                                        <TableHead className="text-right">Actual</TableHead>
+                                                        <TableHead className="text-right">Efficiency</TableHead>
+                                                        <TableHead className="text-right">Pts Left</TableHead>
+                                                        <TableHead className="text-center">Correct</TableHead>
+                                                        <TableHead className="text-center">Total</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {gmIndividualSeasonData.lineupOptimization.weeklyOptimization.map(item => (
+                                                        <TableRow key={item.week}>
+                                                            <TableCell className="text-center font-medium">{item.week}</TableCell>
+                                                            <TableCell className="text-right">{item.optimal.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-right">{item.actual.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-right">{item.efficiency.toFixed(1)}%</TableCell>
+                                                            <TableCell className={cn("text-right", item.pointsLeft > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")}>{item.pointsLeft.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-center">{item.correctDecisions}</TableCell>
+                                                            <TableCell className="text-center">{item.totalDecisions}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                         ) : <p className="text-muted-foreground text-center py-4">Weekly lineup optimization data not available.</p>}
+                                    </CardContent>
+                                </Card>
+                                {gmIndividualSeasonData.lineupOptimization.feelingItSummary && (
+                                    <Card className="mt-6">
+                                        <CardHeader><CardTitle className="flex items-center text-lg"><Sparkles className="mr-2 h-5 w-5 text-primary"/>'Feeling It' Summary</CardTitle></CardHeader>
+                                        <CardContent>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
+                                                <div><p className="text-xs text-muted-foreground">Total Starts</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.totalStarts}</p></div>
+                                                <div><p className="text-xs text-muted-foreground">Success Rate</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.successRate.toFixed(1)}%</p></div>
+                                                <div><p className="text-xs text-muted-foreground">Avg Pts Gained/Lost</p><p className={cn("text-xl font-semibold", gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >=0 ? '+':''}{gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost.toFixed(1)}</p></div>
+                                                <div><p className="text-xs text-muted-foreground">Avg Proj Diff.</p><p className={cn("text-xl font-semibold", gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}{gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference.toFixed(1)}</p></div>
+                                            </div>
+                                            {gmIndividualSeasonData.lineupOptimization.feelingItSummary.details && Array.isArray(gmIndividualSeasonData.lineupOptimization.feelingItSummary.details) && gmIndividualSeasonData.lineupOptimization.feelingItSummary.details.length > 0 && (
+                                                <div className="overflow-x-auto">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="text-center">WK</TableHead>
+                                                            <TableHead>Starter</TableHead>
+                                                            <TableHead className="text-right">Actual</TableHead>
+                                                            <TableHead className="text-right">Proj.</TableHead>
+                                                            <TableHead>Bench</TableHead>
+                                                            <TableHead className="text-right">Actual</TableHead>
+                                                            <TableHead className="text-right">Proj.</TableHead>
+                                                            <TableHead className="text-right">Pts Diff</TableHead>
+                                                            <TableHead className="text-right">Proj. Diff</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {gmIndividualSeasonData.lineupOptimization.feelingItSummary.details.map((item, idx) => (
+                                                            <TableRow key={idx}>
+                                                                <TableCell className="text-center font-medium">{item.week}</TableCell>
+                                                                <TableCell>{item.starterName}</TableCell>
+                                                                <TableCell className="text-right">{item.starterActual.toFixed(1)}</TableCell>
+                                                                <TableCell className="text-right">{item.starterProjected.toFixed(1)}</TableCell>
+                                                                <TableCell>{item.benchName}</TableCell>
+                                                                <TableCell className="text-right">{item.benchActual.toFixed(1)}</TableCell>
+                                                                <TableCell className="text-right">{item.benchProjected.toFixed(1)}</TableCell>
+                                                                <TableCell className={cn("text-right", item.pointsDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.pointsDifference >=0 ? '+':''}{item.pointsDifference.toFixed(1)}</TableCell>
+                                                                <TableCell className={cn("text-right", item.projectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.projectionDifference >=0 ? '+':''}{item.projectionDifference.toFixed(1)}</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </div>
+                        ) : <p className="text-muted-foreground text-center py-4">Lineup optimization data not available.</p>}
                     </TabsContent>
                     <TabsContent value="streaming-success">
-                        <Card><CardHeader><CardTitle>Streaming Success Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Analysis of streaming effectiveness at QB, TE, K, DST coming soon.</p></CardContent></Card>
+                         {gmIndividualSeasonData?.streamingSuccess ? (
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader><CardTitle className="flex items-center text-lg"><Repeat className="mr-2 h-5 w-5 text-primary"/>Streaming Summary</CardTitle></CardHeader>
+                                    <CardContent>
+                                        {gmIndividualSeasonData.streamingSuccess.streamingSummary && Array.isArray(gmIndividualSeasonData.streamingSuccess.streamingSummary) && gmIndividualSeasonData.streamingSuccess.streamingSummary.length > 0 ? (
+                                        <div className="overflow-x-auto">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>Position</TableHead>
+                                                        <TableHead>Status</TableHead>
+                                                        <TableHead className="text-center">Unique Starters</TableHead>
+                                                        <TableHead className="text-center">Streamed Starts</TableHead>
+                                                        <TableHead className="text-right">Avg Pts/Gm</TableHead>
+                                                        <TableHead className="text-right">League Avg</TableHead>
+                                                        <TableHead className="text-right">Net Pts vs Avg</TableHead>
+                                                        <TableHead className="text-right">Hit Rate</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {gmIndividualSeasonData.streamingSuccess.streamingSummary.map(item => (
+                                                        <TableRow key={item.position}>
+                                                            <TableCell className="font-medium">{item.position}</TableCell>
+                                                            <TableCell>{item.status.replace(/_/g, ' ')}</TableCell>
+                                                            <TableCell className="text-center">{item.uniqueStarters}</TableCell>
+                                                            <TableCell className="text-center">{item.streamedStartsCount}</TableCell>
+                                                            <TableCell className="text-right">{item.avgPtsGm.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-right">{item.avgPtsLeague.toFixed(1)}</TableCell>
+                                                            <TableCell className={cn("text-right", item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.netPtsVsAvg >=0 ? '+':''}{item.netPtsVsAvg.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-right">{item.hitRate.toFixed(1)}%</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                        ) : <p className="text-muted-foreground text-center py-4">Streaming summary data not available.</p>}
+                                    </CardContent>
+                                </Card>
+
+                                {Object.entries(gmIndividualSeasonData.streamingSuccess.streamingWeeklyPerformance || {}).map(([position, weeklyData]) => (
+                                   Array.isArray(weeklyData) && weeklyData.length > 0 && (
+                                    <Card key={position} className="mt-6">
+                                        <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(position)} Streaming Performance</CardTitle></CardHeader>
+                                        <CardContent>
+                                            <div className="overflow-x-auto">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="text-center">WK</TableHead>
+                                                            <TableHead>Player Started</TableHead>
+                                                            <TableHead className="text-right">GM Pts</TableHead>
+                                                            <TableHead className="text-right">League Avg Pts</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {weeklyData.map(item => (
+                                                            <TableRow key={item.week}>
+                                                                <TableCell className="text-center">{item.week}</TableCell>
+                                                                <TableCell>{item.playerName}</TableCell>
+                                                                <TableCell className="text-right">{item.gmStarterPts.toFixed(1)}</TableCell>
+                                                                <TableCell className="text-right">{item.leagueAvgPts.toFixed(1)}</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                   )
+                                ))}
+                            </div>
+                        ) : <p className="text-muted-foreground text-center py-4">Streaming success data not available.</p>}
                     </TabsContent>
                 </Tabs>
             </div>
@@ -2132,7 +2356,6 @@ const GMCareer = () => {
         )
       )}
 
-      {/* Fallback if GM not selected or initial load */}
       {!loading && !error && !gmData && selectedGmId && (
          <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId.toLowerCase()}/{selectedGmId.toLowerCase()}.json' exists and is correctly formatted as per the expected structure (e.g., chris/chris.json).</CardContent></Card>
        )}
@@ -2194,10 +2417,9 @@ export default function LeagueHistoryPage() {
             setLoadingLeagueData(false);
           });
     } else if (section !== 'all-seasons') {
-        // No need to load general leagueData if we are not on the all-seasons overview
         setLoadingLeagueData(false); 
     }
-  }, [section, leagueData]); // Re-run if section changes or leagueData is initially null for all-seasons
+  }, [section, leagueData]); 
 
   if (section === 'all-seasons') {
     return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
@@ -2209,10 +2431,5 @@ export default function LeagueHistoryPage() {
     return <GMCareer />;
   }
 
-  // Default to AllSeasonsOverview if section is unrecognized or loading fails
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
-
-
-
