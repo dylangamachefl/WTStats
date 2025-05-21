@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, SeasonDraftData, GMDraftHistoryData, GMDraftSeasonPerformance } from '@/lib/types';
 import { BarChart3, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -51,7 +52,7 @@ interface HeatmapSortConfig {
 
 interface TransformedHeatmapData {
   [gmName: string]: {
-    [seasonYear: string]: number | undefined; // POE value (avg_pvdre)
+    [seasonYear: string]: GMDraftSeasonPerformance | undefined; 
   };
 }
 
@@ -59,8 +60,8 @@ const DraftOverview = () => {
   const [rawData, setRawData] = useState<GMDraftSeasonPerformance[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [minPoe, setMinPoe] = useState(0);
-  const [maxPoe, setMaxPoe] = useState(0);
+  const [overallMinPoe, setOverallMinPoe] = useState(0);
+  const [overallMaxPoe, setOverallMaxPoe] = useState(0);
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
 
   useEffect(() => {
@@ -82,11 +83,11 @@ const DraftOverview = () => {
         if (data && data.length > 0) {
           const poeValues = data.map(item => item.avg_pvdre).filter(val => typeof val === 'number') as number[];
           if (poeValues.length > 0) {
-            setMinPoe(Math.min(...poeValues));
-            setMaxPoe(Math.max(...poeValues));
+            setOverallMinPoe(Math.min(...poeValues));
+            setOverallMaxPoe(Math.max(...poeValues));
           } else {
-            setMinPoe(0);
-            setMaxPoe(0);
+            setOverallMinPoe(0);
+            setOverallMaxPoe(0);
           }
         }
       } catch (err) {
@@ -115,7 +116,7 @@ const DraftOverview = () => {
       if (!acc[item.gm_name]) {
         acc[item.gm_name] = {};
       }
-      acc[item.gm_name][item.season_id.toString()] = item.avg_pvdre;
+      acc[item.gm_name][item.season_id.toString()] = item; // Store the whole item
       return acc;
     }, {} as TransformedHeatmapData);
 
@@ -131,28 +132,42 @@ const DraftOverview = () => {
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
-  const getPoeColorStyle = (value: number | undefined): React.CSSProperties => {
-    if (value === undefined || value === null) return { color: 'hsl(var(--muted-foreground))' };
+ const getPoeColorStyle = (performanceData: GMDraftSeasonPerformance | undefined): React.CSSProperties => {
+    if (!performanceData || typeof performanceData.avg_pvdre !== 'number') {
+      return { color: 'hsl(var(--muted-foreground))' };
+    }
 
-    const range = maxPoe - minPoe;
-    if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; 
+    const value = performanceData.avg_pvdre;
+    const range = overallMaxPoe - overallMinPoe;
+
+    if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' };
+
+    // Normalize the value between 0 and 1
+    const normalizedValue = (value - overallMinPoe) / range;
 
     let hue;
-    let saturation = 70;
-    let lightness = 85; 
+    const saturation = 70; // Keep saturation constant for pastels
+    let lightness = 85; // Base lightness for pastels
 
-    if (value > 0) { 
-        hue = 120; // Green
-        const positiveRange = maxPoe > 0 ? maxPoe : 1; 
-        const intensity = Math.min(1, Math.abs(value) / positiveRange);
-        lightness = 90 - (intensity * 20); 
-    } else if (value < 0) { 
-        hue = 0; // Red
-        const negativeRange = minPoe < 0 ? Math.abs(minPoe) : 1;
-        const intensity = Math.min(1, Math.abs(value) / negativeRange);
-        lightness = 90 - (intensity * 20); 
-    } else { 
-        return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; 
+    // Define a neutral band (e.g., values between 40th and 60th percentile of the normalized range)
+    const neutralBandStart = 0.40;
+    const neutralBandEnd = 0.60;
+
+    if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
+      // Neutral color for mid-range values
+      return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+    } else if (normalizedValue < neutralBandStart) {
+      // Red spectrum for values below neutral band
+      hue = 0; // Red
+      // Intensity based on how far from the neutral band (closer to minPoe = more intense red)
+      const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
+      lightness = 90 - (intensity * 20); // Adjust lightness range (e.g., 90% down to 70%)
+    } else {
+      // Green spectrum for values above neutral band
+      hue = 120; // Green
+      // Intensity based on how far from the neutral band (closer to maxPoe = more intense green)
+      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
+      lightness = 90 - (intensity * 20); // Adjust lightness range
     }
     
     const textColor = lightness < 65 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
@@ -163,6 +178,7 @@ const DraftOverview = () => {
         fontWeight: '500'
     };
   };
+
 
   const requestSort = (key: 'gm_name') => {
     let direction: SortDirection = 'asc';
@@ -178,7 +194,6 @@ const DraftOverview = () => {
     }
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
-
 
   if (loading) {
     return (
@@ -203,7 +218,7 @@ const DraftOverview = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Higher is better.</CardDescription>
+           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-destructive">Error loading draft POE data: {error}</p>
@@ -217,7 +232,7 @@ const DraftOverview = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Higher is better.</CardDescription>
+           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
         </CardHeader>
         <CardContent>
           <p>No draft POE data available. Please ensure 'gm_season_performance_grid.json' exists in 'public/data/draft_data/' and is correctly formatted.</p>
@@ -227,52 +242,74 @@ const DraftOverview = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-        <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Green for positive POE (good), Red for negative POE (bad).</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-            <Table className="min-w-full border-collapse">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm">
-                    <Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">
-                        GM Name {getSortIcon('gm_name')}
-                    </Button>
-                  </TableHead>
-                  {seasonYears.map(year => (
-                    <TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {gmNames.map(gm_name => (
-                  <TableRow key={gm_name}>
-                    <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
-                    {seasonYears.map(year => {
-                      const poeValue = heatmapData[gm_name]?.[year];
-                      const cellStyle = getPoeColorStyle(poeValue);
-                      return (
-                        <TableCell
-                          key={`${gm_name}-${year}`}
-                          className="p-0 border text-center text-xs md:text-sm"
-                          style={{minWidth: '60px'}} 
-                        >
-                           <div className="p-2 h-full w-full flex items-center justify-center" style={cellStyle}>
-                            {typeof poeValue === 'number' ? poeValue.toFixed(1) : '-'}
-                           </div>
-                        </TableCell>
-                      );
-                    })}
+    <TooltipProvider>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
+          <CardDescription>
+            GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range. Hover over a cell for more details.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+              <Table className="min-w-full border-collapse">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm">
+                      <Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">
+                          GM Name {getSortIcon('gm_name')}
+                      </Button>
+                    </TableHead>
+                    {seasonYears.map(year => (
+                      <TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
+                    ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-        </div>
-      </CardContent>
-    </Card>
+                </TableHeader>
+                <TableBody>
+                  {gmNames.map(gm_name => (
+                    <TableRow key={gm_name}>
+                      <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
+                      {seasonYears.map(year => {
+                        const performanceData = heatmapData[gm_name]?.[year];
+                        const poeValue = performanceData?.avg_pvdre;
+                        const cellStyle = getPoeColorStyle(performanceData);
+                        return (
+                          <TableCell
+                            key={`${gm_name}-${year}`}
+                            className="p-0 border text-center text-xs md:text-sm"
+                            style={{minWidth: '60px'}} 
+                          >
+                            <Tooltip delayDuration={100}>
+                              <TooltipTrigger asChild>
+                                <div className="p-2 h-full w-full flex items-center justify-center" style={cellStyle}>
+                                  {typeof poeValue === 'number' ? poeValue.toFixed(1) : '-'}
+                                </div>
+                              </TooltipTrigger>
+                              {performanceData && (
+                                <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                  <div className="space-y-1.5 text-left">
+                                    <p className="font-semibold">{performanceData.gm_name} - {performanceData.season_id}</p>
+                                    <p><span className="font-medium">POE (Avg PVDRE):</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                    <p><span className="font-medium">Total Picks:</span> {performanceData.total_picks ?? 'N/A'}</p>
+                                    <p><span className="font-medium">1st Round Pos:</span> {performanceData.first_round_draft_position ?? 'N/A'}</p>
+                                    <p><span className="font-medium">Total PVDRE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                    <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
+                                    <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
+                                  </div>
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 };
 

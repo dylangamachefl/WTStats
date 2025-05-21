@@ -452,14 +452,13 @@ export interface GMDraftSeasonPerformance {
   season_id: number;
   gm_id: number;
   gm_name: string;
-  first_round_draft_position?: number; // Optional as not in all examples
-  total_picks?: number; // Optional
-  avg_pvdre?: number; // Points Over Expected (Draft Value) - Optional
-  total_pvdre?: number; // Optional
-  pvdre_hit_rate?: number; // Optional
-  avg_value_vs_adp?: number; // Optional
-  draftGrade?: string; // Keep if still used elsewhere or for future
-  draftPosition?: number; // Keep if still used elsewhere or for future
+  first_round_draft_position?: number;
+  total_picks?: number;
+  avg_pvdre?: number; // This is the POE metric
+  total_pvdre?: number;
+  pvdre_hit_rate?: number;
+  avg_value_vs_adp?: number;
+  // Ensure all fields from your gm_season_performance_grid.json are here if needed for tooltips
 }
 
 
@@ -534,4 +533,5 @@ export interface LeagueHistoryForAI {
       player: string;
       gm: string;
     }>;
-    
+  }>;
+}
