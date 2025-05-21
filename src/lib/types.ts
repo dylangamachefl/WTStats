@@ -1,6 +1,6 @@
 
 export interface GM {
-  id: string;
+  id: string; // This is the string ID used for the dropdown, e.g., "chris"
   name: string;
   teamName?: string;
   photoUrl?: string;
@@ -142,18 +142,16 @@ export interface WaiverPickupEntry {
   rank?: number;
 }
 
-export interface TopPerformerPlayerGame {
-  week: number;
-  points: number;
-}
-
 export interface TopPerformerPlayer {
   player: string;
-  team: string;
-  fantasyTeam?: string | null;
+  team: string; // NFL Team
+  fantasyTeam?: string | null; // GM's team name
   totalPoints: number;
-  ppg: number;
-  bestGame?: TopPerformerPlayerGame;
+  ppg: number; // Points per game
+  bestGame?: { // Optional: details of their best game in the season
+    week: number;
+    points: number;
+  };
 }
 
 export interface PositionalTopPerformersData {
@@ -163,7 +161,7 @@ export interface PositionalTopPerformersData {
   TE?: TopPerformerPlayer[];
   K?: TopPerformerPlayer[];
   DST?: TopPerformerPlayer[];
-  DEF?: TopPerformerPlayer[]; // Adding DEF as it's in 2009.json
+  DEF?: TopPerformerPlayer[];
   [key: string]: TopPerformerPlayer[] | undefined;
 }
 
@@ -171,8 +169,8 @@ export interface SeasonBestOverallGameEntry {
   rank: number;
   player: string;
   position: string;
-  team: string;
-  fantasyTeam?: string | null;
+  team: string; // NFL Team
+  fantasyTeam?: string | null; // GM's team name
   week: number;
   points: number;
 }
@@ -188,11 +186,12 @@ export interface SeasonDetailData {
   bestOverallGamesData?: SeasonBestOverallGameEntry[];
 }
 
-// For GM Career Page (e.g., Chris.json)
+
+// For GM Career Page (e.g., Chris.json - overall career)
 export interface GMInfo {
-  id: number; // GM's unique ID
+  id: number; // This is the numeric GM ID from the JSON
   name: string;
-  slug: string;
+  slug: string; // e.g., "chris"
   yearsActive: string;
   championshipYears: number[];
   photoUrl?: string;
@@ -254,7 +253,7 @@ export interface PositionStrengthEntry {
 }
 
 export interface FranchisePlayerEntry {
-  playerId: number; // Assuming player ID from data
+  playerId: number;
   name: string;
   position: string;
   seasonsWithGm: number[];
@@ -263,7 +262,7 @@ export interface FranchisePlayerEntry {
 }
 
 export interface RivalryPerformanceEntry {
-  opponentId: number; // Assuming opponent GM ID
+  opponentId: number;
   opponentName: string;
   wins: number;
   losses: number;
@@ -281,41 +280,172 @@ export interface GMCareerData {
   rivalryPerformance: RivalryPerformanceEntry[];
 }
 
-// For individual GM Season Detail (e.g., gm_career_11_2019.json)
-export interface GMSeasonInfo {
-  year: number;
-  gmName: string;
-  gmTeamName?: string;
-  finalStanding: number;
+// For individual GM Season Detail (e.g., gm_career_GMID_YEAR.json)
+interface GMSeasonPerformance {
   wins: number;
   losses: number;
   ties: number;
   pointsFor: number;
   pointsAgainst: number;
+  avgPointsPerGame: number;
+  avgPointsAgainstPerGame: number;
+  regularSeasonFinish: number;
+  finalStanding: number;
+  sosDifferential?: number; // Optional based on example
+  sosRating?: string;     // Optional based on example
 }
 
-export interface GMSeasonRosterPlayer {
-  playerName: string;
-  position: string;
-  totalPoints?: number;
-  gamesStarted?: number;
-}
-
-export interface GMSeasonWeeklyMatchup {
+interface GMGameByGame {
   week: number;
-  opponentGmName?: string;
-  opponentTeamName?: string;
-  gmScore: number;
-  opponentScore: number;
+  opponent: string;
+  points: number;
+  opponent_points: number;
   result: 'W' | 'L' | 'T';
-  gmTeamName?: string; // GM's team name for that specific week/season
+  difference: number;
 }
 
-export interface GMSeasonDetailData {
-  seasonInfo: GMSeasonInfo;
-  finalRoster: GMSeasonRosterPlayer[];
-  weeklyMatchups: GMSeasonWeeklyMatchup[];
-  // Add other fields if present in gm_career_X_YYYY.json, like season awards, notable transactions, etc.
+interface GMSeasonSummary {
+  seasonPerformance: GMSeasonPerformance;
+  gameByGame: GMGameByGame[];
+}
+
+interface GMPositionContribution {
+  name: string; // e.g., "QB", "RB"
+  startedPoints: number;
+}
+
+interface GMLeagueAvgPositionData {
+  name: string;
+  leagueAvg: number;
+}
+
+interface GMRosterPlayer {
+  id: number;
+  name: string;
+  position: string;
+  finish: string; // e.g., "RB6"
+  gamesStarted: number;
+  totalPoints: number;
+}
+
+interface GMRosterBreakdown {
+  positionContributionData: GMPositionContribution[];
+  leagueAvgPositionData: GMLeagueAvgPositionData[];
+  rosterPlayerData: GMRosterPlayer[];
+}
+
+// Other detailed structures from Dylan's 2019 JSON (can be expanded later)
+interface GMPlayerPerformanceSummary {
+  playerId: number;
+  name: string;
+  position: string;
+  avgActual: number;
+  avgProjected: number;
+  avgDifference: number;
+  percentBeatProjection: number;
+  boomWeeks: number;
+  bustWeeks: number;
+}
+
+interface GMPlayerPerformance {
+  playerSummaryPerformance: GMPlayerPerformanceSummary[];
+  overPerformer: { name: string; avgDifference: number };
+  underPerformer: { name: string; avgDifference: number };
+}
+
+interface GMLineupOptimizationWeekly {
+    week: number;
+    optimal: number;
+    actual: number;
+    efficiency: number;
+    pointsLeft: number;
+    correctDecisions: number;
+    totalDecisions: number;
+}
+
+interface GMLineupOptimizationFeelingItDetail {
+    week: number;
+    starterName: string;
+    starterActual: number;
+    starterProjected: number;
+    benchName: string;
+    benchActual: number;
+    benchProjected: number;
+    pointsDifference: number;
+    projectionDifference: number;
+}
+
+interface GMLineupOptimization {
+    weeklyOptimization: GMLineupOptimizationWeekly[];
+    feelingItSummary: {
+        totalStarts: number;
+        successRate: number;
+        avgPointsGainedLost: number;
+        avgProjectionDifference: number;
+        details: GMLineupOptimizationFeelingItDetail[];
+    };
+}
+
+interface GMPositionalAdvantageWeeklyEntry {
+    week: number | string; // "Total" can be a string
+    QB?: number;
+    RB?: number;
+    WR?: number;
+    TE?: number;
+    FLEX?: number;
+    K?: number;
+    DST?: number;
+    total_diff?: number; // only for "Total" week
+}
+
+interface GMPositionalAdvantageCumulativeDataPoint {
+    week: number;
+    value: number;
+}
+
+interface GMPositionalAdvantageCumulative {
+    position: string;
+    data: GMPositionalAdvantageCumulativeDataPoint[];
+}
+
+interface GMPositionalAdvantage {
+    weeklyPositionalAdvantage: GMPositionalAdvantageWeeklyEntry[];
+    cumulativeWeeklyPositionalAdvantage: GMPositionalAdvantageCumulative[];
+}
+
+interface GMStreamingSummaryEntry {
+    position: string;
+    status: string; // e.g., "streaming_detected"
+    uniqueStarters: number;
+    streamedStartsCount: number;
+    avgPtsGm: number;
+    avgPtsLeague: number;
+    netPtsVsAvg: number;
+    hitRate: number;
+}
+
+interface GMStreamingWeeklyPerformanceEntry {
+    week: number;
+    gmStarterPts: number;
+    leagueAvgPts: number;
+    playerName: string;
+}
+
+interface GMStreamingSuccess {
+    streamingSummary: GMStreamingSummaryEntry[];
+    streamingWeeklyPerformance: {
+        [position: string]: GMStreamingWeeklyPerformanceEntry[];
+    };
+}
+
+
+export interface GMIndividualSeasonDetailData {
+  seasonSummary: GMSeasonSummary;
+  rosterBreakdown: GMRosterBreakdown;
+  playerPerformance?: GMPlayerPerformance;         // Optional for now
+  lineupOptimization?: GMLineupOptimization;       // Optional for now
+  positionalAdvantage?: GMPositionalAdvantage;     // Optional for now
+  streamingSuccess?: GMStreamingSuccess;           // Optional for now
 }
 
 
