@@ -22,13 +22,13 @@ import type {
   SeasonBestOverallGameEntry,
   WeeklyScoresMatrixData,
   PositionalTopPerformersData,
-  GMInfo, 
-  CareerStats, 
-  CareerExtremes, 
-  SeasonProgressionEntry as SeasonProgressionEntryType, // Aliased to avoid conflict with component name
-  PositionStrengthEntry, 
-  FranchisePlayerEntry, 
-  RivalryPerformanceEntry,
+  GMInfo as GMInfoType, 
+  CareerStats as CareerStatsType, 
+  CareerExtremes as CareerExtremesType, 
+  SeasonProgressionEntry as SeasonProgressionEntryType,
+  PositionStrengthEntry as PositionStrengthEntryType, 
+  FranchisePlayerEntry as FranchisePlayerEntryType, 
+  RivalryPerformanceEntry as RivalryPerformanceEntryType,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
@@ -656,6 +656,18 @@ const getPositionBadgeClass = (position?: string): string => {
   }
 };
 
+const getPositionName = (positionKey: string): string => {
+    const names: { [key: string]: string } = {
+      QB: "Quarterbacks",
+      RB: "Running Backs",
+      WR: "Wide Receivers",
+      TE: "Tight Ends",
+      K: "Kickers",
+      DST: "Defense/ST",
+      DEF: "Defense/ST",
+    };
+    return names[positionKey.toUpperCase()] || positionKey;
+  };
 
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[mockSeasonsForTabs.length-1]?.id);
@@ -777,19 +789,6 @@ const SeasonDetail = () => {
     const year = parseInt(selectedSeason || "0");
     return year >= 2019;
   }, [selectedSeason]);
-
-  const getPositionName = (positionKey: string): string => {
-    const names: { [key: string]: string } = {
-      QB: "Quarterbacks",
-      RB: "Running Backs",
-      WR: "Wide Receivers",
-      TE: "Tight Ends",
-      K: "Kickers",
-      DST: "Defense/ST",
-      DEF: "Defense/ST",
-    };
-    return names[positionKey.toUpperCase()] || positionKey;
-  };
 
   return (
     <div className="space-y-6">
@@ -1384,29 +1383,57 @@ const GMCareer = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-6 space-y-8">
-            {gmData.careerStats && (
-              <Card>
-                <CardHeader><CardTitle className="text-xl">Career Stats</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-4 text-sm">
-                    <div><strong className="block text-foreground/90">Total Seasons:</strong> {gmData.careerStats.totalSeasons}</div>
-                    <div><strong className="block text-foreground/90">Wins:</strong> {gmData.careerStats.wins}</div>
-                    <div><strong className="block text-foreground/90">Losses:</strong> {gmData.careerStats.losses}</div>
-                    <div><strong className="block text-foreground/90">Ties:</strong> {gmData.careerStats.ties}</div>
-                    <div><strong className="block text-foreground/90">Win %:</strong> {(gmData.careerStats.winPct * 100).toFixed(1)}%</div>
-                    <div><strong className="block text-foreground/90">Playoff Apps:</strong> {gmData.careerStats.playoffAppearances}</div>
-                    <div><strong className="block text-foreground/90">Playoff Record:</strong> {gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</div>
-                    <div><strong className="block text-foreground/90">Total Points For:</strong> {gmData.careerStats.totalPointsFor?.toFixed(1)}</div>
-                    <div><strong className="block text-foreground/90">Total Points Against:</strong> {gmData.careerStats.totalPointsAgainst?.toFixed(1)}</div>
-                    <div><strong className="block text-foreground/90">Avg Points/Game:</strong> {gmData.careerStats.avgPointsPerGame?.toFixed(1)}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          <CardContent>
+             <div className="grid grid-cols-1 gap-y-3 text-sm sm:grid-cols-2 sm:gap-x-6 sm:gap-y-4">
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Total Seasons:</span>
+                  <span className="text-foreground">{gmData.careerStats.totalSeasons}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Win %:</span>
+                  <span className="text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Wins:</span>
+                  <span className="text-foreground">{gmData.careerStats.wins}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Losses:</span>
+                  <span className="text-foreground">{gmData.careerStats.losses}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Ties:</span>
+                  <span className="text-foreground">{gmData.careerStats.ties}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Playoff Apps:</span>
+                  <span className="text-foreground">{gmData.careerStats.playoffAppearances}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Playoff Record:</span>
+                  <span className="text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Championships:</span>
+                  <span className="text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Total Points For:</span>
+                  <span className="text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Total Points Against:</span>
+                  <span className="text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-muted-foreground">Avg Points/Game:</span>
+                  <span className="text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
+                </div>
+              </div>
+            </CardContent>
 
            {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
-              <Card>
+              <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Season Progression</CardTitle></CardHeader>
                 <CardContent className="h-[350px] pt-6">
                   <ResponsiveContainer width="100%" height="100%">
@@ -1440,7 +1467,7 @@ const GMCareer = () => {
             )}
 
             {gmData.careerExtremes && (
-              <Card>
+              <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Career Highs & Lows</CardTitle></CardHeader>
                 <CardContent className="grid md:grid-cols-2 gap-6 text-sm">
                   <div>
@@ -1464,7 +1491,7 @@ const GMCareer = () => {
             )}
             
             {gmData.franchisePlayers && Array.isArray(gmData.franchisePlayers) && gmData.franchisePlayers.length > 0 && (
-              <Card>
+              <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Franchise Players</CardTitle></CardHeader>
                 <CardContent>
                     <Table>
@@ -1494,7 +1521,7 @@ const GMCareer = () => {
             )}
 
             {gmData.rivalryPerformance && Array.isArray(gmData.rivalryPerformance) && gmData.rivalryPerformance.length > 0 && (
-              <Card>
+              <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Key Rivalries</CardTitle></CardHeader>
                 <CardContent>
                     <Table>
@@ -1521,7 +1548,7 @@ const GMCareer = () => {
               </Card>
             )}
              {gmData.positionStrength && Array.isArray(gmData.positionStrength) && gmData.positionStrength.length > 0 && (
-              <Card>
+              <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Positional Strength vs League Avg.</CardTitle></CardHeader>
                 <CardContent>
                     <div className="h-[250px] w-full max-w-lg mx-auto">
@@ -1531,6 +1558,7 @@ const GMCareer = () => {
                                 <XAxis type="number" />
                                 <YAxis dataKey="position" type="category" width={80} />
                                 <Tooltip formatter={(value: number) => value.toFixed(1)} />
+                                <RechartsLegend />
                                 <Bar dataKey="value" name="Strength vs Avg">
                                     {gmData.positionStrength.map((entry, index) => (
                                         <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
@@ -1543,11 +1571,11 @@ const GMCareer = () => {
                 </CardContent>
               </Card>
             )}
-          </CardContent>
+          
         </Card>
       )}
       {!loading && !error && !gmData && selectedGmId && (
-         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId}/{selectedGmId}.json' exists and is correctly formatted as per the expected structure (e.g. Chris.json).</CardContent></Card>
+         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId.toLowerCase()}/{selectedGmId.toLowerCase()}.json' exists and is correctly formatted as per the expected structure (e.g. chris/chris.json).</CardContent></Card>
        )}
        {!loading && !error && !gmData && !selectedGmId && (
          <Card><CardContent className="pt-6 text-center text-muted-foreground">Please select a GM to view career details.</CardContent></Card>
@@ -1619,3 +1647,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
