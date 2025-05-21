@@ -41,7 +41,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, BarChart } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, BarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -1387,7 +1387,7 @@ const GMCareer = () => {
           <CardContent className="pt-2 md:pt-4 space-y-3 md:space-y-4">
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
-              <div className="space-y-0.5 text-sm">
+              <div className="space-y-0.5 text-sm max-w-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Wins:</span>
                   <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
@@ -1409,7 +1409,7 @@ const GMCareer = () => {
             <Separator className="my-2 md:my-3" />
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
-              <div className="space-y-0.5 text-sm">
+              <div className="space-y-0.5 text-sm max-w-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total Points For:</span>
                   <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
@@ -1427,7 +1427,7 @@ const GMCareer = () => {
             <Separator className="my-2 md:my-3" />
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
-              <div className="space-y-0.5 text-sm">
+              <div className="space-y-0.5 text-sm max-w-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total Seasons:</span>
                   <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
@@ -1663,4 +1663,3 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
