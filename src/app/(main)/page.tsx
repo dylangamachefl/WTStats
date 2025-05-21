@@ -29,6 +29,7 @@ import type {
   GMLineupOptimizationFeelingItDetail,
   GMStreamingSummaryEntry,
   GMStreamingWeeklyPerformanceEntry,
+  GMPositionalAdvantageCumulative,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
@@ -110,7 +111,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return { 
         textClass: 'text-neutral-800 font-semibold', 
         borderClass: 'border-2 border-foreground', 
-        style: { backgroundColor: 'hsl(50, 95%, 60%)' } // Yellow for 1st place
+        style: { backgroundColor: 'hsl(50, 95%, 60%)' } 
       };
     }
 
@@ -742,7 +743,7 @@ const SeasonDetail = () => {
     </div>
   );
   
-  const getScoreCellClass = (score: number | undefined | null): string => {
+  const getScoreCellClass = (score?: number | null): string => {
     if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
     if (score >= 140) return 'bg-green-200 text-green-800';
     if (score >= 125) return 'bg-green-100 text-green-700';
@@ -1240,13 +1241,13 @@ const SeasonDetail = () => {
 };
 
 const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(var(--chart-4))', 
-  RB: 'hsl(var(--chart-1))', 
-  WR: 'hsl(var(--chart-2))', 
-  TE: 'hsl(var(--chart-5))', 
-  FLEX: 'hsl(var(--chart-3))', 
-  K: 'hsl(39, 100%, 50%)',  
-  DST: 'hsl(27, 100%, 50%)', 
+  QB: 'hsl(var(--chart-4))', // Purple
+  RB: 'hsl(var(--chart-1))', // Blue
+  WR: 'hsl(var(--chart-2))', // Green
+  TE: 'hsl(var(--chart-5))', // Pink
+  FLEX: 'hsl(var(--chart-3))', // Orange/Yellow
+  K: 'hsl(39, 100%, 50%)',  // Yellow (custom)
+  DST: 'hsl(27, 100%, 50%)', // Orange (custom)
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -1593,6 +1594,35 @@ const GMCareer = () => {
         value: Number(value) || 0,
       }));
   }, [gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage]);
+
+ const cumulativePositionalAdvantageChartData = useMemo(() => {
+    if (!gmIndividualSeasonData?.positionalAdvantage?.cumulativeWeeklyPositionalAdvantage || !Array.isArray(gmIndividualSeasonData.positionalAdvantage.cumulativeWeeklyPositionalAdvantage)) {
+      return [];
+    }
+    const cumulativeData = gmIndividualSeasonData.positionalAdvantage.cumulativeWeeklyPositionalAdvantage;
+    const weeks = new Set<number>();
+    cumulativeData.forEach(posData => {
+      if(Array.isArray(posData.data)) { // Check if posData.data is an array
+        posData.data.forEach(weekEntry => weeks.add(weekEntry.week));
+      }
+    });
+
+    const sortedWeeks = Array.from(weeks).sort((a, b) => a - b);
+
+    return sortedWeeks.map(weekNum => {
+      const weekEntry: { week: number; [key: string]: number | undefined } = { week: weekNum }; // Allow undefined for values
+      cumulativeData.forEach(posData => {
+        if(Array.isArray(posData.data)) { // Check if posData.data is an array
+          const valueForWeek = posData.data.find(d => d.week === weekNum)?.value;
+          // Only add to weekEntry if valueForWeek is not undefined
+          if (valueForWeek !== undefined) {
+            weekEntry[posData.position.toUpperCase()] = valueForWeek;
+          }
+        }
+      });
+      return weekEntry;
+    });
+  }, [gmIndividualSeasonData?.positionalAdvantage?.cumulativeWeeklyPositionalAdvantage]);
 
 
   return (
@@ -2148,24 +2178,34 @@ const GMCareer = () => {
                             </CardContent>
                         </Card>
                         
-                        {gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage && positionalAdvantageBarData.length > 0 && (
+                        {gmIndividualSeasonData?.positionalAdvantage?.cumulativeWeeklyPositionalAdvantage && cumulativePositionalAdvantageChartData.length > 0 && (
                             <Card className="mt-6">
-                                <CardHeader><CardTitle className="flex items-center text-lg"><BarChart2 className="mr-2 h-5 w-5 text-primary"/>Total Positional Advantage (Season)</CardTitle></CardHeader>
-                                <CardContent className="h-[300px] pt-6">
+                                <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
+                                <CardContent className="h-[400px] pt-6">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={positionalAdvantageBarData} layout="vertical" margin={{ left: 10, right: 10 }}>
-                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                                            <XAxis type="number" />
-                                            <YAxis type="category" dataKey="position" width={60} tick={{fontSize: 10}} />
-                                            <Tooltip formatter={(value: number) => value.toFixed(1)} />
-                                            <Bar dataKey="value" name="Total Advantage">
-                                                {positionalAdvantageBarData.map((entry, index) => (
-                                                    <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
-                                                ))}
-                                            </Bar>
-                                        </BarChart>
+                                        <LineChart data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
+                                            <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
+                                            <Tooltip />
+                                            <RechartsLegend verticalAlign="bottom" />
+                                            {Object.keys(CHART_COLORS).filter(pos => pos !== 'DEFAULT' && cumulativePositionalAdvantageChartData[0] && cumulativePositionalAdvantageChartData[0].hasOwnProperty(pos.toUpperCase())).map(posKey => (
+                                                <Line 
+                                                    key={posKey}
+                                                    type="monotone" 
+                                                    dataKey={posKey.toUpperCase()} 
+                                                    stroke={CHART_COLORS[posKey.toUpperCase()]} 
+                                                    name={posKey.toUpperCase()}
+                                                    dot={false}
+                                                    activeDot={{ r: 6 }} 
+                                                />
+                                            ))}
+                                        </LineChart>
                                     </ResponsiveContainer>
                                 </CardContent>
+                                <CardFooter className="text-xs text-muted-foreground pt-2">
+                                    * Tracks the running total of positional point differences vs opponents week over week.
+                                </CardFooter>
                             </Card>
                         )}
                     </TabsContent>
@@ -2287,7 +2327,7 @@ const GMCareer = () => {
                                                             <TableCell className="text-center">{item.streamedStartsCount}</TableCell>
                                                             <TableCell className="text-right">{item.avgPtsGm?.toFixed(1) ?? '-'}</TableCell>
                                                             <TableCell className="text-right">{item.avgPtsLeague?.toFixed(1) ?? '-'}</TableCell>
-                                                            <TableCell className={cn("text-right", item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.netPtsVsAvg >=0 ? '+':''}{item.netPtsVsAvg?.toFixed(1) ?? '-'}</TableCell>
+                                                            <TableCell className={cn("text-right", typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : (typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg < 0 ? "text-red-600 dark:text-red-400" : ""))}>{typeof item.netPtsVsAvg === 'number' ? (item.netPtsVsAvg >=0 ? '+':''):''}{item.netPtsVsAvg?.toFixed(1) ?? '-'}</TableCell>
                                                             <TableCell className="text-right">{item.hitRate?.toFixed(1) ?? '-'}%</TableCell>
                                                         </TableRow>
                                                     ))}
