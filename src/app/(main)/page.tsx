@@ -1281,11 +1281,11 @@ const GMCareer = () => {
       setLoading(true);
       setError(null);
       setGmData(null);
+      // Reset individual season view when GM changes
       setSelectedViewOption("all-seasons"); 
       setGmIndividualSeasonData(null); 
       setErrorGmIndividualSeason(null);
-      setActiveGmSeasonTab("season-summary"); 
-
+      setActiveGmSeasonTab("season-summary"); // Reset active tab for new GM
 
       const gmSlug = mockGmsForTabs.find(g => g.id === selectedGmId)?.name.toLowerCase() || selectedGmId;
       const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
@@ -1319,6 +1319,7 @@ const GMCareer = () => {
           setLoading(false);
         });
     } else {
+        // GM is deselected
         setGmData(null);
         setLoading(false);
         setError(null);
@@ -1329,13 +1330,15 @@ const GMCareer = () => {
   }, [selectedGmId]);
 
   useEffect(() => {
+    // Fetch individual season data when selectedViewOption changes to a specific year
+    // and we have the necessary gmData (for slug and ID)
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
-      setGmIndividualSeasonData(null); 
+      setGmIndividualSeasonData(null); // Clear previous season data
 
       const gmSlug = gmData.gmInfo.slug;
-      const gmNumericId = gmData.gmInfo.id; 
+      const gmNumericId = gmData.gmInfo.id; // Assuming gmInfo.id is the numeric ID like '11'
       const year = selectedViewOption;
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
@@ -1351,7 +1354,7 @@ const GMCareer = () => {
           }
           const data: GMIndividualSeasonDetailData = await res.json();
           console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
-          if (!data || !data.seasonSummary || !data.rosterBreakdown) {
+          if (!data || !data.seasonSummary || !data.rosterBreakdown) { // Add more checks as needed
              console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
              throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
           }
@@ -1366,7 +1369,7 @@ const GMCareer = () => {
           setLoadingGmIndividualSeason(false);
         });
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); 
+        setGmIndividualSeasonData(null); // Clear individual season data if "All Seasons" is selected
     }
   }, [selectedViewOption, gmData]);
 
@@ -1387,16 +1390,18 @@ const GMCareer = () => {
     return <circle cx={cx} cy={cy} r={3} stroke={stroke} fill="#fff" />;
   };
 
+  // Memoize the list of available seasons for the dropdown
   const availableGmSeasonsForDropdown = useMemo(() => {
     if (gmData?.seasonProgression && Array.isArray(gmData.seasonProgression)) {
       return gmData.seasonProgression
-        .map(s => String(s.year))
-        .filter(year => parseInt(year) >= 2019) 
-        .sort((a, b) => Number(b) - Number(a));
+        .map(s => String(s.year)) // Ensure years are strings for SelectItem value
+        .filter(year => parseInt(year) >= 2019) // Filter for 2019 onwards
+        .sort((a, b) => Number(b) - Number(a)); // Sort descending
     }
     return [];
   }, [gmData?.seasonProgression]);
 
+  // Sub-components for GM Individual Season View
   const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
     const winRate = (performance.wins + performance.losses + performance.ties > 0) 
       ? (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100 
@@ -1404,7 +1409,8 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
-        sosDifferentialColor = performance.sosDifferential > 0 ? "text-red-600" : "text-green-600"; // Positive diff = harder schedule = red (bad luck)
+        // Negative SOS Diff is "easier" (good luck), so green. Positive is "harder" (bad luck), so red.
+        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600"; 
     }
 
     return (
@@ -1573,15 +1579,17 @@ const GMCareer = () => {
             "League Avg Pts": lgAvg.leagueAvg,
         });
     });
+    // Ensure all positions from GM's data are included, even if not in league average (unlikely but possible)
     gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
         if (!mergedData.find(d => d.position === gmPos.name)) {
             mergedData.push({
                 position: gmPos.name,
                 "GM Started Pts": gmPos.startedPoints,
-                "League Avg Pts": 0, 
+                "League Avg Pts": 0, // Default if no league avg data for this specific GM position
             });
         }
     });
+    // Sort by GM Started Pts for better visualization
     return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]);
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
 
@@ -1602,7 +1610,7 @@ const GMCareer = () => {
                     </SelectContent>
                 </Select>
             </div>
-            {gmData && (
+            {gmData && ( // Only show season select if GM data is loaded
                 <div className="space-y-1.5">
                     <Label htmlFor="view-select">Select View</Label>
                     <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
@@ -1620,6 +1628,7 @@ const GMCareer = () => {
             )}
         </div>
 
+      {/* Loading and Error states for main GM career data */}
       {loading && (
          <Card>
           <CardHeader className="flex-row items-center gap-4">
@@ -1647,6 +1656,7 @@ const GMCareer = () => {
       )}
       {error && <Card><CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent></Card>}
 
+      {/* Content for "All Seasons" view */}
       {!loading && !error && gmData && selectedViewOption === "all-seasons" && (
         <>
         <Card>
@@ -1884,6 +1894,7 @@ const GMCareer = () => {
           </>
       )}
 
+      {/* Content for Individual Season View */}
       {!loading && !error && selectedViewOption !== "all-seasons" && (
         loadingGmIndividualSeason ? (
             <Card className="mt-6">
@@ -2047,7 +2058,7 @@ const GMCareer = () => {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="text-xs text-muted-foreground pt-4">
-                                        * Based on average points difference vs weekly projection.
+                                        * Based on average points difference vs weekly projection with a minimum of 3 starts.
                                     </CardFooter>
                                 </Card>
 
@@ -2121,6 +2132,7 @@ const GMCareer = () => {
         )
       )}
 
+      {/* Fallback if GM not selected or initial load */}
       {!loading && !error && !gmData && selectedGmId && (
          <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId.toLowerCase()}/{selectedGmId.toLowerCase()}.json' exists and is correctly formatted as per the expected structure (e.g., chris/chris.json).</CardContent></Card>
        )}
@@ -2182,9 +2194,10 @@ export default function LeagueHistoryPage() {
             setLoadingLeagueData(false);
           });
     } else if (section !== 'all-seasons') {
+        // No need to load general leagueData if we are not on the all-seasons overview
         setLoadingLeagueData(false); 
     }
-  }, [section, leagueData]); 
+  }, [section, leagueData]); // Re-run if section changes or leagueData is initially null for all-seasons
 
   if (section === 'all-seasons') {
     return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
@@ -2196,8 +2209,10 @@ export default function LeagueHistoryPage() {
     return <GMCareer />;
   }
 
+  // Default to AllSeasonsOverview if section is unrecognized or loading fails
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
 
 
