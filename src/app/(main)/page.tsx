@@ -1403,7 +1403,7 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
-        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600";
+        sosDifferentialColor = performance.sosDifferential > 0 ? "text-red-600" : "text-green-600"; // Negative is "easier" = good
     }
 
     return (
@@ -2008,7 +2008,7 @@ const GMCareer = () => {
                         {(!gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData) && <p className="text-muted-foreground">No roster breakdown data available.</p>}
                     </TabsContent>
                     <TabsContent value="player-performance">
-                        {gmIndividualSeasonData?.playerPerformance ? (
+                       {gmIndividualSeasonData?.playerPerformance ? (
                             <div className="space-y-6">
                                 <Card>
                                     <CardHeader>
@@ -2197,4 +2197,5 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
