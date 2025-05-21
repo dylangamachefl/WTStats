@@ -1478,3 +1478,6 @@ export default function LeagueHistoryPage() {
   // Fallback or not found content if section is invalid
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
+
+    
