@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type {
   LeagueData,
@@ -34,20 +34,21 @@ import type {
   GMRosterPlayer,
   GMPositionContribution,
   GMLeagueAvgPositionData,
+  GMPlayerPerformanceData,
 
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, BarChart, Bar, LabelList } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -1246,13 +1247,13 @@ const SeasonDetail = () => {
 };
 
 const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(var(--chart-1))', // Purple from image (using chart-1 as a placeholder)
-  RB: 'hsl(var(--chart-2))', // Blue from image (using chart-2)
-  WR: 'hsl(var(--chart-3))', // Cyan from image (using chart-3)
-  TE: 'hsl(var(--chart-4))', // Green from image (using chart-4)
-  FLEX: 'hsl(var(--chart-5))',// Light Green from image (using chart-5)
-  K: 'hsl(39, 100%, 50%)',  // Yellow
-  DST: 'hsl(27, 100%, 50%)', // Orange
+  QB: 'hsl(var(--chart-1))', 
+  RB: 'hsl(var(--chart-2))', 
+  WR: 'hsl(var(--chart-3))', 
+  TE: 'hsl(var(--chart-4))', 
+  FLEX: 'hsl(var(--chart-5))',
+  K: 'hsl(39, 100%, 50%)',  
+  DST: 'hsl(27, 100%, 50%)', 
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -1273,7 +1274,6 @@ const GMCareer = () => {
   const [loadingGmIndividualSeason, setLoadingGmIndividualSeason] = useState(false);
   const [errorGmIndividualSeason, setErrorGmIndividualSeason] = useState<string | null>(null);
   const [activeGmSeasonTab, setActiveGmSeasonTab] = useState<string>("season-summary");
-
 
   useEffect(() => {
     if (selectedGmId) {
@@ -1368,7 +1368,6 @@ const GMCareer = () => {
         setGmIndividualSeasonData(null); 
     }
   }, [selectedViewOption, gmData]);
-
 
   const selectedGmName = gmData?.gmInfo?.name || mockGmsForTabs.find(g => g.id === selectedGmId)?.name || selectedGmId || "Selected GM";
 
@@ -1578,7 +1577,7 @@ const GMCareer = () => {
             mergedData.push({
                 position: gmPos.name,
                 "GM Started Pts": gmPos.startedPoints,
-                "League Avg Pts": 0, // Or some default/placeholder if not in league avg
+                "League Avg Pts": 0, 
             });
         }
     });
@@ -2008,8 +2007,97 @@ const GMCareer = () => {
                         )}
                         {(!gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData) && <p className="text-muted-foreground">No roster breakdown data available.</p>}
                     </TabsContent>
-                     <TabsContent value="player-performance">
-                        <Card><CardHeader><CardTitle>Player Performance Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Detailed player performance metrics coming soon.</p></CardContent></Card>
+                    <TabsContent value="player-performance">
+                        {gmIndividualSeasonData?.playerPerformance ? (
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center text-lg">
+                                            <TrendingUp className="mr-2 h-5 w-5 text-primary" />
+                                            Performance vs. Projection Highlights
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {gmIndividualSeasonData.playerPerformance.overPerformer && (
+                                                <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-700">
+                                                    <div className="flex items-center text-green-700 dark:text-green-300 mb-1">
+                                                        <ArrowUpCircle size={20} className="mr-2" />
+                                                        <h4 className="font-semibold">Most Overperforming Player (Avg)</h4>
+                                                    </div>
+                                                    <p className="text-xl font-bold text-foreground">{gmIndividualSeasonData.playerPerformance.overPerformer.name}</p>
+                                                    <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                                        +{gmIndividualSeasonData.playerPerformance.overPerformer.avgDifference.toFixed(1)} Points vs Projection / Week
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {gmIndividualSeasonData.playerPerformance.underPerformer && (
+                                                 <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700">
+                                                    <div className="flex items-center text-red-700 dark:text-red-300 mb-1">
+                                                        <ArrowDownCircle size={20} className="mr-2" />
+                                                        <h4 className="font-semibold">Most Underperforming Player (Avg)</h4>
+                                                    </div>
+                                                    <p className="text-xl font-bold text-foreground">{gmIndividualSeasonData.playerPerformance.underPerformer.name}</p>
+                                                    <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                                                        {gmIndividualSeasonData.playerPerformance.underPerformer.avgDifference.toFixed(1)} Points vs Projection / Week
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                    <CardFooter className="text-xs text-muted-foreground pt-4">
+                                        * Based on average points difference vs weekly projection.
+                                    </CardFooter>
+                                </Card>
+
+                                {gmIndividualSeasonData.playerPerformance.playerSummaryPerformance && gmIndividualSeasonData.playerPerformance.playerSummaryPerformance.length > 0 && (
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center text-lg">
+                                                <Users className="mr-2 h-5 w-5 text-primary" /> Player Performance Details
+                                            </CardTitle>
+                                            <CardDescription>Click on a player row to see their weekly performance chart.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>Player</TableHead>
+                                                        <TableHead className="text-center">POS</TableHead>
+                                                        <TableHead className="text-right">Avg Actual</TableHead>
+                                                        <TableHead className="text-right">Avg Proj</TableHead>
+                                                        <TableHead className="text-right">Avg Diff</TableHead>
+                                                        <TableHead className="text-right">% Beat Proj</TableHead>
+                                                        <TableHead className="text-center">Boom</TableHead>
+                                                        <TableHead className="text-center">Bust</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {gmIndividualSeasonData.playerPerformance.playerSummaryPerformance.map((player) => (
+                                                        <TableRow key={player.playerId}>
+                                                            <TableCell>{player.name}</TableCell>
+                                                            <TableCell className="text-center">
+                                                                <Badge variant="outline" className={cn("text-xs", getPositionBadgeClass(player.position))}>
+                                                                    {player.position}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell className="text-right">{player.avgActual.toFixed(1)}</TableCell>
+                                                            <TableCell className="text-right">{player.avgProjected.toFixed(1)}</TableCell>
+                                                            <TableCell className={cn("text-right font-semibold", player.avgDifference >= 0 ? "text-green-600" : "text-red-600")}>
+                                                                {player.avgDifference >= 0 ? '+' : ''}{player.avgDifference.toFixed(1)}
+                                                            </TableCell>
+                                                            <TableCell className="text-right">{player.percentBeatProjection.toFixed(1)}%</TableCell>
+                                                            <TableCell className="text-center text-green-600 font-semibold">{player.boomWeeks}</TableCell>
+                                                            <TableCell className="text-center text-red-600 font-semibold">{player.bustWeeks}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </div>
+                        ) : <p className="text-muted-foreground text-center py-4">Player performance data not available for this season.</p>}
                     </TabsContent>
                     <TabsContent value="positional-advantage">
                         <Card><CardHeader><CardTitle>Positional Advantage Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Weekly and cumulative positional advantage data coming soon.</p></CardContent></Card>
@@ -2109,3 +2197,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
