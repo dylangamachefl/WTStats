@@ -27,7 +27,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -630,7 +630,7 @@ const getRatingBadgeClass = (rating?: string): string => {
 
 const getPositionBadgeClass = (position?: string): string => {
   if (!position) return "bg-muted text-muted-foreground"; // Default
-  switch (position.toUpperCase()) {
+  switch (position?.toUpperCase()) {
     case 'QB':
       return 'bg-red-100 text-red-700'; 
     case 'RB':
@@ -770,6 +770,19 @@ const SeasonDetail = () => {
     const year = parseInt(selectedSeason || "0");
     return year >= 2019;
   }, [selectedSeason]);
+
+  const getPositionName = (positionKey: string): string => {
+    const names: { [key: string]: string } = {
+      QB: "Quarterbacks",
+      RB: "Running Backs",
+      WR: "Wide Receivers",
+      TE: "Tight Ends",
+      K: "Kickers",
+      DST: "Defense/ST",
+      DEF: "Defense/ST",
+    };
+    return names[positionKey.toUpperCase()] || positionKey;
+  };
 
   return (
     <div className="space-y-6">
@@ -1123,78 +1136,85 @@ const SeasonDetail = () => {
                     </Card>
                 </TabsContent>
 
-
                  <TabsContent value="top_performers" className="pt-4 space-y-6">
                     <Card>
-                    <CardHeader><CardTitle className="flex items-center"><Trophy className="mr-2 h-5 w-5 text-primary" />Top Seasonal Performers</CardTitle></CardHeader>
-                    <CardContent>
-                        {seasonData.topPerformersData && typeof seasonData.topPerformersData === 'object' && Object.keys(seasonData.topPerformersData).length > 0 ? (
-                        Object.entries(seasonData.topPerformersData).map(([position, players]) => (
-                            Array.isArray(players) && players.length > 0 ? (
-                            <div key={position} className="mb-6">
-                                <h4 className="text-md font-semibold mb-1 capitalize text-foreground/90">{position}</h4>
-                                <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                    <TableHead>Player</TableHead>
-                                    <TableHead>NFL Team</TableHead>
-                                    <TableHead>Managed By</TableHead>
-                                    <TableHead className="text-right">Total Points</TableHead>
-                                    <TableHead className="text-right">PPG</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {players.map((player : TopPerformerPlayer, idx) => (
-                                    <TableRow key={`${position}-${idx}`}>
-                                        <TableCell>{player.player}</TableCell>
-                                        <TableCell>{player.team}</TableCell>
-                                        <TableCell>{player.fantasyTeam || 'Unmanaged'}</TableCell>
-                                        <TableCell className="text-right">{player.totalPoints?.toFixed(1) ?? 'N/A'}</TableCell>
-                                        <TableCell className="text-right">{player.ppg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                    </TableRow>
+                        <CardHeader>
+                            <CardTitle className="flex items-center text-lg">
+                                <BarChart2 className="mr-2 h-5 w-5 text-primary" />
+                                Top Performers by Position
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {seasonData.topPerformersData && typeof seasonData.topPerformersData === 'object' && Object.keys(seasonData.topPerformersData).length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {Object.entries(seasonData.topPerformersData).map(([position, players]) => (
+                                        Array.isArray(players) && players.length > 0 ? (
+                                            <div key={position} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <span className={cn("h-3 w-3 rounded-sm", getPositionBadgeClass(position).split(' ')[0])} style={{ backgroundColor: getPositionBadgeClass(position).split(' ')[0].startsWith('bg-') ? '' : `var(--color-${position.toLowerCase()})` }}></span>
+                                                    <h4 className="text-md font-semibold text-foreground">{getPositionName(position)}</h4>
+                                                </div>
+                                                <div className="space-y-1 text-sm">
+                                                    {players.slice(0, 5).map((player: TopPerformerPlayer, idx: number) => (
+                                                        <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <TrendingUp size={14} className="text-muted-foreground" />
+                                                                <span>{player.player} ({player.team})</span>
+                                                            </div>
+                                                            <span className="font-medium">{player.totalPoints?.toFixed(1) ?? 'N/A'}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ) : null
                                     ))}
-                                </TableBody>
-                                </Table>
-                            </div>
-                            ) : null
-                        ))
-                        ) : (
-                        <p className="text-muted-foreground text-center py-4">No top performer data available for {seasonData?.seasonData?.year}.</p>
-                        )}
-
-                        {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
-                        <div>
-                            <h4 className="text-md font-semibold my-2 text-foreground/90">Best Overall Games This Season</h4>
-                            <Table>
-                            <TableHeader>
-                                <TableRow>
-                                <TableHead>Rank</TableHead>
-                                <TableHead>Player</TableHead>
-                                <TableHead>Position</TableHead>
-                                <TableHead>NFL Team</TableHead>
-                                <TableHead>Managed By</TableHead>
-                                <TableHead>Week</TableHead>
-                                <TableHead className="text-right">Points</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => (
-                                <TableRow key={game.rank}>
-                                    <TableCell>{game.rank}</TableCell>
-                                    <TableCell>{game.player}</TableCell>
-                                    <TableCell>{game.position}</TableCell>
-                                    <TableCell>{game.team}</TableCell>
-                                    <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
-                                    <TableCell>{game.week}</TableCell>
-                                    <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
-                                </TableRow>
-                                ))}
-                            </TableBody>
-                            </Table>
-                        </div>
-                        )}
-                    </CardContent>
+                                </div>
+                            ) : (
+                                <p className="text-muted-foreground text-center py-4">No top performer data available for {seasonData?.seasonData?.year}.</p>
+                            )}
+                        </CardContent>
                     </Card>
+
+                    {seasonData.bestOverallGamesData && Array.isArray(seasonData.bestOverallGamesData) && seasonData.bestOverallGamesData.length > 0 && (
+                        <Card className="mt-6">
+                            <CardHeader>
+                                <CardTitle className="flex items-center text-lg">
+                                    <Zap className="mr-2 h-5 w-5 text-primary" />
+                                    Best Single-Game Performances
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>RANK</TableHead>
+                                            <TableHead>PLAYER</TableHead>
+                                            <TableHead>POS</TableHead>
+                                            <TableHead>FANTASY TEAM</TableHead>
+                                            <TableHead className="text-center">WEEK</TableHead>
+                                            <TableHead className="text-right">POINTS</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => (
+                                            <TableRow key={game.rank}>
+                                                <TableCell>{game.rank}</TableCell>
+                                                <TableCell>{game.player} ({game.team})</TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
+                                                        {game.position}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
+                                                <TableCell className="text-center">{game.week}</TableCell>
+                                                <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    )}
                 </TabsContent>
 
                 </Tabs>
