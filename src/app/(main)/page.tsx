@@ -38,7 +38,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIcon, Shuffle, Waves, Award } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIcon, Shuffle, Waves, Award, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -1379,7 +1379,15 @@ const GMCareer = () => {
   }, [gmData?.seasonProgression]);
 
   const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
-    const winRate = (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100;
+    const winRate = (performance.wins + performance.losses + performance.ties > 0) 
+      ? (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100 
+      : 0;
+      
+    let sosDifferentialColor = "text-foreground";
+    if (performance.sosDifferential) {
+        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600";
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -1387,41 +1395,41 @@ const GMCareer = () => {
                     <Award className="mr-2 h-5 w-5 text-primary" /> {year} Season Performance
                 </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-6 text-center">
-                <div className="flex flex-col items-center">
-                    <span className="text-xs uppercase text-muted-foreground">Record</span>
+            <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-6">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                    <span className="text-xs uppercase text-muted-foreground font-medium">Record</span>
                     <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties > 0 ? `-${performance.ties}` : ''}</span>
                     <span className="text-xs text-muted-foreground">{winRate.toFixed(1)}% Win Rate</span>
                 </div>
-                <div className="flex flex-col items-center">
-                    <span className="text-xs uppercase text-muted-foreground">Avg PPG</span>
-                    <span className="text-2xl font-bold">{performance.avgPointsPerGame.toFixed(1)}</span>
-                    <span className="text-xs text-muted-foreground">Total: {performance.pointsFor.toFixed(0)}</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                    <span className="text-xs uppercase text-muted-foreground font-medium">Avg PPG</span>
+                    <span className="text-2xl font-bold">{performance.avgPointsPerGame?.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">Total: {performance.pointsFor?.toFixed(0)}</span>
                 </div>
-                <div className="flex flex-col items-center">
-                    <span className="text-xs uppercase text-muted-foreground">Reg. Season Finish</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                    <span className="text-xs uppercase text-muted-foreground font-medium">Reg. Season Finish</span>
                     <span className="text-2xl font-bold">#{performance.regularSeasonFinish}</span>
-                    {/* Seed data not available in current JSON */}
                 </div>
-                <div className="flex flex-col items-center">
-                    <span className="text-xs uppercase text-muted-foreground">Final Standing</span>
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                    <span className="text-xs uppercase text-muted-foreground font-medium">Final Standing</span>
                     <span className="text-2xl font-bold">#{performance.finalStanding}</span>
                     {performance.finalStanding === 1 && <Badge className="mt-1 bg-primary text-primary-foreground">Champion</Badge>}
                 </div>
-                {/* SOS/Luck Factor Placeholder - data not in current JSON
-                <div className="flex flex-col items-center">
-                    <span className="text-xs uppercase text-muted-foreground">Luck Factor</span>
-                    <span className="text-2xl font-bold text-green-600">+{performance.sosDifferential?.toFixed(1) || 'N/A'}</span>
-                     <span className="text-xs text-muted-foreground">{performance.sosRating || 'Neutral'}</span>
-                </div> 
-                */}
+                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                    <span className="text-xs uppercase text-muted-foreground font-medium">LUCK FACTOR (SOS)</span>
+                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
+                        {performance.sosDifferential && performance.sosDifferential > 0 ? '+' : ''}
+                        {performance.sosDifferential?.toFixed(1) ?? 'N/A'}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
+                </div>
             </CardContent>
         </Card>
     );
 };
 
 
-  const GameByGameTable = ({ games }: { games: GMGameByGame[] }) => (
+  const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: string }) => (
     <Card className="mt-6">
       <CardHeader>
         <CardTitle className="flex items-center text-lg">
@@ -1467,6 +1475,22 @@ const GMCareer = () => {
           </TableBody>
         </Table>
       </CardContent>
+      <CardContent className="pt-4">
+        <h4 className="text-md font-semibold mb-2 text-center">Weekly Scoring Trend</h4>
+        <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={games} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="week" tickFormatter={(tick) => `Wk ${tick}`} />
+                    <YAxis domain={['auto', 'auto']} />
+                    <Tooltip />
+                    <RechartsLegend verticalAlign="bottom" wrapperStyle={{paddingTop: "10px"}}/>
+                    <Line type="monotone" dataKey="points" name={`${gmName || 'GM'} Points`} stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="opponent_points" name="Opponent Points" stroke="hsl(var(--chart-3))" strokeWidth={2} activeDot={{ r: 6 }} />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+      </CardContent>
     </Card>
   );
 
@@ -1503,29 +1527,35 @@ const GMCareer = () => {
 
   return (
     <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <Select value={selectedGmId} onValueChange={setSelectedGmId}>
-                <SelectTrigger className="w-full sm:w-[280px]">
-                <SelectValue placeholder="Select a GM" />
-                </SelectTrigger>
-                <SelectContent>
-                {mockGmsForTabs.map(gm => (
-                    <SelectItem key={gm.id} value={gm.id}>{gm.name}</SelectItem>
-                ))}
-                </SelectContent>
-            </Select>
-            {gmData && (
-                 <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
-                    <SelectTrigger className="w-full sm:w-[280px]">
-                        <SelectValue placeholder="Select view type" />
+        <div className="flex flex-col sm:flex-row gap-4 items-start">
+            <div className="flex-1 space-y-1.5">
+                <Label htmlFor="gm-select">Select GM</Label>
+                <Select value={selectedGmId} onValueChange={setSelectedGmId}>
+                    <SelectTrigger id="gm-select" className="w-full sm:w-[280px]">
+                    <SelectValue placeholder="Select a GM" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all-seasons">All Seasons Overview</SelectItem>
-                        {availableGmSeasonsForDropdown.map(year => (
-                            <SelectItem key={year} value={year}>{year} Season Detail</SelectItem>
-                        ))}
+                    {mockGmsForTabs.map(gm => (
+                        <SelectItem key={gm.id} value={gm.id}>{gm.name}</SelectItem>
+                    ))}
                     </SelectContent>
                 </Select>
+            </div>
+            {gmData && (
+                <div className="flex-1 space-y-1.5">
+                    <Label htmlFor="view-select">Select View</Label>
+                    <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
+                        <SelectTrigger id="view-select" className="w-full sm:w-[280px]">
+                            <SelectValue placeholder="Select view type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all-seasons">All Seasons Overview</SelectItem>
+                            {availableGmSeasonsForDropdown.map(year => (
+                                <SelectItem key={year} value={year}>{year} Season Detail</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             )}
         </div>
 
@@ -1565,6 +1595,7 @@ const GMCareer = () => {
                 <Image data-ai-hint="person avatar" src={gmData.gmInfo.photoUrl} alt={`${gmData.gmInfo.name} photo`} width={64} height={64} className="rounded-full border-2 border-primary"/>
               ) : (
                 <Avatar className="h-16 w-16 border-2 border-primary">
+                   <AvatarImage src={gmData.gmInfo.photoUrl || undefined} alt={gmData.gmInfo.name} data-ai-hint="person avatar" />
                   <AvatarFallback className="text-2xl bg-muted text-muted-foreground">
                     {gmData.gmInfo.name ? gmData.gmInfo.name.charAt(0).toUpperCase() : <User size={32}/>}
                   </AvatarFallback>
@@ -1581,7 +1612,7 @@ const GMCareer = () => {
                     </span>
                   )}
                 </CardDescription>
-                 {gmData.gmInfo.bio && <p className="text-sm text-muted-foreground mt-2">{gmData.gmInfo.bio}</p>}
+                 {gmData.gmInfo.bio && <p className="text-sm text-muted-foreground mt-2 max-w-prose">{gmData.gmInfo.bio}</p>}
               </div>
             </div>
           </CardHeader>
@@ -1815,7 +1846,7 @@ const GMCareer = () => {
             <div className="space-y-6 mt-2">
                  <Tabs defaultValue={activeGmSeasonTab} onValueChange={setActiveGmSeasonTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 mb-4">
-                        <TabsTrigger value="season-summary"><Info className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
+                        <TabsTrigger value="season-summary"><ClipboardList className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
                         <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
                         <TabsTrigger value="player-performance"><TrendingUp className="mr-1 h-4 w-4 hidden sm:inline-block" />Player Performance</TabsTrigger>
                         <TabsTrigger value="positional-advantage"><PieChartIcon className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
@@ -1823,13 +1854,18 @@ const GMCareer = () => {
                         <TabsTrigger value="streaming-success"><Waves className="mr-1 h-4 w-4 hidden sm:inline-block" />Streaming Success</TabsTrigger>
                     </TabsList>
                     <TabsContent value="season-summary">
-                        <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} />
-                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} />
-                        {/* Placeholder for Weekly Scoring Trend Line Chart */}
+                       {gmIndividualSeasonData.seasonSummary?.seasonPerformance && selectedViewOption && (
+                         <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} />
+                       )}
+                       {gmIndividualSeasonData.seasonSummary?.gameByGame && (
+                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} gmName={selectedGmName}/>
+                       )}
                     </TabsContent>
                     <TabsContent value="roster-breakdown">
-                        <RosterPlayersTable players={gmIndividualSeasonData.rosterBreakdown.rosterPlayerData} />
-                        {/* Placeholder for Position Contribution and League Avg Position Data */}
+                        {gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData && (
+                           <RosterPlayersTable players={gmIndividualSeasonData.rosterBreakdown.rosterPlayerData} />
+                        )}
+                        {(!gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData) && <p className="text-muted-foreground">No roster breakdown data available.</p>}
                     </TabsContent>
                      <TabsContent value="player-performance">
                         <Card><CardHeader><CardTitle>Player Performance Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Detailed player performance metrics coming soon.</p></CardContent></Card>
@@ -1932,3 +1968,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
