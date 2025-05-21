@@ -45,7 +45,7 @@ import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, BarChart, Bar, LabelList } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -1257,8 +1257,8 @@ const CHART_COLORS: { [key: string]: string } = {
 };
 
 const GM_CHART_COLORS = {
-  GM_STARTED_PTS: 'hsl(var(--primary))', // Purple for GM
-  LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  // Green for League Avg
+  GM_STARTED_PTS: 'hsl(var(--primary))', 
+  LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  
 };
 
 
@@ -1280,11 +1280,10 @@ const GMCareer = () => {
       setLoading(true);
       setError(null);
       setGmData(null);
-      // When GM changes, reset to "all-seasons" view for that new GM
       setSelectedViewOption("all-seasons"); 
-      setGmIndividualSeasonData(null); // Clear individual season data
+      setGmIndividualSeasonData(null); 
       setErrorGmIndividualSeason(null);
-      setActiveGmSeasonTab("season-summary"); // Default tab for individual season
+      setActiveGmSeasonTab("season-summary"); 
 
 
       const gmSlug = mockGmsForTabs.find(g => g.id === selectedGmId)?.name.toLowerCase() || selectedGmId;
@@ -1319,7 +1318,6 @@ const GMCareer = () => {
           setLoading(false);
         });
     } else {
-        // Clear all data if no GM is selected
         setGmData(null);
         setLoading(false);
         setError(null);
@@ -1333,7 +1331,7 @@ const GMCareer = () => {
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
-      setGmIndividualSeasonData(null); // Clear previous season detail
+      setGmIndividualSeasonData(null); 
 
       const gmSlug = gmData.gmInfo.slug;
       const gmNumericId = gmData.gmInfo.id; 
@@ -1367,7 +1365,7 @@ const GMCareer = () => {
           setLoadingGmIndividualSeason(false);
         });
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); // Clear individual season data if "all-seasons" is selected
+        setGmIndividualSeasonData(null); 
     }
   }, [selectedViewOption, gmData]);
 
@@ -1406,8 +1404,6 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
-        // Negative differential means easier schedule (good luck) -> green
-        // Positive differential means harder schedule (bad luck) -> red
         sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600";
     }
 
@@ -1546,6 +1542,48 @@ const GMCareer = () => {
       </CardContent>
     </Card>
   );
+
+  const pieChartData = useMemo(() => {
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData) return [];
+    const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + p.startedPoints, 0);
+    return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
+      name: `${p.name} ${totalPoints > 0 ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
+      value: p.startedPoints,
+      fill: CHART_COLORS[p.name.toUpperCase()] || CHART_COLORS.DEFAULT,
+    }));
+  }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
+
+  const pieChartCells = useMemo(() => {
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData) return [];
+    return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map((entry) => (
+        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT} />
+    ));
+  }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
+
+  const barChartData = useMemo(() => {
+    if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData) return [];
+    
+    const mergedData: any[] = [];
+    const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints]));
+    
+    gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData.forEach(lgAvg => {
+        mergedData.push({
+            position: lgAvg.name,
+            "GM Started Pts": gmPointsMap.get(lgAvg.name) || 0,
+            "League Avg Pts": lgAvg.leagueAvg,
+        });
+    });
+    gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
+        if (!mergedData.find(d => d.position === gmPos.name)) {
+            mergedData.push({
+                position: gmPos.name,
+                "GM Started Pts": gmPos.startedPoints,
+                "League Avg Pts": 0, // Or some default/placeholder if not in league avg
+            });
+        }
+    });
+    return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]);
+  }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
 
 
   return (
@@ -1902,24 +1940,16 @@ const GMCareer = () => {
                                                 <ResponsiveContainer width="100%" height="100%">
                                                     <PieChart>
                                                         <Pie
-                                                            data={useMemo(() => {
-                                                                const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + p.startedPoints, 0);
-                                                                return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
-                                                                    name: `${p.name} ${totalPoints > 0 ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
-                                                                    value: p.startedPoints,
-                                                                    fill: CHART_COLORS[p.name.toUpperCase()] || CHART_COLORS.DEFAULT,
-                                                                }));
-                                                            }, [gmIndividualSeasonData.rosterBreakdown.positionContributionData])}
+                                                            data={pieChartData}
                                                             cx="50%"
                                                             cy="50%"
                                                             outerRadius={100}
                                                             fill="#8884d8"
                                                             dataKey="value"
                                                             labelLine={false}
-                                                            label={({ name, percent, x, y, midAngle, outerRadius, payload }) => {
+                                                            label={({ name, percent, x, y, midAngle, outerRadius: pieOuterRadius, payload }) => {
                                                               const RADIAN = Math.PI / 180;
-                                                              // Adjust label positioning logic if needed
-                                                              const radius = outerRadius + 25;
+                                                              const radius = pieOuterRadius + 25;
                                                               const lx = x + radius * Math.cos(-midAngle * RADIAN);
                                                               const ly = y + radius * Math.sin(-midAngle * RADIAN);
                                                               return (
@@ -1929,13 +1959,7 @@ const GMCareer = () => {
                                                               );
                                                             }}
                                                         >
-                                                            {
-                                                                useMemo(() => (
-                                                                    gmIndividualSeasonData.rosterBreakdown.positionContributionData.map((entry) => (
-                                                                        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT} />
-                                                                    ))
-                                                                ), [gmIndividualSeasonData.rosterBreakdown.positionContributionData])
-                                                            }
+                                                            {pieChartCells}
                                                         </Pie>
                                                         <Tooltip />
                                                          <RechartsLegend 
@@ -1959,29 +1983,7 @@ const GMCareer = () => {
                                                 <ResponsiveContainer width="100%" height="100%">
                                                     <BarChart 
                                                         layout="vertical" 
-                                                        data={useMemo(() => {
-                                                            const mergedData: any[] = [];
-                                                            const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints]));
-                                                            
-                                                            gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData.forEach(lgAvg => {
-                                                                mergedData.push({
-                                                                    position: lgAvg.name,
-                                                                    "GM Started Pts": gmPointsMap.get(lgAvg.name) || 0,
-                                                                    "League Avg Pts": lgAvg.leagueAvg,
-                                                                });
-                                                            });
-                                                            // Add any GM positions not in league average (if any)
-                                                            gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
-                                                                if (!mergedData.find(d => d.position === gmPos.name)) {
-                                                                    mergedData.push({
-                                                                        position: gmPos.name,
-                                                                        "GM Started Pts": gmPos.startedPoints,
-                                                                        "League Avg Pts": 0,
-                                                                    });
-                                                                }
-                                                            });
-                                                            return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]); // Optional: sort by GM points or position order
-                                                        }, [gmIndividualSeasonData.rosterBreakdown.positionContributionData, gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData])}
+                                                        data={barChartData}
                                                         margin={{ top: 5, right: 30, left: 5, bottom: 20 }}
                                                     >
                                                         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
@@ -2107,7 +2109,3 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
-
-
-
