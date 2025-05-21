@@ -16,10 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { BarChart3, ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy } from "lucide-react";
+import { ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import * as React from "react";
 
 interface NavSubItem {
@@ -32,7 +31,7 @@ interface NavItemConfig {
   href: string;
   label: string;
   icon: ReactNode;
-  matchSegments?: number;
+  matchSegments?: number; // How many path segments to match for main item active state
   subItems?: NavSubItem[];
 }
 
@@ -40,15 +39,25 @@ const navItems: NavItemConfig[] = [
   {
     href: "/",
     label: "League History",
-    icon: <Trophy />, // Changed to Trophy to match image
-    matchSegments: 1,
+    icon: <Trophy />,
+    matchSegments: 1, // Only active if pathname is exactly "/"
     subItems: [
       { href: "/?section=all-seasons", label: "All Seasons Overview", queryParamValue: "all-seasons" },
       { href: "/?section=season-detail", label: "Season Detail", queryParamValue: "season-detail" },
       { href: "/?section=gm-career", label: "GM Career", queryParamValue: "gm-career" },
     ],
   },
-  { href: "/draft-history", label: "Draft History", icon: <ListChecks />, matchSegments: 2 },
+  {
+    href: "/draft-history",
+    label: "Draft History",
+    icon: <ListChecks />,
+    matchSegments: 2, // Active if first segment is "draft-history"
+    subItems: [
+      { href: "/draft-history?section=overview", label: "Overview", queryParamValue: "overview" },
+      { href: "/draft-history?section=season-view", label: "Season View", queryParamValue: "season-view" },
+      { href: "/draft-history?section=gm-view", label: "GM View", queryParamValue: "gm-view" },
+    ],
+  },
   { href: "/h2h", label: "Head-to-Head", icon: <Users />, matchSegments: 2 },
   { href: "/deep-dives", label: "Deep Dives", icon: <FileText />, matchSegments: 2 },
 ];
@@ -59,39 +68,45 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const currentSectionQuery = searchParams.get('section');
 
   const isActive = (href: string, matchSegments: number = 1, isSubItem: boolean = false, subItemQueryParam?: string) => {
-    if (href === "/") {
-      const isBasePath = pathname === "/";
-      if (isSubItem && subItemQueryParam) {
-        return isBasePath && (currentSectionQuery === subItemQueryParam || (subItemQueryParam === 'all-seasons' && !currentSectionQuery));
-      }
-      // For the main "League History" item, it's active if the path is "/", regardless of section,
-      // or if a sub-item is active.
-      return isBasePath;
-    }
+    const isBasePathCorrect = pathname === href || (href === "/" && pathname.startsWith("/?")) || (href.startsWith("/") && pathname.startsWith(href) && (pathname.length === href.length || pathname[href.length] === '?'));
 
-    const pathSegments = pathname.split("/").filter(Boolean);
-    const hrefSegments = href.split("/").filter(Boolean);
+    if (isSubItem && subItemQueryParam) {
+        // For sub-items, the main path must match, and the query param must match
+        // or (if it's the default sub-item like 'all-seasons' or 'overview') the query param can be absent.
+        const isDefaultSubItemForLeagueHistory = href === "/" && subItemQueryParam === 'all-seasons';
+        const isDefaultSubItemForDraftHistory = href === "/draft-history" && subItemQueryParam === 'overview';
+        
+        return isBasePathCorrect && 
+               (currentSectionQuery === subItemQueryParam || 
+                ((isDefaultSubItemForLeagueHistory || isDefaultSubItemForDraftHistory) && !currentSectionQuery));
+    }
     
-    if (pathSegments.length < matchSegments || hrefSegments.length < matchSegments) {
-      return false;
-    }
+    // For main items
+    if (pathname === "/" && href === "/") return true; // Special case for homepage
+    if (href !== "/") return pathname.startsWith(href);
 
-    for (let i = 0; i < matchSegments; i++) {
-      if (pathSegments[i] !== hrefSegments[i]) {
-        return false;
-      }
-    }
-    return true;
+    return false;
   };
 
-  const getPageTitle = () => {
-    if (pathname === "/") {
-      if (currentSectionQuery === "season-detail") return "Season Detail";
-      if (currentSectionQuery === "gm-career") return "GM Career";
-      return "All Seasons Overview"; // Default for "/" or "/?section=all-seasons"
-    }
+ const getPageTitle = () => {
     const activeMainItem = navItems.find(item => isActive(item.href, item.matchSegments));
-    return activeMainItem?.label || "Gridiron Archive";
+
+    if (activeMainItem) {
+      if (activeMainItem.subItems && currentSectionQuery) {
+        const activeSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === currentSectionQuery);
+        if (activeSubItem) return activeSubItem.label;
+      }
+      // Fallback to default subitem label or main item label if no specific subitem is active via query
+      if (activeMainItem.subItems) {
+        const defaultSubItemQuery = activeMainItem.href === "/" ? "all-seasons" : "overview";
+        const defaultSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === defaultSubItemQuery);
+        if (defaultSubItem && (currentSectionQuery === defaultSubItemQuery || !currentSectionQuery)) {
+          return defaultSubItem.label;
+        }
+      }
+      return activeMainItem.label;
+    }
+    return "Gridiron Archive";
   };
 
 
@@ -111,7 +126,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             {navItems.map((item) => (
               <React.Fragment key={item.href + item.label}>
                 <SidebarMenuItem>
-                  <Link href={item.subItems ? "/?section=all-seasons" : item.href} legacyBehavior passHref>
+                  <Link href={item.subItems ? `${item.href}?section=${item.subItems[0].queryParamValue}` : item.href} legacyBehavior passHref>
                     <SidebarMenuButton
                       isActive={isActive(item.href, item.matchSegments)}
                       tooltip={{ children: item.label, className: "group-data-[collapsible=icon]:block hidden" }}
@@ -133,7 +148,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                             isActive={isActive(item.href, item.matchSegments, true, subItem.queryParamValue)}
                             className="justify-start w-full text-sidebar-foreground/80 hover:text-sidebar-foreground"
                           >
-                            <span className="ml-[26px]">{subItem.label}</span> {/* Adjusted margin for alignment */}
+                            <span className="ml-[26px]">{subItem.label}</span>
                           </SidebarMenuButton>
                         </Link>
                       </SidebarMenuItem>
@@ -174,3 +189,5 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
+
+    

@@ -1,0 +1,55 @@
+
+[
+  {
+    "gmId": "gm1",
+    "gmName": "Alice",
+    "seasonYear": 2023,
+    "draftGrade": "A-",
+    "draftPosition": 5,
+    "avgPickValueScore": 1.2,
+    "topRookiePoints": 150.5,
+    "valuePicksCount": 3
+  },
+  {
+    "gmId": "gm1",
+    "gmName": "Alice",
+    "seasonYear": 2022,
+    "draftGrade": "B",
+    "draftPosition": 8,
+    "avgPickValueScore": 0.9,
+    "topRookiePoints": 120.0,
+    "valuePicksCount": 2
+  },
+  {
+    "gmId": "gm2",
+    "gmName": "Bob",
+    "seasonYear": 2023,
+    "draftGrade": "B+",
+    "draftPosition": 2,
+    "avgPickValueScore": 1.0,
+    "topRookiePoints": 180.2,
+    "valuePicksCount": 2
+  },
+  {
+    "gmId": "gm2",
+    "gmName": "Bob",
+    "seasonYear": 2022,
+    "draftGrade": "A",
+    "draftPosition": 1,
+    "avgPickValueScore": 1.5,
+    "topRookiePoints": 210.0,
+    "valuePicksCount": 4
+  },
+  {
+    "gmId": "gm3",
+    "gmName": "Charlie",
+    "seasonYear": 2023,
+    "draftGrade": "C",
+    "draftPosition": 10,
+    "avgPickValueScore": 0.5,
+    "topRookiePoints": 90.7,
+    "valuePicksCount": 1
+  }
+]
+
+    

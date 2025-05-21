@@ -378,9 +378,9 @@ export interface GMLineupOptimizationData {
   weeklyOptimization: GMLineupOptimizationWeekly[];
   feelingItSummary: {
     totalStarts: number;
-    successRate: number;
-    avgPointsGainedLost: number;
-    avgProjectionDifference: number;
+    successRate: number | null;
+    avgPointsGainedLost: number | null;
+    avgProjectionDifference: number | null;
     details: GMLineupOptimizationFeelingItDetail[];
   };
 }
@@ -394,7 +394,7 @@ export interface GMPositionalAdvantageWeeklyEntry {
   FLEX?: number;
   K?: number;
   DST?: number;
-  total_diff?: number; // Corrected from total_diff to match example
+  total_diff?: number;
 }
 
 export interface GMPositionalAdvantageCumulativeDataPoint {
@@ -409,31 +409,31 @@ export interface GMPositionalAdvantageCumulative {
 
 export interface GMPositionalAdvantageData {
   weeklyPositionalAdvantage: GMPositionalAdvantageWeeklyEntry[];
-  cumulativeWeeklyPositionalAdvantage: GMPositionalAdvantageCumulative[]; // This seems to be for line charts, might not be used for the bar chart.
+  cumulativeWeeklyPositionalAdvantage: GMPositionalAdvantageCumulative[];
 }
 
 export interface GMStreamingSummaryEntry {
   position: string;
   status: string;
-  uniqueStarters: number;
-  streamedStartsCount: number; // Renamed from streamedStarts for clarity
-  avgPtsGm: number;
-  avgPtsLeague: number;
-  netPtsVsAvg: number;
-  hitRate: number;
+  uniqueStarters: number | null;
+  streamedStartsCount: number | null;
+  avgPtsGm: number | null;
+  avgPtsLeague: number | null;
+  netPtsVsAvg: number | null;
+  hitRate: number | null;
 }
 
 export interface GMStreamingWeeklyPerformanceEntry {
   week: number;
-  gmStarterPts: number;
-  leagueAvgPts: number;
+  gmStarterPts: number | null;
+  leagueAvgPts: number | null;
   playerName: string;
 }
 
 export interface GMStreamingSuccessData {
   streamingSummary: GMStreamingSummaryEntry[];
   streamingWeeklyPerformance: {
-    [position: string]: GMStreamingWeeklyPerformanceEntry[]; // e.g., QB: [...], TE: [...]
+    [position: string]: GMStreamingWeeklyPerformanceEntry[];
   };
 }
 
@@ -444,6 +444,18 @@ export interface GMIndividualSeasonDetailData {
   lineupOptimization?: GMLineupOptimizationData;
   positionalAdvantage?: GMPositionalAdvantageData;
   streamingSuccess?: GMStreamingSuccessData;
+}
+
+// For Draft History Overview
+export interface GMDraftSeasonPerformance {
+  gmId: string;
+  gmName: string;
+  seasonYear: number;
+  draftGrade: string; // e.g., "A-", "B+"
+  draftPosition: number; // Overall draft position (e.g., 1st pick, 10th pick)
+  avgPickValueScore?: number; // A numerical score representing draft value
+  topRookiePoints?: number; // Points from best rookie
+  valuePicksCount?: number; // Number of picks considered "value"
 }
 
 // Old types - re-evaluate if still needed by other pages or can be removed
@@ -523,3 +535,5 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
+
+    
