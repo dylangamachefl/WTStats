@@ -34,7 +34,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, ScatterChart, Scatter, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Cell as RechartsCell, ZAxis } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
@@ -43,7 +43,7 @@ import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
 
 // These mocks are used for populating the Select dropdowns.
 const mockSeasonsForTabs: SeasonType_Mock[] = [
-  { id: "2024", year: 2024 }, { id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }, { id: "2020", year: 2020 }, { id: "2019", year: 2019 }, { id: "2018", year: 2018 }, { id: "2017", year: 2017 }, { id: "2016", year: 2016 }, { id: "2015", year: 2015 }, { id: "2014", year: 2014 }, { id: "2013", year: 2013 }, { id: "2012", year: 2012 }, { id: "2011", year: 2011 }, { id: "2010", year: 2010 }, { id: "2009", year: 2009 },
+  { id: "2009", year: 2009 }, { id: "2010", year: 2010 }, { id: "2011", year: 2011 }, { id: "2012", year: 2012 }, { id: "2013", year: 2013 }, { id: "2014", year: 2014 }, { id: "2015", year: 2015 }, { id: "2016", year: 2016 }, { id: "2017", year: 2017 }, { id: "2018", year: 2018 }, { id: "2019", year: 2019 }, { id: "2020", year: 2020 }, { id: "2021", year: 2021 }, { id: "2022", year: 2022 }, { id: "2023", year: 2023 }, { id: "2024", year: 2024 },
 ];
 
 const mockGmsForTabs: GM_Mock[] = [
@@ -316,11 +316,11 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CarouselContent>
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                  <Card className="flex flex-col p-4 h-full gap-4 rounded-lg shadow-md hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                   <Card className="flex flex-col p-4 h-full gap-3 rounded-lg shadow-md hover:shadow-lg transition-shadow transform hover:-translate-y-1">
                     <div className="flex flex-col items-center text-center pt-3 relative">
                       <Badge
                         variant="default"
-                        className="absolute top-0 left-1/2 -translate-x-1/2 transform bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
+                        className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
                       >
                         {champion.year}
                       </Badge>
@@ -610,19 +610,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   );
 };
 
-const HeatmapTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="bg-popover text-popover-foreground border rounded-md shadow-md p-2 text-xs">
-        <p className="font-semibold">{data.teamName}</p>
-        <p>Week {data.week}</p>
-        <p>Score: {data.score?.toFixed(1) ?? 'N/A'}</p>
-        <p>Result: {data.result || 'N/A'}</p>
-      </div>
-    );
+const getRatingBadgeClass = (rating?: string): string => {
+  if (!rating) return "bg-gray-200 text-gray-800";
+  switch (rating.toLowerCase()) {
+    case 'very hard':
+      return 'bg-red-600 text-red-50';
+    case 'hard':
+      return 'bg-orange-500 text-orange-50';
+    case 'above avg':
+      return 'bg-yellow-400 text-yellow-800';
+    case 'below avg':
+      return 'bg-lime-400 text-lime-800';
+    case 'easy':
+      return 'bg-green-500 text-green-50';
+    default:
+      return 'bg-gray-200 text-gray-800';
   }
-  return null;
 };
 
 const SeasonDetail = () => {
@@ -928,7 +931,11 @@ const SeasonDetail = () => {
                                         <TableBody>
                                             {seasonData.weeklyScoresData.teams.map((teamName, teamIndex) => (
                                                 <TableRow key={teamName}>
-                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate align-middle" title={teamName}>{teamName}</TableCell>
+                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate align-middle p-0.5" title={teamName}>
+                                                        <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start">
+                                                           {teamName}
+                                                        </div>
+                                                    </TableCell>
                                                     {seasonData.weeklyScoresData!.scores.map((weekScores, weekIndex) => {
                                                         const score = Array.isArray(weekScores) ? weekScores[teamIndex] : undefined;
                                                         const result = Array.isArray(seasonData.weeklyScoresData!.results) && Array.isArray(seasonData.weeklyScoresData!.results[weekIndex]) ? seasonData.weeklyScoresData!.results[weekIndex][teamIndex] : undefined;
@@ -988,31 +995,49 @@ const SeasonDetail = () => {
                 
                 <TabsContent value="strength_of_schedule" className="pt-4 space-y-6">
                     <Card>
-                        <CardHeader><CardTitle className="flex items-center"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle></CardHeader>
+                         <CardHeader>
+                            <CardTitle className="flex items-center"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle>
+                            <CardDescription>This analysis shows which teams faced the toughest or easiest schedules based on their opponents' average points per game compared to the league average.</CardDescription>
+                        </CardHeader>
                         <CardContent>
                             {seasonData.strengthOfScheduleData && Array.isArray(seasonData.strengthOfScheduleData) && seasonData.strengthOfScheduleData.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                <TableRow>
-                                    <TableHead>Rank</TableHead>
-                                    <TableHead>Owner</TableHead>
-                                    <TableHead>Team</TableHead>
-                                    <TableHead className="text-right">Opp. PPG</TableHead>
-                                    <TableHead>Rating</TableHead>
-                                </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
-                                    <TableRow key={sos.owner}>
-                                    <TableCell>{sos.rank}</TableCell>
-                                    <TableCell>{sos.owner}</TableCell>
-                                    <TableCell>{sos.team}</TableCell>
-                                    <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                    <TableCell>{sos.rating || '-'}</TableCell>
+                            <>
+                                <Table>
+                                    <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="text-left">RANK</TableHead>
+                                        <TableHead className="text-left">TEAM</TableHead>
+                                        <TableHead className="text-left">OWNER</TableHead>
+                                        <TableHead className="text-right">OPP PPG</TableHead>
+                                        <TableHead className="text-right">LG AVG</TableHead>
+                                        <TableHead className="text-right">DIFF</TableHead>
+                                        <TableHead className="text-center">RATING</TableHead>
                                     </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                    {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
+                                        <TableRow key={sos.owner}>
+                                        <TableCell className="text-left">{sos.rank}</TableCell>
+                                        <TableCell className="text-left">{sos.team}</TableCell>
+                                        <TableCell className="text-left">{sos.owner}</TableCell>
+                                        <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                        <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                        <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
+                                            {sos.differential && sos.differential > 0 ? '+' : ''}{sos.differential?.toFixed(1) ?? 'N/A'}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            <Badge variant="outline" className={cn("text-xs", getRatingBadgeClass(sos.rating))}>
+                                                {sos.rating || '-'}
+                                            </Badge>
+                                        </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                                <p className="text-xs text-muted-foreground mt-4">
+                                    Diff: Positive numbers indicate a tougher schedule (opponents scored more than league average). Ranked hardest to easiest.
+                                </p>
+                            </>
                             ) : (
                             <p className="text-muted-foreground text-center py-4">Strength of Schedule data not available for {seasonData?.seasonData?.year}.</p>
                             )}
@@ -1408,4 +1433,3 @@ export default function LeagueHistoryPage() {
   // Fallback or not found content if section is invalid
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
