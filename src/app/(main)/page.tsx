@@ -1416,7 +1416,7 @@ const GMCareer = () => {
                     {performance.finalStanding === 1 && <Badge className="mt-1 bg-primary text-primary-foreground">Champion</Badge>}
                 </div>
                  <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
-                    <span className="text-xs uppercase text-muted-foreground font-medium">LUCK FACTOR (SOS)</span>
+                    <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                      <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
                         {performance.sosDifferential && performance.sosDifferential > 0 ? '+' : ''}
                         {performance.sosDifferential?.toFixed(1) ?? 'N/A'}
@@ -1968,4 +1968,5 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
