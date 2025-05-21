@@ -13,35 +13,35 @@ import type {
   FinalStandingsHeatmapEntry,
   GMPlayoffPerformanceStat,
   SeasonDetailData,
-  GMCareerData, // Updated type
+  GMCareerData,
   SeasonStandingEntry,
   PlayoffMatchup,
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
   TopPerformerPlayer,
-  BestOverallGameEntry as SeasonBestOverallGameEntry,
+  SeasonBestOverallGameEntry,
   WeeklyScoresMatrixData,
   PositionalTopPerformersData,
-  GMInfo, // New sub-type
-  CareerStats, // New sub-type
-  CareerExtremes, // New sub-type
-  SeasonProgressionEntry, // New sub-type
-  PositionStrengthEntry, // New sub-type
-  FranchisePlayerEntry, // New sub-type
-  RivalryPerformanceEntry, // New sub-type
+  GMInfo, 
+  CareerStats, 
+  CareerExtremes, 
+  SeasonProgressionEntry as SeasonProgressionEntryType, // Aliased to avoid conflict with component name
+  PositionStrengthEntry, 
+  FranchisePlayerEntry, 
+  RivalryPerformanceEntry,
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
@@ -104,7 +104,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', borderClass: '', style: {} };
 
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
-
+    
     if (rank === 1) {
       return { 
         textClass: 'text-neutral-800 font-semibold', 
@@ -1291,6 +1291,25 @@ const GMCareer = () => {
 
   const selectedGmName = gmData?.gmInfo?.name || mockGmsForTabs.find(g => g.id === selectedGmId)?.name || selectedGmId || "Selected GM";
 
+  const CustomizedDot = (props: any) => {
+    const { cx, cy, stroke, payload } = props;
+    // payload refers to the data point for this dot
+    if (payload.isChampion) {
+      // Gold star for champions
+      return (
+        <svg x={cx - 10} y={cy - 10} width="20" height="20" fill="gold" viewBox="0 0 24 24" stroke="black" strokeWidth="0.5">
+          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
+        </svg>
+      );
+    }
+    if (payload.madePlayoffs) {
+      // Green circle for playoff appearances
+      return <circle cx={cx} cy={cy} r={6} stroke={stroke} fill="hsl(var(--accent))" strokeWidth={1} />;
+    }
+    // Standard dot for other points
+    return <circle cx={cx} cy={cy} r={3} stroke={stroke} fill="#fff" />;
+  };
+
   return (
     <div className="space-y-6">
       <Select value={selectedGmId} onValueChange={setSelectedGmId}>
@@ -1386,34 +1405,36 @@ const GMCareer = () => {
               </Card>
             )}
 
-            {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
+           {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
               <Card>
                 <CardHeader><CardTitle className="text-xl">Season Progression</CardTitle></CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                        <TableHeader>
-                            <TableRow>
-                            <TableHead>Year</TableHead>
-                            <TableHead className="text-center">Final Standing</TableHead>
-                            <TableHead className="text-center">PF Rank</TableHead>
-                            <TableHead className="text-center">Made Playoffs?</TableHead>
-                            <TableHead className="text-center">Champion?</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {gmData.seasonProgression.map((s) => ( 
-                            <TableRow key={s.year}>
-                                <TableCell>{s.year}</TableCell>
-                                <TableCell className="text-center">{s.finalStanding}</TableCell>
-                                <TableCell className="text-center">{s.pointsForRank}</TableCell>
-                                <TableCell className="text-center">{s.madePlayoffs ? <CheckCircle2 className="text-green-500 mx-auto h-5 w-5" /> : <XCircle className="text-red-500 mx-auto h-5 w-5" />}</TableCell>
-                                <TableCell className="text-center">{s.isChampion ? <Trophy className="text-yellow-500 mx-auto h-5 w-5" /> : '-'}</TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                        </Table>
-                    </div>
+                <CardContent className="h-[350px] pt-6">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={gmData.seasonProgression}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="year" />
+                      <YAxis reversed={true} allowDecimals={false} domain={['dataMin -1', 'dataMax + 1']} tickFormatter={(value) => Math.round(value).toString()} />
+                      <Tooltip />
+                      <RechartsLegend />
+                      <Line 
+                        type="monotone" 
+                        dataKey="finalStanding" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2} 
+                        name="Final Standing"
+                        dot={<CustomizedDot />}
+                        activeDot={{ r: 6 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="pointsForRank" 
+                        stroke="hsl(var(--chart-3))" 
+                        strokeWidth={2} 
+                        name="PF Rank" 
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
             )}
@@ -1512,7 +1533,7 @@ const GMCareer = () => {
                                 <Tooltip formatter={(value: number) => value.toFixed(1)} />
                                 <Bar dataKey="value" name="Strength vs Avg">
                                     {gmData.positionStrength.map((entry, index) => (
-                                        <PieCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
+                                        <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -1598,3 +1619,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
