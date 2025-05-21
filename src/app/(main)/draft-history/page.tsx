@@ -45,13 +45,13 @@ const mockGMDraftHistory: GMDraftHistoryData = {
 
 type SortDirection = 'asc' | 'desc';
 interface HeatmapSortConfig {
-  key: 'gmName' | null; // Only GM Name is sortable for this heatmap
+  key: 'gm_name' | null; 
   direction: SortDirection;
 }
 
 interface TransformedHeatmapData {
   [gmName: string]: {
-    [seasonYear: string]: number | undefined; // POE value
+    [seasonYear: string]: number | undefined; // POE value (avg_pvdre)
   };
 }
 
@@ -61,7 +61,7 @@ const DraftOverview = () => {
   const [error, setError] = useState<string | null>(null);
   const [minPoe, setMinPoe] = useState(0);
   const [maxPoe, setMaxPoe] = useState(0);
-  const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gmName', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,30 +106,28 @@ const DraftOverview = () => {
 
   const { heatmapData, gmNames, seasonYears } = useMemo(() => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
-
-    // Filter rawData to ensure items have valid gmName and seasonYear
+    
     const validRawData = rawData.filter(
-      item => typeof item.gmName === 'string' && typeof item.seasonYear === 'number'
+      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number'
     );
 
     const transformed: TransformedHeatmapData = validRawData.reduce((acc, item) => {
-      if (!acc[item.gmName]) {
-        acc[item.gmName] = {};
+      if (!acc[item.gm_name]) {
+        acc[item.gm_name] = {};
       }
-      // item.seasonYear is now guaranteed to be a number
-      acc[item.gmName][item.seasonYear.toString()] = item.avg_pvdre;
+      acc[item.gm_name][item.season_id.toString()] = item.avg_pvdre;
       return acc;
     }, {} as TransformedHeatmapData);
 
     let sortedGmNames = Object.keys(transformed);
-    if (sortConfig.key === 'gmName') {
+    if (sortConfig.key === 'gm_name') {
       sortedGmNames.sort((a, b) => {
         const comparison = a.localeCompare(b);
         return sortConfig.direction === 'asc' ? comparison : -comparison;
       });
     }
     
-    const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.seasonYear.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
+    const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.season_id.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
@@ -137,29 +135,24 @@ const DraftOverview = () => {
     if (value === undefined || value === null) return { color: 'hsl(var(--muted-foreground))' };
 
     const range = maxPoe - minPoe;
-    if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; // Neutral if no range
+    if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; 
 
     let hue;
     let saturation = 70;
-    let lightness = 85; // Lighter pastels
+    let lightness = 85; 
 
-    // Normalize value considering 0 as the midpoint for color transition
-    // const zeroNormalized = (0 - minPoe) / range; // Where 0 POE falls in the normalized scale
-    // const valueNormalized = (value - minPoe) / range;
-
-    if (value > 0) { // Green shades for positive POE
+    if (value > 0) { 
         hue = 120; // Green
-        // Intensity based on how far from 0 (or maxPoe if 0 is not in range/all positive)
-        const positiveRange = maxPoe > 0 ? maxPoe : 1; // Avoid division by zero if maxPoe is 0 or less
+        const positiveRange = maxPoe > 0 ? maxPoe : 1; 
         const intensity = Math.min(1, Math.abs(value) / positiveRange);
-        lightness = 90 - (intensity * 20); // Lighter for lower positive, darker for higher positive
-    } else if (value < 0) { // Red shades for negative POE
+        lightness = 90 - (intensity * 20); 
+    } else if (value < 0) { 
         hue = 0; // Red
         const negativeRange = minPoe < 0 ? Math.abs(minPoe) : 1;
         const intensity = Math.min(1, Math.abs(value) / negativeRange);
         lightness = 90 - (intensity * 20); 
-    } else { // Near zero POE
-        return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; // Neutral light gray
+    } else { 
+        return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' }; 
     }
     
     const textColor = lightness < 65 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
@@ -171,7 +164,7 @@ const DraftOverview = () => {
     };
   };
 
-  const requestSort = (key: 'gmName') => {
+  const requestSort = (key: 'gm_name') => {
     let direction: SortDirection = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
@@ -179,7 +172,7 @@ const DraftOverview = () => {
     setSortConfig({ key, direction });
   };
 
-  const getSortIcon = (columnKey: 'gmName') => {
+  const getSortIcon = (columnKey: 'gm_name') => {
     if (sortConfig.key === columnKey) {
       return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
     }
@@ -245,8 +238,8 @@ const DraftOverview = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm">
-                    <Button variant="ghost" onClick={() => requestSort('gmName')} className="px-1 group">
-                        GM Name {getSortIcon('gmName')}
+                    <Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">
+                        GM Name {getSortIcon('gm_name')}
                     </Button>
                   </TableHead>
                   {seasonYears.map(year => (
@@ -255,17 +248,17 @@ const DraftOverview = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {gmNames.map(gmName => (
-                  <TableRow key={gmName}>
-                    <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gmName}</TableCell>
+                {gmNames.map(gm_name => (
+                  <TableRow key={gm_name}>
+                    <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
                     {seasonYears.map(year => {
-                      const poeValue = heatmapData[gmName]?.[year];
+                      const poeValue = heatmapData[gm_name]?.[year];
                       const cellStyle = getPoeColorStyle(poeValue);
                       return (
                         <TableCell
-                          key={`${gmName}-${year}`}
+                          key={`${gm_name}-${year}`}
                           className="p-0 border text-center text-xs md:text-sm"
-                          style={{minWidth: '60px'}} // Ensure cells have some min width
+                          style={{minWidth: '60px'}} 
                         >
                            <div className="p-2 h-full w-full flex items-center justify-center" style={cellStyle}>
                             {typeof poeValue === 'number' ? poeValue.toFixed(1) : '-'}

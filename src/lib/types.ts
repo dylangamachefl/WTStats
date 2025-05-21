@@ -116,11 +116,6 @@ export interface PlayoffData {
   championship?: PlayoffMatchup[];
 }
 
-export interface WeeklyScoresMatrixTeamEntry {
-  teamName: string;
-  scores: (number | null)[];
-  results: (string | null)[];
-}
 export interface WeeklyScoresData {
   teams: string[];
   scores: (number | null)[][];
@@ -297,8 +292,8 @@ export interface GMSeasonPerformance {
   avgPointsAgainstPerGame: number;
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number;
-  sosRating?: string;
+  sosDifferential?: number; // Optional as it might not exist in all files
+  sosRating?: string; // Optional
 }
 
 export interface GMGameByGame {
@@ -340,7 +335,7 @@ export interface GMRosterBreakdown {
   rosterPlayerData: GMRosterPlayer[];
 }
 
-export interface GMPlayerPerformanceSummary {
+export interface GMPlayerPerformanceSummaryEntry {
   playerId: number;
   name: string;
   position: string;
@@ -353,37 +348,37 @@ export interface GMPlayerPerformanceSummary {
 }
 
 export interface GMPlayerPerformanceData {
-  playerSummaryPerformance: GMPlayerPerformanceSummary[];
+  playerSummaryPerformance: GMPlayerPerformanceSummaryEntry[];
   overPerformer: { name: string; avgDifference: number };
   underPerformer: { name: string; avgDifference: number };
 }
 
 export interface GMLineupOptimizationWeekly {
   week: number;
-  optimal: number;
-  actual: number;
-  efficiency: number;
-  pointsLeft: number;
-  correctDecisions: number;
-  totalDecisions: number;
+  optimal: number | null;
+  actual: number | null;
+  efficiency: number | null;
+  pointsLeft: number | null;
+  correctDecisions: number | null;
+  totalDecisions: number | null;
 }
 
 export interface GMLineupOptimizationFeelingItDetail {
   week: number;
   starterName: string;
-  starterActual: number;
-  starterProjected: number;
+  starterActual: number | null;
+  starterProjected: number | null;
   benchName: string;
-  benchActual: number;
-  benchProjected: number;
-  pointsDifference: number;
-  projectionDifference: number;
+  benchActual: number | null;
+  benchProjected: number | null;
+  pointsDifference: number | null;
+  projectionDifference: number | null;
 }
 
 export interface GMLineupOptimizationData {
   weeklyOptimization: GMLineupOptimizationWeekly[];
   feelingItSummary: {
-    totalStarts: number;
+    totalStarts: number | null;
     successRate: number | null;
     avgPointsGainedLost: number | null;
     avgProjectionDifference: number | null;
@@ -393,14 +388,14 @@ export interface GMLineupOptimizationData {
 
 export interface GMPositionalAdvantageWeeklyEntry {
   week: number | string; // Week can be a number or "Total"
-  QB?: number;
-  RB?: number;
-  WR?: number;
-  TE?: number;
-  FLEX?: number;
-  K?: number;
-  DST?: number;
-  total_diff?: number;
+  QB?: number | null;
+  RB?: number | null;
+  WR?: number | null;
+  TE?: number | null;
+  FLEX?: number | null;
+  K?: number | null;
+  DST?: number | null;
+  total_diff?: number | null;
 }
 
 export interface GMPositionalAdvantageCumulativeDataPoint {
@@ -446,23 +441,27 @@ export interface GMStreamingSuccessData {
 export interface GMIndividualSeasonDetailData {
   seasonSummary: GMSeasonSummary;
   rosterBreakdown: GMRosterBreakdown;
-  playerPerformance?: GMPlayerPerformanceData;
-  lineupOptimization?: GMLineupOptimizationData;
-  positionalAdvantage?: GMPositionalAdvantageData;
-  streamingSuccess?: GMStreamingSuccessData;
+  playerPerformance?: GMPlayerPerformanceData; // Optional as per your json
+  lineupOptimization?: GMLineupOptimizationData; // Optional
+  positionalAdvantage?: GMPositionalAdvantageData; // Optional
+  streamingSuccess?: GMStreamingSuccessData; // Optional
 }
 
-// For Draft History Overview
+// For Draft History Overview - using specific field names from your latest JSON
 export interface GMDraftSeasonPerformance {
-  gmId: string;
-  gmName: string;
-  seasonYear: number;
-  draftGrade: string; 
-  draftPosition: number;
-  avg_pvdre?: number; // Points Over Expected (Draft Value)
-  topRookiePoints?: number; 
-  valuePicksCount?: number; 
+  season_id: number;
+  gm_id: number;
+  gm_name: string;
+  first_round_draft_position?: number; // Optional as not in all examples
+  total_picks?: number; // Optional
+  avg_pvdre?: number; // Points Over Expected (Draft Value) - Optional
+  total_pvdre?: number; // Optional
+  pvdre_hit_rate?: number; // Optional
+  avg_value_vs_adp?: number; // Optional
+  draftGrade?: string; // Keep if still used elsewhere or for future
+  draftPosition?: number; // Keep if still used elsewhere or for future
 }
+
 
 // Old types - re-evaluate if still needed by other pages or can be removed
 export interface Season {
@@ -535,11 +534,4 @@ export interface LeagueHistoryForAI {
       player: string;
       gm: string;
     }>;
-    finalStandings: Array<{
-      gm: string;
-      rank: number;
-    }>;
-  }>;
-}
-
     
