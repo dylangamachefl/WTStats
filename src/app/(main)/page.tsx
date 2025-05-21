@@ -36,7 +36,7 @@ import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
 import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -672,6 +672,37 @@ const getPositionName = (positionKey: string): string => {
     return names[positionKey.toUpperCase()] || positionKey;
   };
 
+const PlayoffMatchupCard = ({
+  matchup,
+  roundName,
+  isChampionship = false,
+}: {
+  matchup: PlayoffMatchup;
+  roundName: string;
+  isChampionship?: boolean;
+}) => {
+  return (
+    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100 dark:bg-yellow-800/30" : "bg-card")}>
+      <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
+      <div className="text-xs space-y-1">
+        <div className="flex justify-between">
+          <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
+          <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
+          <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
+        </div>
+        {matchup.home.score !== undefined && matchup.home.score !== null && matchup.away.score !== undefined && matchup.away.score !== null && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const SeasonDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[mockSeasonsForTabs.length-1]?.id);
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
@@ -721,27 +752,6 @@ const SeasonDetail = () => {
       setError(null);
     }
   }, [selectedSeason]);
-
-  const renderPlayoffMatchup = (matchup: PlayoffMatchup, roundName: string, isChampionship: boolean = false) => (
-    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100 dark:bg-yellow-800/30" : "bg-card")}>
-      <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
-      <div className="text-xs space-y-1">
-        <div className="flex justify-between">
-          <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
-          <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
-          <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
-        </div>
-        {matchup.home.score !== undefined && matchup.away.score !== undefined && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
-          </p>
-        )}
-      </div>
-    </div>
-  );
   
   const getScoreCellClass = (score?: number | null): string => {
     if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
@@ -906,7 +916,9 @@ const SeasonDetail = () => {
                                 <div>
                                 <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Quarterfinals</h4>
                                 <div className="grid md:grid-cols-2 gap-4">
-                                    {seasonData.playoffData.quarterFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Quarterfinal ${idx + 1}`))}
+                                    {seasonData.playoffData.quarterFinals.map((matchup, idx) => (
+                                        <PlayoffMatchupCard key={`qf-${idx}`} matchup={matchup} roundName={`Quarterfinal ${idx + 1}`} />
+                                    ))}
                                 </div>
                                 </div>
                             )}
@@ -914,7 +926,9 @@ const SeasonDetail = () => {
                                 <div>
                                 <h4 className="text-lg font-semibold mb-2 mt-4 text-center text-foreground/80">Semifinals</h4>
                                 <div className="grid md:grid-cols-2 gap-4">
-                                    {seasonData.playoffData.semiFinals.map((matchup, idx) => renderPlayoffMatchup(matchup, `Semifinal ${idx + 1}`))}
+                                     {seasonData.playoffData.semiFinals.map((matchup, idx) => (
+                                        <PlayoffMatchupCard key={`sf-${idx}`} matchup={matchup} roundName={`Semifinal ${idx + 1}`} />
+                                    ))}
                                 </div>
                                 </div>
                             )}
@@ -922,7 +936,9 @@ const SeasonDetail = () => {
                                 <div className="mt-4">
                                 <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Championship</h4>
                                 <div className="max-w-md mx-auto">
-                                    {seasonData.playoffData.championship.map((matchup) => renderPlayoffMatchup(matchup, "Championship Game", true))}
+                                    {seasonData.playoffData.championship.map((matchup, idx) => (
+                                        <PlayoffMatchupCard key={`champ-${idx}`} matchup={matchup} roundName="Championship Game" isChampionship />
+                                    ))}
                                 </div>
                                 <div className="text-center mt-4">
                                     <p className="text-lg font-semibold">League Champion:</p>
@@ -1393,8 +1409,8 @@ const GMCareer = () => {
   }, [gmData?.seasonProgression]);
 
   const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
-    const winRate = (performance.wins + performance.losses + performance.ties > 0) 
-      ? (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100 
+    const winRate = (performance.wins + performance.losses + (performance.ties || 0) > 0) 
+      ? (performance.wins / (performance.wins + performance.losses + (performance.ties || 0))) * 100 
       : 0;
       
     let sosDifferentialColor = "text-foreground";
@@ -1412,7 +1428,7 @@ const GMCareer = () => {
             <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-6">
                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Record</span>
-                    <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties > 0 ? `-${performance.ties}` : ''}</span>
+                    <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties && performance.ties > 0 ? `-${performance.ties}` : ''}</span>
                     <span className="text-xs text-muted-foreground">{winRate.toFixed(1)}% Win Rate</span>
                 </div>
                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
@@ -1432,7 +1448,7 @@ const GMCareer = () => {
                  <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                      <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
-                        {performance.sosDifferential && performance.sosDifferential > 0 ? '+' : ''}
+                        {performance.sosDifferential && performance.sosDifferential < 0 ? '' : '+'}
                         {performance.sosDifferential?.toFixed(1) ?? 'N/A'}
                     </span>
                     <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
@@ -1602,7 +1618,7 @@ const GMCareer = () => {
     const cumulativeData = gmIndividualSeasonData.positionalAdvantage.cumulativeWeeklyPositionalAdvantage;
     const weeks = new Set<number>();
     cumulativeData.forEach(posData => {
-      if(Array.isArray(posData.data)) { // Check if posData.data is an array
+      if(Array.isArray(posData.data)) { 
         posData.data.forEach(weekEntry => weeks.add(weekEntry.week));
       }
     });
@@ -1610,11 +1626,10 @@ const GMCareer = () => {
     const sortedWeeks = Array.from(weeks).sort((a, b) => a - b);
 
     return sortedWeeks.map(weekNum => {
-      const weekEntry: { week: number; [key: string]: number | undefined } = { week: weekNum }; // Allow undefined for values
+      const weekEntry: { week: number; [key: string]: number | undefined } = { week: weekNum }; 
       cumulativeData.forEach(posData => {
-        if(Array.isArray(posData.data)) { // Check if posData.data is an array
+        if(Array.isArray(posData.data)) { 
           const valueForWeek = posData.data.find(d => d.week === weekNum)?.value;
-          // Only add to weekEntry if valueForWeek is not undefined
           if (valueForWeek !== undefined) {
             weekEntry[posData.position.toUpperCase()] = valueForWeek;
           }
