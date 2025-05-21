@@ -32,20 +32,22 @@ import type {
   GMSeasonPerformance,
   GMGameByGame,
   GMRosterPlayer,
+  GMPositionContribution,
+  GMLeagueAvgPositionData,
 
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIcon, Shuffle, Waves, Award, Star } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, BarChart, Bar } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, BarChart, Bar, LabelList } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -1243,6 +1245,23 @@ const SeasonDetail = () => {
   );
 };
 
+const CHART_COLORS: { [key: string]: string } = {
+  QB: 'hsl(var(--chart-1))', // Purple from image (using chart-1 as a placeholder)
+  RB: 'hsl(var(--chart-2))', // Blue from image (using chart-2)
+  WR: 'hsl(var(--chart-3))', // Cyan from image (using chart-3)
+  TE: 'hsl(var(--chart-4))', // Green from image (using chart-4)
+  FLEX: 'hsl(var(--chart-5))',// Light Green from image (using chart-5)
+  K: 'hsl(39, 100%, 50%)',  // Yellow
+  DST: 'hsl(27, 100%, 50%)', // Orange
+  DEFAULT: 'hsl(var(--muted))'
+};
+
+const GM_CHART_COLORS = {
+  GM_STARTED_PTS: 'hsl(var(--primary))', // Purple for GM
+  LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  // Green for League Avg
+};
+
+
 const GMCareer = () => {
   const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGmsForTabs[0]?.id);
   const [gmData, setGmData] = useState<GMCareerData | null>(null);
@@ -1853,7 +1872,7 @@ const GMCareer = () => {
                         <TabsTrigger value="season-summary"><ClipboardList className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
                         <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
                         <TabsTrigger value="player-performance"><TrendingUp className="mr-1 h-4 w-4 hidden sm:inline-block" />Player Performance</TabsTrigger>
-                        <TabsTrigger value="positional-advantage"><PieChartIcon className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
+                        <TabsTrigger value="positional-advantage"><PieChartIconLucide className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
                         <TabsTrigger value="lineup-optimization"><Shuffle className="mr-1 h-4 w-4 hidden sm:inline-block" />Lineup Optimization</TabsTrigger>
                         <TabsTrigger value="streaming-success"><Waves className="mr-1 h-4 w-4 hidden sm:inline-block" />Streaming Success</TabsTrigger>
                     </TabsList>
@@ -1866,6 +1885,122 @@ const GMCareer = () => {
                        )}
                     </TabsContent>
                     <TabsContent value="roster-breakdown">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center text-lg">
+                                    <PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
+                                    Position Contribution
+                                    <span className="text-sm text-muted-foreground ml-2">(Based on Started Players)</span>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {gmIndividualSeasonData.rosterBreakdown?.positionContributionData && gmIndividualSeasonData.rosterBreakdown?.leagueAvgPositionData ? (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                        <div>
+                                            <h3 className="text-md font-semibold text-center mb-2">Started Points by Position (%)</h3>
+                                            <div className="h-[300px]">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <PieChart>
+                                                        <Pie
+                                                            data={useMemo(() => {
+                                                                const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + p.startedPoints, 0);
+                                                                return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
+                                                                    name: `${p.name} ${totalPoints > 0 ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
+                                                                    value: p.startedPoints,
+                                                                    fill: CHART_COLORS[p.name.toUpperCase()] || CHART_COLORS.DEFAULT,
+                                                                }));
+                                                            }, [gmIndividualSeasonData.rosterBreakdown.positionContributionData])}
+                                                            cx="50%"
+                                                            cy="50%"
+                                                            outerRadius={100}
+                                                            fill="#8884d8"
+                                                            dataKey="value"
+                                                            labelLine={false}
+                                                            label={({ name, percent, x, y, midAngle, outerRadius, payload }) => {
+                                                              const RADIAN = Math.PI / 180;
+                                                              // Adjust label positioning logic if needed
+                                                              const radius = outerRadius + 25;
+                                                              const lx = x + radius * Math.cos(-midAngle * RADIAN);
+                                                              const ly = y + radius * Math.sin(-midAngle * RADIAN);
+                                                              return (
+                                                                <text x={lx} y={ly} fill={payload.fill} textAnchor={lx > x ? 'start' : 'end'} dominantBaseline="central" fontSize="12px">
+                                                                  {name}
+                                                                </text>
+                                                              );
+                                                            }}
+                                                        >
+                                                            {
+                                                                useMemo(() => (
+                                                                    gmIndividualSeasonData.rosterBreakdown.positionContributionData.map((entry) => (
+                                                                        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT} />
+                                                                    ))
+                                                                ), [gmIndividualSeasonData.rosterBreakdown.positionContributionData])
+                                                            }
+                                                        </Pie>
+                                                        <Tooltip />
+                                                         <RechartsLegend 
+                                                            payload={
+                                                                gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(entry => ({
+                                                                    value: entry.name,
+                                                                    type: 'square',
+                                                                    id: entry.name,
+                                                                    color: CHART_COLORS[entry.name.toUpperCase()] || CHART_COLORS.DEFAULT,
+                                                                }))
+                                                            }
+                                                            wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}
+                                                        />
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-md font-semibold text-center mb-2">Started Points vs. League Average</h3>
+                                            <div className="h-[300px]">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <BarChart 
+                                                        layout="vertical" 
+                                                        data={useMemo(() => {
+                                                            const mergedData: any[] = [];
+                                                            const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints]));
+                                                            
+                                                            gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData.forEach(lgAvg => {
+                                                                mergedData.push({
+                                                                    position: lgAvg.name,
+                                                                    "GM Started Pts": gmPointsMap.get(lgAvg.name) || 0,
+                                                                    "League Avg Pts": lgAvg.leagueAvg,
+                                                                });
+                                                            });
+                                                            // Add any GM positions not in league average (if any)
+                                                            gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
+                                                                if (!mergedData.find(d => d.position === gmPos.name)) {
+                                                                    mergedData.push({
+                                                                        position: gmPos.name,
+                                                                        "GM Started Pts": gmPos.startedPoints,
+                                                                        "League Avg Pts": 0,
+                                                                    });
+                                                                }
+                                                            });
+                                                            return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]); // Optional: sort by GM points or position order
+                                                        }, [gmIndividualSeasonData.rosterBreakdown.positionContributionData, gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData])}
+                                                        margin={{ top: 5, right: 30, left: 5, bottom: 20 }}
+                                                    >
+                                                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                                        <XAxis type="number" />
+                                                        <YAxis dataKey="position" type="category" width={50} tick={{fontSize: 11}}/>
+                                                        <Tooltip />
+                                                        <RechartsLegend verticalAlign="bottom" wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
+                                                        <Bar dataKey="GM Started Pts" fill={GM_CHART_COLORS.GM_STARTED_PTS} barSize={12} />
+                                                        <Bar dataKey="League Avg Pts" fill={GM_CHART_COLORS.LEAGUE_AVG_PTS} barSize={12} />
+                                                    </BarChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground text-center mt-1">* League Average data is placeholder if not available.</p>
+                                        </div>
+                                    </div>
+                                ) : <p className="text-muted-foreground text-center py-4">Position contribution data not available.</p>}
+                            </CardContent>
+                        </Card>
+
                         {gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData && (
                            <RosterPlayersTable players={gmIndividualSeasonData.rosterBreakdown.rosterPlayerData} />
                         )}
@@ -1972,6 +2107,7 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
 
 
