@@ -107,10 +107,16 @@ const DraftOverview = () => {
   const { heatmapData, gmNames, seasonYears } = useMemo(() => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
 
-    const transformed: TransformedHeatmapData = rawData.reduce((acc, item) => {
+    // Filter rawData to ensure items have valid gmName and seasonYear
+    const validRawData = rawData.filter(
+      item => typeof item.gmName === 'string' && typeof item.seasonYear === 'number'
+    );
+
+    const transformed: TransformedHeatmapData = validRawData.reduce((acc, item) => {
       if (!acc[item.gmName]) {
         acc[item.gmName] = {};
       }
+      // item.seasonYear is now guaranteed to be a number
       acc[item.gmName][item.seasonYear.toString()] = item.avg_pvdre;
       return acc;
     }, {} as TransformedHeatmapData);
@@ -123,7 +129,7 @@ const DraftOverview = () => {
       });
     }
     
-    const uniqueSeasonYears = Array.from(new Set(rawData.map(item => item.seasonYear.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
+    const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.seasonYear.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
@@ -138,8 +144,8 @@ const DraftOverview = () => {
     let lightness = 85; // Lighter pastels
 
     // Normalize value considering 0 as the midpoint for color transition
-    const zeroNormalized = (0 - minPoe) / range; // Where 0 POE falls in the normalized scale
-    const valueNormalized = (value - minPoe) / range;
+    // const zeroNormalized = (0 - minPoe) / range; // Where 0 POE falls in the normalized scale
+    // const valueNormalized = (value - minPoe) / range;
 
     if (value > 0) { // Green shades for positive POE
         hue = 120; // Green
@@ -391,5 +397,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-    
