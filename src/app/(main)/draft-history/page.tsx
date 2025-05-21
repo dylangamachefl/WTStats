@@ -65,6 +65,7 @@ interface MetricConfig {
   key: HeatmapMetricKey;
   format: (value: number | undefined | null) => string;
   tooltipLabel: string;
+  description: string;
 }
 
 const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
@@ -72,19 +73,22 @@ const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
     label: 'POE', 
     key: 'avg_pvdre', 
     format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
-    tooltipLabel: 'POE (Avg PVDRE)' 
+    tooltipLabel: 'POE (Points Over Expected)',
+    description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
   pvdre_hit_rate: { 
     label: 'Hit Rate %', 
     key: 'pvdre_hit_rate', 
     format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
-    tooltipLabel: 'Hit Rate' 
+    tooltipLabel: 'PVDRE Hit Rate',
+    description: 'PVDRE Hit Rate indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
   avg_value_vs_adp: { 
     label: 'Value vs ADP', 
     key: 'avg_value_vs_adp', 
     format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
-    tooltipLabel: 'Avg Value vs ADP' 
+    tooltipLabel: 'Avg Value vs ADP',
+    description: 'Average Value vs ADP measures draft value relative to Average Draft Position. Positive values (green) indicate better value; negative (red) indicate lesser value. Neutral for near-zero values.'
   },
 };
 
@@ -166,8 +170,8 @@ const DraftOverview = () => {
  const getCellStyle = (
     performanceData: GMDraftSeasonPerformance | undefined, 
     metricKey: HeatmapMetricKey,
-    metricMin: number,
-    metricMax: number
+    metricMinValue: number, 
+    metricMaxValue: number 
   ): React.CSSProperties => {
     if (!performanceData) return { color: 'hsl(var(--muted-foreground))' };
 
@@ -176,28 +180,46 @@ const DraftOverview = () => {
       return { color: 'hsl(var(--muted-foreground))' };
     }
 
-    const range = metricMax - metricMin;
-    if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' };
-
-    const normalizedValue = (value - metricMin) / range;
-
     let hue;
     const saturation = 70; 
     let lightness = 85; 
 
-    const neutralBandStart = 0.40;
-    const neutralBandEnd = 0.60;
-
-    if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
-      return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
-    } else if (normalizedValue < neutralBandStart) {
-      hue = 0; // Red
-      const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-      lightness = 90 - (intensity * 20); 
+    if (metricKey === 'avg_value_vs_adp') {
+        const adpThreshold = 0.1; // Values between -0.1 and 0.1 will be neutral
+        if (value > adpThreshold) { // Positive values are good (green)
+            hue = 120; // Green
+            const effectiveMax = Math.max(adpThreshold * 1.1, metricMaxValue); 
+            const intensity = Math.min(1, Math.max(0, value / effectiveMax));
+            lightness = 90 - (intensity * 25); 
+        } else if (value < -adpThreshold) { // Negative values are bad (red)
+            hue = 0; // Red
+            const effectiveMin = Math.min(-adpThreshold * 1.1, metricMinValue); 
+            const intensity = Math.min(1, Math.max(0, value / effectiveMin)); 
+            lightness = 90 - (intensity * 25); 
+        } else {
+            // Neutral for values close to zero
+            return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+        }
     } else {
-      hue = 120; // Green
-      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
-      lightness = 90 - (intensity * 20); 
+        // Existing logic for POE and Hit Rate (percentile-based)
+        const range = metricMaxValue - metricMinValue;
+        if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+
+        const normalizedValue = (value - metricMinValue) / range;
+        const neutralBandStart = 0.40; 
+        const neutralBandEnd = 0.60;   
+
+        if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
+          return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+        } else if (normalizedValue < neutralBandStart) {
+          hue = 0; 
+          const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
+          lightness = 90 - (intensity * 20); 
+        } else { 
+          hue = 120; 
+          const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
+          lightness = 90 - (intensity * 20); 
+        }
     }
     
     const textColor = lightness < 65 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
@@ -279,7 +301,7 @@ const DraftOverview = () => {
             <div>
                 <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
                 <CardDescription>
-                    GM draft metrics across seasons for {metricConfigs[selectedMetric].label}. Colors indicate performance relative to average. Hover over a cell for more details.
+                    {metricConfigs[selectedMetric].description} Hover over a cell for more details.
                 </CardDescription>
             </div>
             <RadioGroup
@@ -317,6 +339,7 @@ const DraftOverview = () => {
                       {seasonYears.map(year => {
                         const performanceData = heatmapData[gm_name]?.[year];
                         const metricValue = performanceData?.[selectedMetric];
+                        // Pass currentMin and currentMax which are specific to the selectedMetric
                         const cellStyle = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
                         const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
                         
@@ -324,7 +347,7 @@ const DraftOverview = () => {
                           <TableCell
                             key={`${gm_name}-${year}-${selectedMetric}`}
                             className="p-0 border text-center text-xs md:text-sm"
-                            style={{minWidth: '70px'}} // Increased minWidth for better readability of varied metrics
+                            style={{minWidth: '70px'}}
                           >
                             <Tooltip delayDuration={100}>
                               <TooltipTrigger asChild>
@@ -474,3 +497,4 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
+
