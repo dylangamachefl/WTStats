@@ -1261,10 +1261,11 @@ const GMCareer = () => {
       setLoading(true);
       setError(null);
       setGmData(null);
+      // When GM changes, reset to "all-seasons" view for that new GM
       setSelectedViewOption("all-seasons"); 
-      setGmIndividualSeasonData(null);
+      setGmIndividualSeasonData(null); // Clear individual season data
       setErrorGmIndividualSeason(null);
-      setActiveGmSeasonTab("season-summary");
+      setActiveGmSeasonTab("season-summary"); // Default tab for individual season
 
 
       const gmSlug = mockGmsForTabs.find(g => g.id === selectedGmId)?.name.toLowerCase() || selectedGmId;
@@ -1299,6 +1300,7 @@ const GMCareer = () => {
           setLoading(false);
         });
     } else {
+        // Clear all data if no GM is selected
         setGmData(null);
         setLoading(false);
         setError(null);
@@ -1312,7 +1314,7 @@ const GMCareer = () => {
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
-      setGmIndividualSeasonData(null);
+      setGmIndividualSeasonData(null); // Clear previous season detail
 
       const gmSlug = gmData.gmInfo.slug;
       const gmNumericId = gmData.gmInfo.id; 
@@ -1346,7 +1348,7 @@ const GMCareer = () => {
           setLoadingGmIndividualSeason(false);
         });
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); 
+        setGmIndividualSeasonData(null); // Clear individual season data if "all-seasons" is selected
     }
   }, [selectedViewOption, gmData]);
 
@@ -1385,6 +1387,8 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
+        // Negative differential means easier schedule (good luck) -> green
+        // Positive differential means harder schedule (bad luck) -> red
         sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600" : "text-red-600";
     }
 
@@ -1528,7 +1532,7 @@ const GMCareer = () => {
   return (
     <div className="space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
-            <div className="flex-1 space-y-1.5">
+            <div className="space-y-1.5">
                 <Label htmlFor="gm-select">Select GM</Label>
                 <Select value={selectedGmId} onValueChange={setSelectedGmId}>
                     <SelectTrigger id="gm-select" className="w-full sm:w-[280px]">
@@ -1542,7 +1546,7 @@ const GMCareer = () => {
                 </Select>
             </div>
             {gmData && (
-                <div className="flex-1 space-y-1.5">
+                <div className="space-y-1.5">
                     <Label htmlFor="view-select">Select View</Label>
                     <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
                         <SelectTrigger id="view-select" className="w-full sm:w-[280px]">
@@ -1968,5 +1972,6 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
 
