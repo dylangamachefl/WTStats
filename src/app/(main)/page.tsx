@@ -41,8 +41,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, BarChart, Bar } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, BarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Separator } from '@/components/ui/separator';
 
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
@@ -1383,54 +1384,69 @@ const GMCareer = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-             <div className="grid grid-cols-1 gap-y-3 text-sm sm:grid-cols-2 sm:gap-x-6 sm:gap-y-4">
+          <CardContent className="pt-2 md:pt-4 space-y-3 md:space-y-4">
+            <div>
+              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
+              <div className="space-y-0.5 text-sm">
                 <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Total Seasons:</span>
-                  <span className="text-foreground">{gmData.careerStats.totalSeasons}</span>
+                  <span className="text-muted-foreground">Wins:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Win %:</span>
-                  <span className="text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
+                  <span className="text-muted-foreground">Losses:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.losses}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Wins:</span>
-                  <span className="text-foreground">{gmData.careerStats.wins}</span>
+                  <span className="text-muted-foreground">Ties:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.ties}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Losses:</span>
-                  <span className="text-foreground">{gmData.careerStats.losses}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Ties:</span>
-                  <span className="text-foreground">{gmData.careerStats.ties}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Playoff Apps:</span>
-                  <span className="text-foreground">{gmData.careerStats.playoffAppearances}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Playoff Record:</span>
-                  <span className="text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Championships:</span>
-                  <span className="text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Total Points For:</span>
-                  <span className="text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Total Points Against:</span>
-                  <span className="text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-muted-foreground">Avg Points/Game:</span>
-                  <span className="text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
+                  <span className="text-muted-foreground">Win Pct:</span>
+                  <span className="font-medium text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
                 </div>
               </div>
-            </CardContent>
+            </div>
+            <Separator className="my-2 md:my-3" />
+            <div>
+              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
+              <div className="space-y-0.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Points For:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Points Against:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Avg Points/Game:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
+                </div>
+              </div>
+            </div>
+            <Separator className="my-2 md:my-3" />
+            <div>
+              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
+              <div className="space-y-0.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Seasons:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Playoff Appearances:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.playoffAppearances}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Playoff Record:</span>
+                  <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Championships:</span>
+                  <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
 
            {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
               <Card className="mt-8">
