@@ -19,15 +19,7 @@ import type {
   WaiverPickupEntry,
   TopPerformerPlayer,
   SeasonBestOverallGameEntry,
-  // PositionalTopPerformersData, // Covered by SeasonDetailData
   GMCareerData,
-  // GMInfo as GMInfoType, // Covered by GMCareerData
-  // CareerStats as CareerStatsType, // Covered by GMCareerData
-  // CareerExtremes as CareerExtremesType, // Covered by GMCareerData
-  // SeasonProgressionEntry as SeasonProgressionEntryType, // Covered by GMCareerData
-  // PositionStrengthEntry as PositionStrengthEntryType, // Covered by GMCareerData
-  // FranchisePlayerEntry as FranchisePlayerEntryType, // Covered by GMCareerData
-  // RivalryPerformanceEntry as RivalryPerformanceEntryType, // Covered by GMCareerData
   GMIndividualSeasonDetailData,
   GMSeasonPerformance,
   GMGameByGame,
@@ -37,15 +29,12 @@ import type {
   GMLineupOptimizationFeelingItDetail,
   GMStreamingSummaryEntry,
   GMStreamingWeeklyPerformanceEntry,
-  // GMPositionContribution, // Covered by GMIndividualSeasonDetailData
-  // GMLeagueAvgPositionData, // Covered by GMIndividualSeasonDetailData
-  // GMPlayerPerformanceData, // Covered by GMIndividualSeasonDetailData
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -270,10 +259,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) {
         return [];
     }
-    // Ensure qualification_rate is treated as a number for sorting
     const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
       ...item,
-      qualification_rate: Number(item.qualification_rate) || 0 // Convert to number, default to 0 if NaN
+      qualification_rate: Number(item.qualification_rate) || 0 
     }));
     return sortData([...dataWithNumericRate], { key: 'qualification_rate', direction: 'desc' });
   }, [leagueData?.playoffQualificationRate]);
@@ -649,7 +637,7 @@ const getRatingBadgeClass = (rating?: string): string => {
 };
 
 const getPositionBadgeClass = (position?: string): string => {
-  if (!position) return "bg-muted text-muted-foreground"; // Default
+  if (!position) return "bg-muted text-muted-foreground"; 
   switch (position?.toUpperCase()) {
     case 'QB':
       return 'bg-red-100 text-red-700'; 
@@ -1252,13 +1240,13 @@ const SeasonDetail = () => {
 };
 
 const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(var(--chart-4))', // purple 
-  RB: 'hsl(var(--chart-1))', // primary blue
-  WR: 'hsl(var(--chart-2))', // accent green
-  TE: 'hsl(var(--chart-5))', // pink/magenta
-  FLEX: 'hsl(var(--chart-3))', // orange/yellow
-  K: 'hsl(39, 100%, 50%)',  // A distinct yellow/gold
-  DST: 'hsl(27, 100%, 50%)', // A distinct orange
+  QB: 'hsl(var(--chart-4))', 
+  RB: 'hsl(var(--chart-1))', 
+  WR: 'hsl(var(--chart-2))', 
+  TE: 'hsl(var(--chart-5))', 
+  FLEX: 'hsl(var(--chart-3))', 
+  K: 'hsl(39, 100%, 50%)',  
+  DST: 'hsl(27, 100%, 50%)', 
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -2297,10 +2285,10 @@ const GMCareer = () => {
                                                             <TableCell>{item.status.replace(/_/g, ' ')}</TableCell>
                                                             <TableCell className="text-center">{item.uniqueStarters}</TableCell>
                                                             <TableCell className="text-center">{item.streamedStartsCount}</TableCell>
-                                                            <TableCell className="text-right">{item.avgPtsGm.toFixed(1)}</TableCell>
-                                                            <TableCell className="text-right">{item.avgPtsLeague.toFixed(1)}</TableCell>
-                                                            <TableCell className={cn("text-right", item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.netPtsVsAvg >=0 ? '+':''}{item.netPtsVsAvg.toFixed(1)}</TableCell>
-                                                            <TableCell className="text-right">{item.hitRate.toFixed(1)}%</TableCell>
+                                                            <TableCell className="text-right">{item.avgPtsGm?.toFixed(1) ?? '-'}</TableCell>
+                                                            <TableCell className="text-right">{item.avgPtsLeague?.toFixed(1) ?? '-'}</TableCell>
+                                                            <TableCell className={cn("text-right", item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{item.netPtsVsAvg >=0 ? '+':''}{item.netPtsVsAvg?.toFixed(1) ?? '-'}</TableCell>
+                                                            <TableCell className="text-right">{item.hitRate?.toFixed(1) ?? '-'}%</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -2330,8 +2318,8 @@ const GMCareer = () => {
                                                             <TableRow key={item.week}>
                                                                 <TableCell className="text-center">{item.week}</TableCell>
                                                                 <TableCell>{item.playerName}</TableCell>
-                                                                <TableCell className="text-right">{item.gmStarterPts.toFixed(1)}</TableCell>
-                                                                <TableCell className="text-right">{item.leagueAvgPts.toFixed(1)}</TableCell>
+                                                                <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
+                                                                <TableCell className="text-right">{item.leagueAvgPts?.toFixed(1) ?? '-'}</TableCell>
                                                             </TableRow>
                                                         ))}
                                                     </TableBody>
@@ -2387,6 +2375,7 @@ export default function LeagueHistoryPage() {
                   errorBody = await res.text();
               } catch(e) { console.error("Error parsing error response body:", e); }
               console.error("Failed to fetch league-data.json, status:", res.status, "Body:", errorBody);
+              setLeagueData(null);
               throw new Error(`HTTP error! status: ${res.status}. Body: ${errorBody.substring(0, 100)}`);
             }
             return res.json();
@@ -2433,3 +2422,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
