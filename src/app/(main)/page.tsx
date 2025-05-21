@@ -38,7 +38,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIcon, Shuffle, Waves, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -1253,15 +1253,19 @@ const GMCareer = () => {
   const [gmIndividualSeasonData, setGmIndividualSeasonData] = useState<GMIndividualSeasonDetailData | null>(null);
   const [loadingGmIndividualSeason, setLoadingGmIndividualSeason] = useState(false);
   const [errorGmIndividualSeason, setErrorGmIndividualSeason] = useState<string | null>(null);
+  const [activeGmSeasonTab, setActiveGmSeasonTab] = useState<string>("season-summary");
+
 
   useEffect(() => {
     if (selectedGmId) {
       setLoading(true);
       setError(null);
       setGmData(null);
-      setSelectedViewOption("all-seasons"); // Reset to all seasons when GM changes
+      setSelectedViewOption("all-seasons"); 
       setGmIndividualSeasonData(null);
       setErrorGmIndividualSeason(null);
+      setActiveGmSeasonTab("season-summary");
+
 
       const gmSlug = mockGmsForTabs.find(g => g.id === selectedGmId)?.name.toLowerCase() || selectedGmId;
       const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
@@ -1300,6 +1304,7 @@ const GMCareer = () => {
         setError(null);
         setSelectedViewOption("all-seasons");
         setGmIndividualSeasonData(null);
+        setActiveGmSeasonTab("season-summary");
     }
   }, [selectedGmId]);
 
@@ -1341,7 +1346,7 @@ const GMCareer = () => {
           setLoadingGmIndividualSeason(false);
         });
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); // Clear individual season data if "All Seasons" is selected
+        setGmIndividualSeasonData(null); 
     }
   }, [selectedViewOption, gmData]);
 
@@ -1352,7 +1357,7 @@ const GMCareer = () => {
     const { cx, cy, stroke, payload } = props;
     if (payload.isChampion) {
       return (
-        <svg x={cx - 10} y={cy - 10} width="20" height="20" fill="gold" viewBox="0 0 24 24" stroke="black" strokeWidth="0.5">
+        <svg x={cx - 10} y={cy - 10} width="20" height="20" fill="hsl(var(--primary))" viewBox="0 0 24 24" stroke="hsl(var(--foreground))" strokeWidth="0.5">
           <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
         </svg>
       );
@@ -1367,59 +1372,95 @@ const GMCareer = () => {
     if (gmData?.seasonProgression && Array.isArray(gmData.seasonProgression)) {
       return gmData.seasonProgression
         .map(s => String(s.year))
-        .filter(year => parseInt(year) >= 2019) // Filter for 2019 onwards
+        .filter(year => parseInt(year) >= 2019) 
         .sort((a, b) => Number(b) - Number(a));
     }
     return [];
   }, [gmData?.seasonProgression]);
 
-  const SeasonPerformanceCard = ({ performance }: { performance: GMSeasonPerformance }) => (
-    <Card>
-      <CardHeader><CardTitle>Season Performance ({selectedViewOption})</CardTitle></CardHeader>
-      <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-        <div><span className="font-medium">Record:</span> {performance.wins}-{performance.losses}{performance.ties > 0 ? `-${performance.ties}` : ''}</div>
-        <div><span className="font-medium">Points For:</span> {performance.pointsFor.toFixed(1)}</div>
-        <div><span className="font-medium">Points Against:</span> {performance.pointsAgainst.toFixed(1)}</div>
-        <div><span className="font-medium">Avg PF/Game:</span> {performance.avgPointsPerGame.toFixed(1)}</div>
-        <div><span className="font-medium">Avg PA/Game:</span> {performance.avgPointsAgainstPerGame.toFixed(1)}</div>
-        <div><span className="font-medium">Reg. Season Finish:</span> {performance.regularSeasonFinish}</div>
-        <div><span className="font-medium">Final Standing:</span> {performance.finalStanding}</div>
-        {performance.sosDifferential !== undefined && <div><span className="font-medium">SOS Diff:</span> {performance.sosDifferential.toFixed(2)}</div>}
-        {performance.sosRating && <div><span className="font-medium">SOS Rating:</span> <Badge variant="outline" className={getRatingBadgeClass(performance.sosRating)}>{performance.sosRating}</Badge></div>}
-      </CardContent>
-    </Card>
-  );
+  const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
+    const winRate = (performance.wins / (performance.wins + performance.losses + performance.ties)) * 100;
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                    <Award className="mr-2 h-5 w-5 text-primary" /> {year} Season Performance
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-6 text-center">
+                <div className="flex flex-col items-center">
+                    <span className="text-xs uppercase text-muted-foreground">Record</span>
+                    <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties > 0 ? `-${performance.ties}` : ''}</span>
+                    <span className="text-xs text-muted-foreground">{winRate.toFixed(1)}% Win Rate</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-xs uppercase text-muted-foreground">Avg PPG</span>
+                    <span className="text-2xl font-bold">{performance.avgPointsPerGame.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">Total: {performance.pointsFor.toFixed(0)}</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-xs uppercase text-muted-foreground">Reg. Season Finish</span>
+                    <span className="text-2xl font-bold">#{performance.regularSeasonFinish}</span>
+                    {/* Seed data not available in current JSON */}
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-xs uppercase text-muted-foreground">Final Standing</span>
+                    <span className="text-2xl font-bold">#{performance.finalStanding}</span>
+                    {performance.finalStanding === 1 && <Badge className="mt-1 bg-primary text-primary-foreground">Champion</Badge>}
+                </div>
+                {/* SOS/Luck Factor Placeholder - data not in current JSON
+                <div className="flex flex-col items-center">
+                    <span className="text-xs uppercase text-muted-foreground">Luck Factor</span>
+                    <span className="text-2xl font-bold text-green-600">+{performance.sosDifferential?.toFixed(1) || 'N/A'}</span>
+                     <span className="text-xs text-muted-foreground">{performance.sosRating || 'Neutral'}</span>
+                </div> 
+                */}
+            </CardContent>
+        </Card>
+    );
+};
+
 
   const GameByGameTable = ({ games }: { games: GMGameByGame[] }) => (
     <Card className="mt-6">
-      <CardHeader><CardTitle>Game-by-Game Results</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle className="flex items-center text-lg">
+            <ListChecks className="mr-2 h-5 w-5 text-primary" /> Game-by-Game Breakdown
+        </CardTitle>
+      </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Week</TableHead>
+              <TableHead className="text-center">Week</TableHead>
               <TableHead>Opponent</TableHead>
-              <TableHead className="text-right">Score</TableHead>
-              <TableHead className="text-right">Opp. Score</TableHead>
+              <TableHead className="text-right">Points</TableHead>
+              <TableHead className="text-right">Opp. Pts</TableHead>
               <TableHead className="text-center">Result</TableHead>
-              <TableHead className="text-right">Difference</TableHead>
+              <TableHead className="text-right">Diff</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {games.map((game) => (
               <TableRow key={game.week}>
-                <TableCell>{game.week}</TableCell>
+                <TableCell className="text-center">{game.week}</TableCell>
                 <TableCell>{game.opponent}</TableCell>
                 <TableCell className="text-right">{game.points.toFixed(1)}</TableCell>
                 <TableCell className="text-right">{game.opponent_points.toFixed(1)}</TableCell>
                 <TableCell className="text-center">
-                  <Badge variant={game.result === 'W' ? 'default' : game.result === 'L' ? 'destructive' : 'outline'}
-                         className={cn(game.result === 'W' && "bg-green-500 hover:bg-green-600", game.result === 'L' && "bg-red-500 hover:bg-red-600")}>
+                  <Badge 
+                    className={cn(
+                        "font-semibold",
+                        game.result === 'W' && "bg-green-100 text-green-700",
+                        game.result === 'L' && "bg-red-100 text-red-700",
+                        game.result === 'T' && "bg-gray-100 text-gray-700"
+                    )}
+                  >
                     {game.result}
                   </Badge>
                 </TableCell>
-                <TableCell className={cn("text-right", game.difference > 0 ? "text-green-600" : "text-red-600")}>
-                  {game.difference > 0 ? '+' : ''}{game.difference.toFixed(1)}
+                <TableCell className={cn("text-right", game.difference >= 0 ? "text-green-600" : "text-red-600")}>
+                  {game.difference >= 0 ? '+' : ''}{game.difference.toFixed(1)}
                 </TableCell>
               </TableRow>
             ))}
@@ -1431,14 +1472,14 @@ const GMCareer = () => {
 
   const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
     <Card className="mt-6">
-      <CardHeader><CardTitle>Roster & Player Performance</CardTitle></CardHeader>
+      <CardHeader><CardTitle className="flex items-center text-lg"><Users className="mr-2 h-5 w-5 text-primary"/>Roster & Player Performance</CardTitle></CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Player</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Finish</TableHead>
+              <TableHead className="text-center">Position</TableHead>
+              <TableHead className="text-center">Finish</TableHead>
               <TableHead className="text-center">Games Started</TableHead>
               <TableHead className="text-right">Total Points</TableHead>
             </TableRow>
@@ -1447,8 +1488,8 @@ const GMCareer = () => {
             {players.map((player) => (
               <TableRow key={player.id}>
                 <TableCell>{player.name}</TableCell>
-                <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
-                <TableCell>{player.finish}</TableCell>
+                <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
+                <TableCell className="text-center">{player.finish}</TableCell>
                 <TableCell className="text-center">{player.gamesStarted}</TableCell>
                 <TableCell className="text-right">{player.totalPoints.toFixed(1)}</TableCell>
               </TableRow>
@@ -1545,68 +1586,68 @@ const GMCareer = () => {
             </div>
           </CardHeader>
            <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
-              <div className="space-y-0.5 text-sm max-w-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Wins:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
+                <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
+                    <div className="space-y-0.5 text-sm max-w-sm">
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Wins:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
+                        </div>
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Losses:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.losses}</span>
+                        </div>
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ties:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.ties}</span>
+                        </div>
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Win Pct:</span>
+                        <span className="font-medium text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Losses:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.losses}</span>
+                
+                <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
+                    <div className="space-y-0.5 text-sm max-w-sm">
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Total Points For:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Total Points Against:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                        <span className="text-muted-foreground">Avg Points/Game:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Ties:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.ties}</span>
+                
+                <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
+                    <div className="space-y-0.5 text-sm max-w-sm">
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">Total Seasons:</span>
+                            <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">Playoff Appearances:</span>
+                            <span className="font-medium text-foreground">{gmData.careerStats.playoffAppearances}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">Playoff Record:</span>
+                            <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-muted-foreground">Championships:</span>
+                            <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Win Pct:</span>
-                  <span className="font-medium text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
-              <div className="space-y-0.5 text-sm max-w-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Points For:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Points Against:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Avg Points/Game:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
-              <div className="space-y-0.5 text-sm max-w-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Seasons:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Playoff Appearances:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.playoffAppearances}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Playoff Record:</span>
-                  <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
-                </div>
-                 <div className="flex justify-between">
-                    <span className="text-muted-foreground">Championships:</span>
-                    <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
+            </CardContent>
         </Card>
 
            {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
@@ -1754,7 +1795,7 @@ const GMCareer = () => {
       {!loading && !error && selectedViewOption !== "all-seasons" && (
         loadingGmIndividualSeason ? (
             <Card className="mt-6">
-                <CardHeader><CardTitle>Loading {selectedViewOption} Season Details...</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="flex items-center gap-2"><User className="text-primary" /> Loading {selectedGmName} - {selectedViewOption} Season Details...</CardTitle></CardHeader>
                 <CardContent>
                     <Skeleton className="h-8 w-3/4 mb-4" />
                     <Skeleton className="h-40 w-full mb-4" />
@@ -1764,20 +1805,49 @@ const GMCareer = () => {
             </Card>
         ) : errorGmIndividualSeason ? (
             <Card className="mt-6">
+                <CardHeader><CardTitle className="flex items-center gap-2"><User className="text-primary"/>{selectedGmName} - {selectedViewOption} Season</CardTitle></CardHeader>
                 <CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2">
                     <ShieldAlert size={48}/> 
                     <p>{errorGmIndividualSeason}</p>
                 </CardContent>
             </Card>
         ) : gmIndividualSeasonData ? (
-            <div className="space-y-6 mt-6">
-                <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} />
-                <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} />
-                <RosterPlayersTable players={gmIndividualSeasonData.rosterBreakdown.rosterPlayerData} />
-                {/* Placeholder for other sections from GMIndividualSeasonDetailData */}
+            <div className="space-y-6 mt-2">
+                 <Tabs defaultValue={activeGmSeasonTab} onValueChange={setActiveGmSeasonTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 mb-4">
+                        <TabsTrigger value="season-summary"><Info className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
+                        <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
+                        <TabsTrigger value="player-performance"><TrendingUp className="mr-1 h-4 w-4 hidden sm:inline-block" />Player Performance</TabsTrigger>
+                        <TabsTrigger value="positional-advantage"><PieChartIcon className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
+                        <TabsTrigger value="lineup-optimization"><Shuffle className="mr-1 h-4 w-4 hidden sm:inline-block" />Lineup Optimization</TabsTrigger>
+                        <TabsTrigger value="streaming-success"><Waves className="mr-1 h-4 w-4 hidden sm:inline-block" />Streaming Success</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="season-summary">
+                        <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} />
+                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} />
+                        {/* Placeholder for Weekly Scoring Trend Line Chart */}
+                    </TabsContent>
+                    <TabsContent value="roster-breakdown">
+                        <RosterPlayersTable players={gmIndividualSeasonData.rosterBreakdown.rosterPlayerData} />
+                        {/* Placeholder for Position Contribution and League Avg Position Data */}
+                    </TabsContent>
+                     <TabsContent value="player-performance">
+                        <Card><CardHeader><CardTitle>Player Performance Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Detailed player performance metrics coming soon.</p></CardContent></Card>
+                    </TabsContent>
+                    <TabsContent value="positional-advantage">
+                        <Card><CardHeader><CardTitle>Positional Advantage Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Weekly and cumulative positional advantage data coming soon.</p></CardContent></Card>
+                    </TabsContent>
+                    <TabsContent value="lineup-optimization">
+                        <Card><CardHeader><CardTitle>Lineup Optimization Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Lineup efficiency and 'feeling it' summary coming soon.</p></CardContent></Card>
+                    </TabsContent>
+                    <TabsContent value="streaming-success">
+                        <Card><CardHeader><CardTitle>Streaming Success Analysis</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Analysis of streaming effectiveness at QB, TE, K, DST coming soon.</p></CardContent></Card>
+                    </TabsContent>
+                </Tabs>
             </div>
         ) : (
             <Card className="mt-6">
+                 <CardHeader><CardTitle className="flex items-center gap-2"><User className="text-primary"/>{selectedGmName} - {selectedViewOption} Season</CardTitle></CardHeader>
                  <CardContent className="pt-6 text-center text-muted-foreground">
                     No detailed data found for {selectedGmName} for the {selectedViewOption} season.
                  </CardContent>
@@ -1862,7 +1932,3 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
-    
-
-    

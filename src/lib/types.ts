@@ -148,7 +148,7 @@ export interface TopPerformerPlayer {
   fantasyTeam?: string | null; // GM's team name
   totalPoints: number;
   ppg: number; // Points per game
-  bestGame?: { // Optional: details of their best game in the season
+  bestGame?: {
     week: number;
     points: number;
   };
@@ -189,9 +189,9 @@ export interface SeasonDetailData {
 
 // For GM Career Page (e.g., Chris.json - overall career)
 export interface GMInfo {
-  id: number; // This is the numeric GM ID from the JSON
+  id: number;
   name: string;
-  slug: string; // e.g., "chris"
+  slug: string;
   yearsActive: string;
   championshipYears: number[];
   photoUrl?: string;
@@ -202,7 +202,7 @@ export interface CareerStats {
   wins: number;
   losses: number;
   ties: number;
-  winPct: number;
+  winPct: number; // Assuming this will be a decimal like 0.468
   totalPointsFor: number;
   totalPointsAgainst: number;
   avgPointsPerGame: number;
@@ -215,7 +215,7 @@ export interface CareerStats {
 export interface ExtremeGameDetail {
   value: number;
   season: number;
-  week: string;
+  week: string; // Can be number or string like "Playoffs R1"
   opponentName?: string;
 }
 
@@ -248,8 +248,8 @@ export interface SeasonProgressionEntry {
 }
 
 export interface PositionStrengthEntry {
-  position: string;
-  value: number;
+  position: string; // e.g., "QB", "RB"
+  value: number;    // e.g., 1.5, -4.9
 }
 
 export interface FranchisePlayerEntry {
@@ -281,7 +281,7 @@ export interface GMCareerData {
 }
 
 // For individual GM Season Detail (e.g., gm_career_GMID_YEAR.json)
-interface GMSeasonPerformance {
+export interface GMSeasonPerformance {
   wins: number;
   losses: number;
   ties: number;
@@ -291,11 +291,11 @@ interface GMSeasonPerformance {
   avgPointsAgainstPerGame: number;
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number; // Optional based on example
-  sosRating?: string;     // Optional based on example
+  sosDifferential?: number;
+  sosRating?: string;
 }
 
-interface GMGameByGame {
+export interface GMGameByGame {
   week: number;
   opponent: string;
   points: number;
@@ -304,56 +304,55 @@ interface GMGameByGame {
   difference: number;
 }
 
-interface GMSeasonSummary {
+export interface GMSeasonSummary {
   seasonPerformance: GMSeasonPerformance;
   gameByGame: GMGameByGame[];
 }
 
-interface GMPositionContribution {
-  name: string; // e.g., "QB", "RB"
+export interface GMPositionContribution {
+  name: string;
   startedPoints: number;
 }
 
-interface GMLeagueAvgPositionData {
+export interface GMLeagueAvgPositionData {
   name: string;
   leagueAvg: number;
 }
 
-interface GMRosterPlayer {
+export interface GMRosterPlayer {
   id: number;
   name: string;
   position: string;
-  finish: string; // e.g., "RB6"
+  finish: string;
   gamesStarted: number;
   totalPoints: number;
 }
 
-interface GMRosterBreakdown {
+export interface GMRosterBreakdown {
   positionContributionData: GMPositionContribution[];
   leagueAvgPositionData: GMLeagueAvgPositionData[];
   rosterPlayerData: GMRosterPlayer[];
 }
 
-// Other detailed structures from Dylan's 2019 JSON (can be expanded later)
-interface GMPlayerPerformanceSummary {
-  playerId: number;
-  name: string;
-  position: string;
-  avgActual: number;
-  avgProjected: number;
-  avgDifference: number;
-  percentBeatProjection: number;
-  boomWeeks: number;
-  bustWeeks: number;
+export interface GMPlayerPerformanceSummary {
+    playerId: number;
+    name: string;
+    position: string;
+    avgActual: number;
+    avgProjected: number;
+    avgDifference: number;
+    percentBeatProjection: number;
+    boomWeeks: number;
+    bustWeeks: number;
 }
 
-interface GMPlayerPerformance {
-  playerSummaryPerformance: GMPlayerPerformanceSummary[];
-  overPerformer: { name: string; avgDifference: number };
-  underPerformer: { name: string; avgDifference: number };
+export interface GMPlayerPerformanceData {
+    playerSummaryPerformance: GMPlayerPerformanceSummary[];
+    overPerformer: { name: string; avgDifference: number };
+    underPerformer: { name: string; avgDifference: number };
 }
 
-interface GMLineupOptimizationWeekly {
+export interface GMLineupOptimizationWeekly {
     week: number;
     optimal: number;
     actual: number;
@@ -363,7 +362,7 @@ interface GMLineupOptimizationWeekly {
     totalDecisions: number;
 }
 
-interface GMLineupOptimizationFeelingItDetail {
+export interface GMLineupOptimizationFeelingItDetail {
     week: number;
     starterName: string;
     starterActual: number;
@@ -375,7 +374,7 @@ interface GMLineupOptimizationFeelingItDetail {
     projectionDifference: number;
 }
 
-interface GMLineupOptimization {
+export interface GMLineupOptimizationData {
     weeklyOptimization: GMLineupOptimizationWeekly[];
     feelingItSummary: {
         totalStarts: number;
@@ -386,8 +385,8 @@ interface GMLineupOptimization {
     };
 }
 
-interface GMPositionalAdvantageWeeklyEntry {
-    week: number | string; // "Total" can be a string
+export interface GMPositionalAdvantageWeeklyEntry {
+    week: number | string;
     QB?: number;
     RB?: number;
     WR?: number;
@@ -395,27 +394,27 @@ interface GMPositionalAdvantageWeeklyEntry {
     FLEX?: number;
     K?: number;
     DST?: number;
-    total_diff?: number; // only for "Total" week
+    total_diff?: number;
 }
 
-interface GMPositionalAdvantageCumulativeDataPoint {
+export interface GMPositionalAdvantageCumulativeDataPoint {
     week: number;
     value: number;
 }
 
-interface GMPositionalAdvantageCumulative {
+export interface GMPositionalAdvantageCumulative {
     position: string;
     data: GMPositionalAdvantageCumulativeDataPoint[];
 }
 
-interface GMPositionalAdvantage {
+export interface GMPositionalAdvantageData {
     weeklyPositionalAdvantage: GMPositionalAdvantageWeeklyEntry[];
     cumulativeWeeklyPositionalAdvantage: GMPositionalAdvantageCumulative[];
 }
 
-interface GMStreamingSummaryEntry {
+export interface GMStreamingSummaryEntry {
     position: string;
-    status: string; // e.g., "streaming_detected"
+    status: string;
     uniqueStarters: number;
     streamedStartsCount: number;
     avgPtsGm: number;
@@ -424,28 +423,27 @@ interface GMStreamingSummaryEntry {
     hitRate: number;
 }
 
-interface GMStreamingWeeklyPerformanceEntry {
+export interface GMStreamingWeeklyPerformanceEntry {
     week: number;
     gmStarterPts: number;
     leagueAvgPts: number;
     playerName: string;
 }
 
-interface GMStreamingSuccess {
+export interface GMStreamingSuccessData {
     streamingSummary: GMStreamingSummaryEntry[];
     streamingWeeklyPerformance: {
         [position: string]: GMStreamingWeeklyPerformanceEntry[];
     };
 }
 
-
 export interface GMIndividualSeasonDetailData {
   seasonSummary: GMSeasonSummary;
   rosterBreakdown: GMRosterBreakdown;
-  playerPerformance?: GMPlayerPerformance;         // Optional for now
-  lineupOptimization?: GMLineupOptimization;       // Optional for now
-  positionalAdvantage?: GMPositionalAdvantage;     // Optional for now
-  streamingSuccess?: GMStreamingSuccess;           // Optional for now
+  playerPerformance?: GMPlayerPerformanceData;
+  lineupOptimization?: GMLineupOptimizationData;
+  positionalAdvantage?: GMPositionalAdvantageData;
+  streamingSuccess?: GMStreamingSuccessData;
 }
 
 
@@ -526,5 +524,3 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
-
-    
