@@ -880,7 +880,10 @@
         "fantasyTeam": "MouseRat  FC",
         "totalPoints": 392.6,
         "ppg": 23.1,
-        "bestGame": null
+        "bestGame": {
+          "week": 12,
+          "points": 39.7
+        }
       },
       {
         "player": "Jalen Hurts",
@@ -888,7 +891,10 @@
         "fantasyTeam": "Team Irion",
         "totalPoints": 356.8,
         "ppg": 21.0,
-        "bestGame": null
+        "bestGame": {
+          "week": 12,
+          "points": 34.5
+        }
       },
       {
         "player": "Dak Prescott",
@@ -896,7 +902,10 @@
         "fantasyTeam": "Jupiter Joe's",
         "totalPoints": 342.8,
         "ppg": 20.2,
-        "bestGame": null
+        "bestGame": {
+          "week": 10,
+          "points": 37.9
+        }
       },
       {
         "player": "Lamar Jackson",
@@ -904,7 +913,10 @@
         "fantasyTeam": "Will  Beattie",
         "totalPoints": 331.2,
         "ppg": 20.7,
-        "bestGame": null
+        "bestGame": {
+          "week": 17,
+          "points": 36.3
+        }
       },
       {
         "player": "Jordan Love",
@@ -912,7 +924,10 @@
         "fantasyTeam": "MouseRat  FC",
         "totalPoints": 319.1,
         "ppg": 18.8,
-        "bestGame": null
+        "bestGame": {
+          "week": 17,
+          "points": 28.4
+        }
       }
     ],
     "RB": [
@@ -1169,6 +1184,15 @@
     },
     {
       "rank": 2,
+      "player": "C.J. Stroud",
+      "position": "QB",
+      "team": "Houston Texans",
+      "fantasyTeam": "Kendra :))",
+      "week": 9,
+      "points": 41.8
+    },
+    {
+      "rank": 3,
       "player": "Christian McCaffrey",
       "position": "RB",
       "team": "San Francisco 49ers",
@@ -1177,7 +1201,7 @@
       "points": 41.7
     },
     {
-      "rank": 3,
+      "rank": 4,
       "player": "DJ Moore",
       "position": "WR",
       "team": "Chicago Bears",
@@ -1186,7 +1210,7 @@
       "points": 41.0
     },
     {
-      "rank": 4,
+      "rank": 5,
       "player": "Amari Cooper",
       "position": "WR",
       "team": "Cleveland Browns",
@@ -1195,7 +1219,16 @@
       "points": 40.5
     },
     {
-      "rank": 5,
+      "rank": 6,
+      "player": "Josh Allen",
+      "position": "QB",
+      "team": "Buffalo Bills",
+      "fantasyTeam": "MouseRat  FC",
+      "week": 12,
+      "points": 39.7
+    },
+    {
+      "rank": 7,
       "player": "Raheem Mostert",
       "position": "RB",
       "team": "Miami Dolphins",
@@ -1204,7 +1237,16 @@
       "points": 38.2
     },
     {
-      "rank": 6,
+      "rank": 8,
+      "player": "Dak Prescott",
+      "position": "QB",
+      "team": "Dallas Cowboys",
+      "fantasyTeam": "Jupiter Joe's",
+      "week": 10,
+      "points": 37.9
+    },
+    {
+      "rank": 9,
       "player": "Ja'Marr Chase",
       "position": "WR",
       "team": "Cincinnati Bengals",
@@ -1213,40 +1255,13 @@
       "points": 37.2
     },
     {
-      "rank": 7,
-      "player": "Cowboys D/ST",
-      "position": "DST",
-      "team": "Dallas Cowboys",
-      "fantasyTeam": "Gauntlet Commish",
-      "week": 1,
-      "points": 35.0
-    },
-    {
-      "rank": 8,
-      "player": "James Cook",
-      "position": "RB",
-      "team": "Buffalo Bills",
-      "fantasyTeam": "Jam It In That Younghoe",
-      "week": 15,
-      "points": 34.1
-    },
-    {
-      "rank": 9,
-      "player": "Tyreek Hill",
-      "position": "WR",
-      "team": "Miami Dolphins",
-      "fantasyTeam": "Team Irion",
-      "week": 1,
-      "points": 33.5
-    },
-    {
       "rank": 10,
-      "player": "Travis Etienne Jr.",
-      "position": "RB",
-      "team": "Jacksonville Jaguars",
-      "fantasyTeam": "MouseRat  FC",
-      "week": 5,
-      "points": 32.4
+      "player": "Lamar Jackson",
+      "position": "QB",
+      "team": "Baltimore Ravens",
+      "fantasyTeam": "Will  Beattie",
+      "week": 17,
+      "points": 36.3
     }
   ]
 }

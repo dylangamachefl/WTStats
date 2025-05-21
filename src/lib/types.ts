@@ -37,9 +37,9 @@ export interface CareerStat {
   pointsAgainst: number;
   winPct: string;
   playoffRate: number;
-  acquisitions?: number; // Made optional as it's not in all provided JSONs
-  avgRegularSeasonFinish?: number; // Made optional
-  avgFinalStanding?: number; // Made optional
+  acquisitions?: number;
+  avgRegularSeasonFinish?: number;
+  avgFinalStanding?: number;
 }
 
 export interface PlayoffAppearanceRate {
@@ -82,15 +82,10 @@ export interface SeasonBaseData {
   runnerUp?: string;
   teams?: number;
   regularSeasonWeeks?: number;
-  // Retaining champion details here if they might be present in some season files,
-  // though 2009.json has championName at this level.
-  gmId?: string; // Champion's GM ID
-  teamName?: string; // Champion's Team Name
-  roster?: string[]; // Champion's Roster
 }
 
 export interface SeasonStandingEntry {
-  season_id: number;
+  season_id: number; // Could also be string if IDs are like 's2009'
   owner_name: string;
   wt_team_name: string;
   regular_season_wins: number;
@@ -101,17 +96,6 @@ export interface SeasonStandingEntry {
   regular_season_finish: number;
   lastFive?: number[];
   playoffSeed?: number | null;
-  // Mapping to existing usage in page.tsx; can be refined.
-  // These were from the old SeasonStandingEntry, adapt if needed or remove if wt_team_name etc. are always used.
-  gmId?: string;
-  gmName?: string;
-  rank?: number;
-  wins?: number;
-  losses?: number;
-  ties?: number;
-  pointsFor?: number;
-  pointsAgainst?: number;
-  teamName?: string;
 }
 
 export interface PlayoffMatchupTeam {
@@ -133,11 +117,10 @@ export interface PlayoffData {
 }
 
 export interface WeeklyScoresMatrixData {
-  teams: string[]; // Team names, matches order in scores/results
-  scores: number[][]; // scores[week_idx][team_idx]
-  results: string[][]; // results[week_idx][team_idx] (W/L/T)
+  teams: string[];
+  scores: (number | null)[][]; // scores[week_idx][team_idx]
+  results: (string | null)[][]; // results[week_idx][team_idx] (W/L/T)
 }
-
 
 export interface StrengthOfScheduleEntry {
   team: string;
@@ -147,29 +130,16 @@ export interface StrengthOfScheduleEntry {
   actualOpponentsPpg?: number;
   rank: number;
   rating?: string;
-  // For consistency with old type, can be removed if not used:
-  gmId?: string;
-  gmName?: string;
-  teamName?: string;
-  sosValue?: number;
-  description?: string;
 }
 
 export interface WaiverPickupEntry {
   player: string;
   position: string;
-  team: string; // NFL Team
-  pickedUpBy?: string | null; // GM Name or null
+  team: string;
+  pickedUpBy?: string | null;
   week?: number | null;
-  totalPoints?: number; // Seems like season total points for this player
+  totalPoints?: number;
   rank?: number;
-  // For consistency with old type:
-  gmId?: string;
-  gmName?: string;
-  playerAdded?: string; // Redundant with 'player'
-  playerDropped?: string;
-  faabSpent?: number;
-  pickupDate?: string;
 }
 
 export interface TopPerformerPlayerGame {
@@ -179,8 +149,8 @@ export interface TopPerformerPlayerGame {
 
 export interface TopPerformerPlayer {
   player: string;
-  team: string; // NFL Team
-  fantasyTeam?: string | null; // GM/Fantasy Team Name
+  team: string;
+  fantasyTeam?: string | null;
   totalPoints: number;
   ppg: number;
   bestGame?: TopPerformerPlayerGame;
@@ -193,7 +163,6 @@ export interface PositionalTopPerformersData {
   TE?: TopPerformerPlayer[];
   K?: TopPerformerPlayer[];
   DST?: TopPerformerPlayer[];
-  // Potentially other positions
   [key: string]: TopPerformerPlayer[] | undefined;
 }
 
@@ -201,7 +170,7 @@ export interface BestOverallGameEntry {
   rank: number;
   player: string;
   position: string;
-  team: string; // NFL Team
+  team: string;
   fantasyTeam?: string | null;
   week: number;
   points: number;
@@ -216,84 +185,103 @@ export interface SeasonDetailData {
   waiverPickupsData?: WaiverPickupEntry[];
   topPerformersData?: PositionalTopPerformersData;
   bestOverallGamesData?: BestOverallGameEntry[];
-  // Deprecated fields from older SeasonDetailData structure, if needed for backward compat with some files:
-  // seasonId?: string;
-  // year?: number;
-  // champion?: { gmId: string; gmName: string; teamName: string; roster?: string[]; };
-  // summary?: string;
-  // standings?: SeasonStandingEntry[]; // old structure
-  // playoffBracket?: { type: string; rounds: { roundName: string; matchups: any[] }[] }; // old structure
-  // weeklyScores?: any[]; // old structure
-  // topPerformers?: { weekly?: any[]; seasonal?: any[]; }; // old structure
 }
 
 
 // For GM Career Page (e.g., Chris.json)
-export interface GMCareerSeasonSummary {
-  year: number;
-  teamName: string;
-  rank: number;
+export interface GMInfo {
+  id: number;
+  name: string;
+  slug: string;
+  yearsActive: string;
+  championshipYears: number[];
+  photoUrl?: string; // Added optional photoUrl based on previous structure
+  bio?: string;      // Added optional bio based on previous structure
+}
+
+export interface CareerStats {
   wins: number;
   losses: number;
   ties: number;
-  pointsFor: number;
-  pointsAgainst: number;
-  madePlayoffs: boolean;
-  championshipResult?: string;
-  notablePlayers?: string[];
-  playoffRecord?: string;
-}
-
-export interface GMCareerAward {
-  year: number;
-  awardName: string;
-  description?: string;
-}
-
-export interface GMCareerH2HSummary {
-  opponentGmId: string;
-  opponentGmName: string;
-  wins: number;
-  losses: number;
-  ties: number;
+  winPct: number;
   totalPointsFor: number;
   totalPointsAgainst: number;
+  avgPointsPerGame: number;
+  playoffAppearances: number;
+  totalSeasons: number;
+  playoffWins: number;
+  playoffLosses: number;
 }
 
-export interface GMCareerDraftStat {
-    totalPicks: number;
-    avgPickPosition: number;
-    bestPick?: { playerName: string; year: number; round: number; pick: number; value: string };
-    worstBust?: { playerName: string; year: number; round: number; pick: number; description: string };
-    roundBreakdown?: Array<{ round: number; numPicks: number; avgValue: string }>;
+export interface ExtremeGameDetail {
+  value: number;
+  season: number;
+  week: string;
+  opponentName?: string; // Optional for win/loss margins
+}
+
+export interface ExtremeSeasonDetail {
+  wins: number;
+  losses: number;
+  season: number;
+  isChampion: boolean;
+}
+
+export interface CareerExtremes {
+  highs: {
+    mostPointsGame: ExtremeGameDetail;
+    biggestWinMargin: ExtremeGameDetail;
+    bestSeasonRecord: ExtremeSeasonDetail;
+  };
+  lows: {
+    fewestPointsGame: ExtremeGameDetail;
+    worstLossMargin: ExtremeGameDetail;
+    worstSeasonRecord: ExtremeSeasonDetail;
+  };
+}
+
+export interface SeasonProgressionEntry {
+  year: number;
+  finalStanding: number;
+  pointsForRank: number;
+  madePlayoffs: boolean;
+  isChampion: boolean;
+}
+
+export interface PositionStrengthEntry {
+  position: string;
+  value: number;
+}
+
+export interface FranchisePlayerEntry {
+  playerId: number;
+  name: string;
+  position: string;
+  seasonsWithGm: number[];
+  totalPointsForGm: number;
+  gamesStartedForGm: number;
+}
+
+export interface RivalryPerformanceEntry {
+  opponentId: number;
+  opponentName: string;
+  wins: number;
+  losses: number;
+  avgPointsFor: number;
+  avgPointsAgainst: number;
 }
 
 export interface GMCareerData {
-  gmId: string;
-  gmName: string;
-  photoUrl?: string;
-  bio?: string;
-  careerSummary: {
-    totalSeasons: number;
-    championships: number;
-    runnerUps?: number;
-    playoffAppearances: number;
-    regularSeasonWins: number;
-    regularSeasonLosses: number;
-    regularSeasonTies: number;
-    regularSeasonWinPct: string;
-    playoffWins?: number;
-    playoffLosses?: number;
-    playoffWinPct?: string;
-    totalPointsFor: number;
-    totalPointsAgainst: number;
-    avgRegularSeasonFinish: number;
-    avgFinalStanding: number;
-  };
-  seasonBySeason: GMCareerSeasonSummary[];
-  awards?: GMCareerAward[];
-  rivalries?: GMCareerH2HSummary[];
-  draftHistorySummary?: GMCareerDraftStat;
+  gmInfo: GMInfo;
+  careerStats: CareerStats;
+  careerExtremes: CareerExtremes;
+  seasonProgression: SeasonProgressionEntry[];
+  positionStrength: PositionStrengthEntry[];
+  franchisePlayers: FranchisePlayerEntry[];
+  rivalryPerformance: RivalryPerformanceEntry[];
+  // For consistency with old type if needed for dropdowns, or if these will be added to JSON
+  gmId?: string; // This is now gmInfo.slug or gmInfo.id
+  gmName?: string; // This is now gmInfo.name
 }
 
 
@@ -374,5 +362,3 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
-
-    

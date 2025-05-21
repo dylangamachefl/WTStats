@@ -871,7 +871,10 @@
         "fantasyTeam": "Jupiter Clutch",
         "totalPoints": 430.4,
         "ppg": 25.3,
-        "bestGame": null
+        "bestGame": {
+          "week": 15,
+          "points": 36.1
+        }
       },
       {
         "player": "Josh Allen",
@@ -879,7 +882,10 @@
         "fantasyTeam": "MouseRat  FC",
         "totalPoints": 379.0,
         "ppg": 22.3,
-        "bestGame": null
+        "bestGame": {
+          "week": 14,
+          "points": 51.9
+        }
       },
       {
         "player": "Joe Burrow",
@@ -887,7 +893,10 @@
         "fantasyTeam": "Gauntlet Commish",
         "totalPoints": 372.8,
         "ppg": 21.9,
-        "bestGame": null
+        "bestGame": {
+          "week": 17,
+          "points": 37.0
+        }
       },
       {
         "player": "Baker Mayfield",
@@ -895,7 +904,10 @@
         "fantasyTeam": "All Madden Ultimate Team",
         "totalPoints": 365.8,
         "ppg": 21.5,
-        "bestGame": null
+        "bestGame": {
+          "week": 17,
+          "points": 34.6
+        }
       },
       {
         "player": "Jayden Daniels",
@@ -903,7 +915,10 @@
         "fantasyTeam": "Never Zay Never",
         "totalPoints": 355.8,
         "ppg": 20.9,
-        "bestGame": null
+        "bestGame": {
+          "week": 16,
+          "points": 34.4
+        }
       }
     ],
     "RB": [
@@ -1151,6 +1166,15 @@
   "bestOverallGamesData": [
     {
       "rank": 1,
+      "player": "Josh Allen",
+      "position": "QB",
+      "team": "Buffalo Bills",
+      "fantasyTeam": "MouseRat  FC",
+      "week": 14,
+      "points": 51.9
+    },
+    {
+      "rank": 2,
       "player": "Ja'Marr Chase",
       "position": "WR",
       "team": "Cincinnati Bengals",
@@ -1159,7 +1183,7 @@
       "points": 44.4
     },
     {
-      "rank": 2,
+      "rank": 3,
       "player": "Saquon Barkley",
       "position": "RB",
       "team": "Philadelphia Eagles",
@@ -1168,7 +1192,7 @@
       "points": 42.2
     },
     {
-      "rank": 3,
+      "rank": 4,
       "player": "Alvin Kamara",
       "position": "RB",
       "team": "New Orleans Saints",
@@ -1177,7 +1201,16 @@
       "points": 42.0
     },
     {
-      "rank": 4,
+      "rank": 5,
+      "player": "Jared Goff",
+      "position": "QB",
+      "team": "Detroit Lions",
+      "fantasyTeam": "Jupiter Jay Joy",
+      "week": 15,
+      "points": 41.1
+    },
+    {
+      "rank": 6,
       "player": "Jahmyr Gibbs",
       "position": "RB",
       "team": "Detroit Lions",
@@ -1186,7 +1219,7 @@
       "points": 41.0
     },
     {
-      "rank": 5,
+      "rank": 7,
       "player": "Jonathan Taylor",
       "position": "RB",
       "team": "Indianapolis Colts",
@@ -1195,49 +1228,31 @@
       "points": 39.8
     },
     {
-      "rank": 6,
-      "player": "Jauan Jennings",
-      "position": "WR",
-      "team": "San Francisco 49ers",
-      "fantasyTeam": "Gauntlet Commish",
-      "week": 3,
-      "points": 35.5
-    },
-    {
-      "rank": 7,
-      "player": "Davante Adams",
-      "position": "WR",
-      "team": "New York Jets",
-      "fantasyTeam": "Jupiter Jay Joy",
-      "week": 15,
-      "points": 33.8
-    },
-    {
       "rank": 8,
-      "player": "Joe Mixon",
-      "position": "RB",
-      "team": "Houston Texans",
-      "fantasyTeam": "Gauntlet Commish",
+      "player": "Taysom Hill",
+      "position": "QB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": "Jupiter Jay Joy",
       "week": 11,
-      "points": 33.3
+      "points": 37.5
     },
     {
       "rank": 9,
-      "player": "Derrick Henry",
-      "position": "RB",
-      "team": "Baltimore Ravens",
-      "fantasyTeam": "Girls Ruin Bowling",
-      "week": 4,
-      "points": 32.9
+      "player": "Joe Burrow",
+      "position": "QB",
+      "team": "Cincinnati Bengals",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 17,
+      "points": 37.0
     },
     {
       "rank": 10,
-      "player": "Jerry Jeudy",
-      "position": "WR",
-      "team": "Cleveland Browns",
-      "fantasyTeam": "Jam It In That Younghoe",
-      "week": 13,
-      "points": 31.5
+      "player": "Bryce Young",
+      "position": "QB",
+      "team": "Carolina Panthers",
+      "fantasyTeam": null,
+      "week": 18,
+      "points": 36.4
     }
   ]
 }
