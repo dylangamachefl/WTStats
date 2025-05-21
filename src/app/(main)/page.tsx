@@ -27,14 +27,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, DownloadCloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, ScatterChart, Scatter, ZAxis, Cell as RechartsCell } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 
@@ -295,7 +295,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }
 
   if (!leagueData) {
-    return <Card><CardContent className="pt-6 text-center">Failed to load league data. Check console for errors or ensure 'league-data.json' is correctly placed and formatted in 'public/data/league_data/'.</CardContent></Card>;
+    return <Card><CardContent className="pt-6 text-center">Failed to load league data. Check console for errors or ensure 'public/data/league_data/league-data.json' is correctly placed and formatted.</CardContent></Card>;
   }
 
   return (
@@ -628,8 +628,30 @@ const getRatingBadgeClass = (rating?: string): string => {
   }
 };
 
+const getPositionBadgeClass = (position?: string): string => {
+  if (!position) return "bg-muted text-muted-foreground"; // Default
+  switch (position.toUpperCase()) {
+    case 'QB':
+      return 'bg-red-100 text-red-700'; 
+    case 'RB':
+      return 'bg-blue-100 text-blue-700';
+    case 'WR':
+      return 'bg-green-100 text-green-700';
+    case 'TE':
+      return 'bg-yellow-100 text-yellow-700'; 
+    case 'K':
+      return 'bg-purple-100 text-purple-700';
+    case 'DST':
+    case 'DEF':
+      return 'bg-indigo-100 text-indigo-700';
+    default:
+      return "bg-muted text-muted-foreground";
+  }
+};
+
+
 const SeasonDetail = () => {
-  const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
+  const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[mockSeasonsForTabs.length-1]?.id);
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -743,6 +765,11 @@ const SeasonDetail = () => {
     { label: 'L - Loss', className: 'bg-red-100 text-red-700 font-semibold' },
     { label: 'T - Tie', className: 'bg-gray-100 text-gray-700 font-semibold' },
   ];
+
+  const isModernWaiverSeason = useMemo(() => {
+    const year = parseInt(selectedSeason || "0");
+    return year >= 2019;
+  }, [selectedSeason]);
 
   return (
     <div className="space-y-6">
@@ -946,7 +973,7 @@ const SeasonDetail = () => {
                                                         if (weeklyScoresDisplayMode === 'scores') {
                                                             cellContent = score?.toFixed(1) ?? '-';
                                                             innerDivClasses = cn(innerDivClasses, getScoreCellClass(score));
-                                                        } else { // W/L/T mode
+                                                        } else { 
                                                             if (result === 'W') {
                                                                 cellContent = 'W';
                                                                 innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
@@ -1045,39 +1072,57 @@ const SeasonDetail = () => {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
+                 <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
                     <Card>
-                        <CardHeader><CardTitle className="flex items-center"><ClipboardList className="mr-2 h-5 w-5 text-primary"/>Top Waiver Pickups (League-wide)</CardTitle></CardHeader>
+                        <CardHeader>
+                            <CardTitle className="flex items-center">
+                                <ClipboardList className="mr-2 h-5 w-5 text-primary"/>Best Waiver Wire Pickups
+                            </CardTitle>
+                        </CardHeader>
                         <CardContent>
                             {seasonData.waiverPickupsData && Array.isArray(seasonData.waiverPickupsData) && seasonData.waiverPickupsData.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                <TableRow>
-                                    <TableHead>Rank</TableHead>
-                                    <TableHead>Player</TableHead>
-                                    <TableHead>Position</TableHead>
-                                    <TableHead>NFL Team</TableHead>
-                                    <TableHead className="text-right">Total Pts</TableHead>
-                                </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                {seasonData.waiverPickupsData.map((pickup: WaiverPickupEntry) => (
-                                    <TableRow key={pickup.player}>
-                                    <TableCell>{pickup.rank ?? '-'}</TableCell>
-                                    <TableCell>{pickup.player}</TableCell>
-                                    <TableCell>{pickup.position}</TableCell>
-                                    <TableCell>{pickup.team}</TableCell>
-                                    <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
+                            <>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>#</TableHead>
+                                            <TableHead>Player</TableHead>
+                                            <TableHead>POS</TableHead>
+                                            <TableHead>Team</TableHead>
+                                            {isModernWaiverSeason && <TableHead>Picked Up By</TableHead>}
+                                            {isModernWaiverSeason && <TableHead>Week</TableHead>}
+                                            <TableHead className="text-right">Total Pts</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {seasonData.waiverPickupsData.map((pickup: WaiverPickupEntry, index) => (
+                                            <TableRow key={pickup.player + index}>
+                                                <TableCell>{pickup.rank ?? index + 1}</TableCell>
+                                                <TableCell>{pickup.player}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(pickup.position))}>
+                                                        {pickup.position}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>{pickup.team}</TableCell>
+                                                {isModernWaiverSeason && <TableCell>{pickup.pickedUpBy ?? '-'}</TableCell>}
+                                                {isModernWaiverSeason && <TableCell>{pickup.week ?? '-'}</TableCell>}
+                                                <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <p className="text-xs text-muted-foreground mt-4">
+                                    Top valuable pickups based on total points scored after acquisition week. Assumes standard scoring.
+                                </p>
+                            </>
                             ) : (
                             <p className="text-muted-foreground text-center py-4">Waiver pickup data not available for {seasonData?.seasonData?.year}.</p>
                             )}
                         </CardContent>
                     </Card>
                 </TabsContent>
+
 
                  <TabsContent value="top_performers" className="pt-4 space-y-6">
                     <Card>
