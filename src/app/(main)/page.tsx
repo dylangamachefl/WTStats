@@ -41,7 +41,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, BarChart } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -1384,7 +1384,7 @@ const GMCareer = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-2 md:pt-4 space-y-3 md:space-y-4">
+          <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
               <div className="space-y-0.5 text-sm max-w-sm">
@@ -1406,7 +1406,7 @@ const GMCareer = () => {
                 </div>
               </div>
             </div>
-            <Separator className="my-2 md:my-3" />
+            
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
               <div className="space-y-0.5 text-sm max-w-sm">
@@ -1424,7 +1424,7 @@ const GMCareer = () => {
                 </div>
               </div>
             </div>
-            <Separator className="my-2 md:my-3" />
+            
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
               <div className="space-y-0.5 text-sm max-w-sm">
@@ -1663,3 +1663,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
