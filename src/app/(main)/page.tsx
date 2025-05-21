@@ -48,7 +48,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, BarChart, LabelList } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -266,9 +266,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (!leagueData?.playoffQualificationRate || !Array.isArray(leagueData.playoffQualificationRate)) {
         return [];
     }
+    // Ensure qualification_rate is treated as a number for sorting
     const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
       ...item,
-      qualification_rate: Number(item.qualification_rate) || 0
+      qualification_rate: Number(item.qualification_rate) || 0 // Convert to number, default to 0 if NaN
     }));
     return sortData([...dataWithNumericRate], { key: 'qualification_rate', direction: 'desc' });
   }, [leagueData?.playoffQualificationRate]);
@@ -1403,7 +1404,7 @@ const GMCareer = () => {
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential) {
-        sosDifferentialColor = performance.sosDifferential > 0 ? "text-red-600" : "text-green-600"; // Negative is "easier" = good
+        sosDifferentialColor = performance.sosDifferential > 0 ? "text-red-600" : "text-green-600"; // Positive diff = harder schedule = red (bad luck)
     }
 
     return (
@@ -2197,5 +2198,6 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
 
 
