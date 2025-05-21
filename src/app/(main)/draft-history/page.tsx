@@ -11,6 +11,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import type { Season, GM, SeasonDraftData, GMDraftHistoryData, GMDraftSeasonPerformance } from '@/lib/types';
 import { BarChart3, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 // Mock Data for Season View and GM View (as existing)
 const mockSeasons: Season[] = [
@@ -56,13 +58,53 @@ interface TransformedHeatmapData {
   };
 }
 
+type HeatmapMetricKey = 'avg_pvdre' | 'pvdre_hit_rate' | 'avg_value_vs_adp';
+
+interface MetricConfig {
+  label: string;
+  key: HeatmapMetricKey;
+  format: (value: number | undefined | null) => string;
+  tooltipLabel: string;
+}
+
+const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
+  avg_pvdre: { 
+    label: 'POE', 
+    key: 'avg_pvdre', 
+    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
+    tooltipLabel: 'POE (Avg PVDRE)' 
+  },
+  pvdre_hit_rate: { 
+    label: 'Hit Rate %', 
+    key: 'pvdre_hit_rate', 
+    format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
+    tooltipLabel: 'Hit Rate' 
+  },
+  avg_value_vs_adp: { 
+    label: 'Value vs ADP', 
+    key: 'avg_value_vs_adp', 
+    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
+    tooltipLabel: 'Avg Value vs ADP' 
+  },
+};
+
 const DraftOverview = () => {
   const [rawData, setRawData] = useState<GMDraftSeasonPerformance[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [overallMinPoe, setOverallMinPoe] = useState(0);
-  const [overallMaxPoe, setOverallMaxPoe] = useState(0);
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
+  const [selectedMetric, setSelectedMetric] = useState<HeatmapMetricKey>('avg_pvdre');
+
+  const { currentMin, currentMax } = useMemo(() => {
+    if (!rawData) return { currentMin: 0, currentMax: 0 };
+    const values = rawData
+        .map(item => item[selectedMetric])
+        .filter(val => typeof val === 'number') as number[];
+    
+    if (values.length === 0) return { currentMin: 0, currentMax: 0 };
+    return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
+  }, [rawData, selectedMetric]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,17 +121,6 @@ const DraftOverview = () => {
         const data: GMDraftSeasonPerformance[] = await response.json();
         console.log("Fetched data:", data);
         setRawData(data);
-
-        if (data && data.length > 0) {
-          const poeValues = data.map(item => item.avg_pvdre).filter(val => typeof val === 'number') as number[];
-          if (poeValues.length > 0) {
-            setOverallMinPoe(Math.min(...poeValues));
-            setOverallMaxPoe(Math.max(...poeValues));
-          } else {
-            setOverallMinPoe(0);
-            setOverallMaxPoe(0);
-          }
-        }
       } catch (err) {
         if (err instanceof Error) {
             setError(err.message);
@@ -116,7 +147,7 @@ const DraftOverview = () => {
       if (!acc[item.gm_name]) {
         acc[item.gm_name] = {};
       }
-      acc[item.gm_name][item.season_id.toString()] = item; // Store the whole item
+      acc[item.gm_name][item.season_id.toString()] = item; 
       return acc;
     }, {} as TransformedHeatmapData);
 
@@ -132,42 +163,41 @@ const DraftOverview = () => {
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
- const getPoeColorStyle = (performanceData: GMDraftSeasonPerformance | undefined): React.CSSProperties => {
-    if (!performanceData || typeof performanceData.avg_pvdre !== 'number') {
+ const getCellStyle = (
+    performanceData: GMDraftSeasonPerformance | undefined, 
+    metricKey: HeatmapMetricKey,
+    metricMin: number,
+    metricMax: number
+  ): React.CSSProperties => {
+    if (!performanceData) return { color: 'hsl(var(--muted-foreground))' };
+
+    const value = performanceData[metricKey];
+    if (typeof value !== 'number') {
       return { color: 'hsl(var(--muted-foreground))' };
     }
 
-    const value = performanceData.avg_pvdre;
-    const range = overallMaxPoe - overallMinPoe;
-
+    const range = metricMax - metricMin;
     if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))' };
 
-    // Normalize the value between 0 and 1
-    const normalizedValue = (value - overallMinPoe) / range;
+    const normalizedValue = (value - metricMin) / range;
 
     let hue;
-    const saturation = 70; // Keep saturation constant for pastels
-    let lightness = 85; // Base lightness for pastels
+    const saturation = 70; 
+    let lightness = 85; 
 
-    // Define a neutral band (e.g., values between 40th and 60th percentile of the normalized range)
     const neutralBandStart = 0.40;
     const neutralBandEnd = 0.60;
 
     if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
-      // Neutral color for mid-range values
       return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
     } else if (normalizedValue < neutralBandStart) {
-      // Red spectrum for values below neutral band
       hue = 0; // Red
-      // Intensity based on how far from the neutral band (closer to minPoe = more intense red)
       const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-      lightness = 90 - (intensity * 20); // Adjust lightness range (e.g., 90% down to 70%)
+      lightness = 90 - (intensity * 20); 
     } else {
-      // Green spectrum for values above neutral band
       hue = 120; // Green
-      // Intensity based on how far from the neutral band (closer to maxPoe = more intense green)
       const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
-      lightness = 90 - (intensity * 20); // Adjust lightness range
+      lightness = 90 - (intensity * 20); 
     }
     
     const textColor = lightness < 65 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
@@ -199,10 +229,11 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-          <CardDescription>Loading GM draft POE (Points Over Expected) metrics across seasons...</CardDescription>
+          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+          <CardDescription>Loading GM draft performance metrics across seasons...</CardDescription>
         </CardHeader>
         <CardContent>
+          <Skeleton className="h-8 w-1/2 mb-4" /> {/* Placeholder for toggle */}
           <div className="space-y-2">
             {[...Array(10)].map((_, i) => (
               <Skeleton key={i} className="h-10 w-full" />
@@ -217,11 +248,11 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
+          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+           <CardDescription>GM draft performance metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-destructive">Error loading draft POE data: {error}</p>
+          <p className="text-destructive">Error loading draft performance data: {error}</p>
         </CardContent>
       </Card>
     );
@@ -231,11 +262,11 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-           <CardDescription>GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
+          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+           <CardDescription>GM draft performance metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p>No draft POE data available. Please ensure 'gm_season_performance_grid.json' exists in 'public/data/draft_data/' and is correctly formatted.</p>
+          <p>No draft performance data available. Please ensure 'gm_season_performance_grid.json' exists in 'public/data/draft_data/' and is correctly formatted.</p>
         </CardContent>
       </Card>
     );
@@ -244,11 +275,25 @@ const DraftOverview = () => {
   return (
     <TooltipProvider>
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft POE Heatmap</CardTitle>
-          <CardDescription>
-            GM draft POE (Points Over Expected) metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range. Hover over a cell for more details.
-          </CardDescription>
+        <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div>
+                <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+                <CardDescription>
+                    GM draft metrics across seasons for {metricConfigs[selectedMetric].label}. Colors indicate performance relative to average. Hover over a cell for more details.
+                </CardDescription>
+            </div>
+            <RadioGroup
+                value={selectedMetric}
+                onValueChange={(value) => setSelectedMetric(value as HeatmapMetricKey)}
+                className="flex flex-wrap gap-x-4 gap-y-2 mt-4 sm:mt-0"
+            >
+                {Object.values(metricConfigs).map(config => (
+                    <div key={config.key} className="flex items-center space-x-2">
+                        <RadioGroupItem value={config.key} id={config.key} />
+                        <Label htmlFor={config.key} className="text-sm cursor-pointer">{config.label}</Label>
+                    </div>
+                ))}
+            </RadioGroup>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -271,18 +316,20 @@ const DraftOverview = () => {
                       <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
                       {seasonYears.map(year => {
                         const performanceData = heatmapData[gm_name]?.[year];
-                        const poeValue = performanceData?.avg_pvdre;
-                        const cellStyle = getPoeColorStyle(performanceData);
+                        const metricValue = performanceData?.[selectedMetric];
+                        const cellStyle = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
+                        const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
+                        
                         return (
                           <TableCell
-                            key={`${gm_name}-${year}`}
+                            key={`${gm_name}-${year}-${selectedMetric}`}
                             className="p-0 border text-center text-xs md:text-sm"
-                            style={{minWidth: '60px'}} 
+                            style={{minWidth: '70px'}} // Increased minWidth for better readability of varied metrics
                           >
                             <Tooltip delayDuration={100}>
                               <TooltipTrigger asChild>
                                 <div className="p-2 h-full w-full flex items-center justify-center" style={cellStyle}>
-                                  {typeof poeValue === 'number' ? poeValue.toFixed(1) : '-'}
+                                  {displayValue}
                                 </div>
                               </TooltipTrigger>
                               {performanceData && (
@@ -290,11 +337,11 @@ const DraftOverview = () => {
                                   <div className="space-y-1.5 text-left">
                                     <p className="font-semibold">{performanceData.gm_name} - {performanceData.season_id}</p>
                                     <p><span className="font-medium">POE (Avg PVDRE):</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                    <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined && performanceData.pvdre_hit_rate !== null ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
+                                    <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
                                     <p><span className="font-medium">Total Picks:</span> {performanceData.total_picks ?? 'N/A'}</p>
                                     <p><span className="font-medium">1st Round Pos:</span> {performanceData.first_round_draft_position ?? 'N/A'}</p>
                                     <p><span className="font-medium">Total PVDRE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
-                                    <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
-                                    <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
                                   </div>
                                 </TooltipContent>
                               )}
