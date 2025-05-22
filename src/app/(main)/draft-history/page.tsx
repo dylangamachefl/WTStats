@@ -92,6 +92,59 @@ const getPositionBadgeClass = (position?: string): string => {
   }
 };
 
+// Helper for PVDRE heatmap cell styling
+const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, maxPvdre: number): string => {
+    if (pvdre === null || pvdre === undefined) return 'bg-muted/30 text-muted-foreground';
+    
+    const range = maxPvdre - minPvdre;
+    if (range === 0) return 'bg-neutral-100 text-neutral-700'; // Neutral if all values are the same
+
+    const normalizedValue = (pvdre - minPvdre) / range;
+    let hue;
+    const saturation = 70;
+    let lightness = 90; // Base lightness for pastel colors
+
+    // Define a neutral band, e.g., 40th to 60th percentile
+    const neutralBandStart = 0.4;
+    const neutralBandEnd = 0.6;
+
+    if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
+        return 'bg-neutral-100 text-neutral-700'; // Neutral color for mid-range values
+    } else if (normalizedValue < neutralBandStart) {
+        hue = 0; // Red for lower values
+        const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
+        lightness = 90 - (intensity * 20); // Make it less light as it gets more intensely red
+    } else { // normalizedValue > neutralBandEnd
+        hue = 120; // Green for higher values
+        const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
+        lightness = 90 - (intensity * 20); // Make it less light as it gets more intensely green
+    }
+    
+    const textColor = lightness < 65 ? 'text-primary-foreground' : 'text-foreground';
+    return `bg-[hsl(${hue},${saturation}%,${lightness}%)] ${textColor} font-medium`;
+};
+
+// Helper for Reach/Steal heatmap cell styling
+const getReachStealCellStyle = (reachStealValue: number | null | undefined): string => {
+    if (reachStealValue === null || reachStealValue === undefined) return 'bg-muted/30 text-muted-foreground';
+    
+    const threshold = 0.1; // Small threshold to consider values around 0 as neutral
+    if (reachStealValue > threshold) {
+        // Green scale for steals (positive values)
+        if (reachStealValue > 10) return 'bg-green-300 text-green-800 font-medium';
+        if (reachStealValue > 5) return 'bg-green-200 text-green-800 font-medium';
+        return 'bg-green-100 text-green-700 font-medium';
+    } else if (reachStealValue < -threshold) {
+        // Red scale for reaches (negative values)
+        if (reachStealValue < -10) return 'bg-red-300 text-red-800 font-medium';
+        if (reachStealValue < -5) return 'bg-red-200 text-red-800 font-medium';
+        return 'bg-red-100 text-red-700 font-medium';
+    } else {
+        return 'bg-neutral-100 text-neutral-700 font-medium'; // Neutral for values close to 0
+    }
+};
+
+
 const DraftOverview = () => {
   const [rawData, setRawData] = useState<GMDraftSeasonPerformance[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -145,7 +198,7 @@ const DraftOverview = () => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
     
     const validRawData = rawData.filter(
-      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number' && (typeof item[selectedMetric] === 'number' || item[selectedMetric] === null || item[selectedMetric] === undefined)
+      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number'
     );
 
     const transformed: TransformedHeatmapData = validRawData.reduce((acc, item) => {
@@ -173,61 +226,55 @@ const DraftOverview = () => {
     metricKey: HeatmapMetricKey,
     metricMinValue: number, 
     metricMaxValue: number 
-  ): React.CSSProperties => {
-    if (!performanceData) return { color: 'hsl(var(--muted-foreground))' };
+  ): string => { // Return Tailwind string instead of CSSProperties
+    if (!performanceData) return 'text-muted-foreground';
 
     const value = performanceData[metricKey];
     if (typeof value !== 'number') {
-      return { color: 'hsl(var(--muted-foreground))' };
+      return 'text-muted-foreground';
     }
 
-    let hue;
-    const saturation = 70; 
-    let lightness = 90; 
+    let baseClasses = "font-medium ";
 
     if (metricKey === 'avg_value_vs_adp') {
         const adpThreshold = 0.1; 
         if (value > adpThreshold) { 
-            hue = 120; // Green
             const effectiveMax = Math.max(adpThreshold * 1.1, metricMaxValue); 
             const intensity = Math.min(1, Math.max(0, value / effectiveMax));
-            lightness = 90 - (intensity * 25); 
+            if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
+            if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
+            return baseClasses + 'bg-green-100 text-green-700';
         } else if (value < -adpThreshold) { 
-            hue = 0; // Red
             const effectiveMin = Math.min(-adpThreshold * 1.1, metricMinValue); 
             const intensity = Math.min(1, Math.max(0, value / effectiveMin)); 
-            lightness = 90 - (intensity * 25); 
+            if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
+            if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
+            return baseClasses + 'bg-red-100 text-red-700';
         } else {
-            return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+            return baseClasses + 'bg-neutral-100 text-neutral-700';
         }
     } else { // For POE and Hit Rate
         const range = metricMaxValue - metricMinValue;
-        if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+        if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
 
         const normalizedValue = (value - metricMinValue) / range;
         const neutralBandStart = 0.40; 
         const neutralBandEnd = 0.60;   
 
         if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
-          return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
+          return baseClasses + 'bg-neutral-100 text-neutral-700';
         } else if (normalizedValue < neutralBandStart) {
-          hue = 0; // Red for lower values
           const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-          lightness = 90 - (intensity * 20); 
+          if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
+          if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
+          return baseClasses + 'bg-red-100 text-red-700';
         } else { // normalizedValue > neutralBandEnd
-          hue = 120; // Green for higher values
           const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
-          lightness = 90 - (intensity * 20); 
+           if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
+           if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
+           return baseClasses + 'bg-green-100 text-green-700';
         }
     }
-    
-    const textColor = lightness < 65 ? 'hsl(var(--primary-foreground))' : 'hsl(var(--foreground))';
-
-    return {
-        backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
-        color: textColor,
-        fontWeight: '500'
-    };
   };
 
 
@@ -342,7 +389,7 @@ const DraftOverview = () => {
                       {seasonYears.map(year => {
                         const performanceData = heatmapData[gm_name]?.[year];
                         const metricValue = performanceData?.[selectedMetric];
-                        const cellStyle = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
+                        const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
                         const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
                         
                         return (
@@ -353,7 +400,7 @@ const DraftOverview = () => {
                           >
                             <Tooltip delayDuration={100}>
                               <TooltipTrigger asChild>
-                                <div className="p-2 h-full w-full flex items-center justify-center" style={cellStyle}>
+                                <div className={cn("p-2 h-full w-full flex items-center justify-center", cellClasses)}>
                                   {displayValue}
                                 </div>
                               </TooltipTrigger>
@@ -394,9 +441,8 @@ const SeasonDraftDetail = () => {
   const [topBusts, setTopBusts] = useState<DraftPickDetail[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [analysisMode, setAnalysisMode] = useState<'none' | 'value' | 'reachSteal'>('none');
 
-  const [showValueAnalysis, setShowValueAnalysis] = useState(false);
-  const [showReachSteal, setShowReachSteal] = useState(false);
 
   useEffect(() => {
     if (selectedSeason) {
@@ -421,7 +467,7 @@ const SeasonDraftDetail = () => {
           const jsonData: SeasonDraftDetailJson = await response.json(); 
           console.log(`[SeasonDraftDetail] Fetched raw JSON data for season ${selectedSeason}:`, jsonData);
 
-          if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
+           if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
             setDraftData(jsonData.draft_board);
             setTeamDraftPerformance(jsonData.team_draft_performance_ranking || null);
             setTopSteals(jsonData.season_highlights?.top_steals_by_pvdre || null);
@@ -449,17 +495,24 @@ const SeasonDraftDetail = () => {
     }
   }, [selectedSeason]);
 
-  const { draftBoardPicks, gmNamesForColumns, maxRound, numGms } = useMemo(() => {
+  const { draftBoardPicks, gmNamesForColumns, maxRound, numGms, minPVDRE, maxPVDRE } = useMemo(() => {
     if (!draftData || !Array.isArray(draftData)) { 
       console.warn("[SeasonDraftDetail useMemo] draftData is not an array or is null. draftData:", draftData);
-      return { draftBoardPicks: {}, gmNamesForColumns: [], maxRound: 0, numGms: 0 };
+      return { draftBoardPicks: {}, gmNamesForColumns: [], maxRound: 0, numGms: 0, minPVDRE: 0, maxPVDRE: 0 };
     }
 
     const sortedPicks = [...draftData].sort((a, b) => a.pick_overall - b.pick_overall);
 
     const picksByOverall: { [overallPick: number]: DraftPickDetail } = {};
+    let currentMinPVDRE = Infinity;
+    let currentMaxPVDRE = -Infinity;
+
     sortedPicks.forEach(pick => {
       picksByOverall[pick.pick_overall] = pick;
+      if (pick.pvdre_points_vs_league_draft_rank_exp !== null && pick.pvdre_points_vs_league_draft_rank_exp !== undefined) {
+        currentMinPVDRE = Math.min(currentMinPVDRE, pick.pvdre_points_vs_league_draft_rank_exp);
+        currentMaxPVDRE = Math.max(currentMaxPVDRE, pick.pvdre_points_vs_league_draft_rank_exp);
+      }
     });
     
     const gmMinOverallPick = new Map<string, number>();
@@ -489,7 +542,14 @@ const SeasonDraftDetail = () => {
     
     const numberOfGms = sortedGmNamesByDraftOrder.length;
 
-    return { draftBoardPicks: picksByOverall, gmNamesForColumns: sortedGmNamesByDraftOrder, maxRound: currentMaxRound, numGms: numberOfGms };
+    return { 
+        draftBoardPicks: picksByOverall, 
+        gmNamesForColumns: sortedGmNamesByDraftOrder, 
+        maxRound: currentMaxRound, 
+        numGms: numberOfGms,
+        minPVDRE: currentMinPVDRE === Infinity ? 0 : currentMinPVDRE,
+        maxPVDRE: currentMaxPVDRE === -Infinity ? 0 : currentMaxPVDRE
+    };
   }, [draftData]);
 
 
@@ -534,14 +594,31 @@ const SeasonDraftDetail = () => {
                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
                     }
                     
-                    const cellBg = getPositionBadgeClass(pick.player_position);
-                    return (
-                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' }}>
-                        <Tooltip delayDuration={100}>
-                          <TooltipTrigger asChild>
-                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg }}>
+                    let cellContent;
+                    let cellStyleClasses = "";
+
+                    if (analysisMode === 'none') {
+                        cellContent = (
+                            <>
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
                                 <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
+                            </>
+                        );
+                        cellStyleClasses = getPositionBadgeClass(pick.player_position);
+                    } else if (analysisMode === 'value') {
+                        cellContent = <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>;
+                        cellStyleClasses = getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE);
+                    } else { // analysisMode === 'reachSteal'
+                        cellContent = <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>;
+                        cellStyleClasses = getReachStealCellStyle(pick.overall_reach_steal_value);
+                    }
+                    
+                    return (
+                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{minWidth: '120px' }}>
+                        <Tooltip delayDuration={100}>
+                          <TooltipTrigger asChild>
+                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellStyleClasses)}>
+                                {cellContent}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
@@ -590,11 +667,11 @@ const SeasonDraftDetail = () => {
             </Select>
             <div className="flex items-center space-x-4 mt-4 sm:mt-0">
                 <div className="flex items-center space-x-2">
-                    <Switch id="value-analysis" checked={showValueAnalysis} onCheckedChange={setShowValueAnalysis} />
+                    <Switch id="value-analysis" checked={analysisMode === 'value'} onCheckedChange={(checked) => setAnalysisMode(checked ? 'value' : 'none')} />
                     <Label htmlFor="value-analysis" className="text-sm">Value Analysis</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <Switch id="reach-steal" checked={showReachSteal} onCheckedChange={setShowReachSteal}/>
+                    <Switch id="reach-steal" checked={analysisMode === 'reachSteal'} onCheckedChange={(checked) => setAnalysisMode(checked ? 'reachSteal' : 'none')}/>
                     <Label htmlFor="reach-steal" className="text-sm">Reach/Steal</Label>
                 </div>
             </div>
@@ -809,6 +886,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-
-    
