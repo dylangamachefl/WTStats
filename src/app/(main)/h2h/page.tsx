@@ -29,7 +29,6 @@ const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) 
   if (payload?.is_championship_matchup) {
     return <Trophy x={(cx ?? 0) - 8} y={(cy ?? 0) - 8} width={16} height={16} className="text-yellow-500 fill-yellow-400" />;
   }
-  // Strictly use the boolean flag for playoff games
   if (payload?.is_playoff_matchup) {
     return <circle cx={cx} cy={cy} r={(r ?? 3) + 3} strokeWidth={1} className="stroke-accent fill-accent" />;
   }
@@ -65,6 +64,14 @@ export default function H2HPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<MatchupSortConfig>({ key: 'season_id', direction: 'desc' });
+  const [comparisonAttempted, setComparisonAttempted] = useState(false);
+
+  useEffect(() => {
+    // Reset comparison attempt if GM selections change
+    setComparisonAttempted(false);
+    setComparisonData(null); // Also clear old data
+    // setError(null); // Optionally clear selection errors too, or let handleCompare do it
+  }, [gm1Id, gm2Id]);
 
   const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
     if (!comparisonData?.matchup_timeline || comparisonData.matchup_timeline.length === 0) {
@@ -106,13 +113,16 @@ export default function H2HPage() {
   const handleCompare = async () => {
     if (!gm1Id || !gm2Id) {
       setError("Please select two GMs.");
+      setComparisonAttempted(false); // Ensure it's false if validation fails early
       return;
     }
     if (gm1Id === gm2Id) {
       setError("Please select two different GMs.");
+      setComparisonAttempted(false); // Ensure it's false if validation fails early
       return;
     }
 
+    setComparisonAttempted(true); // Mark that a comparison attempt has been made
     setLoading(true);
     setError(null);
     setComparisonData(null);
@@ -120,11 +130,9 @@ export default function H2HPage() {
     const selectedGm1 = mockGms.find(gm => gm.id === gm1Id);
     const selectedGm2 = mockGms.find(gm => gm.id === gm2Id);
 
-    // Default names, will be overwritten by fetched data
     let tempGm1Name = selectedGm1?.name || "GM 1";
     let tempGm2Name = selectedGm2?.name || "GM 2";
 
-    // Ensure gm1Id and gm2Id are treated as numbers for sorting, then convert back to string if needed
     const numGm1Id = parseInt(gm1Id);
     const numGm2Id = parseInt(gm2Id);
     
@@ -148,7 +156,6 @@ export default function H2HPage() {
         tempGm1Name = data.owner1_info.owner_name;
         tempGm2Name = data.owner2_info.owner_name;
       } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-        // Swap data to match selection order
         tempGm1Name = data.owner2_info.owner_name;
         tempGm2Name = data.owner1_info.owner_name;
         setComparisonData({
@@ -171,7 +178,6 @@ export default function H2HPage() {
             owner2_score: m.owner1_score,
             owner1_team_name: m.owner2_team_name,
             owner2_team_name: m.owner1_team_name,
-            // winner_owner_id remains absolute based on original file, this is handled later by getWinnerName
           })),
           playoff_meetings: { 
             ...data.playoff_meetings,
@@ -181,13 +187,12 @@ export default function H2HPage() {
                 ...pm,
                 owner1_score: pm.owner2_score,
                 owner2_score: pm.owner1_score,
-                // winner_owner_id remains absolute
             }))
           }
         });
       } else {
         console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is. Ensure JSON owner_ids match selection IDs.");
-        setComparisonData(data); // Display as is if no direct match for swapping
+        setComparisonData(data); 
         tempGm1Name = data.owner1_info.owner_name;
         tempGm2Name = data.owner2_info.owner_name;
       }
@@ -220,7 +225,7 @@ export default function H2HPage() {
             winnerName = comparisonData.owner2_info.owner_name;
         }
         return {
-            ...m, // includes is_playoff_matchup and is_championship_matchup
+            ...m, 
             name: `S${m.season_id} W${m.fantasy_week}`,
             [displayedGm1Name]: m.owner1_score,
             [displayedGm2Name]: m.owner2_score,
@@ -320,13 +325,15 @@ export default function H2HPage() {
             </Select>
           </div>
           <Button onClick={handleCompare} disabled={loading || !gm1Id || !gm2Id} className="w-full sm:w-auto">
-            {loading ? "Comparing..." : "Compare"}
+            {loading && comparisonAttempted ? "Comparing..." : "Compare"}
           </Button>
         </CardContent>
-        {error && <CardContent><p className="text-destructive text-center">{error}</p></CardContent>}
+        {error && !comparisonAttempted && ( // Only show selection errors here
+            <CardContent><p className="text-destructive text-center">{error}</p></CardContent>
+        )}
       </Card>
 
-      {loading && (
+      {comparisonAttempted && loading && (
         <div className="space-y-6">
           <Skeleton className="h-64 w-full" />
           <Skeleton className="h-80 w-full" />
@@ -334,7 +341,28 @@ export default function H2HPage() {
         </div>
       )}
 
-      {!loading && comparisonData && (
+      {comparisonAttempted && !loading && error && (
+        <Card>
+            <CardContent className="pt-6 text-center text-destructive">
+                <Info className="mx-auto h-12 w-12 text-destructive mb-4" />
+                <p className="font-semibold">Error During Comparison:</p>
+                <p className="text-sm mt-1">{error}</p>
+            </CardContent>
+        </Card>
+      )}
+      
+      {comparisonAttempted && !loading && !error && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && (
+        <Card>
+            <CardContent className="pt-6 text-center text-muted-foreground">
+                <Info className="mx-auto h-12 w-12 text-primary mb-4" />
+                <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
+                <p className="text-sm mt-1">Ensure a file named `comparison_${Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
+                <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
+            </CardContent>
+        </Card>
+      )}
+
+      {comparisonAttempted && !loading && !error && comparisonData && (
         <div className="space-y-8">
           <Card className="bg-card shadow-lg">
             <CardHeader className="pb-4">
@@ -343,7 +371,6 @@ export default function H2HPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-6 items-start">
-              {/* GM 1 Column */}
               <div className="text-center p-4 border border-border rounded-lg bg-muted/30 shadow-sm">
                 <h3 className="text-2xl font-semibold text-primary mb-3">{displayedGm1Name}</h3>
                 <p className="text-4xl font-bold mb-1">{comparisonData.rivalry_summary.owner1_wins} <span className="text-xl font-medium">WINS</span>
@@ -362,7 +389,6 @@ export default function H2HPage() {
                 <p className="text-sm"><span className="font-medium text-muted-foreground">Avg Win Margin:</span> {comparisonData.rivalry_summary.average_margin_of_victory_owner1?.toFixed(1) ?? 'N/A'} pts</p>
               </div>
 
-              {/* GM 2 Column */}
               <div className="text-center p-4 border border-border rounded-lg bg-muted/30 shadow-sm">
                 <h3 className="text-2xl font-semibold text-primary mb-3">{displayedGm2Name}</h3>
                  <p className="text-4xl font-bold mb-1">{comparisonData.rivalry_summary.owner2_wins} <span className="text-xl font-medium">WINS</span>
@@ -516,16 +542,6 @@ export default function H2HPage() {
           </Card>
           
         </div>
-      )}
-       {!loading && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && !error &&(
-        <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-                <Info className="mx-auto h-12 w-12 text-primary mb-4" />
-                <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
-                <p className="text-sm mt-1">Ensure a file named `comparison_{Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
-                <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
-            </CardContent>
-        </Card>
       )}
     </div>
   );
