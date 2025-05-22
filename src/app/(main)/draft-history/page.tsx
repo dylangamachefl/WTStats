@@ -857,11 +857,12 @@ const GMDraftHistory = () => {
   }, [gmDraftData?.round_efficiency]);
 
   const positionalProfileChartData = useMemo(() => {
-    return gmDraftData?.positional_profile.map(p => ({
+    if (!gmDraftData?.positional_profile) return [];
+    return gmDraftData.positional_profile.map(p => ({
       name: p.position,
-      'Avg POE': p.gm_average_pvdre,
-      picks: p.picks_count,
-    })) || [];
+      'GM Avg POE': p.gm_average_pvdre,
+      'League Avg POE': p.league_average_pvdre ?? 0, // Default to 0 if null/undefined
+    }));
   }, [gmDraftData?.positional_profile]);
 
   if (!selectedGmId) {
@@ -1025,21 +1026,21 @@ const GMDraftHistory = () => {
               </div>
 
               <Card>
-                <CardHeader><CardTitle className="text-lg">Positional Drafting Profile (Avg. POE) (DH.2.5)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="text-lg">Positional Drafting Profile (Avg. POE vs League Avg) (DH.2.5)</CardTitle></CardHeader>
                 <CardContent className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={positionalProfileChartData} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" />
                       <YAxis dataKey="name" type="category" width={80} />
-                      <RechartsTooltip formatter={(value, name) => name === 'Avg POE' ? (value as number).toFixed(2) : value} />
+                      <RechartsTooltip formatter={(value, name) => name === 'GM Avg POE' || name === 'League Avg POE' ? (value as number).toFixed(2) : value} />
                       <RechartsLegend />
-                      <Bar dataKey="Avg POE" name="Avg POE">
+                      <Bar dataKey="GM Avg POE" name="GM Avg POE">
                          {positionalProfileChartData.map((entry, index) => (
-                          <RechartsCell key={`cell-${index}`} fill={entry['Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
+                          <RechartsCell key={`cell-gm-${index}`} fill={entry['GM Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
                         ))}
                       </Bar>
-                      <Bar dataKey="picks" name="Picks Count" fill="hsl(var(--muted))" />
+                      <Bar dataKey="League Avg POE" name="League Avg POE" fill="hsl(var(--muted))" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -1072,3 +1073,6 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
+
+
+    
