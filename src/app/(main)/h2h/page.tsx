@@ -37,7 +37,7 @@ const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) 
 
 const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string }; // Assuming chartData items have these
+    const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string }; 
     const isChampionship = data.is_championship_matchup;
     const isPlayoff = data.is_playoff_matchup;
 
@@ -74,6 +74,7 @@ export default function H2HPage() {
   useEffect(() => {
     setComparisonAttempted(false);
     setComparisonData(null); 
+    setError(null);
   }, [gm1Id, gm2Id]);
 
   const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
@@ -135,8 +136,7 @@ export default function H2HPage() {
 
     let tempGm1Name = selectedGm1?.name || "GM 1";
     let tempGm2Name = selectedGm2?.name || "GM 2";
-
-    // Ensure IDs are treated as numbers for sorting, but keep original string IDs for comparison
+    
     const numGm1Id = parseInt(gm1Id);
     const numGm2Id = parseInt(gm2Id);
     
@@ -149,8 +149,8 @@ export default function H2HPage() {
       const response = await fetch(filePath);
       if (response.status === 404) {
         console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
-        setError(null); // Clear generic error
-        setComparisonData(null); // Ensure no data is shown
+        setError(null); 
+        setComparisonData(null); 
       } else if (!response.ok) {
         const errorText = await response.text();
         console.error("[H2HPage] Fetch failed:", response.status, errorText);
@@ -164,7 +164,6 @@ export default function H2HPage() {
           tempGm1Name = data.owner1_info.owner_name;
           tempGm2Name = data.owner2_info.owner_name;
         } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-          // Data is for gm2 vs gm1, need to swap to match user selection gm1 vs gm2
           tempGm1Name = data.owner2_info.owner_name;
           tempGm2Name = data.owner1_info.owner_name;
           setComparisonData({
@@ -187,7 +186,6 @@ export default function H2HPage() {
               owner2_score: m.owner1_score,
               owner1_team_name: m.owner2_team_name,
               owner2_team_name: m.owner1_team_name,
-              // winner_owner_id remains the same actual winner's ID
             })),
             playoff_meetings: { 
               ...data.playoff_meetings,
@@ -195,14 +193,12 @@ export default function H2HPage() {
               owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
               matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
                   ...pm,
-                  owner1_score: pm.owner2_score, // Assuming JSON has owner1_score for first ID in filename
+                  owner1_score: pm.owner2_score, 
                   owner2_score: pm.owner1_score,
-                  // winner_owner_id remains the same actual winner's ID
               }))
             }
           });
         } else {
-          // This case should ideally not happen if file naming is consistent and IDs in file match those in filename.
           console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is, but this might be incorrect. Ensure JSON owner_ids match selection IDs.");
           setComparisonData(data); 
           tempGm1Name = data.owner1_info.owner_name;
@@ -232,7 +228,7 @@ export default function H2HPage() {
       .map((m) => {
         const margin = Math.abs(m.owner1_score - m.owner2_score);
         let winnerName = 'Tie';
-        if (comparisonData.owner1_info && comparisonData.owner2_info) { // Ensure owner_info exists
+        if (comparisonData.owner1_info && comparisonData.owner2_info) { 
             if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
                 winnerName = comparisonData.owner1_info.owner_name;
             } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
@@ -260,7 +256,7 @@ export default function H2HPage() {
   };
   
   const getWinnerName = (winnerId: number | null, gm1Info?: H2HOwnerInfo, gm2Info?: H2HOwnerInfo): string => {
-    if (!gm1Info || !gm2Info) return "N/A"; // Guard against undefined owner info
+    if (!gm1Info || !gm2Info) return "N/A"; 
     if (winnerId === null) return "Tie";
     if (winnerId === gm1Info.owner_id) return gm1Info.owner_name;
     if (winnerId === gm2Info.owner_id) return gm2Info.owner_name;
@@ -372,8 +368,6 @@ export default function H2HPage() {
             <CardContent className="pt-6 text-center text-muted-foreground">
                 <Info className="mx-auto h-12 w-12 text-primary mb-4" />
                 <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
-                <p className="text-sm mt-1">Ensure a file named `comparison_${Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_${Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
-                <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
             </CardContent>
         </Card>
       )}
@@ -566,4 +560,3 @@ export default function H2HPage() {
     </div>
   );
 }
-
