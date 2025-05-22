@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, GMDraftHistoryData, DraftPickDetail, SeasonDraftBoardData } from '@/lib/types';
+import type { Season, GM, GMDraftSeasonPerformance, GMDraftHistoryData, DraftPickDetail } from '@/lib/types';
 import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -154,7 +154,7 @@ const DraftOverview = () => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
     
     const validRawData = rawData.filter(
-      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number'
+      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number' && typeof item[selectedMetric] === 'number'
     );
 
     const transformed: TransformedHeatmapData = validRawData.reduce((acc, item) => {
@@ -175,7 +175,7 @@ const DraftOverview = () => {
     
     const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.season_id.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
-  }, [rawData, sortConfig]);
+  }, [rawData, sortConfig, selectedMetric]);
 
   const getCellStyle = (
     performanceData: GMDraftSeasonPerformance | undefined, 
@@ -449,18 +449,24 @@ const SeasonDraftDetail = () => {
     }
   }, [selectedSeason]);
 
-  const { boardLayout, gmNamesForColumns, maxRound } = useMemo(() => {
+  const { draftBoardPicks, gmNamesForColumns, maxRound, numGms } = useMemo(() => {
     if (!draftData || !Array.isArray(draftData)) { 
       console.warn("[SeasonDraftDetail useMemo] draftData is not an array or is null. draftData:", draftData);
-      return { boardLayout: {}, gmNamesForColumns: [], maxRound: 0 };
+      return { draftBoardPicks: {}, gmNamesForColumns: [], maxRound: 0, numGms: 0 };
     }
 
-    const picksByRoundAndGm: { [round: number]: { [gmName: string]: DraftPickDetail | undefined } } = {};
+    const sortedPicks = [...draftData].sort((a, b) => a.pick_overall - b.pick_overall);
+
+    const picksByOverall: { [overallPick: number]: DraftPickDetail } = {};
+    sortedPicks.forEach(pick => {
+      picksByOverall[pick.pick_overall] = pick;
+    });
+    
     const gmMinOverallPick = new Map<string, number>();
     const gmNames = new Set<string>();
     let currentMaxRound = 0;
 
-    draftData.forEach(pick => {
+    sortedPicks.forEach(pick => {
       if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number' || typeof pick.pick_overall !== 'number') {
         console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered (missing gm_name, round, pick_in_round or pick_overall):", pick);
         return; 
@@ -469,28 +475,21 @@ const SeasonDraftDetail = () => {
       if (pick.round > currentMaxRound) {
         currentMaxRound = pick.round;
       }
-
       if (!gmMinOverallPick.has(pick.gm_name) || pick.pick_overall < gmMinOverallPick.get(pick.gm_name)!) {
         gmMinOverallPick.set(pick.gm_name, pick.pick_overall);
-      }
-
-      if (!picksByRoundAndGm[pick.round]) {
-        picksByRoundAndGm[pick.round] = {};
-      }
-      const existingPick = picksByRoundAndGm[pick.round][pick.gm_name];
-      if (!existingPick || pick.pick_in_round < existingPick.pick_in_round) {
-         picksByRoundAndGm[pick.round][pick.gm_name] = pick;
       }
     });
     
     const sortedGmNamesByDraftOrder = Array.from(gmNames).sort((a, b) => {
         const pickA = gmMinOverallPick.get(a) ?? Infinity;
         const pickB = gmMinOverallPick.get(b) ?? Infinity;
-        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b); // Fallback for GMs with no picks
+        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b); 
         return pickA - pickB;
     });
+    
+    const numberOfGms = sortedGmNamesByDraftOrder.length;
 
-    return { boardLayout: picksByRoundAndGm, gmNamesForColumns: sortedGmNamesByDraftOrder, maxRound: currentMaxRound };
+    return { draftBoardPicks: picksByOverall, gmNamesForColumns: sortedGmNamesByDraftOrder, maxRound: currentMaxRound, numGms: numberOfGms };
   }, [draftData]);
 
 
@@ -518,48 +517,51 @@ const SeasonDraftDetail = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => {
-                // This determines the order of GMs for iterating through cells in the current round
-                const gmOrderForCurrentRound = roundNum % 2 !== 0 ? gmNamesForColumns : [...gmNamesForColumns].reverse();
-                return (
-                    <TableRow key={roundNum}>
-                    <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
-                    {/* Iterate through the GMs in the order determined for this round (snake draft order) */}
-                    {gmOrderForCurrentRound.map(gmName => {
-                        const pick = boardLayout[roundNum]?.[gmName];
-                        if (!pick) {
-                          // If this GM (from current snake order) has no pick in this round (e.g. traded away), render empty cell
-                          return <TableCell key={`${roundNum}-${gmName}-empty-slot`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
-                        }
-                        const cellBg = getPositionBadgeClass(pick.player_position);
-                        return (
-                        <TableCell key={pick.player_id || `${roundNum}-${gmName}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' }}>
-                            <Tooltip delayDuration={100}>
-                            <TooltipTrigger asChild>
-                                <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg }}>
-                                    <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
-                                    <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
-                                <div className="space-y-1.5 text-left text-xs">
-                                    <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
-                                    <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
-                                    <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
-                                    {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">PVDRE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
-                                    {pick.fantasy_points_per_game_season !== null && <p><span className="font-medium">Season PPG:</span> {pick.fantasy_points_per_game_season?.toFixed(1) ?? 'N/A'}</p>}
-                                    {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
-                                    {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
-                                    {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
-                                </div>
-                            </TooltipContent>
-                            </Tooltip>
-                        </TableCell>
-                        );
-                    })}
-                    </TableRow>
-                );
-                })}
+              {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => (
+                <TableRow key={roundNum}>
+                  <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
+                  {gmNamesForColumns.map((_, gmIndex) => {
+                    let targetPickInRound: number;
+                    if (roundNum % 2 !== 0) { // Odd rounds
+                      targetPickInRound = gmIndex + 1;
+                    } else { // Even rounds (snake)
+                      targetPickInRound = numGms - gmIndex;
+                    }
+                    const targetOverallPick = (roundNum - 1) * numGms + targetPickInRound;
+                    const pick = draftBoardPicks[targetOverallPick];
+
+                    if (!pick) {
+                      return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
+                    }
+                    
+                    const cellBg = getPositionBadgeClass(pick.player_position);
+                    return (
+                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' }}>
+                        <Tooltip delayDuration={100}>
+                          <TooltipTrigger asChild>
+                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg }}>
+                                <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
+                                <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                            <div className="space-y-1.5 text-left text-xs">
+                                <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
+                                <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
+                                <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
+                                {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">PVDRE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.fantasy_points_per_game_season !== null && <p><span className="font-medium">Season PPG:</span> {pick.fantasy_points_per_game_season?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
+                                {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
