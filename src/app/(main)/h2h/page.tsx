@@ -38,6 +38,9 @@ const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) 
 const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string };
+    const isChampionship = data.is_championship_matchup;
+    const isPlayoff = data.is_playoff_matchup;
+
     return (
       <div className="p-3 bg-popover text-popover-foreground shadow-md rounded-lg border">
         <p className="font-semibold text-sm mb-1">{`Matchup: ${data.season_id} - ${data.fantasy_week}`}</p>
@@ -46,8 +49,10 @@ const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
         <p className="text-xs"><span className="font-medium">{data.owner2_team_name || gm2Name}:</span> {data.owner2_score?.toFixed(1)}</p>
         {data.winnerName && <p className="text-xs mt-1"><span className="font-medium">Winner:</span> {data.winnerName}</p>}
         {data.margin !== undefined && <p className="text-xs"><span className="font-medium">Margin:</span> {data.margin.toFixed(1)}</p>}
-        {(data.is_playoff_matchup) && 
-          <p className="text-xs text-accent font-semibold mt-1">{data.is_championship_matchup ? "Championship Game" : "Playoff Game"}</p>}
+        {(isPlayoff || isChampionship) && 
+          <p className={cn("text-xs font-semibold mt-1", isChampionship ? "text-yellow-500" : "text-accent")}>
+            {isChampionship ? "Championship Game" : "Playoff Game"}
+          </p>}
       </div>
     );
   }
@@ -67,10 +72,8 @@ export default function H2HPage() {
   const [comparisonAttempted, setComparisonAttempted] = useState(false);
 
   useEffect(() => {
-    // Reset comparison attempt if GM selections change
     setComparisonAttempted(false);
-    setComparisonData(null); // Also clear old data
-    // setError(null); // Optionally clear selection errors too, or let handleCompare do it
+    setComparisonData(null); 
   }, [gm1Id, gm2Id]);
 
   const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
@@ -113,16 +116,16 @@ export default function H2HPage() {
   const handleCompare = async () => {
     if (!gm1Id || !gm2Id) {
       setError("Please select two GMs.");
-      setComparisonAttempted(false); // Ensure it's false if validation fails early
+      setComparisonAttempted(false); 
       return;
     }
     if (gm1Id === gm2Id) {
       setError("Please select two different GMs.");
-      setComparisonAttempted(false); // Ensure it's false if validation fails early
+      setComparisonAttempted(false); 
       return;
     }
 
-    setComparisonAttempted(true); // Mark that a comparison attempt has been made
+    setComparisonAttempted(true); 
     setLoading(true);
     setError(null);
     setComparisonData(null);
@@ -328,7 +331,7 @@ export default function H2HPage() {
             {loading && comparisonAttempted ? "Comparing..." : "Compare"}
           </Button>
         </CardContent>
-        {error && !comparisonAttempted && ( // Only show selection errors here
+        {error && !comparisonAttempted && ( 
             <CardContent><p className="text-destructive text-center">{error}</p></CardContent>
         )}
       </Card>
@@ -356,7 +359,7 @@ export default function H2HPage() {
             <CardContent className="pt-6 text-center text-muted-foreground">
                 <Info className="mx-auto h-12 w-12 text-primary mb-4" />
                 <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
-                <p className="text-sm mt-1">Ensure a file named `comparison_${Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
+                <p className="text-sm mt-1">Ensure a file named `comparison_${Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_${Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
                 <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
             </CardContent>
         </Card>
@@ -475,12 +478,15 @@ export default function H2HPage() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => (
-                           <TableRow key={`playoff-detail-${index}-${meeting.season_id}-${meeting.fantasy_week}`} className={cn(meeting.fantasy_week.toLowerCase().includes('championship') && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
+                        {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => {
+                           const roundDescription = meeting.matchup_type || meeting.fantasy_week;
+                           const isChampionshipGame = roundDescription.toLowerCase().includes('championship');
+                           return (
+                           <TableRow key={`playoff-detail-${index}-${meeting.season_id}-${meeting.fantasy_week}`} className={cn(isChampionshipGame && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
                              <TableCell>{meeting.season_id}</TableCell>
                              <TableCell className="font-medium">
-                                {meeting.fantasy_week.toLowerCase().includes('championship') && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
-                                {meeting.fantasy_week}
+                                {isChampionshipGame && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
+                                {roundDescription}
                              </TableCell>
                              <TableCell className={cn("text-right font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
                              <TableCell className={cn("text-right font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
@@ -488,7 +494,8 @@ export default function H2HPage() {
                                 {getWinnerName(meeting.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}
                              </TableCell>
                            </TableRow>
-                        ))}
+                           );
+                        })}
                       </TableBody>
                     </Table>
                 ) : (

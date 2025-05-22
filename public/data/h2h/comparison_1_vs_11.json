@@ -33,7 +33,8 @@
       "owner2_team_name": "Jupiter Yawhos",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 372,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Most  Hated",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 408,
@@ -59,7 +61,8 @@
       "owner2_team_name": "Dirty Calvin and the Boys",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 466,
@@ -72,7 +75,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 554,
@@ -85,7 +89,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 615,
@@ -98,7 +103,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 629,
@@ -111,7 +117,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 676,
@@ -124,7 +131,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 746,
@@ -137,7 +145,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 845,
@@ -150,7 +159,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 861,
@@ -163,7 +173,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 896,
@@ -176,7 +187,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 941,
@@ -189,7 +201,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 971,
@@ -202,7 +215,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1016,
@@ -215,7 +229,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1050,
@@ -228,7 +243,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1119,
@@ -241,7 +257,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 11,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 1140,
@@ -254,7 +271,8 @@
       "owner2_team_name": "All Madden Ultimate Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {

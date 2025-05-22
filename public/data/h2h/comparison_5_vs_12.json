@@ -33,7 +33,8 @@
       "owner2_team_name": "Back Door Sluts 9",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 403,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Back Door Sluts 9",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 467,
@@ -59,7 +61,8 @@
       "owner2_team_name": "Kristin the Butterfly",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 522,
@@ -72,7 +75,8 @@
       "owner2_team_name": "Kristin the Butterfly",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 542,
@@ -85,7 +89,8 @@
       "owner2_team_name": "Diddlin' Ain't Easy",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 617,
@@ -98,7 +103,8 @@
       "owner2_team_name": "Diddlin' Ain't Easy",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 652,
@@ -111,7 +117,8 @@
       "owner2_team_name": "Diddlin' Ain't Easy",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 703,
@@ -124,7 +131,8 @@
       "owner2_team_name": "Trust the Process",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 723,
@@ -137,7 +145,8 @@
       "owner2_team_name": "Trust the Process",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 773,
@@ -150,7 +159,8 @@
       "owner2_team_name": "We did it baby leh goooooo",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 793,
@@ -163,7 +173,8 @@
       "owner2_team_name": "We did it baby leh goooooo",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 814,
@@ -176,7 +187,8 @@
       "owner2_team_name": "We did it baby leh goooooo",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 860,
@@ -189,7 +201,8 @@
       "owner2_team_name": "Dak and the Ankle Breakers",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 897,
@@ -202,7 +215,8 @@
       "owner2_team_name": "We Wasted  JT",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 942,
@@ -215,7 +229,8 @@
       "owner2_team_name": "We Wasted  JT",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 972,
@@ -228,7 +243,8 @@
       "owner2_team_name": "First Team All-IR",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1017,
@@ -241,7 +257,8 @@
       "owner2_team_name": "First Team All-IR",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1073,
@@ -254,7 +271,8 @@
       "owner2_team_name": "Nacua Matata",
       "winner_owner_id": 12,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1163,
@@ -267,7 +285,8 @@
       "owner2_team_name": "Flip Flip Flipadelphia",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {

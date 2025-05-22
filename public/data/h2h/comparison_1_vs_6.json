@@ -33,7 +33,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 33,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 75,
@@ -59,7 +61,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 86,
@@ -72,7 +75,8 @@
       "owner2_team_name": "Hey... wanna  go for a walk?!",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 116,
@@ -85,7 +89,8 @@
       "owner2_team_name": "Hey... wanna  go for a walk?!",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 133,
@@ -98,7 +103,8 @@
       "owner2_team_name": "Hey... wanna  go for a walk?!",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 146,
@@ -111,7 +117,8 @@
       "owner2_team_name": "Hey... wanna  go for a walk?!",
       "winner_owner_id": 6,
       "is_playoff_matchup": true,
-      "is_championship_matchup": true
+      "is_championship_matchup": true,
+      "matchup_type": "Championship"
     },
     {
       "matchup_id": 161,
@@ -124,7 +131,8 @@
       "owner2_team_name": "History in the Making",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 191,
@@ -137,7 +145,8 @@
       "owner2_team_name": "History in the Making",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 208,
@@ -150,7 +159,8 @@
       "owner2_team_name": "History in the Making",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 236,
@@ -163,7 +173,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 266,
@@ -176,7 +187,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 283,
@@ -189,7 +201,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 300,
@@ -202,7 +215,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 311,
@@ -215,7 +229,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 341,
@@ -228,7 +243,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 358,
@@ -241,7 +257,8 @@
       "owner2_team_name": "Fan Favorites",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 393,
@@ -254,7 +271,8 @@
       "owner2_team_name": "Beast Chode",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 426,
@@ -267,7 +285,8 @@
       "owner2_team_name": "Beast Chode",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 483,
@@ -280,7 +299,8 @@
       "owner2_team_name": "Nikki  McTerrin",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 524,
@@ -293,7 +313,8 @@
       "owner2_team_name": "Nikki  McTerrin",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 558,
@@ -306,7 +327,8 @@
       "owner2_team_name": "Drake's New Favorite Team",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 596,
@@ -319,7 +341,8 @@
       "owner2_team_name": "Drake's New Favorite Team",
       "winner_owner_id": 1,
       "is_playoff_matchup": true,
-      "is_championship_matchup": true
+      "is_championship_matchup": true,
+      "matchup_type": "Championship"
     },
     {
       "matchup_id": 643,
@@ -332,7 +355,8 @@
       "owner2_team_name": "Abdullah Oblongata",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 673,
@@ -345,7 +369,8 @@
       "owner2_team_name": "Abdullah Oblongata",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 701,
@@ -358,7 +383,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 721,
@@ -371,7 +397,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 744,
@@ -384,7 +411,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 771,
@@ -397,7 +425,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 791,
@@ -410,7 +439,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 827,
@@ -423,7 +453,8 @@
       "owner2_team_name": "Jupiter's Finest",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 906,
@@ -436,7 +467,8 @@
       "owner2_team_name": "Lights, Kamara, Action!",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 955,
@@ -449,7 +481,8 @@
       "owner2_team_name": "Lights, Kamara, Action!",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 981,
@@ -462,7 +495,8 @@
       "owner2_team_name": "Kittles and  Bits ",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1029,
@@ -475,7 +509,8 @@
       "owner2_team_name": "Kittles and  Bits ",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 1036,
@@ -488,7 +523,8 @@
       "owner2_team_name": "He went to Jared",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1102,
@@ -501,7 +537,8 @@
       "owner2_team_name": "He went to Jared",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1126,
@@ -514,7 +551,8 @@
       "owner2_team_name": "He went to Jared",
       "winner_owner_id": 1,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1192,
@@ -527,7 +565,8 @@
       "owner2_team_name": "He went to Jared",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {
@@ -547,7 +586,8 @@
         "owner2_team_name": "Hey... wanna  go for a walk?!",
         "winner_owner_id": 6,
         "is_playoff_matchup": true,
-        "is_championship_matchup": true
+        "is_championship_matchup": true,
+        "matchup_type": "Championship"
       },
       {
         "matchup_id": 596,
@@ -560,7 +600,8 @@
         "owner2_team_name": "Drake's New Favorite Team",
         "winner_owner_id": 1,
         "is_playoff_matchup": true,
-        "is_championship_matchup": true
+        "is_championship_matchup": true,
+        "matchup_type": "Championship"
       }
     ]
   }

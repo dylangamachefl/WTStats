@@ -33,7 +33,8 @@
       "owner2_team_name": "It'sColdOutside AndInMyHeart",
       "winner_owner_id": 8,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 64,
@@ -46,7 +47,8 @@
       "owner2_team_name": "It'sColdOutside AndInMyHeart",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 67,
@@ -59,7 +61,8 @@
       "owner2_team_name": "It'sColdOutside AndInMyHeart",
       "winner_owner_id": 9,
       "is_playoff_matchup": true,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Semi-Final"
     },
     {
       "matchup_id": 90,
@@ -72,7 +75,8 @@
       "owner2_team_name": "A LAC Thumper",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 131,
@@ -85,7 +89,8 @@
       "owner2_team_name": "A LAC Thumper",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 165,
@@ -98,7 +103,8 @@
       "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 206,
@@ -111,7 +117,8 @@
       "owner2_team_name": "WutsItCalledWen UAlmostWin.....",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 240,
@@ -124,7 +131,8 @@
       "owner2_team_name": "Mexico Madness",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 281,
@@ -137,7 +145,8 @@
       "owner2_team_name": "Mexico Madness",
       "winner_owner_id": 8,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 296,
@@ -150,7 +159,8 @@
       "owner2_team_name": "Mexico Madness",
       "winner_owner_id": 8,
       "is_playoff_matchup": true,
-      "is_championship_matchup": true
+      "is_championship_matchup": true,
+      "matchup_type": "Championship"
     },
     {
       "matchup_id": 315,
@@ -163,7 +173,8 @@
       "owner2_team_name": "Better Than Jake",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 356,
@@ -176,7 +187,8 @@
       "owner2_team_name": "Better Than Jake",
       "winner_owner_id": 9,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {
@@ -196,7 +208,8 @@
         "owner2_team_name": "It'sColdOutside AndInMyHeart",
         "winner_owner_id": 9,
         "is_playoff_matchup": true,
-        "is_championship_matchup": false
+        "is_championship_matchup": false,
+        "matchup_type": "Semi-Final"
       },
       {
         "matchup_id": 296,
@@ -209,7 +222,8 @@
         "owner2_team_name": "Mexico Madness",
         "winner_owner_id": 8,
         "is_playoff_matchup": true,
-        "is_championship_matchup": true
+        "is_championship_matchup": true,
+        "matchup_type": "Championship"
       }
     ]
   }

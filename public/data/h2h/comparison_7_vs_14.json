@@ -33,7 +33,8 @@
       "owner2_team_name": "Kendra :))",
       "winner_owner_id": 14,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1181,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Never Zay Never",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {

@@ -33,7 +33,8 @@
       "owner2_team_name": "Team Real",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 74,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Team Real",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 110,
@@ -59,7 +61,8 @@
       "owner2_team_name": "She's got the  Nicest Legs",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 185,
@@ -72,7 +75,8 @@
       "owner2_team_name": "Ratchet Randy",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 217,
@@ -85,7 +89,8 @@
       "owner2_team_name": "Ratchet Randy",
       "winner_owner_id": 4,
       "is_playoff_matchup": true,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Semi-Final"
     },
     {
       "matchup_id": 260,
@@ -98,7 +103,8 @@
       "owner2_team_name": "Ratchet Randy",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 298,
@@ -111,7 +117,8 @@
       "owner2_team_name": "Ratchet Randy",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 335,
@@ -124,7 +131,8 @@
       "owner2_team_name": "Pimpin is a Habit",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 400,
@@ -137,7 +145,8 @@
       "owner2_team_name": "Bonalisa's Smile",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 411,
@@ -150,7 +159,8 @@
       "owner2_team_name": "Bonalisa's Smile",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 464,
@@ -163,7 +173,8 @@
       "owner2_team_name": "Big Kel (7 Deuce)",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 504,
@@ -176,7 +187,8 @@
       "owner2_team_name": "Big Kel (7 Deuce)",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 525,
@@ -189,7 +201,8 @@
       "owner2_team_name": "Big Kel (7 Deuce)",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 567,
@@ -202,7 +215,8 @@
       "owner2_team_name": "The Forte Year Old Virgin",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 610,
@@ -215,7 +229,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 630,
@@ -228,7 +243,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 715,
@@ -241,7 +257,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 735,
@@ -254,7 +271,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 739,
@@ -267,7 +285,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 785,
@@ -280,7 +299,8 @@
       "owner2_team_name": "Mahomies .",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 805,
@@ -293,7 +313,8 @@
       "owner2_team_name": "Mahomies .",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 842,
@@ -306,7 +327,8 @@
       "owner2_team_name": "Back Nines Matter",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 922,
@@ -319,7 +341,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 997,
@@ -332,7 +355,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1079,
@@ -345,7 +369,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1118,
@@ -358,7 +383,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 1169,
@@ -371,7 +397,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1215,
@@ -384,7 +411,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 4,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     }
   ],
   "playoff_meetings": {
@@ -404,7 +432,8 @@
         "owner2_team_name": "Ratchet Randy",
         "winner_owner_id": 4,
         "is_playoff_matchup": true,
-        "is_championship_matchup": false
+        "is_championship_matchup": false,
+        "matchup_type": "Semi-Final"
       }
     ]
   }

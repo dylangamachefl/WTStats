@@ -33,7 +33,8 @@
       "owner2_team_name": "Kendra :))",
       "winner_owner_id": 5,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1122,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Kendra :))",
       "winner_owner_id": 14,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 1141,
@@ -59,7 +61,8 @@
       "owner2_team_name": "Never Zay Never",
       "winner_owner_id": 14,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1201,
@@ -72,7 +75,8 @@
       "owner2_team_name": "Never Zay Never",
       "winner_owner_id": 5,
       "is_playoff_matchup": true,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Quarter-Final"
     }
   ],
   "playoff_meetings": {
@@ -92,7 +96,8 @@
         "owner2_team_name": "Never Zay Never",
         "winner_owner_id": 5,
         "is_playoff_matchup": true,
-        "is_championship_matchup": false
+        "is_championship_matchup": false,
+        "matchup_type": "Quarter-Final"
       }
     ]
   }

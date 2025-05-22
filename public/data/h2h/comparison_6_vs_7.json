@@ -33,7 +33,8 @@
       "owner2_team_name": "Team Real",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 436,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Bonalisa's Smile",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 472,
@@ -59,7 +61,8 @@
       "owner2_team_name": "Big Kel (7 Deuce)",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 506,
@@ -72,7 +75,8 @@
       "owner2_team_name": "Big Kel (7 Deuce)",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 547,
@@ -85,7 +89,8 @@
       "owner2_team_name": "The Forte Year Old Virgin",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 581,
@@ -98,7 +103,8 @@
       "owner2_team_name": "The Forte Year Old Virgin",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 618,
@@ -111,7 +117,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 633,
@@ -124,7 +131,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 699,
@@ -137,7 +145,8 @@
       "owner2_team_name": "Fig Newton?",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 769,
@@ -150,7 +159,8 @@
       "owner2_team_name": "Mahomies .",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 855,
@@ -163,7 +173,8 @@
       "owner2_team_name": "Back Nines Matter",
       "winner_owner_id": null,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 862,
@@ -176,7 +187,8 @@
       "owner2_team_name": "Back Nines Matter",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 918,
@@ -189,7 +201,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 959,
@@ -202,7 +215,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 993,
@@ -215,7 +229,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1084,
@@ -228,7 +243,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1123,
@@ -241,7 +257,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 7,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     },
     {
       "matchup_id": 1174,
@@ -254,7 +271,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1209,
@@ -267,7 +285,8 @@
       "owner2_team_name": "Will  Beattie",
       "winner_owner_id": 6,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Post Season"
     }
   ],
   "playoff_meetings": {

@@ -33,7 +33,8 @@
       "owner2_team_name": "Team Irion",
       "winner_owner_id": 13,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     },
     {
       "matchup_id": 1144,
@@ -46,7 +47,8 @@
       "owner2_team_name": "Girls Ruin Bowling",
       "winner_owner_id": 13,
       "is_playoff_matchup": false,
-      "is_championship_matchup": false
+      "is_championship_matchup": false,
+      "matchup_type": "Regular Season"
     }
   ],
   "playoff_meetings": {
