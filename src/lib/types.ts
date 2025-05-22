@@ -22,7 +22,7 @@ export interface ChampionTimelineEntry {
 export interface LeagueRecord {
   gm_name: string;
   seasons: string;
-  week: string;
+  week: string | null; // Updated to allow null
   value: string | number;
   record_category: string;
 }
@@ -33,9 +33,9 @@ export interface CareerStat {
   losses: number;
   ties: number;
   championships: number;
-  pointsFor: number; // Mapped from 'points' if necessary
+  pointsFor: number; 
   pointsAgainst: number;
-  winPct: string; // Should be number if used for sorting, string if pre-formatted
+  winPct: string; 
   playoffRate: number;
   acquisitions?: number;
   avgRegularSeasonFinish?: number;
@@ -119,7 +119,7 @@ export interface PlayoffData {
 export interface WeeklyScoresData {
   teams: string[];
   scores: (number | null)[][];
-  results: (string | null)[][]; // 'W', 'L', 'T' or null
+  results: (string | null)[][]; 
 }
 
 
@@ -136,8 +136,8 @@ export interface StrengthOfScheduleEntry {
 export interface WaiverPickupEntry {
   player: string;
   position: string;
-  team: string; // NFL Team
-  pickedUpBy?: string | null; // Fantasy GM Name
+  team: string; 
+  pickedUpBy?: string | null; 
   week?: number | null;
   totalPoints?: number | null;
   rank?: number;
@@ -145,7 +145,7 @@ export interface WaiverPickupEntry {
 
 export interface TopPerformerPlayer {
   player: string;
-  team: string; // NFL Team
+  team: string; 
   fantasyTeam?: string | null;
   totalPoints: number;
   ppg: number;
@@ -162,15 +162,15 @@ export interface PositionalTopPerformersData {
   TE?: TopPerformerPlayer[];
   K?: TopPerformerPlayer[];
   DST?: TopPerformerPlayer[];
-  DEF?: TopPerformerPlayer[]; // Sometimes DEF is used instead of DST
-  [key: string]: TopPerformerPlayer[] | undefined; // To allow dynamic access
+  DEF?: TopPerformerPlayer[]; 
+  [key: string]: TopPerformerPlayer[] | undefined; 
 }
 
 export interface SeasonBestOverallGameEntry {
   rank: number;
   player: string;
   position: string;
-  team: string; // NFL Team
+  team: string; 
   fantasyTeam?: string | null;
   week: number;
   points: number;
@@ -190,9 +190,9 @@ export interface SeasonDetailData {
 
 // For GM Career Page (e.g., Chris.json - overall career)
 export interface GMInfo {
-  id: number; // Numeric ID from the JSON file
+  id: number; 
   name: string;
-  slug: string; // Lowercase name, used for path
+  slug: string; 
   yearsActive: string;
   championshipYears: number[];
   photoUrl?: string;
@@ -250,7 +250,7 @@ export interface SeasonProgressionEntry {
 
 export interface PositionStrengthEntry {
   position: string;
-  value: number; // gm_average_pvdre - league_average_pvdre essentially
+  value: number; 
 }
 
 export interface FranchisePlayerEntry {
@@ -290,15 +290,15 @@ export interface GMSeasonPerformance {
   pointsFor: number;
   pointsAgainst: number;
   avgPointsPerGame: number;
-  avgPointsAgainstPerGame?: number; // Optional based on your JSON
+  avgPointsAgainstPerGame?: number; 
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number | null; // Added for Luck Factor / SOS
-  sosRating?: string | null;      // Added for Luck Factor / SOS
+  sosDifferential?: number | null; 
+  sosRating?: string | null;      
 }
 
 export interface GMGameByGame {
-  week: number | string; // Week can be string for playoffs
+  week: number | string; 
   opponent: string;
   points: number;
   opponent_points: number;
@@ -312,12 +312,12 @@ export interface GMSeasonSummary {
 }
 
 export interface GMPositionContribution {
-  name: string; // e.g. "QB", "RB"
+  name: string; 
   startedPoints: number;
 }
 
 export interface GMLeagueAvgPositionData {
-  name: string; // e.g. "QB", "RB"
+  name: string; 
   leagueAvg: number;
 }
 
@@ -393,7 +393,7 @@ export interface GMLineupOptimizationData {
 }
 
 export interface GMPositionalAdvantageWeeklyEntry {
-  week: number | string; // Week can be 'Total'
+  week: number | string; 
   QB?: number | null;
   RB?: number | null;
   WR?: number | null;
@@ -460,10 +460,10 @@ export interface GMDraftSeasonPerformance {
   gm_name: string;
   first_round_draft_position?: number | null;
   total_picks?: number | null;
-  avg_pvdre?: number | null; // This is POE
+  avg_pvdre?: number | null; 
   total_pvdre?: number | null;
-  pvdre_hit_rate?: number | null; // Hit Rate %
-  avg_value_vs_adp?: number | null; // Avg Value vs ADP
+  pvdre_hit_rate?: number | null; 
+  avg_value_vs_adp?: number | null; 
 }
 
 
@@ -506,7 +506,7 @@ export interface TeamDraftPerformanceEntry {
   hits: number | null;
   misses: number | null;
   hit_rate_percentage: number | null;
-  draft_rank_by_avg_pvdre?: number | null; // Can be used for grade or direct display
+  draft_rank_by_avg_pvdre?: number | null; 
 }
 
 export interface SeasonHighlights {
@@ -535,15 +535,15 @@ export interface GMDraftHistoryRoundEfficiencyEntry {
   round: number;
   picks_count: number;
   average_pvdre: number;
-  total_pvdre?: number; // Optional, for completeness
+  total_pvdre?: number; 
 }
 
 export interface GMDraftPositionalProfileEntry {
   position: string;
   picks_count: number;
   gm_average_pvdre: number;
-  league_average_pvdre?: number | null; // Optional, for completeness
-  gm_total_pvdre?: number; // Optional, for completeness
+  league_average_pvdre?: number | null; 
+  gm_total_pvdre?: number; 
 }
 
 export interface GMDraftHistoryDetailData {
@@ -581,8 +581,8 @@ export interface H2HRivalrySummary {
 export interface H2HMatchupTimelineEntry {
   matchup_id: number;
   season_id: number;
-  nfl_week: number | string; // Can be string like "(14,15)"
-  fantasy_week: string; // e.g., "2", "Round 1"
+  nfl_week: number | string; 
+  fantasy_week: string; 
   owner1_score: number;
   owner2_score: number;
   owner1_team_name: string;
@@ -593,21 +593,19 @@ export interface H2HMatchupTimelineEntry {
 }
 
 export interface H2HPlayoffMeetingDetail {
-  // Define if there's a more detailed structure for individual playoff games
-  // For now, your example has "matchups_details": []
-  // If it were populated, it would likely be similar to H2HMatchupTimelineEntry
   season_id: number;
-  fantasy_week: string;
+  fantasy_week: string; 
   owner1_score: number;
   owner2_score: number;
   winner_owner_id: number | null;
 }
+
 export interface H2HPlayoffMeetingSummary {
   owner1_playoff_wins: number;
   owner2_playoff_wins: number;
   playoff_ties: number;
   total_playoff_matchups: number;
-  matchups_details: H2HPlayoffMeetingDetail[]; // Array of detailed playoff game objects
+  matchups_details: H2HPlayoffMeetingDetail[]; 
 }
 
 export interface H2HRivalryData {
@@ -616,4 +614,9 @@ export interface H2HRivalryData {
   rivalry_summary: H2HRivalrySummary;
   matchup_timeline: H2HMatchupTimelineEntry[];
   playoff_meetings: H2HPlayoffMeetingSummary;
+}
+
+export interface Season {
+  id: string;
+  year: number;
 }
