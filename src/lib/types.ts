@@ -199,7 +199,7 @@ export interface GMInfo {
   bio?: string;
 }
 
-export interface CareerStats {
+export interface GMCareerStats { // Renamed from CareerStats to avoid conflict
   wins: number;
   losses: number;
   ties: number;
@@ -273,7 +273,7 @@ export interface RivalryPerformanceEntry {
 
 export interface GMCareerData {
   gmInfo: GMInfo;
-  careerStats: CareerStats;
+  careerStats: GMCareerStats;
   careerExtremes: CareerExtremes;
   seasonProgression: SeasonProgressionEntry[];
   positionStrength: PositionStrengthEntry[];
@@ -292,8 +292,8 @@ export interface GMSeasonPerformance {
   avgPointsAgainstPerGame: number;
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number; // Optional as it might not exist in all files
-  sosRating?: string; // Optional
+  sosDifferential?: number; 
+  sosRating?: string; 
 }
 
 export interface GMGameByGame {
@@ -311,12 +311,12 @@ export interface GMSeasonSummary {
 }
 
 export interface GMPositionContribution {
-  name: string; // e.g., QB, RB
+  name: string; 
   startedPoints: number;
 }
 
 export interface GMLeagueAvgPositionData {
-  name: string; // e.g., QB, RB
+  name: string; 
   leagueAvg: number;
 }
 
@@ -324,7 +324,7 @@ export interface GMRosterPlayer {
   id: number;
   name: string;
   position: string;
-  finish: string; // e.g., RB6
+  finish: string; 
   gamesStarted: number;
   totalPoints: number;
 }
@@ -335,7 +335,7 @@ export interface GMRosterBreakdown {
   rosterPlayerData: GMRosterPlayer[];
 }
 
-export interface GMPlayerPerformanceSummaryEntry {
+export interface GMPlayerSummaryPerformance {
   playerId: number;
   name: string;
   position: string;
@@ -348,7 +348,7 @@ export interface GMPlayerPerformanceSummaryEntry {
 }
 
 export interface GMPlayerPerformanceData {
-  playerSummaryPerformance: GMPlayerPerformanceSummaryEntry[];
+  playerSummaryPerformance: GMPlayerSummaryPerformance[];
   overPerformer: { name: string; avgDifference: number };
   underPerformer: { name: string; avgDifference: number };
 }
@@ -387,7 +387,7 @@ export interface GMLineupOptimizationData {
 }
 
 export interface GMPositionalAdvantageWeeklyEntry {
-  week: number | string; // Week can be a number or "Total"
+  week: number | string; 
   QB?: number | null;
   RB?: number | null;
   WR?: number | null;
@@ -441,13 +441,13 @@ export interface GMStreamingSuccessData {
 export interface GMIndividualSeasonDetailData {
   seasonSummary: GMSeasonSummary;
   rosterBreakdown: GMRosterBreakdown;
-  playerPerformance?: GMPlayerPerformanceData; // Optional as per your json
-  lineupOptimization?: GMLineupOptimizationData; // Optional
-  positionalAdvantage?: GMPositionalAdvantageData; // Optional
-  streamingSuccess?: GMStreamingSuccessData; // Optional
+  playerPerformance?: GMPlayerPerformanceData; 
+  lineupOptimization?: GMLineupOptimizationData; 
+  positionalAdvantage?: GMPositionalAdvantageData; 
+  streamingSuccess?: GMStreamingSuccessData; 
 }
 
-// For Draft History Overview - using specific field names from your latest JSON
+// For Draft History Overview - uses field names from gm_season_performance_grid.json
 export interface GMDraftSeasonPerformance {
   season_id: number;
   gm_id: number;
@@ -458,8 +458,39 @@ export interface GMDraftSeasonPerformance {
   total_pvdre?: number;
   pvdre_hit_rate?: number;
   avg_value_vs_adp?: number;
-  // Ensure all fields from your gm_season_performance_grid.json are here if needed for tooltips
 }
+
+
+// For Draft History -> Season View (e.g., /draft-history/season/[seasonId])
+export interface DraftPickDetail {
+  season_id: number;
+  pick_overall: number;
+  draft_id: number;
+  round: number;
+  pick_in_round: number;
+  player_id: number;
+  player_name: string;
+  player_position: string;
+  nfl_team_id: string;
+  nfl_team_name: string;
+  fantasy_team_id: number;
+  fantasy_team_name: string;
+  gm_id: number;
+  gm_name: string;
+  league_positional_draft_rank?: number | null;
+  overall_adp_rank?: number | null;
+  market_positional_adp_rank?: number | null;
+  overall_reach_steal_value?: number | null;
+  actual_total_fantasy_points_season?: number | null;
+  fantasy_points_per_game_season?: number | null;
+  actual_positional_finish_rank?: number | null;
+  expected_points_for_league_draft_rank_smoothed?: number | null;
+  pvdre_points_vs_league_draft_rank_exp?: number | null;
+  rank_diff_vs_league_draft_rank?: number | null;
+  raw_stats_season?: Record<string, any>; // Or a more specific type if known
+}
+
+export type SeasonDraftBoardData = DraftPickDetail[];
 
 
 // Old types - re-evaluate if still needed by other pages or can be removed
@@ -472,7 +503,8 @@ export interface Season {
   championPhotoUrl?: string;
 }
 
-export interface DraftPick {
+// Renamed old DraftPick to OldDraftPick to avoid conflict if still used elsewhere.
+export interface OldDraftPick {
   id: string;
   seasonYear: number;
   round: number;
@@ -485,12 +517,13 @@ export interface DraftPick {
   originalOwnerGmId?: string;
 }
 
-export interface SeasonDraftData {
+// Renamed old SeasonDraftData to OldSeasonDraftData
+export interface OldSeasonDraftData {
   seasonYear: number;
-  draftPicks: DraftPick[];
+  draftPicks: OldDraftPick[];
   draftGrades?: Array<{ gmId: string; gmName: string; grade: string; analysis: string }>;
-  topSteals?: DraftPick[];
-  topBusts?: DraftPick[];
+  topSteals?: OldDraftPick[];
+  topBusts?: OldDraftPick[];
 }
 
 export interface GMDraftHistoryData {
@@ -500,8 +533,8 @@ export interface GMDraftHistoryData {
     totalPicks: number;
     avgPickPosition: number;
   };
-  bestPicks: DraftPick[];
-  worstPicks: DraftPick[];
+  bestPicks: OldDraftPick[]; // Using OldDraftPick here
+  worstPicks: OldDraftPick[]; // Using OldDraftPick here
   roundEfficiency: Array<{ round: number; avgPlayerPerformance: number }>;
   positionalProfile: Array<{ position: string; count: number }>;
 }
@@ -535,3 +568,5 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
+
+    

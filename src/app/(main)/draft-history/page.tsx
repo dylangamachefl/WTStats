@@ -8,40 +8,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, SeasonDraftData, GMDraftHistoryData, GMDraftSeasonPerformance } from '@/lib/types';
-import { BarChart3, ArrowUpDown } from 'lucide-react';
+import type { Season, GM, GMDraftSeasonPerformance, GMDraftHistoryData, DraftPickDetail, SeasonDraftBoardData } from '@/lib/types';
+import { BarChart3, ArrowUpDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 
-// Mock Data for Season View and GM View (as existing)
+// Mock Data for Season Dropdown in SeasonDraftDetail
 const mockSeasons: Season[] = [
-  { id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }
-];
+  { id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }, { id: "2020", year: 2020 }, { id: "2019", year: 2019 }, { id: "2018", year: 2018 }, { id: "2017", year: 2017 }, { id: "2016", year: 2016 }, { id: "2015", year: 2015 }, { id: "2014", year: 2014 }, { id: "2013", year: 2013 }, { id: "2012", year: 2012 }, { id: "2011", year: 2011 }, { id: "2009", year: 2009 }
+].sort((a, b) => b.year - a.year); // Sort descending by year
+
 const mockGms: GM[] = [
   { id: "gm1", name: "Alice" }, { id: "gm2", name: "Bob" }, { id: "gm3", name: "Charlie" }
 ];
-
-const mockSeasonDraftData: SeasonDraftData = {
-  seasonYear: 2023,
-  draftPicks: Array.from({ length: 50 }, (_, i) => ({
-    id: `pick-${i}`,
-    seasonYear: 2023,
-    round: Math.floor(i / mockGms.length) + 1,
-    pickOverall: i + 1,
-    playerName: `Player ${String.fromCharCode(65 + (i%26))}${Math.floor(i/26) || ''}`,
-    position: ['QB', 'RB', 'WR', 'TE', 'K', 'DEF'][i % 6],
-    pickedByGmId: mockGms[i % mockGms.length].id,
-    pickedByGmName: mockGms[i % mockGms.length].name,
-  })),
-};
 
 const mockGMDraftHistory: GMDraftHistoryData = {
   gmId: "gm1",
   gmName: "Alice",
   careerDraftSummary: { totalPicks: 150, avgPickPosition: 75 },
-  bestPicks: [mockSeasonDraftData.draftPicks[0], mockSeasonDraftData.draftPicks[5]],
-  worstPicks: [mockSeasonDraftData.draftPicks[10]],
+  bestPicks: [], // Will use OldDraftPick type, update if needed
+  worstPicks: [], // Will use OldDraftPick type
   roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
   positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
 };
@@ -90,6 +79,27 @@ const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
     tooltipLabel: 'Avg Value vs ADP',
     description: 'Average Value vs ADP measures draft value relative to Average Draft Position. Positive values (green) indicate better value; negative (red) indicate lesser value. Neutral for near-zero values.'
   },
+};
+
+const getPositionBadgeClass = (position?: string): string => {
+  if (!position) return "bg-muted text-muted-foreground"; 
+  switch (position?.toUpperCase()) {
+    case 'QB':
+      return 'bg-red-100 text-red-700'; 
+    case 'RB':
+      return 'bg-blue-100 text-blue-700';
+    case 'WR':
+      return 'bg-green-100 text-green-700';
+    case 'TE':
+      return 'bg-yellow-100 text-yellow-700'; 
+    case 'K':
+      return 'bg-purple-100 text-purple-700';
+    case 'DST':
+    case 'DEF':
+      return 'bg-indigo-100 text-indigo-700';
+    default:
+      return "bg-muted text-muted-foreground";
+  }
 };
 
 const DraftOverview = () => {
@@ -182,26 +192,24 @@ const DraftOverview = () => {
 
     let hue;
     const saturation = 70; 
-    let lightness = 85; 
+    let lightness = 90; // Start with a lighter base
 
     if (metricKey === 'avg_value_vs_adp') {
-        const adpThreshold = 0.1; // Values between -0.1 and 0.1 will be neutral
-        if (value > adpThreshold) { // Positive values are good (green)
+        const adpThreshold = 0.1; 
+        if (value > adpThreshold) { 
             hue = 120; // Green
             const effectiveMax = Math.max(adpThreshold * 1.1, metricMaxValue); 
             const intensity = Math.min(1, Math.max(0, value / effectiveMax));
             lightness = 90 - (intensity * 25); 
-        } else if (value < -adpThreshold) { // Negative values are bad (red)
+        } else if (value < -adpThreshold) { 
             hue = 0; // Red
             const effectiveMin = Math.min(-adpThreshold * 1.1, metricMinValue); 
             const intensity = Math.min(1, Math.max(0, value / effectiveMin)); 
             lightness = 90 - (intensity * 25); 
         } else {
-            // Neutral for values close to zero
             return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
         }
     } else {
-        // Existing logic for POE and Hit Rate (percentile-based)
         const range = metricMaxValue - metricMinValue;
         if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
 
@@ -212,11 +220,11 @@ const DraftOverview = () => {
         if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
           return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
         } else if (normalizedValue < neutralBandStart) {
-          hue = 0; 
+          hue = 0; // Red for lower values
           const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
           lightness = 90 - (intensity * 20); 
-        } else { 
-          hue = 120; 
+        } else { // normalizedValue > neutralBandEnd
+          hue = 120; // Green for higher values
           const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
           lightness = 90 - (intensity * 20); 
         }
@@ -271,7 +279,9 @@ const DraftOverview = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
-           <CardDescription>GM draft performance metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
+           <CardDescription>
+             {metricConfigs[selectedMetric]?.description || "GM draft performance metrics across seasons. Colors indicate performance relative to the average."}
+           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-destructive">Error loading draft performance data: {error}</p>
@@ -285,7 +295,9 @@ const DraftOverview = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
-           <CardDescription>GM draft performance metrics across seasons. Colors indicate performance relative to the average: green for above average, red for below, neutral for mid-range.</CardDescription>
+           <CardDescription>
+             {metricConfigs[selectedMetric]?.description || "GM draft performance metrics across seasons. Colors indicate performance relative to the average."}
+           </CardDescription>
         </CardHeader>
         <CardContent>
           <p>No draft performance data available. Please ensure 'gm_season_performance_grid.json' exists in 'public/data/draft_data/' and is correctly formatted.</p>
@@ -339,7 +351,6 @@ const DraftOverview = () => {
                       {seasonYears.map(year => {
                         const performanceData = heatmapData[gm_name]?.[year];
                         const metricValue = performanceData?.[selectedMetric];
-                        // Pass currentMin and currentMax which are specific to the selectedMetric
                         const cellStyle = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
                         const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
                         
@@ -386,56 +397,195 @@ const DraftOverview = () => {
 
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
+  const [draftData, setDraftData] = useState<SeasonDraftBoardData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const [showValueAnalysis, setShowValueAnalysis] = useState(false);
+  const [showReachSteal, setShowReachSteal] = useState(false);
+
+  useEffect(() => {
+    if (selectedSeason) {
+      const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+        setDraftData(null);
+        try {
+          console.log(`Fetching /data/draft_data/seasons/${selectedSeason}.json`);
+          const response = await fetch(`/data/draft_data/seasons/${selectedSeason}.json`);
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Fetch failed for season draft data:", response.status, errorText);
+            throw new Error(`Failed to fetch data for season ${selectedSeason}: ${response.status} ${response.statusText}.`);
+          }
+          const data: SeasonDraftBoardData = await response.json();
+          console.log(`Fetched draft data for season ${selectedSeason}:`, data);
+          setDraftData(data);
+        } catch (err) {
+          if (err instanceof Error) {
+              setError(err.message);
+          } else {
+              setError("An unknown error occurred while fetching season draft data.");
+          }
+          console.error("Error in fetchData for season draft data:", err);
+          setDraftData(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [selectedSeason]);
+
+  const { boardLayout, gmNamesForColumns, maxRound } = useMemo(() => {
+    if (!draftData) return { boardLayout: {}, gmNamesForColumns: [], maxRound: 0 };
+
+    const gms = new Set<string>();
+    let currentMaxRound = 0;
+    const picksByRoundAndGm: { [round: number]: { [gmName: string]: DraftPickDetail | undefined } } = {};
+
+    draftData.forEach(pick => {
+      gms.add(pick.gm_name);
+      if (pick.round > currentMaxRound) {
+        currentMaxRound = pick.round;
+      }
+      if (!picksByRoundAndGm[pick.round]) {
+        picksByRoundAndGm[pick.round] = {};
+      }
+      // For simplicity, if a GM has multiple picks in a round, take the one with the lowest pick_in_round
+      // This is common for grid-based draft boards.
+      const existingPick = picksByRoundAndGm[pick.round][pick.gm_name];
+      if (!existingPick || pick.pick_in_round < existingPick.pick_in_round) {
+        picksByRoundAndGm[pick.round][pick.gm_name] = pick;
+      }
+    });
+    
+    const sortedGmNames = Array.from(gms).sort((a,b) => a.localeCompare(b)); // Or sort by draft order if available
+
+    return { boardLayout: picksByRoundAndGm, gmNamesForColumns: sortedGmNames, maxRound: currentMaxRound };
+  }, [draftData]);
+
+
+  const renderDraftBoard = () => {
+    if (loading) {
+      return <Skeleton className="h-[400px] w-full" />;
+    }
+    if (error) {
+      return <p className="text-destructive text-center py-4">Error loading draft data: {error}</p>;
+    }
+    if (!draftData || gmNamesForColumns.length === 0 || maxRound === 0) {
+      return <p className="text-muted-foreground text-center py-4">No draft data available for the selected season, or data is malformed.</p>;
+    }
+
+    return (
+      <TooltipProvider>
+        <div className="overflow-x-auto">
+          <Table className="min-w-full border-collapse">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">Round</TableHead>
+                {gmNamesForColumns.map(gmName => (
+                  <TableHead key={gmName} className="p-1.5 border text-xs text-center font-semibold whitespace-nowrap min-w-[120px]">{gmName}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => (
+                <TableRow key={roundNum}>
+                  <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
+                  {gmNamesForColumns.map(gmName => {
+                    const pick = boardLayout[roundNum]?.[gmName];
+                    if (!pick) {
+                      return <TableCell key={`${roundNum}-${gmName}`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
+                    }
+                    const cellBg = getPositionBadgeClass(pick.player_position);
+                    return (
+                      <TableCell key={pick.player_id || `${roundNum}-${gmName}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' /* Ensure minimum width */ }}>
+                         <Tooltip delayDuration={100}>
+                           <TooltipTrigger asChild>
+                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg /* Apply color if not a tailwind bg class */ }}>
+                                <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
+                                <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
+                              </div>
+                           </TooltipTrigger>
+                           <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                            <div className="space-y-1.5 text-left text-xs">
+                                <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
+                                <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
+                                <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
+                                {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">PVDRE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.fantasy_points_per_game_season !== null && <p><span className="font-medium">Season PPG:</span> {pick.fantasy_points_per_game_season?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
+                                {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
+                            </div>
+                           </TooltipContent>
+                         </Tooltip>
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </TooltipProvider>
+    );
+  };
+  
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Season Draft View</CardTitle>
-          <CardDescription>Select a season to view detailed draft information. (DH.1)</CardDescription>
+          <CardDescription>Select a season to view its draft board and analysis. (DH.1)</CardDescription>
         </CardHeader>
         <CardContent>
-          <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-            <SelectTrigger className="w-[280px] mb-6">
-              <SelectValue placeholder="Select a season's draft" />
-            </SelectTrigger>
-            <SelectContent>
-              {mockSeasons.map(season => (
-                <SelectItem key={season.id} value={season.id}>{season.year} Draft</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+              <SelectTrigger className="w-full sm:w-[280px]">
+                <SelectValue placeholder="Select a season's draft" />
+              </SelectTrigger>
+              <SelectContent>
+                {mockSeasons.map(season => (
+                  <SelectItem key={season.id} value={season.id}>{season.year} Draft</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+                <div className="flex items-center space-x-2">
+                    <Switch id="value-analysis" checked={showValueAnalysis} onCheckedChange={setShowValueAnalysis} />
+                    <Label htmlFor="value-analysis" className="text-sm">Value Analysis</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Switch id="reach-steal" checked={showReachSteal} onCheckedChange={setShowReachSteal}/>
+                    <Label htmlFor="reach-steal" className="text-sm">Reach/Steal</Label>
+                </div>
+            </div>
+          </div>
+
           {selectedSeason && (
             <Card>
               <CardHeader>
-                <CardTitle>{mockSeasons.find(s => s.id === selectedSeason)?.year} Draft Details</CardTitle>
-                <CardDescription>Interactive draft board, analysis, and grades. (DH.1.2 - DH.1.7)</CardDescription>
+                <CardTitle>{mockSeasons.find(s => s.id === selectedSeason)?.year} Draft Board</CardTitle>
+                <CardDescription>Interactive draft board. Color-coded by position. Hover for details.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <Card>
-                        <CardHeader><CardTitle>Draft Grades (DH.1.5)</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">Placeholder for draft grade dashboard.</p></CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader><CardTitle>Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">Placeholder for season's top steals and busts.</p></CardContent>
-                    </Card>
-                </div>
-                <CardTitle className="text-lg mb-2">Draft Board (DH.1.2)</CardTitle>
-                <p className="text-sm text-muted-foreground mb-2">Toggles for Value Analysis (DH.1.3) and Reach/Steal (DH.1.4) would go here.</p>
-                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1 p-2 border rounded-md max-h-96 overflow-y-auto">
-                  {mockSeasonDraftData.draftPicks.map(pick => (
-                    <div key={pick.id} title={`${pick.playerName} (${pick.position}) - Picked by ${pick.pickedByGmName}`} className="p-1.5 text-xs border rounded bg-muted/50 hover:bg-accent/20 cursor-default truncate">
-                      <p className="font-semibold">{pick.round}.{pick.pickOverall % mockGms.length || mockGms.length}</p>
-                      <p className="truncate">{pick.playerName}</p>
-                      <p className="text-muted-foreground text-[10px]">{pick.position} - {pick.pickedByGmName.substring(0,3)}.</p>
-                    </div>
-                  ))}
-                </div>
+                {renderDraftBoard()}
               </CardContent>
             </Card>
           )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <Card>
+                  <CardHeader><CardTitle>Draft Grades (DH.1.5)</CardTitle></CardHeader>
+                  <CardContent><p className="text-muted-foreground">Placeholder for draft grade dashboard.</p></CardContent>
+              </Card>
+                <Card>
+                  <CardHeader><CardTitle>Season's Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
+                  <CardContent><p className="text-muted-foreground">Placeholder for season's top steals and busts.</p></CardContent>
+              </Card>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -487,7 +637,7 @@ const GMDraftHistory = () => {
 
 export default function DraftHistoryPage() {
   const searchParams = useSearchParams();
-  const section = searchParams.get('section') || 'overview'; // Default to overview
+  const section = searchParams.get('section') || 'overview'; 
 
   return (
     <div className="space-y-6">
@@ -498,3 +648,4 @@ export default function DraftHistoryPage() {
   );
 }
 
+    
