@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo } from '@/lib/types';
+import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo, H2HOwnerInfo } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, DotProps } from 'recharts';
 import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown, BarChart2, CalendarDays, Info } from 'lucide-react';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,7 +29,8 @@ const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) 
   if (payload?.is_championship_matchup) {
     return <Trophy x={(cx ?? 0) - 8} y={(cy ?? 0) - 8} width={16} height={16} className="text-yellow-500 fill-yellow-400" />;
   }
-  if (payload?.is_playoff_matchup || (typeof payload?.fantasy_week === 'string' && (payload.fantasy_week.toLowerCase().includes('round') || payload.fantasy_week.toLowerCase().includes('playoff') || payload.fantasy_week.toLowerCase().includes('championship')))) {
+  // Strictly use the boolean flag for playoff games
+  if (payload?.is_playoff_matchup) {
     return <circle cx={cx} cy={cy} r={(r ?? 3) + 3} strokeWidth={1} className="stroke-accent fill-accent" />;
   }
   return <circle cx={cx} cy={cy} r={r} stroke={stroke} fill={fill} />;
@@ -46,7 +47,7 @@ const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
         <p className="text-xs"><span className="font-medium">{data.owner2_team_name || gm2Name}:</span> {data.owner2_score?.toFixed(1)}</p>
         {data.winnerName && <p className="text-xs mt-1"><span className="font-medium">Winner:</span> {data.winnerName}</p>}
         {data.margin !== undefined && <p className="text-xs"><span className="font-medium">Margin:</span> {data.margin.toFixed(1)}</p>}
-        {(data.is_playoff_matchup || (typeof data.fantasy_week === 'string' && data.fantasy_week.toLowerCase().includes('round'))) && 
+        {(data.is_playoff_matchup) && 
           <p className="text-xs text-accent font-semibold mt-1">{data.is_championship_matchup ? "Championship Game" : "Playoff Game"}</p>}
       </div>
     );
@@ -75,11 +76,10 @@ export default function H2HPage() {
 
     comparisonData.matchup_timeline.forEach(m => {
       const margin = Math.abs(m.owner1_score - m.owner2_score);
-      const winnerId = m.winner_owner_id;
       let winnerName = 'Tie';
-      if (winnerId === comparisonData.owner1_info.owner_id) {
+      if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
         winnerName = comparisonData.owner1_info.owner_name;
-      } else if (winnerId === comparisonData.owner2_info.owner_id) {
+      } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
         winnerName = comparisonData.owner2_info.owner_name;
       }
       
@@ -124,7 +124,11 @@ export default function H2HPage() {
     let tempGm1Name = selectedGm1?.name || "GM 1";
     let tempGm2Name = selectedGm2?.name || "GM 2";
 
-    const ids = [parseInt(gm1Id), parseInt(gm2Id)].sort((a, b) => a - b);
+    // Ensure gm1Id and gm2Id are treated as numbers for sorting, then convert back to string if needed
+    const numGm1Id = parseInt(gm1Id);
+    const numGm2Id = parseInt(gm2Id);
+    
+    const ids = [numGm1Id, numGm2Id].sort((a, b) => a - b);
     const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
     
     console.log(`[H2HPage] Fetching ${filePath}`);
@@ -167,7 +171,7 @@ export default function H2HPage() {
             owner2_score: m.owner1_score,
             owner1_team_name: m.owner2_team_name,
             owner2_team_name: m.owner1_team_name,
-            winner_owner_id: m.winner_owner_id, // This remains absolute based on original file
+            // winner_owner_id remains absolute based on original file, this is handled later by getWinnerName
           })),
           playoff_meetings: { 
             ...data.playoff_meetings,
@@ -177,13 +181,13 @@ export default function H2HPage() {
                 ...pm,
                 owner1_score: pm.owner2_score,
                 owner2_score: pm.owner1_score,
-                 winner_owner_id: pm.winner_owner_id, 
+                // winner_owner_id remains absolute
             }))
           }
         });
       } else {
-        console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
-        setComparisonData(data);
+        console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is. Ensure JSON owner_ids match selection IDs.");
+        setComparisonData(data); // Display as is if no direct match for swapping
         tempGm1Name = data.owner1_info.owner_name;
         tempGm2Name = data.owner2_info.owner_name;
       }
@@ -216,13 +220,12 @@ export default function H2HPage() {
             winnerName = comparisonData.owner2_info.owner_name;
         }
         return {
-            ...m,
+            ...m, // includes is_playoff_matchup and is_championship_matchup
             name: `S${m.season_id} W${m.fantasy_week}`,
             [displayedGm1Name]: m.owner1_score,
             [displayedGm2Name]: m.owner2_score,
             margin,
             winnerName,
-            // is_playoff_matchup and is_championship_matchup should come from data if available
         }
     });
   }, [comparisonData, displayedGm1Name, displayedGm2Name]);
@@ -447,7 +450,7 @@ export default function H2HPage() {
                       </TableHeader>
                       <TableBody>
                         {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => (
-                           <TableRow key={`playoff-detail-${index}`} className={cn(meeting.fantasy_week.toLowerCase().includes('championship') && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
+                           <TableRow key={`playoff-detail-${index}-${meeting.season_id}-${meeting.fantasy_week}`} className={cn(meeting.fantasy_week.toLowerCase().includes('championship') && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
                              <TableCell>{meeting.season_id}</TableCell>
                              <TableCell className="font-medium">
                                 {meeting.fantasy_week.toLowerCase().includes('championship') && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
@@ -456,9 +459,7 @@ export default function H2HPage() {
                              <TableCell className={cn("text-right font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
                              <TableCell className={cn("text-right font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
                              <TableCell className="font-semibold">
-                                {meeting.winner_owner_id === comparisonData.owner1_info.owner_id ? displayedGm1Name : 
-                                 meeting.winner_owner_id === comparisonData.owner2_info.owner_id ? displayedGm2Name : 
-                                 meeting.winner_owner_id === null ? 'Tie' : 'Unknown'}
+                                {getWinnerName(meeting.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}
                              </TableCell>
                            </TableRow>
                         ))}
