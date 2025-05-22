@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, GMDraftHistoryData, DraftPickDetail } from '@/lib/types';
-import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle } from 'lucide-react';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, DraftGradeEntry, DraftPlayerValueSummary } from '@/lib/types';
+import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -25,15 +25,16 @@ const mockGms: GM[] = [
   { id: "gm1", name: "Alice" }, { id: "gm2", name: "Bob" }, { id: "gm3", name: "Charlie" }
 ];
 
-const mockGMDraftHistory: GMDraftHistoryData = {
-  gmId: "gm1",
-  gmName: "Alice",
-  careerDraftSummary: { totalPicks: 150, avgPickPosition: 75 },
-  bestPicks: [], 
-  worstPicks: [], 
-  roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
-  positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
-};
+// This type is defined in types.ts, GMDraftHistoryData
+// const mockGMDraftHistory: GMDraftHistoryData = {
+//   gmId: "gm1",
+//   gmName: "Alice",
+//   careerDraftSummary: { totalPicks: 150, avgPickPosition: 75 },
+//   bestPicks: [], 
+//   worstPicks: [], 
+//   roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
+//   positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
+// };
 
 type SortDirection = 'asc' | 'desc';
 interface HeatmapSortConfig {
@@ -398,6 +399,9 @@ const DraftOverview = () => {
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
   const [draftData, setDraftData] = useState<DraftPickDetail[] | null>(null);
+  const [draftGrades, setDraftGrades] = useState<DraftGradeEntry[] | null>(null);
+  const [topSteals, setTopSteals] = useState<DraftPlayerValueSummary[] | null>(null);
+  const [topBusts, setTopBusts] = useState<DraftPlayerValueSummary[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -410,6 +414,9 @@ const SeasonDraftDetail = () => {
         setLoading(true);
         setError(null);
         setDraftData(null); 
+        setDraftGrades(null);
+        setTopSteals(null);
+        setTopBusts(null);
         try {
           const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
           console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
@@ -421,15 +428,18 @@ const SeasonDraftDetail = () => {
             throw new Error(`Failed to fetch data for season ${selectedSeason}: ${response.status} ${response.statusText}.`);
           }
           
-          const jsonData: any = await response.json(); 
+          const jsonData: SeasonDraftDetailJson = await response.json(); 
           console.log(`[SeasonDraftDetail] Fetched raw JSON data for season ${selectedSeason}:`, jsonData);
 
           if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
-            setDraftData(jsonData.draft_board); 
-            console.log(`[SeasonDraftDetail] Successfully processed draft_board for season ${selectedSeason}.`);
+            setDraftData(jsonData.draft_board);
+            setDraftGrades(jsonData.draft_grades || null);
+            setTopSteals(jsonData.top_steals || null);
+            setTopBusts(jsonData.top_busts || null);
+            console.log(`[SeasonDraftDetail] Successfully processed draft_board and other sections for season ${selectedSeason}.`);
           } else {
             console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not in the expected object format with a 'draft_board' array. Received:`, jsonData);
-            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array.`);
+            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array and optionally "draft_grades", "top_steals", "top_busts".`);
             setDraftData(null);
           }
 
@@ -494,10 +504,10 @@ const SeasonDraftDetail = () => {
 
 
   const renderDraftBoard = () => {
-    if (loading) {
+    if (loading && !draftData) { // Show skeleton only if draftData isn't available yet from a previous load
       return <Skeleton className="h-[400px] w-full" />;
     }
-    if (error) {
+    if (error && !draftData) {
       return <p className="text-destructive text-center py-4">Error loading draft data: {error}</p>;
     }
     if (!draftData || gmNamesForColumns.length === 0 || maxRound === 0) {
@@ -615,12 +625,108 @@ const SeasonDraftDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <Card>
                   <CardHeader><CardTitle>Draft Grades (DH.1.5)</CardTitle></CardHeader>
-                  <CardContent><p className="text-muted-foreground">Placeholder for draft grade dashboard. This section will feature individual GM draft grades and analysis for the selected season.</p></CardContent>
+                  <CardContent>
+                    {loading && !draftGrades && <Skeleton className="h-24 w-full" />}
+                    {!loading && error && <p className="text-destructive text-center py-4">Error loading draft grades.</p>}
+                    {!loading && !error && draftGrades && draftGrades.length > 0 && (
+                      <div className="space-y-3">
+                        {draftGrades.map((grade, index) => (
+                          <div key={index} className="p-3 border rounded-md">
+                            <div className="flex justify-between items-center mb-1">
+                              <p className="font-semibold">{grade.gm_name}</p>
+                              <Badge variant={grade.grade.startsWith('A') ? "default" : grade.grade.startsWith('B') ? "secondary" : "outline"} 
+                                     className={cn(
+                                       grade.grade.startsWith('A') && "bg-green-500 hover:bg-green-600",
+                                       grade.grade.startsWith('F') || grade.grade.startsWith('D') && "bg-red-500 hover:bg-red-600"
+                                     )}
+                              >
+                                {grade.grade}
+                              </Badge>
+                            </div>
+                            {grade.analysis && <p className="text-xs text-muted-foreground">{grade.analysis}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!loading && !error && (!draftGrades || draftGrades.length === 0) && (
+                      <p className="text-muted-foreground text-center py-4">No draft grade data available for this season.</p>
+                    )}
+                  </CardContent>
               </Card>
-                <Card>
-                  <CardHeader><CardTitle>Season's Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
-                  <CardContent><p className="text-muted-foreground">Placeholder for season's top steals and busts. This section will highlight players who significantly over or underperformed relative to their draft position.</p></CardContent>
-              </Card>
+              <Card>
+                <CardHeader><CardTitle>Season's Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
+                <CardContent>
+                  {loading && (!topSteals || !topBusts) && <Skeleton className="h-48 w-full" />}
+                  {!loading && error && <p className="text-destructive text-center py-4">Error loading steals/busts.</p>}
+                  {!loading && !error && (topSteals || topBusts) && (
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="font-semibold mb-2 flex items-center"><ArrowUpCircle className="text-green-500 mr-2 h-5 w-5" /> Top Steals</h4>
+                        {topSteals && topSteals.length > 0 ? (
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Player</TableHead>
+                                <TableHead>Pos</TableHead>
+                                <TableHead className="text-right">Value</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {topSteals.slice(0, 5).map((player, index) => (
+                                <TableRow key={`steal-${index}`}>
+                                  <TableCell>
+                                    <p className="font-medium">{player.player_name}</p>
+                                    <p className="text-xs text-muted-foreground">Picked by {player.gm_name} (Overall: {player.pick_overall})</p>
+                                  </TableCell>
+                                  <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.player_position)}>{player.player_position}</Badge></TableCell>
+                                  <TableCell className="text-right text-green-600 font-semibold">
+                                    {player.value_score_label ? `${player.value_score_label}: ` : ''}{player.value_score?.toFixed(1)}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        ) : (
+                          <p className="text-muted-foreground text-sm text-center py-3">No top steals data available.</p>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2 flex items-center"><ArrowDownCircle className="text-red-500 mr-2 h-5 w-5" /> Top Busts</h4>
+                        {topBusts && topBusts.length > 0 ? (
+                           <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Player</TableHead>
+                                <TableHead>Pos</TableHead>
+                                <TableHead className="text-right">Value</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {topBusts.slice(0, 5).map((player, index) => (
+                                <TableRow key={`bust-${index}`}>
+                                   <TableCell>
+                                    <p className="font-medium">{player.player_name}</p>
+                                    <p className="text-xs text-muted-foreground">Picked by {player.gm_name} (Overall: {player.pick_overall})</p>
+                                  </TableCell>
+                                  <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.player_position)}>{player.player_position}</Badge></TableCell>
+                                  <TableCell className="text-right text-red-600 font-semibold">
+                                     {player.value_score_label ? `${player.value_score_label}: ` : ''}{player.value_score?.toFixed(1)}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        ) : (
+                          <p className="text-muted-foreground text-sm text-center py-3">No top busts data available.</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {!loading && !error && (!topSteals && !topBusts) && (
+                     <p className="text-muted-foreground text-center py-4">No steals or busts data available for this season.</p>
+                  )}
+                </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
@@ -630,6 +736,30 @@ const SeasonDraftDetail = () => {
 
 const GMDraftHistory = () => {
   const [selectedGm, setSelectedGm] = useState<string | undefined>(mockGms[0]?.id);
+  // Placeholder for GMDraftHistoryData, to be fetched based on selectedGm
+  const [gmHistoryData, setGmHistoryData] = useState<any>(null); // Replace 'any' with GMDraftHistoryData type
+
+  useEffect(() => {
+    if (selectedGm) {
+      // TODO: Fetch GM-specific draft history data from, e.g., /data/draft_data/gms/gm_${selectedGm}_history.json
+      // For now, using a simple mock structure if a specific GM is selected, or resetting
+      const gmDetails = mockGms.find(g => g.id === selectedGm);
+      if (gmDetails) {
+        setGmHistoryData({
+          gmId: gmDetails.id,
+          gmName: gmDetails.name,
+          careerDraftSummary: { totalPicks: Math.floor(Math.random() * 50) + 100, avgPickPosition: Math.floor(Math.random() * 50) + 50 },
+          bestPicks: [], 
+          worstPicks: [], 
+          roundEfficiency: [{ round: 1, avgPlayerPerformance: Math.random() * 30 + 70 }, { round: 2, avgPlayerPerformance: Math.random() * 30 + 50 }],
+          positionalProfile: [{ position: 'WR', count: Math.floor(Math.random()*10)+20 }, { position: 'RB', count: Math.floor(Math.random()*10)+20 }],
+        });
+      } else {
+        setGmHistoryData(null);
+      }
+    }
+  }, [selectedGm]);
+
 
   return (
     <div className="space-y-6">
@@ -649,20 +779,23 @@ const GMDraftHistory = () => {
                 ))}
                 </SelectContent>
             </Select>
-            {selectedGm && (
+            {selectedGm && gmHistoryData && (
                 <Card>
                 <CardHeader>
-                    <CardTitle>{mockGms.find(g => g.id === selectedGm)?.name}'s Draft History</CardTitle>
+                    <CardTitle>{gmHistoryData.gmName}'s Draft History</CardTitle>
                     <CardDescription>Career draft summary, efficiency, best/worst picks. (DH.2.2 - DH.2.6)</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <p><strong>Career Draft Summary (DH.2.2):</strong> Placeholder. Total Picks: {mockGMDraftHistory.careerDraftSummary.totalPicks}, Avg. Position: {mockGMDraftHistory.careerDraftSummary.avgPickPosition}</p>
-                    <p><strong>Round Efficiency Analysis (DH.2.3):</strong> Placeholder for Recharts charts.</p>
-                    <p><strong>Best & Worst Picks (DH.2.4):</strong> Best: {mockGMDraftHistory.bestPicks.map(p => p.playerName).join(', ') || 'N/A'}. Worst: {mockGMDraftHistory.worstPicks.map(p => p.playerName).join(', ') || 'N/A'}</p>
-                    <p><strong>Positional Drafting Profile (DH.2.5):</strong> Placeholder for Recharts charts or components.</p>
+                    <p><strong>Career Draft Summary (DH.2.2):</strong> Total Picks: {gmHistoryData.careerDraftSummary.totalPicks}, Avg. Position: {gmHistoryData.careerDraftSummary.avgPickPosition}</p>
+                    <p><strong>Round Efficiency Analysis (DH.2.3):</strong> Placeholder for Recharts charts. Round 1 Avg: {gmHistoryData.roundEfficiency.find((r:any)=>r.round===1)?.avgPlayerPerformance.toFixed(1)}</p>
+                    <p><strong>Best & Worst Picks (DH.2.4):</strong> Best: {gmHistoryData.bestPicks.map((p: any) => p.playerName).join(', ') || 'N/A'}. Worst: {gmHistoryData.worstPicks.map((p: any) => p.playerName).join(', ') || 'N/A'}</p>
+                    <p><strong>Positional Drafting Profile (DH.2.5):</strong> Placeholder for Recharts charts. WRs: {gmHistoryData.positionalProfile.find((p:any)=>p.position==='WR')?.count}</p>
                     <p><strong>Draft Strategy Overview (DH.2.6):</strong> Placeholder text.</p>
                 </CardContent>
                 </Card>
+            )}
+            {!gmHistoryData && selectedGm && (
+                <p className="text-muted-foreground">No draft history data found for this GM.</p>
             )}
         </CardContent>
       </Card>
@@ -683,4 +816,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-

@@ -94,7 +94,7 @@ export interface SeasonStandingEntry {
   regular_season_points_for: number;
   regular_season_points_against: number;
   regular_season_finish: number;
-  lastFive?: number[];
+  lastFive?: (0 | 1)[]; // 0 for loss, 1 for win
   playoffSeed?: number | null;
 }
 
@@ -102,7 +102,7 @@ export interface PlayoffMatchupTeam {
   seed: number;
   name: string;
   owner: string;
-  score: number;
+  score: number | null;
 }
 
 export interface PlayoffMatchup {
@@ -119,7 +119,7 @@ export interface PlayoffData {
 export interface WeeklyScoresData {
   teams: string[];
   scores: (number | null)[][];
-  results: (string | null)[][];
+  results: (string | null)[][]; // 'W', 'L', 'T'
 }
 
 
@@ -199,7 +199,7 @@ export interface GMInfo {
   bio?: string;
 }
 
-export interface GMCareerStats { // Renamed from CareerStats to avoid conflict
+export interface GMCareerStats {
   wins: number;
   losses: number;
   ties: number;
@@ -289,11 +289,11 @@ export interface GMSeasonPerformance {
   pointsFor: number;
   pointsAgainst: number;
   avgPointsPerGame: number;
-  avgPointsAgainstPerGame: number;
+  avgPointsAgainstPerGame?: number; // Optional as per your dylan json
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number; 
-  sosRating?: string; 
+  sosDifferential?: number;
+  sosRating?: string;
 }
 
 export interface GMGameByGame {
@@ -311,12 +311,12 @@ export interface GMSeasonSummary {
 }
 
 export interface GMPositionContribution {
-  name: string; 
+  name: string;
   startedPoints: number;
 }
 
 export interface GMLeagueAvgPositionData {
-  name: string; 
+  name: string;
   leagueAvg: number;
 }
 
@@ -324,7 +324,7 @@ export interface GMRosterPlayer {
   id: number;
   name: string;
   position: string;
-  finish: string; 
+  finish: string;
   gamesStarted: number;
   totalPoints: number;
 }
@@ -335,7 +335,7 @@ export interface GMRosterBreakdown {
   rosterPlayerData: GMRosterPlayer[];
 }
 
-export interface GMPlayerSummaryPerformance {
+export interface GMPlayerSummaryPerformanceEntry {
   playerId: number;
   name: string;
   position: string;
@@ -348,7 +348,7 @@ export interface GMPlayerSummaryPerformance {
 }
 
 export interface GMPlayerPerformanceData {
-  playerSummaryPerformance: GMPlayerSummaryPerformance[];
+  playerSummaryPerformance: GMPlayerSummaryPerformanceEntry[];
   overPerformer: { name: string; avgDifference: number };
   underPerformer: { name: string; avgDifference: number };
 }
@@ -387,7 +387,7 @@ export interface GMLineupOptimizationData {
 }
 
 export interface GMPositionalAdvantageWeeklyEntry {
-  week: number | string; 
+  week: number | string;
   QB?: number | null;
   RB?: number | null;
   WR?: number | null;
@@ -404,7 +404,7 @@ export interface GMPositionalAdvantageCumulativeDataPoint {
 }
 
 export interface GMPositionalAdvantageCumulative {
-  position: string;
+  position: string; // e.g., "QB", "RB"
   data: GMPositionalAdvantageCumulativeDataPoint[];
 }
 
@@ -441,10 +441,10 @@ export interface GMStreamingSuccessData {
 export interface GMIndividualSeasonDetailData {
   seasonSummary: GMSeasonSummary;
   rosterBreakdown: GMRosterBreakdown;
-  playerPerformance?: GMPlayerPerformanceData; 
-  lineupOptimization?: GMLineupOptimizationData; 
-  positionalAdvantage?: GMPositionalAdvantageData; 
-  streamingSuccess?: GMStreamingSuccessData; 
+  playerPerformance?: GMPlayerPerformanceData;
+  lineupOptimization?: GMLineupOptimizationData;
+  positionalAdvantage?: GMPositionalAdvantageData;
+  streamingSuccess?: GMStreamingSuccessData;
 }
 
 // For Draft History Overview - uses field names from gm_season_performance_grid.json
@@ -452,12 +452,12 @@ export interface GMDraftSeasonPerformance {
   season_id: number;
   gm_id: number;
   gm_name: string;
-  first_round_draft_position?: number;
-  total_picks?: number;
-  avg_pvdre?: number; // This is the POE metric
-  total_pvdre?: number;
-  pvdre_hit_rate?: number;
-  avg_value_vs_adp?: number;
+  first_round_draft_position?: number | null;
+  total_picks?: number | null;
+  avg_pvdre?: number | null; // This is the POE metric
+  total_pvdre?: number | null;
+  pvdre_hit_rate?: number | null;
+  avg_value_vs_adp?: number | null;
 }
 
 
@@ -487,10 +487,32 @@ export interface DraftPickDetail {
   expected_points_for_league_draft_rank_smoothed?: number | null;
   pvdre_points_vs_league_draft_rank_exp?: number | null;
   rank_diff_vs_league_draft_rank?: number | null;
-  raw_stats_season?: Record<string, any>; // Or a more specific type if known
+  raw_stats_season?: Record<string, any>;
 }
 
-export type SeasonDraftBoardData = DraftPickDetail[];
+export interface DraftGradeEntry {
+  gm_name: string;
+  grade: string;
+  analysis?: string;
+}
+
+export interface DraftPlayerValueSummary {
+  player_name: string;
+  player_position: string;
+  nfl_team_id: string;
+  gm_name: string; // GM who picked them
+  pick_overall: number;
+  value_score: number; // The score that makes them a steal/bust (e.g., PVDRE)
+  value_score_label?: string; // e.g., "PVDRE"
+}
+
+// This is the expected structure for season_YYYY_draft_detail.json
+export interface SeasonDraftDetailJson {
+  draft_board: DraftPickDetail[];
+  draft_grades?: DraftGradeEntry[];
+  top_steals?: DraftPlayerValueSummary[];
+  top_busts?: DraftPlayerValueSummary[];
+}
 
 
 // Old types - re-evaluate if still needed by other pages or can be removed
@@ -568,5 +590,3 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
-
-    
