@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, DraftGradeEntry, DraftPlayerValueSummary } from '@/lib/types';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry } from '@/lib/types';
 import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -24,17 +24,6 @@ const mockSeasons: Season[] = [
 const mockGms: GM[] = [
   { id: "gm1", name: "Alice" }, { id: "gm2", name: "Bob" }, { id: "gm3", name: "Charlie" }
 ];
-
-// This type is defined in types.ts, GMDraftHistoryData
-// const mockGMDraftHistory: GMDraftHistoryData = {
-//   gmId: "gm1",
-//   gmName: "Alice",
-//   careerDraftSummary: { totalPicks: 150, avgPickPosition: 75 },
-//   bestPicks: [], 
-//   worstPicks: [], 
-//   roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
-//   positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
-// };
 
 type SortDirection = 'asc' | 'desc';
 interface HeatmapSortConfig {
@@ -126,15 +115,16 @@ const DraftOverview = () => {
       setLoading(true);
       setError(null);
       try {
-        console.log("Fetching /data/draft_data/gm_season_performance_grid.json");
-        const response = await fetch('/data/draft_data/gm_season_performance_grid.json');
+        const filePath = '/data/draft_data/gm_season_performance_grid.json';
+        console.log(`[DraftOverview] Fetching ${filePath}`);
+        const response = await fetch(filePath);
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("Fetch failed:", response.status, errorText);
+          console.error("[DraftOverview] Fetch failed:", response.status, errorText);
           throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}. ${errorText.substring(0,100)}`);
         }
         const data: GMDraftSeasonPerformance[] = await response.json();
-        console.log("Fetched data:", data);
+        console.log("[DraftOverview] Fetched data:", data);
         setRawData(data);
       } catch (err) {
         if (err instanceof Error) {
@@ -142,7 +132,7 @@ const DraftOverview = () => {
         } else {
             setError("An unknown error occurred");
         }
-        console.error("Error in fetchData:", err);
+        console.error("[DraftOverview] Error in fetchData:", err);
         setRawData(null);
       } finally {
         setLoading(false);
@@ -399,9 +389,9 @@ const DraftOverview = () => {
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
   const [draftData, setDraftData] = useState<DraftPickDetail[] | null>(null);
-  const [draftGrades, setDraftGrades] = useState<DraftGradeEntry[] | null>(null);
-  const [topSteals, setTopSteals] = useState<DraftPlayerValueSummary[] | null>(null);
-  const [topBusts, setTopBusts] = useState<DraftPlayerValueSummary[] | null>(null);
+  const [teamDraftPerformance, setTeamDraftPerformance] = useState<TeamDraftPerformanceEntry[] | null>(null);
+  const [topSteals, setTopSteals] = useState<DraftPickDetail[] | null>(null);
+  const [topBusts, setTopBusts] = useState<DraftPickDetail[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -414,7 +404,7 @@ const SeasonDraftDetail = () => {
         setLoading(true);
         setError(null);
         setDraftData(null); 
-        setDraftGrades(null);
+        setTeamDraftPerformance(null);
         setTopSteals(null);
         setTopBusts(null);
         try {
@@ -433,13 +423,13 @@ const SeasonDraftDetail = () => {
 
           if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
             setDraftData(jsonData.draft_board);
-            setDraftGrades(jsonData.draft_grades || null);
-            setTopSteals(jsonData.top_steals || null);
-            setTopBusts(jsonData.top_busts || null);
+            setTeamDraftPerformance(jsonData.team_draft_performance_ranking || null);
+            setTopSteals(jsonData.season_highlights?.top_steals_by_pvdre || null);
+            setTopBusts(jsonData.season_highlights?.top_busts_by_pvdre || null);
             console.log(`[SeasonDraftDetail] Successfully processed draft_board and other sections for season ${selectedSeason}.`);
           } else {
             console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not in the expected object format with a 'draft_board' array. Received:`, jsonData);
-            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array and optionally "draft_grades", "top_steals", "top_busts".`);
+            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array and optionally "team_draft_performance_ranking", "season_highlights.top_steals_by_pvdre", "season_highlights.top_busts_by_pvdre".`);
             setDraftData(null);
           }
 
@@ -504,7 +494,7 @@ const SeasonDraftDetail = () => {
 
 
   const renderDraftBoard = () => {
-    if (loading && !draftData) { // Show skeleton only if draftData isn't available yet from a previous load
+    if (loading && !draftData) { 
       return <Skeleton className="h-[400px] w-full" />;
     }
     if (error && !draftData) {
@@ -624,32 +614,35 @@ const SeasonDraftDetail = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <Card>
-                  <CardHeader><CardTitle>Draft Grades (DH.1.5)</CardTitle></CardHeader>
+                  <CardHeader><CardTitle>Team Draft Performance (DH.1.5)</CardTitle></CardHeader>
                   <CardContent>
-                    {loading && !draftGrades && <Skeleton className="h-24 w-full" />}
-                    {!loading && error && <p className="text-destructive text-center py-4">Error loading draft grades.</p>}
-                    {!loading && !error && draftGrades && draftGrades.length > 0 && (
-                      <div className="space-y-3">
-                        {draftGrades.map((grade, index) => (
-                          <div key={index} className="p-3 border rounded-md">
-                            <div className="flex justify-between items-center mb-1">
-                              <p className="font-semibold">{grade.gm_name}</p>
-                              <Badge variant={grade.grade.startsWith('A') ? "default" : grade.grade.startsWith('B') ? "secondary" : "outline"} 
-                                     className={cn(
-                                       grade.grade.startsWith('A') && "bg-green-500 hover:bg-green-600",
-                                       grade.grade.startsWith('F') || grade.grade.startsWith('D') && "bg-red-500 hover:bg-red-600"
-                                     )}
-                              >
-                                {grade.grade}
-                              </Badge>
-                            </div>
-                            {grade.analysis && <p className="text-xs text-muted-foreground">{grade.analysis}</p>}
-                          </div>
-                        ))}
-                      </div>
+                    {loading && !teamDraftPerformance && <Skeleton className="h-24 w-full" />}
+                    {!loading && error && <p className="text-destructive text-center py-4">Error loading draft performance data.</p>}
+                    {!loading && !error && teamDraftPerformance && teamDraftPerformance.length > 0 && (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>GM</TableHead>
+                            <TableHead className="text-right">Avg PVDRE</TableHead>
+                            <TableHead className="text-right">Hit Rate</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {teamDraftPerformance.sort((a,b) => b.avg_pvdre_per_pick - a.avg_pvdre_per_pick).map((perf, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                <p className="font-medium">{perf.gm_name}</p>
+                                <p className="text-xs text-muted-foreground">{perf.fantasy_team_name}</p>
+                              </TableCell>
+                              <TableCell className="text-right font-semibold">{perf.avg_pvdre_per_pick?.toFixed(2)}</TableCell>
+                              <TableCell className="text-right">{perf.hit_rate_percentage?.toFixed(1)}%</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     )}
-                    {!loading && !error && (!draftGrades || draftGrades.length === 0) && (
-                      <p className="text-muted-foreground text-center py-4">No draft grade data available for this season.</p>
+                    {!loading && !error && (!teamDraftPerformance || teamDraftPerformance.length === 0) && (
+                      <p className="text-muted-foreground text-center py-4">No team draft performance data available for this season.</p>
                     )}
                   </CardContent>
               </Card>
@@ -668,7 +661,7 @@ const SeasonDraftDetail = () => {
                               <TableRow>
                                 <TableHead>Player</TableHead>
                                 <TableHead>Pos</TableHead>
-                                <TableHead className="text-right">Value</TableHead>
+                                <TableHead className="text-right">PVDRE</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -680,7 +673,7 @@ const SeasonDraftDetail = () => {
                                   </TableCell>
                                   <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.player_position)}>{player.player_position}</Badge></TableCell>
                                   <TableCell className="text-right text-green-600 font-semibold">
-                                    {player.value_score_label ? `${player.value_score_label}: ` : ''}{player.value_score?.toFixed(1)}
+                                    {player.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -698,7 +691,7 @@ const SeasonDraftDetail = () => {
                               <TableRow>
                                 <TableHead>Player</TableHead>
                                 <TableHead>Pos</TableHead>
-                                <TableHead className="text-right">Value</TableHead>
+                                <TableHead className="text-right">PVDRE</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -710,7 +703,7 @@ const SeasonDraftDetail = () => {
                                   </TableCell>
                                   <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.player_position)}>{player.player_position}</Badge></TableCell>
                                   <TableCell className="text-right text-red-600 font-semibold">
-                                     {player.value_score_label ? `${player.value_score_label}: ` : ''}{player.value_score?.toFixed(1)}
+                                     {player.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -816,3 +809,6 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
+
+
+    

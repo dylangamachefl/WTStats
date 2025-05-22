@@ -281,7 +281,7 @@ export interface GMCareerData {
   rivalryPerformance: RivalryPerformanceEntry[];
 }
 
-// For individual GM Season Detail (e.g., gm_career_GMID_YEAR.json)
+
 export interface GMSeasonPerformance {
   wins: number;
   losses: number;
@@ -289,7 +289,7 @@ export interface GMSeasonPerformance {
   pointsFor: number;
   pointsAgainst: number;
   avgPointsPerGame: number;
-  avgPointsAgainstPerGame?: number; // Optional as per your dylan json
+  avgPointsAgainstPerGame?: number;
   regularSeasonFinish: number;
   finalStanding: number;
   sosDifferential?: number;
@@ -447,14 +447,14 @@ export interface GMIndividualSeasonDetailData {
   streamingSuccess?: GMStreamingSuccessData;
 }
 
-// For Draft History Overview - uses field names from gm_season_performance_grid.json
+// For Draft History Overview - gm_season_performance_grid.json
 export interface GMDraftSeasonPerformance {
   season_id: number;
   gm_id: number;
   gm_name: string;
   first_round_draft_position?: number | null;
   total_picks?: number | null;
-  avg_pvdre?: number | null; // This is the POE metric
+  avg_pvdre?: number | null;
   total_pvdre?: number | null;
   pvdre_hit_rate?: number | null;
   avg_value_vs_adp?: number | null;
@@ -490,28 +490,32 @@ export interface DraftPickDetail {
   raw_stats_season?: Record<string, any>;
 }
 
-export interface DraftGradeEntry {
+// Renamed old DraftGradeEntry to TeamDraftPerformanceEntry for clarity
+export interface TeamDraftPerformanceEntry {
+  gm_id: number;
   gm_name: string;
-  grade: string;
-  analysis?: string;
+  fantasy_team_name: string;
+  total_pvdre: number;
+  num_picks: number;
+  avg_pvdre_per_pick: number;
+  hits: number;
+  misses: number;
+  hit_rate_percentage: number;
+  draft_rank_by_avg_pvdre: number;
 }
 
-export interface DraftPlayerValueSummary {
-  player_name: string;
-  player_position: string;
-  nfl_team_id: string;
-  gm_name: string; // GM who picked them
-  pick_overall: number;
-  value_score: number; // The score that makes them a steal/bust (e.g., PVDRE)
-  value_score_label?: string; // e.g., "PVDRE"
+// Alias for what was previously DraftPlayerValueSummary, as it uses DraftPickDetail structure
+export type DraftPlayerValueSummary = DraftPickDetail;
+
+export interface SeasonHighlights {
+  top_steals_by_pvdre: DraftPickDetail[];
+  top_busts_by_pvdre: DraftPickDetail[];
 }
 
-// This is the expected structure for season_YYYY_draft_detail.json
 export interface SeasonDraftDetailJson {
   draft_board: DraftPickDetail[];
-  draft_grades?: DraftGradeEntry[];
-  top_steals?: DraftPlayerValueSummary[];
-  top_busts?: DraftPlayerValueSummary[];
+  team_draft_performance_ranking?: TeamDraftPerformanceEntry[]; // Corresponds to "Draft Grades" concept
+  season_highlights?: SeasonHighlights; // Contains top_steals and top_busts
 }
 
 
@@ -590,3 +594,6 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
+
+
+    
