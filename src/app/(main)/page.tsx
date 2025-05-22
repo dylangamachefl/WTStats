@@ -18,23 +18,24 @@ import type {
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
   TopPerformerPlayer,
-  PositionalTopPerformersData,
+  // PositionalTopPerformersData, // Already included in SeasonDetailData
   SeasonBestOverallGameEntry,
   GMCareerData,
   GMIndividualSeasonDetailData,
   GMSeasonPerformance,
   GMGameByGame,
   GMRosterPlayer,
-  GMPlayerPerformanceData,
-  GMPositionalAdvantageData,
-  GMLineupOptimizationData,
-  GMStreamingSuccessData,
-
+  // GMPositionContribution, // Included in GMIndividualSeasonDetailData
+  // GMLeagueAvgPositionData, // Included in GMIndividualSeasonDetailData
+  GMPlayerPerformanceData, // Included in GMIndividualSeasonDetailData
+  GMPositionalAdvantageData, // Included in GMIndividualSeasonDetailData
+  GMLineupOptimizationData, // Included in GMIndividualSeasonDetailData
+  GMStreamingSuccessData, // Included in GMIndividualSeasonDetailData
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, UserCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
@@ -42,7 +43,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList, BarChart } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -103,8 +104,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
     const defaultStyle = { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
-    const coloredRankedStyle = { textClass: 'font-semibold text-neutral-800', borderClass: '', style: {} };
-
+    
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
     
     if (rank === 1) {
@@ -117,48 +117,43 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
     if (maxRankInYear <= 1) return defaultStyle;
 
-    const SATURATION = 60; // Pastel saturation
-    const MAX_LIGHTNESS = 92; // Lighter end of pastel
-    const MIN_LIGHTNESS = 78; // Darker end of pastel (but still light)
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; // e.g., 25% of ranks in the middle are neutral
+    const SATURATION = 60; 
+    const MAX_LIGHTNESS = 92; 
+    const MIN_LIGHTNESS = 78; 
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
 
-    const numRanksToScale = maxRankInYear - 1; // Excluding 1st place
-    if (numRanksToScale <= 0) return defaultStyle; // Only 1st place or invalid
+    const numRanksToScale = maxRankInYear - 1; 
+    if (numRanksToScale <= 0) return defaultStyle;
 
-    const rankPositionInScale = rank - 2; // 2nd place is 0, 3rd is 1, etc.
-    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; // Normalized from 0 (best non-1st) to 1 (worst)
+    const rankPositionInScale = rank - 2; 
+    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; 
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
     const neutralZoneStart = 0.5 - NEUTRAL_BANDWIDTH_PERCENT / 2;
     const neutralZoneEnd = 0.5 + NEUTRAL_BANDWIDTH_PERCENT / 2;
 
-    const GREEN_HUE = 120; // Green
-    const RED_HUE = 0;     // Red
+    const GREEN_HUE = 120; 
+    const RED_HUE = 0;     
 
     let backgroundColor = '';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-      // Neutral zone - no specific background or use a very light gray if needed
       return defaultStyle;
     } else if (clampedNormalizedRank < neutralZoneStart) {
-      // Better than average (green spectrum)
-      const greenZoneWidth = neutralZoneStart; // Width of the green portion of the scale
-      // t_green = 1 for rank closest to neutral, 0 for rank furthest from neutral (best)
+      const greenZoneWidth = neutralZoneStart; 
       const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; 
       const lightness = MAX_LIGHTNESS - t_green * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
-    } else { // clampedNormalizedRank > neutralZoneEnd
-      // Worse than average (red spectrum)
+    } else { 
       const redZoneEffectiveStart = neutralZoneEnd;
-      const redZoneWidth = 1 - redZoneEffectiveStart; // Width of the red portion of the scale
-      // t_red = 0 for rank closest to neutral, 1 for rank furthest from neutral (worst)
+      const redZoneWidth = 1 - redZoneEffectiveStart; 
       const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0; 
       const lightness = MAX_LIGHTNESS - t_red * (MAX_LIGHTNESS - MIN_LIGHTNESS);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
     return { 
-      textClass: coloredRankedStyle.textClass, 
+      textClass: 'font-semibold text-neutral-800', 
       borderClass: '', 
       style: { backgroundColor } 
     };
@@ -538,7 +533,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardTitle>Final Standings Heatmap</CardTitle>
           <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
@@ -548,7 +543,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   </Button>
                 </TableHead>
                 {heatmapYears.map(year => (
-                  <TableHead key={year} className="text-center py-2 px-1 text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
+                  <TableHead key={year} className="text-center py-2 px-1 text-xs whitespace-nowrap">{year}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -565,7 +560,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       <TableCell
                         key={year}
                         className={cn(
-                          "text-center py-2 px-1 text-xs md:text-sm min-w-[40px] md:min-w-[50px]",
+                          "text-center py-2 px-1 text-xs", 
                           textClass,
                           borderClass
                         )}
@@ -736,8 +731,9 @@ const SeasonDetail = () => {
             try {
                 errorBody = await res.text();
             } catch (e) { console.error("Error parsing error response body:", e); }
-            console.error(`[SeasonDetail] HTTP error! Status: ${res.status}. Body: ${errorBody.substring(0,200)}`);
-            throw new Error(`Failed to fetch ${seasonFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${errorBody.substring(0,100)}...`);
+            const shortErrorBody = errorBody.substring(0,200);
+            console.error(`[SeasonDetail] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
+            throw new Error(`Failed to fetch ${seasonFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${shortErrorBody}...`);
           }
           const data = await res.json();
           console.log(`[SeasonDetail] Successfully fetched and parsed data for ${selectedSeason}:`, data);
@@ -863,7 +859,7 @@ const SeasonDetail = () => {
           {!loading && !error && seasonData && (
              <CardContent className="pt-0">
                 <Tabs value={activeSubTab} onValueChange={setActiveSubTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
+                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="weekly_performance">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
@@ -1026,14 +1022,14 @@ const SeasonDetail = () => {
                                                             innerDivClasses = cn(innerDivClasses, getScoreCellClass(score));
                                                         } else { 
                                                             if (result === 'W') {
-                                                                cellContent = 'W';
-                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
+                                                                cellContent = <span className="font-semibold">W</span>;
+                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700");
                                                             } else if (result === 'L') {
-                                                                cellContent = 'L';
-                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700 font-semibold");
+                                                                cellContent = <span className="font-semibold">L</span>;
+                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700");
                                                             } else if (result === 'T') {
-                                                                cellContent = 'T';
-                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700 font-semibold");
+                                                                cellContent = <span className="font-semibold">T</span>;
+                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700");
                                                             } else {
                                                                 cellContent = '-';
                                                                 innerDivClasses = cn(innerDivClasses, "bg-muted/30 text-muted-foreground");
@@ -1056,12 +1052,22 @@ const SeasonDetail = () => {
                                     </Table>
                                 </div>
                                  <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-                                  {(weeklyScoresDisplayMode === 'scores' ? weeklyScoreLegendItems : weeklyResultLegendItems).map(item => (
-                                      <div key={item.label} className="flex items-center gap-1.5">
-                                          <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
-                                          <span>{item.label}</span>
-                                      </div>
-                                  ))}
+                                    {weeklyScoresDisplayMode === 'scores' ? 
+                                        weeklyScoreLegendItems.map(item => (
+                                            <div key={item.label} className="flex items-center gap-1.5">
+                                                <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
+                                                <span>{item.label}</span>
+                                            </div>
+                                        )) :
+                                        weeklyResultLegendItems.map(item => (
+                                            <div key={item.label} className="flex items-center gap-1.5">
+                                                <span className={cn("h-3 w-5 rounded-sm flex items-center justify-center font-semibold text-xs", item.className)}>
+                                                    {item.label.charAt(0)}
+                                                </span>
+                                                <span>{item.label}</span>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                                 </>
                             ) : (
@@ -1492,8 +1498,9 @@ const GMCareer = () => {
           if (!res.ok) {
             let errorBody = "No additional error body from server.";
             try { errorBody = await res.text(); } catch (e) { /* ignore */ }
-            console.error(`[GMCareer] HTTP error! Status: ${res.status}. Body: ${errorBody}`);
-            throw new Error(`Failed to fetch ${gmFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${errorBody.substring(0,100)}...`);
+            const shortErrorBody = errorBody.substring(0,200);
+            console.error(`[GMCareer] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
+            throw new Error(`Failed to fetch ${gmFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${shortErrorBody}...`);
           }
           const data = await res.json();
           console.log(`[GMCareer] Successfully fetched and parsed data for ${gmSlug}:`, data);
@@ -1541,8 +1548,9 @@ const GMCareer = () => {
           if (!res.ok) {
             let errorBody = "No additional error body from server.";
             try { errorBody = await res.text(); } catch (e) { /* ignore */ }
-            console.error(`[GMCareer-IndividualSeason] HTTP error! Status: ${res.status}. Body: ${errorBody}`);
-            throw new Error(`Failed to fetch ${seasonDetailFilePath}. Status: ${res.status}. Server: ${errorBody.substring(0,100)}...`);
+            const shortErrorBody = errorBody.substring(0,200);
+            console.error(`[GMCareer-IndividualSeason] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
+            throw new Error(`Failed to fetch ${seasonDetailFilePath}. Status: ${res.status}. Server: ${shortErrorBody}...`);
           }
           const data: GMIndividualSeasonDetailData = await res.json();
           console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
@@ -1595,7 +1603,7 @@ const GMCareer = () => {
   }, [gmData?.seasonProgression]);
 
 
-  const pieChartData = useMemo(() => {
+ const pieChartData = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints || 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
@@ -2316,7 +2324,7 @@ const GMCareer = () => {
                                                     </p>
                                                 </div>
                                                 <div><p className="text-xs text-muted-foreground">Avg Proj Diff.</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
+                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' &&gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
                                                     {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference?.toFixed(1) ?? '-'}
                                                     </p>
                                                 </div>
@@ -2464,15 +2472,20 @@ const GMCareer = () => {
 
 export default function LeagueHistoryPage() {
   const searchParams = useSearchParams();
-  const section = searchParams.get('section') || 'all-seasons'; 
+  const sectionFromQuery = searchParams.get('section'); 
+  const [activeMainTab, setActiveMainTab] = useState<string>(sectionFromQuery || 'all-seasons');
 
   const [leagueData, setLeagueData] = useState<LeagueData | null>(null);
   const [loadingLeagueData, setLoadingLeagueData] = useState(true);
-  const [activeMainTab, setActiveMainTab] = useState<string>(section);
+
 
   useEffect(() => {
-    setActiveMainTab(section); // Sync tab state with URL query param
-  }, [section]);
+    const newSection = sectionFromQuery || 'all-seasons';
+    if (newSection !== activeMainTab) {
+        setActiveMainTab(newSection);
+    }
+  }, [sectionFromQuery, activeMainTab]);
+
 
   useEffect(() => {
     if (activeMainTab === 'all-seasons' && !leagueData) { 
@@ -2486,9 +2499,10 @@ export default function LeagueHistoryPage() {
               try {
                   errorBody = await res.text();
               } catch(e) { console.error("Error parsing error response body:", e); }
-              console.error("Failed to fetch league-data.json, status:", res.status, "Body:", errorBody.substring(0,200));
+              const shortErrorBody = errorBody.substring(0,200);
+              console.error("Failed to fetch league-data.json, status:", res.status, "Body:", shortErrorBody);
               setLeagueData(null);
-              throw new Error(`HTTP error! status: ${res.status}. Body: ${errorBody.substring(0, 100)}`);
+              throw new Error(`HTTP error! status: ${res.status}. Body: ${shortErrorBody}`);
             }
             return res.json();
           })
@@ -2517,9 +2531,19 @@ export default function LeagueHistoryPage() {
           .finally(() => {
             setLoadingLeagueData(false);
           });
-    } else if (activeMainTab !== 'all-seasons') {
-        setLoadingLeagueData(false); 
+    } else if (activeMainTab !== 'all-seasons' && leagueData) {
+        // If navigating away from all-seasons, but leagueData was already loaded, we don't need to reload it when coming back.
+        // However, if navigating to all-seasons and it's not loaded, the above block handles it.
+        // If navigating away and then back, leagueData would already be populated.
+        // We ensure loadingLeagueData is false if we are not on all-seasons to prevent showing global loading.
+        setLoadingLeagueData(false);
+    } else if (activeMainTab !== 'all-seasons' && !leagueData) {
+      // This case: if we land directly on a sub-tab (e.g. season-detail) and leagueData has never been loaded.
+      // For now, we set loading to false because this page component doesn't load 'leagueData' for these tabs.
+      // If these tabs needed data from 'league-data.json' in the future, this would need adjustment.
+      setLoadingLeagueData(false);
     }
+
   }, [activeMainTab, leagueData]); 
 
   if (activeMainTab === 'all-seasons') {
@@ -2535,3 +2559,4 @@ export default function LeagueHistoryPage() {
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
 
+    
