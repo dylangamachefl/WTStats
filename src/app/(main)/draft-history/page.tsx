@@ -29,8 +29,8 @@ const mockGMDraftHistory: GMDraftHistoryData = {
   gmId: "gm1",
   gmName: "Alice",
   careerDraftSummary: { totalPicks: 150, avgPickPosition: 75 },
-  bestPicks: [], // Will use OldDraftPick type, update if needed
-  worstPicks: [], // Will use OldDraftPick type
+  bestPicks: [], 
+  worstPicks: [], 
   roundEfficiency: [{ round: 1, avgPlayerPerformance: 85 }, { round: 2, avgPlayerPerformance: 70 }],
   positionalProfile: [{ position: 'WR', count: 40 }, { position: 'RB', count: 35 }],
 };
@@ -192,7 +192,7 @@ const DraftOverview = () => {
 
     let hue;
     const saturation = 70; 
-    let lightness = 90; // Start with a lighter base
+    let lightness = 90; 
 
     if (metricKey === 'avg_value_vs_adp') {
         const adpThreshold = 0.1; 
@@ -411,8 +411,9 @@ const SeasonDraftDetail = () => {
         setError(null);
         setDraftData(null);
         try {
-          console.log(`Fetching /data/draft_data/seasons/${selectedSeason}.json`);
-          const response = await fetch(`/data/draft_data/seasons/${selectedSeason}.json`);
+          const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
+          console.log(`Fetching ${filePath}`);
+          const response = await fetch(filePath);
           if (!response.ok) {
             const errorText = await response.text();
             console.error("Fetch failed for season draft data:", response.status, errorText);
@@ -420,6 +421,14 @@ const SeasonDraftDetail = () => {
           }
           const data: SeasonDraftBoardData = await response.json();
           console.log(`Fetched draft data for season ${selectedSeason}:`, data);
+
+          if (!Array.isArray(data)) {
+            console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not an array as expected. Received:`, data);
+            setError(`Data for season ${selectedSeason} is not in the expected array format. Check the JSON file structure.`);
+            setDraftData(null);
+            setLoading(false);
+            return;
+          }
           setDraftData(data);
         } catch (err) {
           if (err instanceof Error) {
@@ -438,13 +447,20 @@ const SeasonDraftDetail = () => {
   }, [selectedSeason]);
 
   const { boardLayout, gmNamesForColumns, maxRound } = useMemo(() => {
-    if (!draftData) return { boardLayout: {}, gmNamesForColumns: [], maxRound: 0 };
+    if (!draftData || !Array.isArray(draftData)) { // Ensure draftData is an array
+      console.warn("[SeasonDraftDetail useMemo] draftData is not an array or is null. draftData:", draftData);
+      return { boardLayout: {}, gmNamesForColumns: [], maxRound: 0 };
+    }
 
     const gms = new Set<string>();
     let currentMaxRound = 0;
     const picksByRoundAndGm: { [round: number]: { [gmName: string]: DraftPickDetail | undefined } } = {};
 
     draftData.forEach(pick => {
+      if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number') {
+        console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered:", pick);
+        return; // Skip this pick
+      }
       gms.add(pick.gm_name);
       if (pick.round > currentMaxRound) {
         currentMaxRound = pick.round;
@@ -452,15 +468,13 @@ const SeasonDraftDetail = () => {
       if (!picksByRoundAndGm[pick.round]) {
         picksByRoundAndGm[pick.round] = {};
       }
-      // For simplicity, if a GM has multiple picks in a round, take the one with the lowest pick_in_round
-      // This is common for grid-based draft boards.
       const existingPick = picksByRoundAndGm[pick.round][pick.gm_name];
       if (!existingPick || pick.pick_in_round < existingPick.pick_in_round) {
         picksByRoundAndGm[pick.round][pick.gm_name] = pick;
       }
     });
     
-    const sortedGmNames = Array.from(gms).sort((a,b) => a.localeCompare(b)); // Or sort by draft order if available
+    const sortedGmNames = Array.from(gms).sort((a,b) => a.localeCompare(b)); 
 
     return { boardLayout: picksByRoundAndGm, gmNamesForColumns: sortedGmNames, maxRound: currentMaxRound };
   }, [draftData]);
@@ -500,10 +514,10 @@ const SeasonDraftDetail = () => {
                     }
                     const cellBg = getPositionBadgeClass(pick.player_position);
                     return (
-                      <TableCell key={pick.player_id || `${roundNum}-${gmName}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' /* Ensure minimum width */ }}>
+                      <TableCell key={pick.player_id || `${roundNum}-${gmName}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg, minWidth: '120px' }}>
                          <Tooltip delayDuration={100}>
                            <TooltipTrigger asChild>
-                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg /* Apply color if not a tailwind bg class */ }}>
+                            <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellBg.startsWith('bg-') ? cellBg : '')} style={{ backgroundColor: cellBg.startsWith('bg-') ? undefined : cellBg }}>
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
                                 <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
                               </div>
