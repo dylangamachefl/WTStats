@@ -43,7 +43,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList, BarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -304,7 +304,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }
 
   if (!leagueData) {
-    return <Card><CardContent className="pt-6 text-center">Failed to load league data. Check console for errors or ensure 'public/data/league_data/league-data.json' is correctly placed and formatted.</CardContent></Card>;
+    return <Card><CardContent className="pt-6 text-center">Failed to load league data. Check console for errors or ensure 'public/data/league-data.json' is correctly placed and formatted.</CardContent></Card>;
   }
 
   return (
@@ -533,8 +533,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardTitle>Final Standings Heatmap</CardTitle>
           <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
+        <CardContent className="overflow-x-auto">
+          <Table className="min-w-full"> {/* Ensure table can take full width for scrolling */}
             <TableHeader>
               <TableRow>
                 <TableHead className="sticky left-0 bg-card z-10 py-2 px-1 text-xs md:text-sm">
@@ -668,7 +668,7 @@ const PlayoffMatchupCard = ({
   isChampionship?: boolean;
 }) => {
   return (
-    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100 dark:bg-yellow-800/30" : "bg-card")}>
+    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/20" : "bg-card")}>
       <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
       <div className="text-xs space-y-1">
         <div className="flex justify-between">
@@ -843,7 +843,7 @@ const SeasonDetail = () => {
             <CardContent className="pt-6 space-y-4">
                 <Skeleton className="h-8 w-1/2 mb-2" /> 
                 <Skeleton className="h-6 w-3/4 mb-4" /> 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-4">
                     {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
                 </div>
                 {[...Array(3)].map((_, i) => (
@@ -1603,7 +1603,7 @@ const GMCareer = () => {
   }, [gmData?.seasonProgression]);
 
 
- const pieChartData = useMemo(() => {
+  const pieChartData = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints || 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
@@ -1780,7 +1780,7 @@ const GMCareer = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div>
                     <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
                     <div className="space-y-0.5 text-sm max-w-sm">
@@ -2399,8 +2399,8 @@ const GMCareer = () => {
                                                             <TableCell className="text-center">{item.streamedStartsCount ?? '-'}</TableCell>
                                                             <TableCell className="text-right">{item.avgPtsGm?.toFixed(1) ?? '-'}</TableCell>
                                                             <TableCell className="text-right">{item.avgPtsLeague?.toFixed(1) ?? '-'}</TableCell>
-                                                            <TableCell className={cn("text-right", typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : (typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg < 0 ? "text-red-600 dark:text-red-400" : ""))}>
-                                                                {typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg >=0 ? '+':''}
+                                                            <TableCell className={cn("text-right", typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg != null && item.netPtsVsAvg >= 0 ? "text-green-600 dark:text-green-400" : (typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg != null && item.netPtsVsAvg < 0 ? "text-red-600 dark:text-red-400" : ""))}>
+                                                                {typeof item.netPtsVsAvg === 'number' && item.netPtsVsAvg != null && item.netPtsVsAvg >=0 ? '+':''}
                                                                 {item.netPtsVsAvg?.toFixed(1) ?? '-'}
                                                             </TableCell>
                                                             <TableCell className="text-right">{item.hitRate?.toFixed(1) ?? '-'}%</TableCell>
@@ -2532,15 +2532,8 @@ export default function LeagueHistoryPage() {
             setLoadingLeagueData(false);
           });
     } else if (activeMainTab !== 'all-seasons' && leagueData) {
-        // If navigating away from all-seasons, but leagueData was already loaded, we don't need to reload it when coming back.
-        // However, if navigating to all-seasons and it's not loaded, the above block handles it.
-        // If navigating away and then back, leagueData would already be populated.
-        // We ensure loadingLeagueData is false if we are not on all-seasons to prevent showing global loading.
         setLoadingLeagueData(false);
     } else if (activeMainTab !== 'all-seasons' && !leagueData) {
-      // This case: if we land directly on a sub-tab (e.g. season-detail) and leagueData has never been loaded.
-      // For now, we set loading to false because this page component doesn't load 'leagueData' for these tabs.
-      // If these tabs needed data from 'league-data.json' in the future, this would need adjustment.
       setLoadingLeagueData(false);
     }
 
