@@ -209,7 +209,7 @@ const DraftOverview = () => {
         } else {
             return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
         }
-    } else {
+    } else { // For POE and Hit Rate
         const range = metricMaxValue - metricMinValue;
         if (range === 0) return { backgroundColor: 'hsl(0, 0%, 95%)', color: 'hsl(var(--foreground))', fontWeight: '500' };
 
@@ -486,7 +486,7 @@ const SeasonDraftDetail = () => {
     const sortedGmNamesByDraftOrder = Array.from(gmNames).sort((a, b) => {
         const pickA = gmMinOverallPick.get(a) ?? Infinity;
         const pickB = gmMinOverallPick.get(b) ?? Infinity;
-        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b); // Fallback for GMs with no picks (shouldn't happen if gmNames from draftData)
+        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b); // Fallback for GMs with no picks
         return pickA - pickB;
     });
 
@@ -519,14 +519,17 @@ const SeasonDraftDetail = () => {
             </TableHeader>
             <TableBody>
               {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => {
-                const currentGmsOrder = roundNum % 2 !== 0 ? gmNamesForColumns : [...gmNamesForColumns].reverse();
+                // This determines the order of GMs for iterating through cells in the current round
+                const gmOrderForCurrentRound = roundNum % 2 !== 0 ? gmNamesForColumns : [...gmNamesForColumns].reverse();
                 return (
                     <TableRow key={roundNum}>
                     <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
-                    {currentGmsOrder.map(gmName => {
+                    {/* Iterate through the GMs in the order determined for this round (snake draft order) */}
+                    {gmOrderForCurrentRound.map(gmName => {
                         const pick = boardLayout[roundNum]?.[gmName];
                         if (!pick) {
-                        return <TableCell key={`${roundNum}-${gmName}`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
+                          // If this GM (from current snake order) has no pick in this round (e.g. traded away), render empty cell
+                          return <TableCell key={`${roundNum}-${gmName}-empty-slot`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
                         }
                         const cellBg = getPositionBadgeClass(pick.player_position);
                         return (
