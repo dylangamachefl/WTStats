@@ -496,6 +496,7 @@ export interface DraftPickDetail {
   raw_stats_season?: Record<string, any>;
 }
 
+
 export interface TeamDraftPerformanceEntry {
   gm_id: number;
   gm_name: string;
@@ -559,7 +560,7 @@ export interface GMDraftHistoryDetailData {
 
 // For Head-to-Head Page (New Structure from comparison_X_vs_Y.json)
 export interface H2HOwnerInfo {
-  owner_id: number;
+  owner_id: number; // Keep as number to match JSON
   owner_name: string;
 }
 
@@ -587,9 +588,19 @@ export interface H2HMatchupTimelineEntry {
   owner2_score: number;
   owner1_team_name: string;
   owner2_team_name: string;
-  winner_owner_id: number | null;
-  is_playoff_matchup: boolean;
-  is_championship_matchup: boolean;
+  winner_owner_id: number | null; // Keep as number
+  is_playoff_matchup?: boolean; // Optional as it might not be in all data
+  is_championship_matchup?: boolean; // Optional
+}
+
+// For derived extreme matchup details
+export interface ExtremeMatchupInfo {
+  margin: number;
+  winnerName: string;
+  season: number;
+  week: string;
+  gm1Score: number;
+  gm2Score: number;
 }
 
 export interface H2HPlayoffMeetingDetail {
@@ -597,7 +608,7 @@ export interface H2HPlayoffMeetingDetail {
   fantasy_week: string; 
   owner1_score: number;
   owner2_score: number;
-  winner_owner_id: number | null;
+  winner_owner_id: number | null; // Keep as number
 }
 
 export interface H2HPlayoffMeetingSummary {

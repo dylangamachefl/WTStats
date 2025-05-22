@@ -4,12 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail } from '@/lib/types';
+import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, DotProps } from 'recharts';
-import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown } from 'lucide-react';
+import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown, BarChart2, CalendarDays, Info } from 'lucide-react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 // Using the same mockGms as draft-history for consistency in IDs
 const mockGms: GM[] = [
@@ -18,20 +19,39 @@ const mockGms: GM[] = [
 
 type SortDirection = 'asc' | 'desc';
 interface MatchupSortConfig {
-  key: keyof H2HMatchupTimelineEntry | 'margin' | null;
+  key: keyof H2HMatchupTimelineEntry | 'margin' | 'owner1_team_name' | 'owner2_team_name' | 'winner_name' | 'is_playoff_display' | 'is_championship_display' | null;
   direction: SortDirection;
 }
 
-const CustomizedDot = (props: DotProps & { isPlayoff?: boolean, isChampionship?: boolean }) => {
-  const { cx, cy, stroke, fill, r, isPlayoff, isChampionship } = props;
+const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) => {
+  const { cx, cy, stroke, fill, r, payload } = props;
 
-  if (isChampionship) {
+  if (payload?.is_championship_matchup) {
     return <Trophy x={(cx ?? 0) - 8} y={(cy ?? 0) - 8} width={16} height={16} className="text-yellow-500 fill-yellow-400" />;
   }
-  if (isPlayoff) {
-    return <circle cx={cx} cy={cy} r={(r ?? 3) + 3} stroke="hsl(var(--accent))" fill="hsl(var(--accent))" strokeWidth={1} />;
+  if (payload?.is_playoff_matchup || (typeof payload?.fantasy_week === 'string' && (payload.fantasy_week.toLowerCase().includes('round') || payload.fantasy_week.toLowerCase().includes('playoff') || payload.fantasy_week.toLowerCase().includes('championship')))) {
+    return <circle cx={cx} cy={cy} r={(r ?? 3) + 3} strokeWidth={1} className="stroke-accent fill-accent" />;
   }
   return <circle cx={cx} cy={cy} r={r} stroke={stroke} fill={fill} />;
+};
+
+const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string };
+    return (
+      <div className="p-3 bg-popover text-popover-foreground shadow-md rounded-lg border">
+        <p className="font-semibold text-sm mb-1">{`Matchup: ${data.season_id} - ${data.fantasy_week}`}</p>
+        <Separator className="my-1" />
+        <p className="text-xs"><span className="font-medium">{data.owner1_team_name || gm1Name}:</span> {data.owner1_score?.toFixed(1)}</p>
+        <p className="text-xs"><span className="font-medium">{data.owner2_team_name || gm2Name}:</span> {data.owner2_score?.toFixed(1)}</p>
+        {data.winnerName && <p className="text-xs mt-1"><span className="font-medium">Winner:</span> {data.winnerName}</p>}
+        {data.margin !== undefined && <p className="text-xs"><span className="font-medium">Margin:</span> {data.margin.toFixed(1)}</p>}
+        {(data.is_playoff_matchup || (typeof data.fantasy_week === 'string' && data.fantasy_week.toLowerCase().includes('round'))) && 
+          <p className="text-xs text-accent font-semibold mt-1">{data.is_championship_matchup ? "Championship Game" : "Playoff Game"}</p>}
+      </div>
+    );
+  }
+  return null;
 };
 
 
@@ -44,6 +64,43 @@ export default function H2HPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<MatchupSortConfig>({ key: 'season_id', direction: 'desc' });
+
+  const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
+    if (!comparisonData?.matchup_timeline || comparisonData.matchup_timeline.length === 0) {
+      return { closestMatchupDetail: null, largestBlowoutDetail: null };
+    }
+
+    let closest: ExtremeMatchupInfo | null = null;
+    let largest: ExtremeMatchupInfo | null = null;
+
+    comparisonData.matchup_timeline.forEach(m => {
+      const margin = Math.abs(m.owner1_score - m.owner2_score);
+      const winnerId = m.winner_owner_id;
+      let winnerName = 'Tie';
+      if (winnerId === comparisonData.owner1_info.owner_id) {
+        winnerName = comparisonData.owner1_info.owner_name;
+      } else if (winnerId === comparisonData.owner2_info.owner_id) {
+        winnerName = comparisonData.owner2_info.owner_name;
+      }
+      
+      const currentMatchupInfo: ExtremeMatchupInfo = {
+        margin,
+        winnerName,
+        season: m.season_id,
+        week: m.fantasy_week,
+        gm1Score: m.owner1_score,
+        gm2Score: m.owner2_score,
+      };
+
+      if (closest === null || margin < closest.margin) {
+        closest = currentMatchupInfo;
+      }
+      if (largest === null || margin > largest.margin) {
+        largest = currentMatchupInfo;
+      }
+    });
+    return { closestMatchupDetail: closest, largestBlowoutDetail: largest };
+  }, [comparisonData]);
 
 
   const handleCompare = async () => {
@@ -63,8 +120,9 @@ export default function H2HPage() {
     const selectedGm1 = mockGms.find(gm => gm.id === gm1Id);
     const selectedGm2 = mockGms.find(gm => gm.id === gm2Id);
 
-    setDisplayedGm1Name(selectedGm1?.name || "GM 1");
-    setDisplayedGm2Name(selectedGm2?.name || "GM 2");
+    // Default names, will be overwritten by fetched data
+    let tempGm1Name = selectedGm1?.name || "GM 1";
+    let tempGm2Name = selectedGm2?.name || "GM 2";
 
     const ids = [parseInt(gm1Id), parseInt(gm2Id)].sort((a, b) => a - b);
     const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
@@ -83,11 +141,12 @@ export default function H2HPage() {
 
       if (data.owner1_info.owner_id.toString() === gm1Id) {
         setComparisonData(data);
-        setDisplayedGm1Name(data.owner1_info.owner_name);
-        setDisplayedGm2Name(data.owner2_info.owner_name);
+        tempGm1Name = data.owner1_info.owner_name;
+        tempGm2Name = data.owner2_info.owner_name;
       } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-        setDisplayedGm1Name(data.owner2_info.owner_name);
-        setDisplayedGm2Name(data.owner1_info.owner_name);
+        // Swap data to match selection order
+        tempGm1Name = data.owner2_info.owner_name;
+        tempGm2Name = data.owner1_info.owner_name;
         setComparisonData({
           owner1_info: data.owner2_info,
           owner2_info: data.owner1_info,
@@ -106,6 +165,9 @@ export default function H2HPage() {
             ...m,
             owner1_score: m.owner2_score,
             owner2_score: m.owner1_score,
+            owner1_team_name: m.owner2_team_name,
+            owner2_team_name: m.owner1_team_name,
+            winner_owner_id: m.winner_owner_id, // This remains absolute based on original file
           })),
           playoff_meetings: { 
             ...data.playoff_meetings,
@@ -115,16 +177,18 @@ export default function H2HPage() {
                 ...pm,
                 owner1_score: pm.owner2_score,
                 owner2_score: pm.owner1_score,
-                 winner_owner_id: pm.winner_owner_id, // Winner ID remains absolute
+                 winner_owner_id: pm.winner_owner_id, 
             }))
           }
         });
       } else {
         console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
         setComparisonData(data);
-        setDisplayedGm1Name(data.owner1_info.owner_name);
-        setDisplayedGm2Name(data.owner2_info.owner_name);
+        tempGm1Name = data.owner1_info.owner_name;
+        tempGm2Name = data.owner2_info.owner_name;
       }
+      setDisplayedGm1Name(tempGm1Name);
+      setDisplayedGm2Name(tempGm2Name);
 
     } catch (err) {
       if (err instanceof Error) {
@@ -142,63 +206,78 @@ export default function H2HPage() {
   const chartData = useMemo(() => {
     if (!comparisonData?.matchup_timeline) return [];
     return comparisonData.matchup_timeline
-      .sort((a, b) => a.season_id - b.season_id || (typeof a.fantasy_week === 'number' && typeof b.fantasy_week === 'number' ? a.fantasy_week - b.fantasy_week : String(a.fantasy_week).localeCompare(String(b.fantasy_week))))
-      .map((m, index) => ({
-        name: `S${m.season_id} W${m.fantasy_week}`,
-        [displayedGm1Name]: m.owner1_score,
-        [displayedGm2Name]: m.owner2_score,
-        isPlayoff: m.is_playoff_matchup || String(m.fantasy_week).toLowerCase().includes('round') || String(m.fantasy_week).toLowerCase().includes('playoff'),
-        isChampionship: m.is_championship_matchup || String(m.fantasy_week).toLowerCase().includes('championship'),
-    }));
+      .sort((a, b) => a.season_id - b.season_id || (typeof a.nfl_week === 'number' && typeof b.nfl_week === 'number' ? a.nfl_week - b.nfl_week : String(a.nfl_week).localeCompare(String(b.nfl_week))))
+      .map((m) => {
+        const margin = Math.abs(m.owner1_score - m.owner2_score);
+        let winnerName = 'Tie';
+        if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
+            winnerName = comparisonData.owner1_info.owner_name;
+        } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
+            winnerName = comparisonData.owner2_info.owner_name;
+        }
+        return {
+            ...m,
+            name: `S${m.season_id} W${m.fantasy_week}`,
+            [displayedGm1Name]: m.owner1_score,
+            [displayedGm2Name]: m.owner2_score,
+            margin,
+            winnerName,
+            // is_playoff_matchup and is_championship_matchup should come from data if available
+        }
+    });
   }, [comparisonData, displayedGm1Name, displayedGm2Name]);
 
-  const getMatchupResultIcon = (matchup: H2HMatchupTimelineEntry, perspectiveGmId: string | number) => {
-    if (matchup.winner_owner_id === null) return <span className="text-muted-foreground font-semibold">T</span>;
-    if (matchup.winner_owner_id.toString() === perspectiveGmId.toString()) return <CheckCircle2 className="text-green-500 h-5 w-5" />;
-    return <XCircle className="text-red-500 h-5 w-5" />;
-  };
 
-  const requestSort = (key: keyof H2HMatchupTimelineEntry | 'margin') => {
+  const requestSort = (key: MatchupSortConfig['key']) => {
     let direction: SortDirection = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
   };
+  
+  const getWinnerName = (winnerId: number | null, gm1Info: H2HOwnerInfo, gm2Info: H2HOwnerInfo): string => {
+    if (winnerId === null) return "Tie";
+    if (winnerId === gm1Info.owner_id) return gm1Info.owner_name;
+    if (winnerId === gm2Info.owner_id) return gm2Info.owner_name;
+    return "Unknown";
+  };
 
   const sortedMatchupTimeline = useMemo(() => {
     if (!comparisonData?.matchup_timeline) return [];
-    let sortableItems = [...comparisonData.matchup_timeline];
+    let sortableItems = comparisonData.matchup_timeline.map(m => ({
+        ...m,
+        margin: Math.abs(m.owner1_score - m.owner2_score),
+        winner_name: getWinnerName(m.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info),
+        is_playoff_display: m.is_playoff_matchup ? 'Yes' : 'No',
+        is_championship_display: m.is_championship_matchup ? 'Yes' : 'No',
+    }));
+
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
-        let valA, valB;
-        if (sortConfig.key === 'margin') {
-          valA = Math.abs(a.owner1_score - a.owner2_score);
-          valB = Math.abs(b.owner1_score - b.owner2_score);
-        } else {
-          valA = a[sortConfig.key as keyof H2HMatchupTimelineEntry];
-          valB = b[sortConfig.key as keyof H2HMatchupTimelineEntry];
-        }
+        let valA = a[sortConfig.key as keyof typeof a];
+        let valB = b[sortConfig.key as keyof typeof b];
 
         if (valA === null || valA === undefined) return 1;
         if (valB === null || valB === undefined) return -1;
-
+        
+        let comparison = 0;
         if (typeof valA === 'number' && typeof valB === 'number') {
-          return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
+          comparison = valA - valB;
+        } else {
+          comparison = String(valA).localeCompare(String(valB));
         }
-        return sortConfig.direction === 'asc' 
-          ? String(valA).localeCompare(String(valB)) 
-          : String(valB).localeCompare(String(valA));
+        return sortConfig.direction === 'asc' ? comparison : -comparison;
       });
     }
     return sortableItems;
-  }, [comparisonData?.matchup_timeline, sortConfig]);
+  }, [comparisonData, sortConfig]);
   
-  const getSortIcon = (columnKey: keyof H2HMatchupTimelineEntry | 'margin') => {
+  const getSortIcon = (columnKey: MatchupSortConfig['key']) => {
     if (sortConfig.key === columnKey) {
-      return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
+      return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
     }
-    return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
+    return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
 
 
@@ -246,181 +325,208 @@ export default function H2HPage() {
 
       {loading && (
         <div className="space-y-6">
-          <Skeleton className="h-48 w-full" />
-          <Skeleton className="h-72 w-full" />
           <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-80 w-full" />
+          <Skeleton className="h-72 w-full" />
         </div>
       )}
 
       {!loading && comparisonData && (
-        <div className="space-y-6">
-          {/* Tale of the Tape Banner */}
-          <Card className="bg-muted/30">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center font-bold tracking-tight">
-                {displayedGm1Name} <span className="text-primary mx-1">VS</span> {displayedGm2Name} - Tale of the Tape
+        <div className="space-y-8">
+          <Card className="bg-card shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-3xl text-center font-bold tracking-tight">
+                {displayedGm1Name} <span className="text-primary mx-1">VS</span> {displayedGm2Name}: A Head-to-Head History
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid md:grid-cols-2 gap-6 items-start">
+            <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-6 items-start">
               {/* GM 1 Column */}
-              <div className="text-center p-4 border rounded-lg bg-card shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">{displayedGm1Name}</h3>
-                <div className="flex items-center justify-center mb-1">
-                  <p className="text-3xl font-bold">{comparisonData.rivalry_summary.owner1_wins}</p>
-                  <span className="text-lg ml-2">Wins</span>
+              <div className="text-center p-4 border border-border rounded-lg bg-muted/30 shadow-sm">
+                <h3 className="text-2xl font-semibold text-primary mb-3">{displayedGm1Name}</h3>
+                <p className="text-4xl font-bold mb-1">{comparisonData.rivalry_summary.owner1_wins} <span className="text-xl font-medium">WINS</span>
                   {comparisonData.rivalry_summary.owner1_wins > comparisonData.rivalry_summary.owner2_wins && (
-                    <Trophy className="ml-2 h-6 w-6 text-yellow-500" />
+                    <Trophy className="inline ml-2 h-7 w-7 text-yellow-500" />
                   )}
-                </div>
-                <div className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden my-2">
+                </p>
+                <div className="w-full h-3 bg-primary/20 rounded-full overflow-hidden my-3">
                   <div 
-                    className="h-full bg-green-500" 
-                    style={{ width: `${(comparisonData.rivalry_summary.owner1_wins / comparisonData.rivalry_summary.total_matchups) * 100}%`}}
+                    className="h-full bg-primary" 
+                    style={{ width: `${(comparisonData.rivalry_summary.owner1_wins / (comparisonData.rivalry_summary.total_matchups || 1)) * 100}%`}}
                   ></div>
                 </div>
-                <p className="text-sm"><span className="font-medium">Total H2H Pts:</span> {comparisonData.rivalry_summary.owner1_total_points_scored_in_h2h.toFixed(1)}</p>
-                <p className="text-sm"><span className="font-medium">Avg H2H Score:</span> {comparisonData.rivalry_summary.owner1_average_score_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Total H2H Pts:</span> {comparisonData.rivalry_summary.owner1_total_points_scored_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Avg H2H Score:</span> {comparisonData.rivalry_summary.owner1_average_score_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Avg Win Margin:</span> {comparisonData.rivalry_summary.average_margin_of_victory_owner1?.toFixed(1) ?? 'N/A'} pts</p>
               </div>
 
               {/* GM 2 Column */}
-              <div className="text-center p-4 border rounded-lg bg-card shadow">
-                <h3 className="text-xl font-semibold text-primary mb-2">{displayedGm2Name}</h3>
-                <div className="flex items-center justify-center mb-1">
-                  <p className="text-3xl font-bold">{comparisonData.rivalry_summary.owner2_wins}</p>
-                  <span className="text-lg ml-2">Wins</span>
+              <div className="text-center p-4 border border-border rounded-lg bg-muted/30 shadow-sm">
+                <h3 className="text-2xl font-semibold text-primary mb-3">{displayedGm2Name}</h3>
+                 <p className="text-4xl font-bold mb-1">{comparisonData.rivalry_summary.owner2_wins} <span className="text-xl font-medium">WINS</span>
                   {comparisonData.rivalry_summary.owner2_wins > comparisonData.rivalry_summary.owner1_wins && (
-                    <Trophy className="ml-2 h-6 w-6 text-yellow-500" />
+                    <Trophy className="inline ml-2 h-7 w-7 text-yellow-500" />
                   )}
-                </div>
-                 <div className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden my-2">
+                </p>
+                 <div className="w-full h-3 bg-accent/20 rounded-full overflow-hidden my-3">
                   <div 
-                    className="h-full bg-red-500" 
-                    style={{ width: `${(comparisonData.rivalry_summary.owner2_wins / comparisonData.rivalry_summary.total_matchups) * 100}%`}}
+                    className="h-full bg-accent" 
+                    style={{ width: `${(comparisonData.rivalry_summary.owner2_wins / (comparisonData.rivalry_summary.total_matchups || 1)) * 100}%`}}
                   ></div>
                 </div>
-                <p className="text-sm"><span className="font-medium">Total H2H Pts:</span> {comparisonData.rivalry_summary.owner2_total_points_scored_in_h2h.toFixed(1)}</p>
-                <p className="text-sm"><span className="font-medium">Avg H2H Score:</span> {comparisonData.rivalry_summary.owner2_average_score_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Total H2H Pts:</span> {comparisonData.rivalry_summary.owner2_total_points_scored_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Avg H2H Score:</span> {comparisonData.rivalry_summary.owner2_average_score_in_h2h.toFixed(1)}</p>
+                <p className="text-sm"><span className="font-medium text-muted-foreground">Avg Win Margin:</span> {comparisonData.rivalry_summary.average_margin_of_victory_owner2?.toFixed(1) ?? 'N/A'} pts</p>
               </div>
             </CardContent>
-             <CardFooter className="text-center text-sm text-muted-foreground pt-4">
-                Total H2H Matchups: {comparisonData.rivalry_summary.total_matchups}
-                {comparisonData.rivalry_summary.ties > 0 && `, Ties: ${comparisonData.rivalry_summary.ties}`}
+            <CardFooter className="flex flex-col items-center text-center text-sm text-muted-foreground pt-6 space-y-2">
+                <p><span className="font-semibold text-foreground">Total Matchups:</span> {comparisonData.rivalry_summary.total_matchups}
+                   {comparisonData.rivalry_summary.ties > 0 && `, Ties: ${comparisonData.rivalry_summary.ties}`}
+                </p>
+                {closestMatchupDetail && (
+                    <p><span className="font-semibold text-foreground">Closest Matchup:</span> {closestMatchupDetail.margin.toFixed(1)} pts 
+                    (Winner: {closestMatchupDetail.winnerName}, {closestMatchupDetail.season} Wk {closestMatchupDetail.week})</p>
+                )}
+                {largestBlowoutDetail && (
+                    <p><span className="font-semibold text-foreground">Largest Blowout:</span> {largestBlowoutDetail.margin.toFixed(1)} pts
+                    (Winner: {largestBlowoutDetail.winnerName}, {largestBlowoutDetail.season} Wk {largestBlowoutDetail.week})</p>
+                )}
             </CardFooter>
           </Card>
 
 
           <Card>
-            <CardHeader><CardTitle>Scoring Trends Over Time</CardTitle><CardDescription>Matchup: Season - Week</CardDescription></CardHeader>
-            <CardContent className="h-[350px] pt-6">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><BarChart2 /> Matchup Timeline: The Story of the Scores</CardTitle>
+                <CardDescription>Scores of each manager in every head-to-head matchup over time.</CardDescription>
+            </CardHeader>
+            <CardContent className="h-[400px] pt-6">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
+                <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <RechartsTooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }} itemStyle={{ color: 'hsl(var(--foreground))' }} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }}/>
+                  <RechartsTooltip content={<CustomTooltip gm1Name={displayedGm1Name} gm2Name={displayedGm2Name} />} />
                   <RechartsLegend />
-                  <Line type="monotone" dataKey={displayedGm1Name} stroke="hsl(var(--primary))" activeDot={{ r: 8 }} dot={<CustomizedDot />} />
-                  <Line type="monotone" dataKey={displayedGm2Name} stroke="hsl(var(--accent))" activeDot={{ r: 8 }} dot={<CustomizedDot />} />
+                  <Line type="monotone" dataKey={displayedGm1Name} stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 6 }} dot={<CustomizedDot />} />
+                  <Line type="monotone" dataKey={displayedGm2Name} stroke="hsl(var(--accent))" strokeWidth={2} activeDot={{ r: 6 }} dot={<CustomizedDot />} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>Detailed Matchup Log</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Trophy /> Playoff Showdowns</CardTitle>
+                <CardDescription>High-stakes playoff encounters between {displayedGm1Name} and {displayedGm2Name}.</CardDescription>
+            </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead><Button variant="ghost" onClick={() => requestSort('season_id')} className="px-1 group">Season {getSortIcon('season_id')}</Button></TableHead>
-                    <TableHead><Button variant="ghost" onClick={() => requestSort('fantasy_week')} className="px-1 group">Week {getSortIcon('fantasy_week')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestSort('owner1_score')} className="px-1 group justify-end w-full">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestSort('owner2_score')} className="px-1 group justify-end w-full">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
-                    <TableHead className="text-center">Result for {displayedGm1Name}</TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestSort('margin')} className="px-1 group justify-end w-full">Margin {getSortIcon('margin')}</Button></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedMatchupTimeline.map((matchup, index) => {
-                    const margin = Math.abs(matchup.owner1_score - matchup.owner2_score);
-                    return (
-                      <TableRow key={matchup.matchup_id || index}>
-                        <TableCell>{matchup.season_id}</TableCell>
-                        <TableCell>{matchup.fantasy_week}</TableCell>
-                        <TableCell className={cn("text-right font-semibold", matchup.owner1_score > matchup.owner2_score ? 'text-green-600 font-bold' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600' : '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
-                        <TableCell className={cn("text-right font-semibold", matchup.owner2_score > matchup.owner1_score ? 'text-green-600 font-bold' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600' : '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
-                        <TableCell className="text-center">{getMatchupResultIcon(matchup, comparisonData.owner1_info.owner_id.toString())}</TableCell>
-                        <TableCell className="text-right">{margin.toFixed(1)}</TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center p-4 bg-muted/30 rounded-lg mb-6">
+                    <div>
+                        <p className="text-sm text-muted-foreground">{displayedGm1Name} Playoff Wins</p>
+                        <p className="text-3xl font-bold">{comparisonData.playoff_meetings.owner1_playoff_wins}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-muted-foreground">{displayedGm2Name} Playoff Wins</p>
+                        <p className="text-3xl font-bold">{comparisonData.playoff_meetings.owner2_playoff_wins}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-muted-foreground">Total Playoff Matchups</p>
+                        <p className="text-3xl font-bold">{comparisonData.playoff_meetings.total_playoff_matchups}</p>
+                    </div>
+                </div>
+                {comparisonData.playoff_meetings.matchups_details && comparisonData.playoff_meetings.matchups_details.length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Season</TableHead>
+                          <TableHead>Round</TableHead>
+                          <TableHead className="text-right">{displayedGm1Name}'s Score</TableHead>
+                          <TableHead className="text-right">{displayedGm2Name}'s Score</TableHead>
+                          <TableHead>Winner</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => (
+                           <TableRow key={`playoff-detail-${index}`} className={cn(meeting.fantasy_week.toLowerCase().includes('championship') && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
+                             <TableCell>{meeting.season_id}</TableCell>
+                             <TableCell className="font-medium">
+                                {meeting.fantasy_week.toLowerCase().includes('championship') && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
+                                {meeting.fantasy_week}
+                             </TableCell>
+                             <TableCell className={cn("text-right font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
+                             <TableCell className={cn("text-right font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
+                             <TableCell className="font-semibold">
+                                {meeting.winner_owner_id === comparisonData.owner1_info.owner_id ? displayedGm1Name : 
+                                 meeting.winner_owner_id === comparisonData.owner2_info.owner_id ? displayedGm2Name : 
+                                 meeting.winner_owner_id === null ? 'Tie' : 'Unknown'}
+                             </TableCell>
+                           </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                ) : (
+                    <p className="text-center text-muted-foreground mt-4">No detailed playoff matchup data available for these GMs.</p>
+                )}
+            </CardContent>
+        </Card>
+          
+          <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><CalendarDays /> Full Matchup History</CardTitle>
+                <CardDescription>Every H2H game played between {displayedGm1Name} and {displayedGm2Name}.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('season_id')} className="px-1 group text-xs">Season {getSortIcon('season_id')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('fantasy_week')} className="px-1 group text-xs">Week {getSortIcon('fantasy_week')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_team_name')} className="px-1 group text-xs">{displayedGm1Name}'s Team {getSortIcon('owner1_team_name')}</Button></TableHead>
+                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group justify-end w-full text-xs">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
+                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group justify-end w-full text-xs">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_team_name')} className="px-1 group text-xs">{displayedGm2Name}'s Team {getSortIcon('owner2_team_name')}</Button></TableHead>
+                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('winner_name')} className="px-1 group text-xs">Winner {getSortIcon('winner_name')}</Button></TableHead>
+                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group justify-end w-full text-xs">Margin {getSortIcon('margin')}</Button></TableHead>
+                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('is_playoff_display')} className="px-1 group text-xs">Playoff {getSortIcon('is_playoff_display')}</Button></TableHead>
+                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('is_championship_display')} className="px-1 group text-xs">Championship {getSortIcon('is_championship_display')}</Button></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedMatchupTimeline.map((matchup, index) => (
+                        <TableRow key={matchup.matchup_id || index}>
+                          <TableCell className="text-xs">{matchup.season_id}</TableCell>
+                          <TableCell className="text-xs">{matchup.fantasy_week}</TableCell>
+                          <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner1_team_name}</TableCell>
+                          <TableCell className={cn("text-right font-semibold text-xs", matchup.owner1_score > matchup.owner2_score ? 'text-green-600' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600' : '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
+                          <TableCell className={cn("text-right font-semibold text-xs", matchup.owner2_score > matchup.owner1_score ? 'text-green-600' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600' : '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
+                          <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner2_team_name}</TableCell>
+                          <TableCell className="text-center text-xs font-medium">{getWinnerName(matchup.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}</TableCell>
+                          <TableCell className="text-right text-xs">{matchup.margin.toFixed(1)}</TableCell>
+                          <TableCell className="text-center text-xs">{matchup.is_playoff_matchup ? <CheckCircle2 className="h-4 w-4 text-green-500 mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground mx-auto" />}</TableCell>
+                          <TableCell className="text-center text-xs">{matchup.is_championship_matchup ? <Trophy className="h-4 w-4 text-yellow-500 mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground mx-auto" />}</TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
           
-          {comparisonData.playoff_meetings && (
-             <Card>
-                <CardHeader><CardTitle>Playoff Encounters</CardTitle></CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center p-4 bg-muted/50 rounded-lg mb-4">
-                        <div>
-                            <p className="text-sm text-muted-foreground">{displayedGm1Name} Playoff Wins</p>
-                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.owner1_playoff_wins}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">{displayedGm2Name} Playoff Wins</p>
-                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.owner2_playoff_wins}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground">Total Playoff Matchups</p>
-                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.total_playoff_matchups}</p>
-                        </div>
-                    </div>
-                    {comparisonData.playoff_meetings.matchups_details && comparisonData.playoff_meetings.matchups_details.length > 0 ? (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Season</TableHead>
-                              <TableHead>Round</TableHead>
-                              <TableHead className="text-right">{displayedGm1Name}'s Score</TableHead>
-                              <TableHead className="text-right">{displayedGm2Name}'s Score</TableHead>
-                              <TableHead>Winner</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => (
-                               <TableRow key={`playoff-detail-${index}`}>
-                                 <TableCell>{meeting.season_id}</TableCell>
-                                 <TableCell>{meeting.fantasy_week}</TableCell>
-                                 <TableCell className={cn("text-right", meeting.owner1_score > meeting.owner2_score ? 'font-bold text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
-                                 <TableCell className={cn("text-right", meeting.owner2_score > meeting.owner1_score ? 'font-bold text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
-                                 <TableCell className="font-semibold">
-                                    {meeting.winner_owner_id === comparisonData.owner1_info.owner_id ? displayedGm1Name : 
-                                     meeting.winner_owner_id === comparisonData.owner2_info.owner_id ? displayedGm2Name : 
-                                     meeting.winner_owner_id === null ? 'Tie' : 'Unknown'}
-                                 </TableCell>
-                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                    ) : (
-                        <p className="text-center text-muted-foreground mt-4">No detailed playoff matchup data available for these GMs.</p>
-                    )}
-                </CardContent>
-            </Card>
-          )}
         </div>
       )}
        {!loading && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && !error &&(
         <Card>
             <CardContent className="pt-6 text-center text-muted-foreground">
-                <p>No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
-                <p>Ensure a file named `comparison_{Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
-                 <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
+                <Info className="mx-auto h-12 w-12 text-primary mb-4" />
+                <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
+                <p className="text-sm mt-1">Ensure a file named `comparison_{Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
+                <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
             </CardContent>
         </Card>
       )}
     </div>
   );
 }
+
