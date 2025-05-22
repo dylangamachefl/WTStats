@@ -1,10 +1,10 @@
 
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import type { GM, H2HComparisonData, H2HMatchupDetail } from '@/lib/types';
+import type { GM, H2HRivalryData, H2HMatchupTimelineEntry } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
 import { Users, CheckCircle2, XCircle } from 'lucide-react';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,7 +19,9 @@ const mockGms: GM[] = [
 export default function H2HPage() {
   const [gm1Id, setGm1Id] = useState<string | undefined>();
   const [gm2Id, setGm2Id] = useState<string | undefined>();
-  const [comparisonData, setComparisonData] = useState<H2HComparisonData | null>(null);
+  const [comparisonData, setComparisonData] = useState<H2HRivalryData | null>(null);
+  const [displayedGm1Name, setDisplayedGm1Name] = useState<string>("GM 1");
+  const [displayedGm2Name, setDisplayedGm2Name] = useState<string>("GM 2");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,9 +39,16 @@ export default function H2HPage() {
     setError(null);
     setComparisonData(null);
 
+    const selectedGm1 = mockGms.find(gm => gm.id === gm1Id);
+    const selectedGm2 = mockGms.find(gm => gm.id === gm2Id);
+
+    setDisplayedGm1Name(selectedGm1?.name || "GM 1");
+    setDisplayedGm2Name(selectedGm2?.name || "GM 2");
+
+
     // Ensure IDs are sorted for consistent filename (e.g., 1_vs_2 not 2_vs_1)
     const ids = [parseInt(gm1Id), parseInt(gm2Id)].sort((a, b) => a - b);
-    const filePath = `/data/h2h_data/h2h_${ids[0]}_vs_${ids[1]}.json`;
+    const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
     
     console.log(`[H2HPage] Fetching ${filePath}`);
 
@@ -50,43 +59,56 @@ export default function H2HPage() {
         console.error("[H2HPage] Fetch failed:", response.status, errorText);
         throw new Error(`Failed to fetch H2H data: ${response.status} ${response.statusText}. File: ${filePath}.`);
       }
-      const data: H2HComparisonData = await response.json();
+      const data: H2HRivalryData = await response.json();
       console.log("[H2HPage] Fetched H2H data:", data);
 
-      // Ensure gm1Id in data matches the selected gm1Id (or gm2Id if swapped)
-      if (data.gm1Id === gm1Id) {
+      // Check if the fetched data needs to be swapped based on user selection
+      if (data.owner1_info.owner_id.toString() === gm1Id) {
         setComparisonData(data);
-      } else if (data.gm2Id === gm1Id) {
-        // Swap data if gm1 in file is actually gm2 selected by user
+        setDisplayedGm1Name(data.owner1_info.owner_name);
+        setDisplayedGm2Name(data.owner2_info.owner_name);
+      } else if (data.owner2_info.owner_id.toString() === gm1Id) {
+        // User selected GM2 as their GM1, so we need to swap the data for display
+        setDisplayedGm1Name(data.owner2_info.owner_name);
+        setDisplayedGm2Name(data.owner1_info.owner_name);
         setComparisonData({
-          ...data,
-          gm1Id: data.gm2Id,
-          gm1Name: data.gm2Name,
-          gm2Id: data.gm1Id,
-          gm2Name: data.gm1Name,
-          overallRecord: {
-            gm1Wins: data.overallRecord.gm2Wins,
-            gm2Wins: data.overallRecord.gm1Wins,
-            ties: data.overallRecord.ties,
+          owner1_info: data.owner2_info,
+          owner2_info: data.owner1_info,
+          rivalry_summary: {
+            ...data.rivalry_summary,
+            owner1_wins: data.rivalry_summary.owner2_wins,
+            owner2_wins: data.rivalry_summary.owner1_wins,
+            owner1_total_points_scored_in_h2h: data.rivalry_summary.owner2_total_points_scored_in_h2h,
+            owner2_total_points_scored_in_h2h: data.rivalry_summary.owner1_total_points_scored_in_h2h,
+            owner1_average_score_in_h2h: data.rivalry_summary.owner2_average_score_in_h2h,
+            owner2_average_score_in_h2h: data.rivalry_summary.owner1_average_score_in_h2h,
+            average_margin_of_victory_owner1: data.rivalry_summary.average_margin_of_victory_owner2,
+            average_margin_of_victory_owner2: data.rivalry_summary.average_margin_of_victory_owner1,
           },
-          pointsRecord: {
-            gm1TotalPoints: data.pointsRecord.gm2TotalPoints,
-            gm2TotalPoints: data.pointsRecord.gm1TotalPoints,
-          },
-          matchups: data.matchups.map(m => ({
+          matchup_timeline: data.matchup_timeline.map(m => ({
             ...m,
-            gm1Score: m.gm2Score,
-            gm2Score: m.gm1Score,
-            winnerId: m.winnerId === data.gm1Id ? data.gm2Id : (m.winnerId === data.gm2Id ? data.gm1Id : null)
+            // Scores are owner1_score vs owner2_score, so swap them
+            owner1_score: m.owner2_score,
+            owner2_score: m.owner1_score,
+            // Winner ID remains the same as it's absolute
           })),
-          playoffMeetings: data.playoffMeetings?.map(pm => ({
-            ...pm,
-            // Winner logic might need more robust handling if winnerName isn't simply swapped
-            winnerId: pm.winnerId === data.gm1Id ? data.gm2Id : (pm.winnerId === data.gm2Id ? data.gm1Id : null)
-          }))
+          playoff_meetings: { // Also swap playoff meeting summary if needed
+            ...data.playoff_meetings,
+            owner1_playoff_wins: data.playoff_meetings.owner2_playoff_wins,
+            owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
+            matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
+                ...pm,
+                owner1_score: pm.owner2_score,
+                owner2_score: pm.owner1_score,
+            }))
+          }
         });
       } else {
-         setComparisonData(data); // Default if no direct match, UI will use names from file
+        // Fallback if IDs don't match, should ideally not happen with sorted filenames
+        console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
+        setComparisonData(data);
+        setDisplayedGm1Name(data.owner1_info.owner_name);
+        setDisplayedGm2Name(data.owner2_info.owner_name);
       }
 
     } catch (err) {
@@ -102,18 +124,18 @@ export default function H2HPage() {
     }
   };
 
-  const selectedGm1 = mockGms.find(gm => gm.id === gm1Id);
-  const selectedGm2 = mockGms.find(gm => gm.id === gm2Id);
+  const chartData = useMemo(() => {
+    if (!comparisonData) return [];
+    return comparisonData.matchup_timeline.map((m) => ({
+      name: `S${m.season_id} W${m.fantasy_week}`,
+      [displayedGm1Name]: m.owner1_score,
+      [displayedGm2Name]: m.owner2_score,
+    }));
+  }, [comparisonData, displayedGm1Name, displayedGm2Name]);
 
-  const chartData = comparisonData?.matchups.map((m, index) => ({
-    name: `S${m.seasonYear} W${m.week}`,
-    [comparisonData.gm1Name]: m.gm1Score,
-    [comparisonData.gm2Name]: m.gm2Score,
-  })) || [];
-
-  const getMatchupResultIcon = (matchup: H2HMatchupDetail, perspectiveGmId: string) => {
-    if (!matchup.winnerId) return <span className="text-muted-foreground font-semibold">T</span>;
-    if (matchup.winnerId === perspectiveGmId) return <CheckCircle2 className="text-green-500 h-5 w-5" />;
+  const getMatchupResultIcon = (matchup: H2HMatchupTimelineEntry, perspectiveGmId: number) => {
+    if (matchup.winner_owner_id === null) return <span className="text-muted-foreground font-semibold">T</span>;
+    if (matchup.winner_owner_id === perspectiveGmId) return <CheckCircle2 className="text-green-500 h-5 w-5" />;
     return <XCircle className="text-red-500 h-5 w-5" />;
   };
 
@@ -168,30 +190,30 @@ export default function H2HPage() {
         </div>
       )}
 
-      {!loading && comparisonData && selectedGm1 && selectedGm2 && (
+      {!loading && comparisonData && (
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Rivalry Dashboard: {comparisonData.gm1Name} vs {comparisonData.gm2Name}</CardTitle>
+              <CardTitle>Rivalry Dashboard: {displayedGm1Name} vs {displayedGm2Name}</CardTitle>
             </CardHeader>
             <CardContent className="grid md:grid-cols-3 gap-6 text-center">
               <div className="p-4 bg-muted/50 rounded-lg">
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Overall Record</h3>
-                <p className="text-3xl font-bold">{comparisonData.gm1Name}: {comparisonData.overallRecord.gm1Wins}</p>
-                <p className="text-3xl font-bold">{comparisonData.gm2Name}: {comparisonData.overallRecord.gm2Wins}</p>
-                <p className="text-xl text-muted-foreground">Ties: {comparisonData.overallRecord.ties}</p>
+                <p className="text-3xl font-bold">{displayedGm1Name}: {comparisonData.rivalry_summary.owner1_wins}</p>
+                <p className="text-3xl font-bold">{displayedGm2Name}: {comparisonData.rivalry_summary.owner2_wins}</p>
+                <p className="text-xl text-muted-foreground">Ties: {comparisonData.rivalry_summary.ties}</p>
               </div>
               <div className="p-4 bg-muted/50 rounded-lg">
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Points Scored</h3>
-                <p className="text-3xl font-bold">{comparisonData.gm1Name}: {comparisonData.pointsRecord.gm1TotalPoints.toFixed(1)}</p>
-                <p className="text-3xl font-bold">{comparisonData.gm2Name}: {comparisonData.pointsRecord.gm2TotalPoints.toFixed(1)}</p>
+                <p className="text-3xl font-bold">{displayedGm1Name}: {comparisonData.rivalry_summary.owner1_total_points_scored_in_h2h.toFixed(1)}</p>
+                <p className="text-3xl font-bold">{displayedGm2Name}: {comparisonData.rivalry_summary.owner2_total_points_scored_in_h2h.toFixed(1)}</p>
               </div>
                <div className="p-4 bg-muted/50 rounded-lg">
                 <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Avg Points Difference</h3>
                 <p className="text-3xl font-bold">
-                  {comparisonData.gm1Name} {((comparisonData.pointsRecord.gm1TotalPoints - comparisonData.pointsRecord.gm2TotalPoints) / (comparisonData.overallRecord.gm1Wins + comparisonData.overallRecord.gm2Wins + comparisonData.overallRecord.ties || 1)).toFixed(1)}
+                  {displayedGm1Name} {(comparisonData.rivalry_summary.owner1_average_score_in_h2h - comparisonData.rivalry_summary.owner2_average_score_in_h2h).toFixed(1)}
                 </p>
-                 <p className="text-xs text-muted-foreground">per game vs {comparisonData.gm2Name}</p>
+                 <p className="text-xs text-muted-foreground">per game vs {displayedGm2Name}</p>
               </div>
             </CardContent>
           </Card>
@@ -206,8 +228,8 @@ export default function H2HPage() {
                   <YAxis />
                   <Tooltip />
                   <RechartsLegend />
-                  <Line type="monotone" dataKey={comparisonData.gm1Name} stroke="hsl(var(--primary))" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey={comparisonData.gm2Name} stroke="hsl(var(--accent))" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey={displayedGm1Name} stroke="hsl(var(--primary))" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey={displayedGm2Name} stroke="hsl(var(--accent))" activeDot={{ r: 8 }} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -221,19 +243,19 @@ export default function H2HPage() {
                   <TableRow>
                     <TableHead>Season</TableHead>
                     <TableHead>Week</TableHead>
-                    <TableHead className="text-right">{comparisonData.gm1Name}'s Score</TableHead>
-                    <TableHead className="text-right">{comparisonData.gm2Name}'s Score</TableHead>
-                    <TableHead className="text-center">Result for {comparisonData.gm1Name}</TableHead>
+                    <TableHead className="text-right">{displayedGm1Name}'s Score</TableHead>
+                    <TableHead className="text-right">{displayedGm2Name}'s Score</TableHead>
+                    <TableHead className="text-center">Result for {displayedGm1Name}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {comparisonData.matchups.sort((a,b) => b.seasonYear - a.seasonYear || (typeof a.week === 'number' && typeof b.week === 'number' ? a.week - b.week : String(a.week).localeCompare(String(b.week)))).map((matchup, index) => (
+                  {comparisonData.matchup_timeline.sort((a,b) => b.season_id - a.season_id || (typeof a.fantasy_week === 'number' && typeof b.fantasy_week === 'number' ? Number(a.fantasy_week) - Number(b.fantasy_week) : String(a.fantasy_week).localeCompare(String(b.fantasy_week)))).map((matchup, index) => (
                     <TableRow key={index}>
-                      <TableCell>{matchup.seasonYear}</TableCell>
-                      <TableCell>{matchup.week}</TableCell>
-                      <TableCell className={cn("text-right font-semibold", matchup.gm1Score > matchup.gm2Score ? 'text-green-600' : matchup.gm1Score < matchup.gm2Score ? 'text-red-600': '')}>{matchup.gm1Score.toFixed(1)}</TableCell>
-                      <TableCell className={cn("text-right font-semibold", matchup.gm2Score > matchup.gm1Score ? 'text-green-600' : matchup.gm2Score < matchup.gm1Score ? 'text-red-600': '')}>{matchup.gm2Score.toFixed(1)}</TableCell>
-                      <TableCell className="text-center">{getMatchupResultIcon(matchup, comparisonData.gm1Id)}</TableCell>
+                      <TableCell>{matchup.season_id}</TableCell>
+                      <TableCell>{matchup.fantasy_week}</TableCell>
+                      <TableCell className={cn("text-right font-semibold", matchup.owner1_score > matchup.owner2_score ? 'text-green-600' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600': '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
+                      <TableCell className={cn("text-right font-semibold", matchup.owner2_score > matchup.owner1_score ? 'text-green-600' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600': '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
+                      <TableCell className="text-center">{getMatchupResultIcon(matchup, comparisonData.owner1_info.owner_id)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -241,32 +263,53 @@ export default function H2HPage() {
             </CardContent>
           </Card>
           
-          {comparisonData.playoffMeetings && comparisonData.playoffMeetings.length > 0 && (
+          {comparisonData.playoff_meetings && comparisonData.playoff_meetings.total_playoff_matchups > 0 && (
              <Card>
-                <CardHeader><CardTitle>Playoff Meeting Highlights</CardTitle></CardHeader>
+                <CardHeader><CardTitle>Playoff Meeting Summary</CardTitle></CardHeader>
                 <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Season</TableHead>
-                          <TableHead>Round</TableHead>
-                          <TableHead>{comparisonData.gm1Name}</TableHead>
-                          <TableHead>{comparisonData.gm2Name}</TableHead>
-                          <TableHead>Winner</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {comparisonData.playoffMeetings.map((meeting, index) => (
-                           <TableRow key={`playoff-${index}`}>
-                             <TableCell>{meeting.seasonYear}</TableCell>
-                             <TableCell>{meeting.round}</TableCell>
-                             <TableCell className={cn(meeting.gm1Score > meeting.gm2Score ? 'font-bold text-green-600' : '')}>{meeting.gm1Score.toFixed(1)}</TableCell>
-                             <TableCell className={cn(meeting.gm2Score > meeting.gm1Score ? 'font-bold text-green-600' : '')}>{meeting.gm2Score.toFixed(1)}</TableCell>
-                             <TableCell className="font-semibold">{meeting.winnerId === meeting.gm1Id ? meeting.gm1Name : meeting.gm2Name}</TableCell>
-                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center p-4 bg-muted/50 rounded-lg">
+                        <div>
+                            <p className="text-sm text-muted-foreground">{displayedGm1Name} Playoff Wins</p>
+                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.owner1_playoff_wins}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground">{displayedGm2Name} Playoff Wins</p>
+                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.owner2_playoff_wins}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Total Playoff Matchups</p>
+                            <p className="text-2xl font-bold">{comparisonData.playoff_meetings.total_playoff_matchups}</p>
+                        </div>
+                    </div>
+                    {comparisonData.playoff_meetings.matchups_details && comparisonData.playoff_meetings.matchups_details.length > 0 ? (
+                        <Table className="mt-4">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Season</TableHead>
+                              <TableHead>Round</TableHead>
+                              <TableHead>{displayedGm1Name}</TableHead>
+                              <TableHead>{displayedGm2Name}</TableHead>
+                              <TableHead>Winner</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {comparisonData.playoff_meetings.matchups_details.map((meeting, index) => (
+                               <TableRow key={`playoff-detail-${index}`}>
+                                 <TableCell>{meeting.season_id}</TableCell>
+                                 <TableCell>{meeting.fantasy_week}</TableCell>
+                                 <TableCell className={cn(meeting.owner1_score > meeting.owner2_score ? 'font-bold text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
+                                 <TableCell className={cn(meeting.owner2_score > meeting.owner1_score ? 'font-bold text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
+                                 <TableCell className="font-semibold">
+                                    {meeting.winner_owner_id === comparisonData.owner1_info.owner_id ? displayedGm1Name : 
+                                     meeting.winner_owner_id === comparisonData.owner2_info.owner_id ? displayedGm2Name : 'Tie/Unknown'}
+                                 </TableCell>
+                               </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                    ) : (
+                        <p className="text-center text-muted-foreground mt-4">No detailed playoff matchup data available.</p>
+                    )}
                 </CardContent>
             </Card>
           )}
@@ -275,9 +318,9 @@ export default function H2HPage() {
        {!loading && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && !error &&(
         <Card>
             <CardContent className="pt-6 text-center text-muted-foreground">
-                <p>No H2H comparison data found for {selectedGm1?.name} and {selectedGm2?.name}.</p>
-                <p>Ensure a file named `h2h_{Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h_data/`.</p>
-                 <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `h2h_1_vs_2.json`.</p>
+                <p>No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
+                <p>Ensure a file named `comparison_{Math.min(parseInt(gm1Id), parseInt(gm2Id))}_vs_{Math.max(parseInt(gm1Id), parseInt(gm2Id))}.json` exists in `public/data/h2h/`.</p>
+                 <p className="text-xs mt-2">Example: For Jack (ID 1) vs Josh (ID 2), the file should be `comparison_1_vs_2.json`.</p>
             </CardContent>
         </Card>
       )}
