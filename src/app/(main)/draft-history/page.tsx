@@ -8,22 +8,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry } from '@/lib/types';
-import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData } from '@/lib/types';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
+
 
 // Mock Data for Season Dropdown in SeasonDraftDetail
 const mockSeasons: Season[] = [
   { id: "2024", year: 2024 },{ id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }, { id: "2020", year: 2020 }, { id: "2019", year: 2019 }, { id: "2018", year: 2018 }, { id: "2017", year: 2017 }, { id: "2016", year: 2016 }, { id: "2015", year: 2015 }, { id: "2014", year: 2014 }, { id: "2013", year: 2013 }, { id: "2012", year: 2012 }, { id: "2011", year: 2011 }, { id: "2009", year: 2009 }
 ].sort((a, b) => b.year - a.year); // Sort descending by year
 
+// Updated mockGms to use numeric string IDs for file fetching
 const mockGms: GM[] = [
-  { id: "gm1", name: "Alice" }, { id: "gm2", name: "Bob" }, { id: "gm3", name: "Charlie" }
+  { id: "1", name: "Jack" }, { id: "2", name: "Josh" }, { id: "3", name: "Jake" }, { id: "4", name: "Mark" }, { id: "5", name: "Sean" }, { id: "6", name: "Nick" }, { id: "7", name: "Will" }, { id: "8", name: "Zach" }, { id: "9", name: "Lac" }, { id: "11", name: "Chris" }, { id: "12", name: "Dylan" }, { id: "13", name: "Dan" }, { id: "14", name: "Fitz" }
 ];
+
 
 type SortDirection = 'asc' | 'desc';
 interface HeatmapSortConfig {
@@ -291,7 +295,7 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+          <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
           <CardDescription>Loading GM draft performance metrics across seasons...</CardDescription>
         </CardHeader>
         <CardContent>
@@ -310,7 +314,7 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+          <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
            <CardDescription>
              {metricConfigs[selectedMetric]?.description || "GM draft performance metrics across seasons. Colors indicate performance relative to the average."}
            </CardDescription>
@@ -326,7 +330,7 @@ const DraftOverview = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+          <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
            <CardDescription>
              {metricConfigs[selectedMetric]?.description || "GM draft performance metrics across seasons. Colors indicate performance relative to the average."}
            </CardDescription>
@@ -343,7 +347,7 @@ const DraftOverview = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
-                <CardTitle className="flex items-center gap-2"><BarChart3 /> Draft Performance Heatmap</CardTitle>
+                <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
                 <CardDescription>
                     {metricConfigs[selectedMetric].description} Hover over a cell for more details.
                 </CardDescription>
@@ -799,68 +803,256 @@ const SeasonDraftDetail = () => {
 };
 
 const GMDraftHistory = () => {
-  const [selectedGm, setSelectedGm] = useState<string | undefined>(mockGms[0]?.id);
-  // Placeholder for GMDraftHistoryData, to be fetched based on selectedGm
-  const [gmHistoryData, setGmHistoryData] = useState<any>(null); // Replace 'any' with GMDraftHistoryData type
+  const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGms[0]?.id);
+  const [gmDraftData, setGmDraftData] = useState<GMDraftHistoryDetailData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (selectedGm) {
-      // TODO: Fetch GM-specific draft history data from, e.g., /data/draft_data/gms/gm_${selectedGm}_history.json
-      // For now, using a simple mock structure if a specific GM is selected, or resetting
-      const gmDetails = mockGms.find(g => g.id === selectedGm);
-      if (gmDetails) {
-        setGmHistoryData({
-          gmId: gmDetails.id,
-          gmName: gmDetails.name,
-          careerDraftSummary: { totalPicks: Math.floor(Math.random() * 50) + 100, avgPickPosition: Math.floor(Math.random() * 50) + 50 },
-          bestPicks: [], 
-          worstPicks: [], 
-          roundEfficiency: [{ round: 1, avgPlayerPerformance: Math.random() * 30 + 70 }, { round: 2, avgPlayerPerformance: Math.random() * 30 + 50 }],
-          positionalProfile: [{ position: 'WR', count: Math.floor(Math.random()*10)+20 }, { position: 'RB', count: Math.floor(Math.random()*10)+20 }],
-        });
-      } else {
-        setGmHistoryData(null);
-      }
+    if (selectedGmId) {
+      const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+        setGmDraftData(null);
+        try {
+          const gmInfo = mockGms.find(g => g.id === selectedGmId);
+          if (!gmInfo) {
+            throw new Error("Selected GM not found in mock data.");
+          }
+          const filePath = `/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
+          console.log(`[GMDraftHistory] Fetching ${filePath}`);
+          const response = await fetch(filePath);
+          if (!response.ok) {
+             const errorText = await response.text();
+             console.error(`[GMDraftHistory] Fetch failed for GM ${selectedGmId} (Status: ${response.status}):`, errorText.substring(0,200));
+            throw new Error(`Failed to fetch data for GM ${gmInfo.name}: ${response.status} ${response.statusText}`);
+          }
+          const data: GMDraftHistoryDetailData = await response.json();
+          console.log(`[GMDraftHistory] Fetched data for GM ${selectedGmId}:`, data);
+          if (data.gm_name !== gmInfo.name && data.gm_id?.toString() !== selectedGmId) {
+            console.warn(`[GMDraftHistory] Mismatch between selected GM (${gmInfo.name}, ID ${selectedGmId}) and fetched data (${data.gm_name}, ID ${data.gm_id}). Using fetched data.`);
+          }
+          setGmDraftData(data);
+        } catch (err) {
+          if (err instanceof Error) {
+              setError(err.message);
+          } else {
+              setError("An unknown error occurred");
+          }
+           console.error(`[GMDraftHistory] Error in fetchData for GM ${selectedGmId}:`, err);
+          setGmDraftData(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
     }
-  }, [selectedGm]);
+  }, [selectedGmId]);
 
+  const roundEfficiencyChartData = useMemo(() => {
+    return gmDraftData?.round_efficiency.map(r => ({
+      name: `R${r.round.toFixed(0)}`,
+      'Avg POE': r.average_pvdre,
+    })) || [];
+  }, [gmDraftData?.round_efficiency]);
 
+  const positionalProfileChartData = useMemo(() => {
+    return gmDraftData?.positional_profile.map(p => ({
+      name: p.position,
+      'Avg POE': p.gm_average_pvdre,
+      picks: p.picks_count,
+    })) || [];
+  }, [gmDraftData?.positional_profile]);
+
+  if (!selectedGmId) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><UserCircle2 /> GM Draft History</CardTitle>
+          <CardDescription>Select a GM to view their career draft history.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Select onValueChange={setSelectedGmId}>
+            <SelectTrigger className="w-full sm:w-[280px]">
+              <SelectValue placeholder="Select a GM" />
+            </SelectTrigger>
+            <SelectContent>
+              {mockGms.map(gm => (
+                <SelectItem key={gm.id} value={gm.id}>{gm.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>GM Draft History View</CardTitle>
-          <CardDescription>Select a GM to view their career draft history. (DH.2)</CardDescription>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <CardTitle className="flex items-center gap-2"><UserCircle2 /> {gmDraftData?.gm_name || mockGms.find(g=>g.id===selectedGmId)?.name || 'GM'} Draft History</CardTitle>
+              <CardDescription>Career draft summary, efficiency, best/worst picks, and more. (DH.2)</CardDescription>
+            </div>
+            <Select value={selectedGmId} onValueChange={setSelectedGmId}>
+              <SelectTrigger className="w-full sm:w-[280px] mt-2 sm:mt-0">
+                <SelectValue placeholder="Select a GM" />
+              </SelectTrigger>
+              <SelectContent>
+                {mockGms.map(gm => (
+                  <SelectItem key={gm.id} value={gm.id}>{gm.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
         <CardContent>
-            <Select value={selectedGm} onValueChange={setSelectedGm}>
-                <SelectTrigger className="w-[280px] mb-6">
-                <SelectValue placeholder="Select a GM" />
-                </SelectTrigger>
-                <SelectContent>
-                {mockGms.map(gm => (
-                    <SelectItem key={gm.id} value={gm.id}>{gm.name}</SelectItem>
-                ))}
-                </SelectContent>
-            </Select>
-            {selectedGm && gmHistoryData && (
-                <Card>
-                <CardHeader>
-                    <CardTitle>{gmHistoryData.gmName}'s Draft History</CardTitle>
-                    <CardDescription>Career draft summary, efficiency, best/worst picks. (DH.2.2 - DH.2.6)</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <p><strong>Career Draft Summary (DH.2.2):</strong> Total Picks: {gmHistoryData.careerDraftSummary.totalPicks}, Avg. Position: {gmHistoryData.careerDraftSummary.avgPickPosition}</p>
-                    <p><strong>Round Efficiency Analysis (DH.2.3):</strong> Placeholder for Recharts charts. Round 1 Avg: {gmHistoryData.roundEfficiency.find((r:any)=>r.round===1)?.avgPlayerPerformance.toFixed(1)}</p>
-                    <p><strong>Best & Worst Picks (DH.2.4):</strong> Best: {gmHistoryData.bestPicks.map((p: any) => p.playerName).join(', ') || 'N/A'}. Worst: {gmHistoryData.worstPicks.map((p: any) => p.playerName).join(', ') || 'N/A'}</p>
-                    <p><strong>Positional Drafting Profile (DH.2.5):</strong> Placeholder for Recharts charts. WRs: {gmHistoryData.positionalProfile.find((p:any)=>p.position==='WR')?.count}</p>
-                    <p><strong>Draft Strategy Overview (DH.2.6):</strong> Placeholder text.</p>
+          {loading && (
+            <div className="space-y-4">
+              <Skeleton className="h-24 w-full" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Skeleton className="h-64 w-full" />
+                <Skeleton className="h-64 w-full" />
+              </div>
+              <Skeleton className="h-48 w-full" />
+            </div>
+          )}
+          {error && <p className="text-destructive text-center py-4">Error loading draft history data: {error}</p>}
+          {!loading && !gmDraftData && !error && <p className="text-muted-foreground text-center py-4">No draft history data found for this GM. Ensure 'gm_GMID_draft_history.json' exists in 'public/data/draft_data/gm/'.</p>}
+          
+          {!loading && gmDraftData && (
+            <div className="space-y-6">
+              <Card>
+                <CardHeader><CardTitle className="text-lg">Career Draft Summary (DH.2.2)</CardTitle></CardHeader>
+                <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Picks</p>
+                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Avg. POE / Pick</p>
+                    <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Career Hit Rate</p>
+                    <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage * 100).toFixed(1)}%</p>
+                  </div>
+                   <div>
+                    <p className="text-sm text-muted-foreground">Total Hits</p>
+                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Misses</p>
+                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
+                  </div>
+                   <div>
+                    <p className="text-sm text-muted-foreground">Sum Total POE</p>
+                    <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
+                  </div>
                 </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader><CardTitle className="text-lg">Round Efficiency (Avg. POE) (DH.2.3)</CardTitle></CardHeader>
+                <CardContent className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={roundEfficiencyChartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <RechartsTooltip />
+                      <Bar dataKey="Avg POE" fill="hsl(var(--primary))">
+                        {roundEfficiencyChartData.map((entry, index) => (
+                          <RechartsCell key={`cell-${index}`} fill={entry['Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowUpCircle className="text-green-500 mr-2 h-5 w-5" />Best Picks (by POE) (DH.2.4)</CardTitle></CardHeader>
+                  <CardContent>
+                    {gmDraftData.best_picks && gmDraftData.best_picks.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow><TableHead>Player</TableHead><TableHead>Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {gmDraftData.best_picks.slice(0,5).map(pick => (
+                            <TableRow key={pick.player_id + (pick.draft_id || pick.pick_overall)}>
+                              <TableCell>
+                                <p className="font-medium">{pick.player_name}</p>
+                                <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
+                              </TableCell>
+                              <TableCell>{pick.season_id}</TableCell>
+                              <TableCell className="text-right text-green-600 font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : <p className="text-muted-foreground">No best picks data available.</p>}
+                  </CardContent>
                 </Card>
-            )}
-            {!gmHistoryData && selectedGm && (
-                <p className="text-muted-foreground">No draft history data found for this GM.</p>
-            )}
+                <Card>
+                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowDownCircle className="text-red-500 mr-2 h-5 w-5" />Worst Picks (by POE) (DH.2.4)</CardTitle></CardHeader>
+                  <CardContent>
+                    {gmDraftData.worst_picks && gmDraftData.worst_picks.length > 0 ? (
+                       <Table>
+                        <TableHeader>
+                          <TableRow><TableHead>Player</TableHead><TableHead>Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {gmDraftData.worst_picks.slice(0,5).map(pick => (
+                            <TableRow key={pick.player_id + (pick.draft_id || pick.pick_overall)}>
+                              <TableCell>
+                                <p className="font-medium">{pick.player_name}</p>
+                                <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
+                              </TableCell>
+                              <TableCell>{pick.season_id}</TableCell>
+                              <TableCell className="text-right text-red-600 font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : <p className="text-muted-foreground">No worst picks data available.</p>}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card>
+                <CardHeader><CardTitle className="text-lg">Positional Drafting Profile (Avg. POE) (DH.2.5)</CardTitle></CardHeader>
+                <CardContent className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={positionalProfileChartData} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={80} />
+                      <RechartsTooltip formatter={(value, name) => name === 'Avg POE' ? (value as number).toFixed(2) : value} />
+                      <RechartsLegend />
+                      <Bar dataKey="Avg POE" name="Avg POE">
+                         {positionalProfileChartData.map((entry, index) => (
+                          <RechartsCell key={`cell-${index}`} fill={entry['Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
+                        ))}
+                      </Bar>
+                      <Bar dataKey="picks" name="Picks Count" fill="hsl(var(--muted))" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader><CardTitle className="text-lg">Draft Strategy Overview (DH.2.6)</CardTitle></CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{gmDraftData.draft_strategy_summary || "No draft strategy summary available."}</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
@@ -880,5 +1072,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-    

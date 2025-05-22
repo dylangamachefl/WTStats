@@ -1,6 +1,6 @@
 
 export interface GM {
-  id: string; // This is the string ID used for the dropdown, e.g., "chris"
+  id: string; // This is the string ID used for the dropdown, e.g., "chris" or "1"
   name: string;
   teamName?: string;
   photoUrl?: string;
@@ -35,7 +35,7 @@ export interface CareerStat {
   championships: number;
   pointsFor: number;
   pointsAgainst: number;
-  winPct: string;
+  winPct: string; // Should be number if used for sorting, string if pre-formatted
   playoffRate: number;
   acquisitions?: number;
   avgRegularSeasonFinish?: number;
@@ -94,7 +94,7 @@ export interface SeasonStandingEntry {
   regular_season_points_for: number;
   regular_season_points_against: number;
   regular_season_finish: number;
-  lastFive?: (0 | 1)[]; // 0 for loss, 1 for win
+  lastFive?: (0 | 1)[];
   playoffSeed?: number | null;
 }
 
@@ -119,7 +119,7 @@ export interface PlayoffData {
 export interface WeeklyScoresData {
   teams: string[];
   scores: (number | null)[][];
-  results: (string | null)[][]; // 'W', 'L', 'T'
+  results: (string | null)[][];
 }
 
 
@@ -145,10 +145,10 @@ export interface WaiverPickupEntry {
 
 export interface TopPerformerPlayer {
   player: string;
-  team: string; // NFL Team
-  fantasyTeam?: string | null; // GM's team name
+  team: string;
+  fantasyTeam?: string | null;
   totalPoints: number;
-  ppg: number; // Points per game
+  ppg: number;
   bestGame?: {
     week: number;
     points: number;
@@ -162,7 +162,7 @@ export interface PositionalTopPerformersData {
   TE?: TopPerformerPlayer[];
   K?: TopPerformerPlayer[];
   DST?: TopPerformerPlayer[];
-  DEF?: TopPerformerPlayer[]; // Adding DEF as it's sometimes used
+  DEF?: TopPerformerPlayer[];
   [key: string]: TopPerformerPlayer[] | undefined;
 }
 
@@ -170,8 +170,8 @@ export interface SeasonBestOverallGameEntry {
   rank: number;
   player: string;
   position: string;
-  team: string; // NFL Team
-  fantasyTeam?: string | null; // GM's team name
+  team: string;
+  fantasyTeam?: string | null;
   week: number;
   points: number;
 }
@@ -190,9 +190,9 @@ export interface SeasonDetailData {
 
 // For GM Career Page (e.g., Chris.json - overall career)
 export interface GMInfo {
-  id: number; // Numeric ID, e.g., 11
+  id: number;
   name: string;
-  slug: string; // e.g., "chris"
+  slug: string;
   yearsActive: string;
   championshipYears: number[];
   photoUrl?: string;
@@ -282,6 +282,7 @@ export interface GMCareerData {
 }
 
 
+// For GM Individual Season View (e.g., gm_career_11_2019.json)
 export interface GMSeasonPerformance {
   wins: number;
   losses: number;
@@ -292,8 +293,8 @@ export interface GMSeasonPerformance {
   avgPointsAgainstPerGame?: number;
   regularSeasonFinish: number;
   finalStanding: number;
-  sosDifferential?: number;
-  sosRating?: string;
+  sosDifferential?: number | null;
+  sosRating?: string | null;
 }
 
 export interface GMGameByGame {
@@ -324,8 +325,8 @@ export interface GMRosterPlayer {
   id: number;
   name: string;
   position: string;
-  finish: string;
-  gamesStarted: number;
+  finish: string | null;
+  gamesStarted: number | null;
   totalPoints: number;
 }
 
@@ -404,7 +405,7 @@ export interface GMPositionalAdvantageCumulativeDataPoint {
 }
 
 export interface GMPositionalAdvantageCumulative {
-  position: string; // e.g., "QB", "RB"
+  position: string;
   data: GMPositionalAdvantageCumulativeDataPoint[];
 }
 
@@ -454,14 +455,14 @@ export interface GMDraftSeasonPerformance {
   gm_name: string;
   first_round_draft_position?: number | null;
   total_picks?: number | null;
-  avg_pvdre?: number | null;
+  avg_pvdre?: number | null; // This is POE
   total_pvdre?: number | null;
-  pvdre_hit_rate?: number | null;
-  avg_value_vs_adp?: number | null;
+  pvdre_hit_rate?: number | null; // Hit Rate %
+  avg_value_vs_adp?: number | null; // Avg Value vs ADP
 }
 
 
-// For Draft History -> Season View (e.g., /draft-history/season/[seasonId])
+// For Draft History -> Season View (e.g., /data/draft_data/seasons/season_YYYY_draft_detail.json)
 export interface DraftPickDetail {
   season_id: number;
   pick_overall: number;
@@ -485,12 +486,12 @@ export interface DraftPickDetail {
   fantasy_points_per_game_season?: number | null;
   actual_positional_finish_rank?: number | null;
   expected_points_for_league_draft_rank_smoothed?: number | null;
-  pvdre_points_vs_league_draft_rank_exp?: number | null;
+  pvdre_points_vs_league_draft_rank_exp?: number | null; // Used for PVDRE in tooltips/value analysis
   rank_diff_vs_league_draft_rank?: number | null;
   raw_stats_season?: Record<string, any>;
 }
 
-// Renamed old DraftGradeEntry to TeamDraftPerformanceEntry for clarity
+// For Team Draft Performance within SeasonDraftDetailJson
 export interface TeamDraftPerformanceEntry {
   gm_id: number;
   gm_name: string;
@@ -504,84 +505,56 @@ export interface TeamDraftPerformanceEntry {
   draft_rank_by_avg_pvdre: number;
 }
 
-// Alias for what was previously DraftPlayerValueSummary, as it uses DraftPickDetail structure
-export type DraftPlayerValueSummary = DraftPickDetail;
-
 export interface SeasonHighlights {
-  top_steals_by_pvdre: DraftPickDetail[];
-  top_busts_by_pvdre: DraftPickDetail[];
+  top_steals_by_pvdre: DraftPickDetail[]; // Uses full DraftPickDetail structure
+  top_busts_by_pvdre: DraftPickDetail[]; // Uses full DraftPickDetail structure
 }
 
+// Main structure for season_YYYY_draft_detail.json files
 export interface SeasonDraftDetailJson {
   draft_board: DraftPickDetail[];
-  team_draft_performance_ranking?: TeamDraftPerformanceEntry[]; // Corresponds to "Draft Grades" concept
-  season_highlights?: SeasonHighlights; // Contains top_steals and top_busts
+  team_draft_performance_ranking?: TeamDraftPerformanceEntry[];
+  season_highlights?: SeasonHighlights;
 }
 
 
-// Old types - re-evaluate if still needed by other pages or can be removed
-export interface Season {
-  id: string;
-  year: number;
-  championId?: string;
-  championName?: string;
-  championTeamName?: string;
-  championPhotoUrl?: string;
+// For GM Draft History (e.g., /data/draft_data/gm/gm_1_draft_history.json)
+export interface CareerSummary {
+  total_picks_made: number;
+  sum_total_pvdre: number;
+  average_pvdre_per_pick: number;
+  total_hits: number;
+  total_misses: number;
+  career_hit_rate_percentage: number;
 }
 
-// Renamed old DraftPick to OldDraftPick to avoid conflict if still used elsewhere.
-export interface OldDraftPick {
-  id: string;
-  seasonYear: number;
+export interface RoundEfficiencyEntry {
   round: number;
-  pickOverall: number;
-  playerName: string;
+  picks_count: number;
+  average_pvdre: number;
+  total_pvdre?: number; // Added as optional based on JSON
+}
+
+export interface PositionalProfileEntry {
   position: string;
-  college?: string;
-  pickedByGmId: string;
-  pickedByGmName: string;
-  originalOwnerGmId?: string;
+  picks_count: number;
+  gm_average_pvdre: number;
+  league_average_pvdre?: number; // Added as optional
+  gm_total_pvdre?: number; // Added as optional
 }
 
-// Renamed old SeasonDraftData to OldSeasonDraftData
-export interface OldSeasonDraftData {
-  seasonYear: number;
-  draftPicks: OldDraftPick[];
-  draftGrades?: Array<{ gmId: string; gmName: string; grade: string; analysis: string }>;
-  topSteals?: OldDraftPick[];
-  topBusts?: OldDraftPick[];
+export interface GMDraftHistoryDetailData {
+  gm_id: number;
+  gm_name: string;
+  career_summary: CareerSummary;
+  round_efficiency: RoundEfficiencyEntry[];
+  best_picks: DraftPickDetail[]; // Reusing DraftPickDetail for consistency
+  worst_picks: DraftPickDetail[]; // Reusing DraftPickDetail for consistency
+  positional_profile: PositionalProfileEntry[];
+  draft_strategy_summary: string;
 }
 
-export interface GMDraftHistoryData {
-  gmId: string;
-  gmName: string;
-  careerDraftSummary: {
-    totalPicks: number;
-    avgPickPosition: number;
-  };
-  bestPicks: OldDraftPick[]; // Using OldDraftPick here
-  worstPicks: OldDraftPick[]; // Using OldDraftPick here
-  roundEfficiency: Array<{ round: number; avgPlayerPerformance: number }>;
-  positionalProfile: Array<{ position: string; count: number }>;
-}
-
-export interface H2HComparisonData {
-  gm1Id: string;
-  gm1Name: string;
-  gm2Id: string;
-  gm2Name: string;
-  overallRecord: { gm1Wins: number; gm2Wins: number; ties: number };
-  pointsRecord: { gm1Points: number; gm2Points: number };
-  matchups: Array<{
-    seasonYear: number;
-    week: number | string;
-    gm1Score: number;
-    gm2Score: number;
-    winnerId?: string;
-  }>;
-  playoffMeetings: Array<any>;
-}
-
+// For League History AI (Placeholder, can be removed if not used)
 export interface LeagueHistoryForAI {
   seasons: Array<{
     year: number;
@@ -594,6 +567,3 @@ export interface LeagueHistoryForAI {
     }>;
   }>;
 }
-
-
-    
