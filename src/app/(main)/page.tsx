@@ -126,25 +126,25 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === 1) {
       return { 
         textClass: 'text-neutral-800 font-semibold', 
-        backgroundClass: 'bg-[hsl(50,95%,60%)]', 
+        backgroundClass: 'bg-[hsl(50,95%,60%)]', // Gold
         borderClass: 'border-2 border-foreground' 
       };
     }
 
-    if (maxRankInYear <= 1) return defaultStyle;
+    if (maxRankInYear <= 1) return defaultStyle; // Avoid division by zero or negative ranges
 
     const SATURATION = 60; 
     const MAX_LIGHTNESS_GREEN = 92; 
     const MIN_LIGHTNESS_GREEN = 78;
     const MAX_LIGHTNESS_RED = 92; 
     const MIN_LIGHTNESS_RED = 78; 
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; // e.g. 25% of ranks around middle are neutral
 
-    const numRanksToScale = maxRankInYear - 1; 
+    const numRanksToScale = maxRankInYear - 1; // Ranks from 2 to maxRank
     if (numRanksToScale <= 0) return defaultStyle;
 
-    const rankPositionInScale = rank - 2; 
-    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; 
+    const rankPositionInScale = rank - 2; // 0-indexed position within the 2nd to maxRank range
+    const normalizedRank = numRanksToScale > 1 ? rankPositionInScale / (numRanksToScale -1) : 0.5; // 0 (best) to 1 (worst)
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
     const neutralZoneStart = 0.5 - NEUTRAL_BANDWIDTH_PERCENT / 2;
@@ -154,26 +154,29 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const RED_HUE = 0;     
 
     let backgroundColor = '';
-    let textColor = 'text-neutral-800 font-semibold'; 
+    let textColor = 'text-neutral-800 font-semibold'; // Dark text for pastel backgrounds
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-       return { textClass: 'text-foreground font-semibold', backgroundClass: '', borderClass: '' };
+        // Neutral zone
+        return { textClass: 'text-foreground font-semibold', backgroundClass: '', borderClass: '' };
     } else if (clampedNormalizedRank < neutralZoneStart) {
-      const greenZoneWidth = neutralZoneStart; 
-      const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; 
+      // Green zone (better ranks)
+      const greenZoneWidth = neutralZoneStart; // Width of the green part of the scale
+      const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; // 0 (near neutral) to 1 (best)
       const lightness = MAX_LIGHTNESS_GREEN - t_green * (MAX_LIGHTNESS_GREEN - MIN_LIGHTNESS_GREEN);
       backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     } else { 
+      // Red zone (worse ranks)
       const redZoneEffectiveStart = neutralZoneEnd;
-      const redZoneWidth = 1 - redZoneEffectiveStart; 
-      const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0; 
+      const redZoneWidth = 1 - redZoneEffectiveStart; // Width of the red part of the scale
+      const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0; // 0 (near neutral) to 1 (worst)
       const lightness = MAX_LIGHTNESS_RED - t_red * (MAX_LIGHTNESS_RED - MIN_LIGHTNESS_RED);
       backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
     
     return { 
       textClass: textColor, 
-      backgroundClass: `bg-[${backgroundColor}]`, 
+      backgroundClass: `bg-[${backgroundColor}]`, // Use arbitrary value syntax for Tailwind JIT
       borderClass: ''
     };
   };
@@ -290,11 +293,11 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   if (loading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 w-full">
         <Card>
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
           <CardContent className="px-0 sm:px-6 flex items-center justify-center">
-            <Skeleton className="w-full h-64 mx-auto" />
+            <Skeleton className="w-full h-[260px] mx-auto" /> {/* Adjusted skeleton height */}
           </CardContent>
         </Card>
         <Card>
@@ -328,7 +331,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
       <Card>
         <CardHeader>
           <CardTitle>Championship Timeline</CardTitle>
@@ -414,9 +417,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -487,9 +490,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader><CardTitle>League Records</CardTitle></CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -548,12 +551,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         )}
       </div>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
           <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -563,7 +566,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   </Button>
                 </TableHead>
                 {heatmapYears.map(year => (
-                  <TableHead key={year} className="p-1 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
+                  <TableHead key={year} className="p-1 border text-center text-xs whitespace-nowrap">{year}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -577,7 +580,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                     const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
 
                     return (
-                       <TableCell
+                      <TableCell
                         key={year}
                         className="p-0 border text-center text-xs"
                       >
@@ -598,12 +601,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       </Card>
 
       {Array.isArray(leagueData.gmPlayoffPerformance) && leagueData.gmPlayoffPerformance.length > 0 && (
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>GM Playoff Performance</CardTitle>
             <CardDescription>Statistics from playoff appearances.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -832,9 +835,9 @@ const SeasonDetail = () => {
   }, [selectedSeason]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
         <Card className="overflow-visible">
-        <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
                 <CalendarDays className="text-primary h-6 w-6" /> 
@@ -878,9 +881,9 @@ const SeasonDetail = () => {
           {error && <CardContent className="pt-6 text-destructive text-center flex flex-col items-center gap-2"><ShieldAlert size={48}/> <p>{error}</p></CardContent>}
 
           {!loading && !error && seasonData && (
-             <CardContent className="pt-0">
+              <CardContent className="pt-0">
                 <Tabs value={activeSubTab} onValueChange={setActiveSubTab} className="w-full">
-                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="weekly_performance">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
@@ -891,7 +894,7 @@ const SeasonDetail = () => {
                 <TabsContent value="overview" className="pt-4 space-y-6">
                     <Card>
                         <CardHeader><CardTitle className="flex items-center text-xl"><Trophy className="mr-2 h-5 w-5 text-primary"/>Season Standings</CardTitle></CardHeader>
-                        <CardContent>
+                        <CardContent className="overflow-x-auto">
                         {seasonData.standingsData && Array.isArray(seasonData.standingsData) && seasonData.standingsData.length > 0 ? (
                             <Table>
                             <TableHeader>
@@ -954,8 +957,8 @@ const SeasonDetail = () => {
                                 <div>
                                 <h4 className="text-lg font-semibold mb-2 mt-4 text-center text-foreground/80">Semifinals</h4>
                                 <div className="grid md:grid-cols-2 gap-4">
-                                     {seasonData.playoffData.semiFinals.map((matchup, idx) => (
-                                        <PlayoffMatchupCard key={`sf-${idx}`} matchup={matchup} roundName={`Semifinal ${idx + 1}`} />
+                                    {seasonData.playoffData.semiFinals.map((matchup, idx) => (
+                                    <PlayoffMatchupCard key={`sf-${idx}`} matchup={matchup} roundName={`Semifinal ${idx + 1}`} />
                                     ))}
                                 </div>
                                 </div>
@@ -965,7 +968,7 @@ const SeasonDetail = () => {
                                 <h4 className="text-lg font-semibold mb-2 text-center text-foreground/80">Championship</h4>
                                 <div className="max-w-md mx-auto">
                                     {seasonData.playoffData.championship.map((matchup, idx) => (
-                                        <PlayoffMatchupCard key={`champ-${idx}`} matchup={matchup} roundName="Championship Game" isChampionship />
+                                    <PlayoffMatchupCard key={`champ-${idx}`} matchup={matchup} roundName="Championship Game" isChampionship />
                                     ))}
                                 </div>
                                 <div className="text-center mt-4">
@@ -992,7 +995,7 @@ const SeasonDetail = () => {
                                 <BarChart2 className="mr-2 h-5 w-5 text-primary" />
                                 Weekly Performance
                             </CardTitle>
-                             <RadioGroup
+                            <RadioGroup
                                 value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
                                 className="flex items-center space-x-2 mt-3 sm:mt-0"
@@ -1015,7 +1018,7 @@ const SeasonDetail = () => {
                                         <TableHeader>
                                             <TableRow>
                                                 <TableHead className="sticky left-0 bg-card z-10 w-1/6 min-w-[150px] text-left align-middle p-0.5">
-                                                    <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start font-semibold">TEAM</div>
+                                                    <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start font-semibold truncate" title="Team">TEAM</div>
                                                 </TableHead>
                                                 {seasonData.weeklyScoresData.scores.map((_, weekIndex) => (
                                                     <TableHead key={`wk-header-${weekIndex}`} className="text-center min-w-[60px] align-middle p-1.5 font-semibold">{`W${weekIndex + 1}`}</TableHead>
@@ -1027,8 +1030,8 @@ const SeasonDetail = () => {
                                             {seasonData.weeklyScoresData.teams.map((teamName, teamIndex) => (
                                                 <TableRow key={teamName}>
                                                     <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate align-middle p-0.5" title={teamName}>
-                                                        <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start">
-                                                           {teamName}
+                                                        <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start truncate">
+                                                            {teamName}
                                                         </div>
                                                     </TableCell>
                                                     {seasonData.weeklyScoresData!.scores.map((weekScores, weekIndex) => {
@@ -1072,7 +1075,7 @@ const SeasonDetail = () => {
                                         </TableBody>
                                     </Table>
                                 </div>
-                                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
+                                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
                                     {weeklyScoresDisplayMode === 'scores' ? 
                                         weeklyScoreLegendItems.map(item => (
                                             <div key={item.label} className="flex items-center gap-1.5">
@@ -1100,108 +1103,107 @@ const SeasonDetail = () => {
                 
                 <TabsContent value="strength_of_schedule" className="pt-4 space-y-6">
                     <Card>
-                         <CardHeader>
-                            <CardTitle className="flex items-center"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle>
-                            <CardDescription>This analysis shows which teams faced the toughest or easiest schedules based on their opponents' average points per game compared to the league average.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {seasonData.strengthOfScheduleData && Array.isArray(seasonData.strengthOfScheduleData) && seasonData.strengthOfScheduleData.length > 0 ? (
-                            <>
-                                <Table>
-                                    <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="text-left">RANK</TableHead>
-                                        <TableHead className="text-left">TEAM</TableHead>
-                                        <TableHead className="text-left">OWNER</TableHead>
-                                        <TableHead className="text-right">OPP PPG</TableHead>
-                                        <TableHead className="text-right">LG AVG</TableHead>
-                                        <TableHead className="text-right">DIFF</TableHead>
-                                        <TableHead className="text-center">RATING</TableHead>
-                                    </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                    {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
-                                        <TableRow key={sos.owner}>
-                                        <TableCell className="text-left">{sos.rank}</TableCell>
-                                        <TableCell className="text-left">{sos.team}</TableCell>
-                                        <TableCell className="text-left">{sos.owner}</TableCell>
-                                        <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                        <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                        <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
-                                            {sos.differential && sos.differential > 0 ? '+' : ''}{sos.differential?.toFixed(1) ?? 'N/A'}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Badge variant="outline" className={cn("text-xs", getRatingBadgeClass(sos.rating))}>
-                                                {sos.rating || '-'}
-                                            </Badge>
-                                        </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    </TableBody>
-                                </Table>
-                                <p className="text-xs text-muted-foreground mt-4">
-                                    Diff: Positive numbers indicate a tougher schedule (opponents scored more than league average). Ranked hardest to easiest.
-                                </p>
-                            </>
-                            ) : (
-                            <p className="text-muted-foreground text-center py-4">Strength of Schedule data not available for {seasonData?.seasonData?.year}.</p>
-                            )}
-                        </CardContent>
+                          <CardHeader>
+                              <CardTitle className="flex items-center"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Strength of Schedule</CardTitle>
+                              <CardDescription>This analysis shows which teams faced the toughest or easiest schedules based on their opponents' average points per game compared to the league average.</CardDescription>
+                          </CardHeader>
+                          <CardContent className="overflow-x-auto">
+                              {seasonData.strengthOfScheduleData && Array.isArray(seasonData.strengthOfScheduleData) && seasonData.strengthOfScheduleData.length > 0 ? (
+                              <>
+                                  <Table>
+                                      <TableHeader>
+                                      <TableRow>
+                                          <TableHead className="text-left">RANK</TableHead>
+                                          <TableHead className="text-left">TEAM</TableHead>
+                                          <TableHead className="text-left">OWNER</TableHead>
+                                          <TableHead className="text-right">OPP PPG</TableHead>
+                                          <TableHead className="text-right">LG AVG</TableHead>
+                                          <TableHead className="text-right">DIFF</TableHead>
+                                          <TableHead className="text-center">RATING</TableHead>
+                                      </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                      {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
+                                          <TableRow key={sos.owner_name || sos.team}>
+                                          <TableCell className="text-left">{sos.rank}</TableCell>
+                                          <TableCell className="text-left">{sos.team}</TableCell>
+                                          <TableCell className="text-left">{sos.owner_name}</TableCell>
+                                          <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                          <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
+                                          <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
+                                              {sos.differential && sos.differential > 0 ? '+' : ''}{sos.differential?.toFixed(1) ?? 'N/A'}
+                                          </TableCell>
+                                          <TableCell className="text-center">
+                                              <Badge variant="outline" className={cn("text-xs", getRatingBadgeClass(sos.rating))}>
+                                                  {sos.rating || '-'}
+                                              </Badge>
+                                          </TableCell>
+                                          </TableRow>
+                                      ))}
+                                      </TableBody>
+                                  </Table>
+                                  <p className="text-xs text-muted-foreground mt-4">
+                                      Diff: Positive numbers indicate a tougher schedule (opponents scored more than league average). Ranked hardest to easiest.
+                                  </p>
+                              </>
+                              ) : (
+                              <p className="text-muted-foreground text-center py-4">Strength of Schedule data not available for {seasonData?.seasonData?.year}.</p>
+                              )}
+                          </CardContent>
                     </Card>
                 </TabsContent>
 
-                 <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
+                <TabsContent value="waiver_pickups" className="pt-4 space-y-6">
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <ClipboardList className="mr-2 h-5 w-5 text-primary"/>Best Waiver Wire Pickups
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {seasonData.waiverPickupsData && Array.isArray(seasonData.waiverPickupsData) && seasonData.waiverPickupsData.length > 0 ? (
-                            <>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>#</TableHead>
-                                            <TableHead>Player</TableHead>
-                                            <TableHead>POS</TableHead>
-                                            <TableHead>Team</TableHead>
-                                            {isModernWaiverSeason && <TableHead>Picked Up By</TableHead>}
-                                            {isModernWaiverSeason && <TableHead>Week</TableHead>}
-                                            <TableHead className="text-right">Total Points</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {seasonData.waiverPickupsData.map((pickup: WaiverPickupEntry, index) => (
-                                            <TableRow key={pickup.player + index}>
-                                                <TableCell>{pickup.rank ?? index + 1}</TableCell>
-                                                <TableCell>{pickup.player}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(pickup.position))}>
-                                                        {pickup.position}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>{pickup.team}</TableCell>
-                                                {isModernWaiverSeason && <TableCell>{pickup.pickedUpBy ?? '-'}</TableCell>}
-                                                {isModernWaiverSeason && <TableCell>{pickup.week ?? '-'}</TableCell>}
-                                                <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                                <p className="text-xs text-muted-foreground mt-4">
-                                    Top valuable pickups based on total points scored after acquisition week. Assumes standard scoring.
-                                </p>
-                            </>
-                            ) : (
-                            <p className="text-muted-foreground text-center py-4">Waiver pickup data not available for {seasonData?.seasonData?.year}.</p>
-                            )}
-                        </CardContent>
+                          <CardHeader>
+                              <CardTitle className="flex items-center">
+                                  <ClipboardList className="mr-2 h-5 w-5 text-primary"/>Best Waiver Wire Pickups
+                              </CardTitle>
+                          </CardHeader>
+                          <CardContent className="overflow-x-auto">
+                              {seasonData.waiverPickupsData && Array.isArray(seasonData.waiverPickupsData) && seasonData.waiverPickupsData.length > 0 ? (
+                              <>
+                                  <Table>
+                                      <TableHeader>
+                                          <TableRow>
+                                              <TableHead>#</TableHead>
+                                              <TableHead>Player</TableHead>
+                                              <TableHead>POS</TableHead>
+                                              <TableHead>Team</TableHead>
+                                              {isModernWaiverSeason && <TableHead>Picked Up By</TableHead>}
+                                              {isModernWaiverSeason && <TableHead>Week</TableHead>}
+                                              <TableHead className="text-right">Total Points</TableHead>
+                                          </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                          {seasonData.waiverPickupsData.map((pickup: WaiverPickupEntry, index) => (
+                                              <TableRow key={pickup.player + index}>
+                                                  <TableCell>{pickup.rank ?? index + 1}</TableCell>
+                                                  <TableCell>{pickup.player}</TableCell>
+                                                  <TableCell>
+                                                      <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(pickup.position))}>
+                                                          {pickup.position}
+                                                      </Badge>
+                                                  </TableCell>
+                                                  <TableCell>{pickup.team}</TableCell>
+                                                  {isModernWaiverSeason && <TableCell>{pickup.pickedUpBy ?? '-'}</TableCell>}
+                                                  {isModernWaiverSeason && <TableCell>{pickup.week ?? '-'}</TableCell>}
+                                                  <TableCell className="text-right">{pickup.totalPoints?.toFixed(1) ?? '-'}</TableCell>
+                                              </TableRow>
+                                          ))}
+                                      </TableBody>
+                                  </Table>
+                                  <p className="text-xs text-muted-foreground mt-4">
+                                      Top valuable pickups based on total points scored after acquisition week. Assumes standard scoring.
+                                  </p>
+                              </>
+                              ) : (
+                              <p className="text-muted-foreground text-center py-4">Waiver pickup data not available for {seasonData?.seasonData?.year}.</p>
+                              )}
+                          </CardContent>
                     </Card>
                 </TabsContent>
-
-                 <TabsContent value="top_performers" className="pt-4 space-y-6">
+                <TabsContent value="top_performers" className="pt-4 space-y-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center text-lg">
@@ -1248,7 +1250,7 @@ const SeasonDetail = () => {
                                     Best Single-Game Performances
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -1312,7 +1314,7 @@ const getPositionIcon = (position?: string): React.ReactNode => {
       return <Target size={18} className="text-purple-500" />;
     case 'DST':
     case 'DEF':
-      return <Shield size={18} className="text-indigo-500" />;
+      return <ShieldAlert size={18} className="text-indigo-500" />; // Changed Shield to ShieldAlert for variety from lucide-react
     default:
       return <MoreHorizontal size={18} className="text-muted-foreground" />;
   }
@@ -1331,7 +1333,7 @@ const CHART_COLORS: { [key: string]: string } = {
   WR: 'hsl(var(--chart-2))', 
   TE: 'hsl(var(--chart-5))', 
   FLEX: 'hsl(var(--chart-3))',
-  K: 'hsl(39, 100%, 50%)',  
+  K: 'hsl(39, 100%, 50%)',   
   DST: 'hsl(27, 100%, 50%)', 
   DEFAULT: 'hsl(var(--muted))'
 };
@@ -1379,9 +1381,9 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                     <span className="text-2xl font-bold">#{performance.finalStanding}</span>
                     {performance.finalStanding === 1 && <Badge className="mt-1 bg-primary text-primary-foreground">Champion</Badge>}
                 </div>
-                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
-                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
+                    <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
                         {performance.sosDifferential != null && performance.sosDifferential < 0 ? '' : '+'}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
                     </span>
                     <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
@@ -1399,7 +1401,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
             <ListChecks className="mr-2 h-5 w-5 text-primary" /> Game-by-Game Breakdown
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -1438,7 +1440,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
           </TableBody>
         </Table>
       </CardContent>
-       <CardContent className="pt-4">
+        <CardContent className="pt-4">
         <h4 className="text-md font-semibold mb-2 text-center">Weekly Scoring Trend</h4>
         <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -1460,7 +1462,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
 const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
     <Card className="mt-6">
       <CardHeader><CardTitle className="flex items-center text-lg"><Users className="mr-2 h-5 w-5 text-primary"/>Roster & Player Performance</CardTitle></CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -1472,7 +1474,7 @@ const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
             </TableRow>
           </TableHeader>
           <TableBody>
-           {Array.isArray(players) && players.map((player) => (
+            {Array.isArray(players) && players.map((player) => (
               <TableRow key={player.id}>
                 <TableCell>{player.name}</TableCell>
                 <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
@@ -1575,8 +1577,8 @@ const GMCareer = () => {
           const data: GMIndividualSeasonDetailData = await res.json();
           console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
           if (!data || !data.seasonSummary || !data.rosterBreakdown) { 
-             console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
-             throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
+              console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
+              throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
           }
           setGmIndividualSeasonData(data);
         })
@@ -1709,7 +1711,7 @@ const GMCareer = () => {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
             <div className="space-y-1.5">
                 <Label htmlFor="gm-select">Select GM</Label>
@@ -1743,7 +1745,7 @@ const GMCareer = () => {
         </div>
 
       {loading && (
-         <Card>
+        <Card>
           <CardHeader className="flex-row items-center gap-4">
             <Skeleton className="h-16 w-16 rounded-full" />
             <div className="space-y-1.5">
@@ -1759,7 +1761,7 @@ const GMCareer = () => {
                 </div>
             </div>
             {[...Array(4)].map((_,i)=>(
-                 <div key={i} className="mt-8">
+                <div key={i} className="mt-8">
                     <Skeleton className="h-8 w-1/3 mb-3" />
                     <Skeleton className="h-48 w-full" />
                 </div>
@@ -1778,7 +1780,7 @@ const GMCareer = () => {
                 <Image data-ai-hint="person avatar" src={gmData.gmInfo.photoUrl} alt={`${gmData.gmInfo.name} photo`} width={64} height={64} className="rounded-full border-2 border-primary"/>
               ) : (
                 <Avatar className="h-16 w-16 border-2 border-primary">
-                   <AvatarImage src={gmData.gmInfo.photoUrl || undefined} alt={gmData.gmInfo.name || ""} data-ai-hint="person avatar"/>
+                  <AvatarImage src={gmData.gmInfo.photoUrl || undefined} alt={gmData.gmInfo.name || ""} data-ai-hint="person avatar"/>
                   <AvatarFallback className="text-2xl bg-muted text-muted-foreground">
                     {gmData.gmInfo.name ? gmData.gmInfo.name.charAt(0).toUpperCase() : <User size={32}/>}
                   </AvatarFallback>
@@ -1795,7 +1797,7 @@ const GMCareer = () => {
                     </span>
                   )}
                 </CardDescription>
-                 {gmData.gmInfo.bio && <p className="text-sm text-muted-foreground mt-2 max-w-prose">{gmData.gmInfo.bio}</p>}
+                  {gmData.gmInfo.bio && <p className="text-sm text-muted-foreground mt-2 max-w-prose">{gmData.gmInfo.bio}</p>}
               </div>
             </div>
           </CardHeader>
@@ -1855,7 +1857,7 @@ const GMCareer = () => {
                             <span className="text-muted-foreground">Playoff Record:</span>
                             <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
                         </div>
-                         <div className="flex justify-between">
+                          <div className="flex justify-between">
                             <span className="text-muted-foreground">Championships:</span>
                             <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
                         </div>
@@ -1864,7 +1866,7 @@ const GMCareer = () => {
             </CardContent>
         </Card>
 
-           {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
+          {gmData.seasonProgression && Array.isArray(gmData.seasonProgression) && gmData.seasonProgression.length > 0 && (
               <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Season Progression</CardTitle></CardHeader>
                 <CardContent className="h-[350px] pt-6">
@@ -1927,7 +1929,7 @@ const GMCareer = () => {
                 <CardHeader><CardTitle className="text-xl">Positional Strength vs League Avg.</CardTitle></CardHeader>
                 <CardContent>
                     <div className="h-[250px] w-full max-w-lg mx-auto">
-                         <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%">
                             <RechartsBarChart data={gmData.positionStrength} layout="vertical" margin={{ right: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" />
@@ -1949,29 +1951,29 @@ const GMCareer = () => {
              {gmData.franchisePlayers && Array.isArray(gmData.franchisePlayers) && gmData.franchisePlayers.length > 0 && (
               <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Franchise Players</CardTitle></CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Player</TableHead>
-                                <TableHead>Position</TableHead>
-                                <TableHead>Seasons w/ GM</TableHead>
-                                <TableHead className="text-right">Total Points</TableHead>
-                                <TableHead className="text-right">Games Started</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {gmData.franchisePlayers.map(player => (
-                                <TableRow key={player.playerId}>
-                                    <TableCell>{player.name}</TableCell>
-                                    <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
-                                    <TableCell>{player.seasonsWithGm.join(', ')}</TableCell>
-                                    <TableCell className="text-right">{player.totalPointsForGm?.toFixed(1)}</TableCell>
-                                    <TableCell className="text-right">{player.gamesStartedForGm}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                <CardContent className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Player</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Seasons w/ GM</TableHead>
+                        <TableHead className="text-right">Total Points</TableHead>
+                        <TableHead className="text-right">Games Started</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {gmData.franchisePlayers.map(player => (
+                        <TableRow key={player.playerId}>
+                          <TableCell>{player.name}</TableCell>
+                          <TableCell><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
+                          <TableCell>{player.seasonsWithGm.join(', ')}</TableCell>
+                          <TableCell className="text-right">{player.totalPointsForGm?.toFixed(1)}</TableCell>
+                          <TableCell className="text-right">{player.gamesStartedForGm}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
             )}
@@ -1979,27 +1981,27 @@ const GMCareer = () => {
             {gmData.rivalryPerformance && Array.isArray(gmData.rivalryPerformance) && gmData.rivalryPerformance.length > 0 && (
               <Card className="mt-8">
                 <CardHeader><CardTitle className="text-xl">Key Rivalries</CardTitle></CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Opponent</TableHead>
-                                <TableHead>Record (W-L)</TableHead>
-                                <TableHead className="text-right">Avg. PF</TableHead>
-                                <TableHead className="text-right">Avg. PA</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {gmData.rivalryPerformance.map(rival => (
-                                <TableRow key={rival.opponentId}>
-                                    <TableCell>{rival.opponentName}</TableCell>
-                                    <TableCell>{rival.wins}-{rival.losses}</TableCell>
-                                    <TableCell className="text-right">{rival.avgPointsFor?.toFixed(1)}</TableCell>
-                                    <TableCell className="text-right">{rival.avgPointsAgainst?.toFixed(1)}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                <CardContent className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Opponent</TableHead>
+                        <TableHead>Record (W-L)</TableHead>
+                        <TableHead className="text-right">Avg. PF</TableHead>
+                        <TableHead className="text-right">Avg. PA</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {gmData.rivalryPerformance.map(rival => (
+                        <TableRow key={rival.opponentId}>
+                          <TableCell>{rival.opponentName}</TableCell>
+                          <TableCell>{rival.wins}-{rival.losses}</TableCell>
+                          <TableCell className="text-right">{rival.avgPointsFor?.toFixed(1)}</TableCell>
+                          <TableCell className="text-right">{rival.avgPointsAgainst?.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </CardContent>
               </Card>
             )}
@@ -2027,7 +2029,7 @@ const GMCareer = () => {
             </Card>
         ) : gmIndividualSeasonData ? (
             <div className="space-y-6 mt-2">
-                 <Tabs value={activeGmSeasonTab} onValueChange={setActiveGmSeasonTab} className="w-full">
+                <Tabs value={activeGmSeasonTab} onValueChange={setActiveGmSeasonTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 mb-4">
                         <TabsTrigger value="season-summary"><ClipboardList className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
                         <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
@@ -2038,10 +2040,10 @@ const GMCareer = () => {
                     </TabsList>
                     <TabsContent value="season-summary">
                        {gmIndividualSeasonData.seasonSummary?.seasonPerformance && selectedViewOption && (
-                         <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} gmName={gmIndividualSeasonData.gmName}/>
+                         <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} gmName={gmIndividualSeasonData.gmInfo?.name}/>
                        )}
                        {gmIndividualSeasonData.seasonSummary?.gameByGame && (
-                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} gmName={gmIndividualSeasonData.gmName}/>
+                         <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} gmName={gmIndividualSeasonData.gmInfo?.name}/>
                        )}
                     </TabsContent>
                     <TabsContent value="roster-breakdown">
@@ -2051,7 +2053,7 @@ const GMCareer = () => {
                                     <PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
                                     Position Contribution
                                 </CardTitle>
-                                 <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
+                                <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {gmIndividualSeasonData.rosterBreakdown?.positionContributionData && gmIndividualSeasonData.rosterBreakdown?.leagueAvgPositionData ? (
@@ -2070,21 +2072,21 @@ const GMCareer = () => {
                                                             dataKey="value"
                                                             labelLine={false}
                                                             label={({ name, percent, x, y, midAngle, outerRadius: pieOuterRadius, payload }) => {
-                                                              const RADIAN = Math.PI / 180;
-                                                              const radius = pieOuterRadius + 25;
-                                                              const lx = x + radius * Math.cos(-midAngle * RADIAN);
-                                                              const ly = y + radius * Math.sin(-midAngle * RADIAN);
-                                                              return (
-                                                                <text x={lx} y={ly} fill={payload.fill} textAnchor={lx > x ? 'start' : 'end'} dominantBaseline="central" fontSize="12px">
-                                                                  {name}
-                                                                </text>
-                                                              );
+                                                                const RADIAN = Math.PI / 180;
+                                                                const radius = pieOuterRadius + 25;
+                                                                const lx = x + radius * Math.cos(-midAngle * RADIAN);
+                                                                const ly = y + radius * Math.sin(-midAngle * RADIAN);
+                                                                return (
+                                                                    <text x={lx} y={ly} fill={payload.fill} textAnchor={lx > x ? 'start' : 'end'} dominantBaseline="central" fontSize="12px">
+                                                                        {name}
+                                                                    </text>
+                                                                );
                                                             }}
                                                         >
                                                             {pieChartCells}
                                                         </Pie>
                                                         <RechartsTooltip />
-                                                         <RechartsLegend 
+                                                        <RechartsLegend 
                                                             payload={
                                                                 (gmIndividualSeasonData.rosterBreakdown.positionContributionData || []).map(entry => ({
                                                                     value: entry.name,
@@ -2131,7 +2133,7 @@ const GMCareer = () => {
                         {(!gmIndividualSeasonData.rosterBreakdown?.rosterPlayerData) && <p className="text-muted-foreground">No roster breakdown data available.</p>}
                     </TabsContent>
                      <TabsContent value="player-performance">
-                       {gmIndividualSeasonData?.playerPerformance ? (
+                        {gmIndividualSeasonData?.playerPerformance ? (
                             <div className="space-y-6">
                                 <Card>
                                     <CardHeader>
@@ -2181,7 +2183,7 @@ const GMCareer = () => {
                                             </CardTitle>
                                             <CardDescription>Click on a player row to see their weekly performance chart.</CardDescription>
                                         </CardHeader>
-                                        <CardContent>
+                                        <CardContent className="overflow-x-auto">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
@@ -2223,74 +2225,78 @@ const GMCareer = () => {
                         ) : <p className="text-muted-foreground text-center py-4">Player performance data not available for this season.</p>}
                     </TabsContent>
                     <TabsContent value="positional-advantage">
-                        <Card>
-                            <CardHeader><CardTitle className="flex items-center text-lg"><BarChartHorizontal className="mr-2 h-5 w-5 text-primary"/>Weekly Positional Advantage vs. Opponent</CardTitle></CardHeader>
-                            <CardContent>
-                                {gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage && Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage) && gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.length > 0 ? (
-                                    <>
-                                    <div className="overflow-x-auto">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="text-center">WK</TableHead>
-                                                    {['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'TOTAL DIFF'].map(pos => <TableHead key={pos} className="text-right">{pos}</TableHead>)}
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.map((weekData, index) => (
-                                                    weekData.week !== "Total" && (
-                                                        <TableRow key={index}>
-                                                            <TableCell className="text-center font-medium">{weekData.week}</TableCell>
-                                                            {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
-                                                                const value = weekData[posKey];
-                                                                return (
-                                                                    <TableCell key={posKey} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
-                                                                        {typeof value === 'number' ? (value > 0 ? '+' : '') + value.toFixed(1) : (value ?? '-')}
-                                                                    </TableCell>
-                                                                );
-                                                            })}
+                         {gmIndividualSeasonData?.positionalAdvantage ? (
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader><CardTitle className="flex items-center text-lg"><BarChartHorizontal className="mr-2 h-5 w-5 text-primary"/>Weekly Positional Advantage vs. Opponent</CardTitle></CardHeader>
+                                    <CardContent>
+                                        {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage && Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage) && gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.length > 0 ? (
+                                            <>
+                                            <div className="overflow-x-auto">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="text-center">WK</TableHead>
+                                                            {['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'TOTAL DIFF'].map(pos => <TableHead key={pos} className="text-right">{pos}</TableHead>)}
                                                         </TableRow>
-                                                    )
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mt-4">* Requires weekly lineup data for both GM and opponent. FLEX advantage is placeholder.</p>
-                                    </>
-                                ) : <p className="text-muted-foreground text-center py-4">Weekly positional advantage data not available.</p>}
-                            </CardContent>
-                        </Card>
-                        
-                        {gmIndividualSeasonData?.positionalAdvantage?.cumulativeWeeklyPositionalAdvantage && cumulativePositionalAdvantageChartData.length > 0 && (
-                            <Card className="mt-6">
-                                <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
-                                <CardContent className="h-[400px] pt-6">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
-                                            <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
-                                            <RechartsTooltip />
-                                            <RechartsLegend verticalAlign="bottom" />
-                                            {Object.keys(CHART_COLORS).filter(pos => pos !== 'DEFAULT' && cumulativePositionalAdvantageChartData[0] && cumulativePositionalAdvantageChartData[0].hasOwnProperty(pos.toUpperCase())).map(posKey => (
-                                                <Line 
-                                                    key={posKey}
-                                                    type="monotone" 
-                                                    dataKey={posKey.toUpperCase()} 
-                                                    stroke={CHART_COLORS[posKey.toUpperCase()]} 
-                                                    name={posKey.toUpperCase()}
-                                                    dot={false}
-                                                    activeDot={{ r: 6 }} 
-                                                />
-                                            ))}
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </CardContent>
-                                <CardFooter className="text-xs text-muted-foreground pt-2">
-                                    * Tracks the running total of positional point differences vs opponents week over week.
-                                </CardFooter>
-                            </Card>
-                        )}
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.map((weekData, index) => (
+                                                            weekData.week !== "Total" && (
+                                                                <TableRow key={`pos-adv-wk-${index}`}>
+                                                                    <TableCell className="text-center font-medium">{weekData.week}</TableCell>
+                                                                    {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
+                                                                        const value = weekData[posKey];
+                                                                        return (
+                                                                            <TableCell key={posKey} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
+                                                                                {typeof value === 'number' ? (value > 0 ? '+' : '') + value.toFixed(1) : (value ?? '-')}
+                                                                            </TableCell>
+                                                                        );
+                                                                    })}
+                                                                </TableRow>
+                                                            )
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground mt-4">* Requires weekly lineup data for both GM and opponent. FLEX advantage is placeholder.</p>
+                                            </>
+                                        ) : <p className="text-muted-foreground text-center py-4">Weekly positional advantage data not available.</p>}
+                                    </CardContent>
+                                </Card>
+                                
+                                {gmIndividualSeasonData.positionalAdvantage.cumulativeWeeklyPositionalAdvantage && cumulativePositionalAdvantageChartData.length > 0 && (
+                                    <Card className="mt-6">
+                                        <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
+                                        <CardContent className="h-[400px] pt-6">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <LineChart data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
+                                                    <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
+                                                    <RechartsTooltip />
+                                                    <RechartsLegend verticalAlign="bottom" />
+                                                    {Object.keys(CHART_COLORS).filter(pos => pos !== 'DEFAULT' && cumulativePositionalAdvantageChartData[0] && cumulativePositionalAdvantageChartData[0].hasOwnProperty(pos.toUpperCase())).map(posKey => (
+                                                        <Line 
+                                                            key={posKey}
+                                                            type="monotone" 
+                                                            dataKey={posKey.toUpperCase()} 
+                                                            stroke={CHART_COLORS[posKey.toUpperCase()]} 
+                                                            name={posKey.toUpperCase()}
+                                                            dot={false}
+                                                            activeDot={{ r: 6 }} 
+                                                        />
+                                                    ))}
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </CardContent>
+                                        <CardFooter className="text-xs text-muted-foreground pt-2">
+                                        * Tracks the running total of positional point differences vs opponents week over week.
+                                        </CardFooter>
+                                    </Card>
+                                )}
+                            </div>
+                         ) : <p className="text-muted-foreground text-center py-4">Positional advantage data not available.</p>}
                     </TabsContent>
                     <TabsContent value="lineup-optimization">
                         {gmIndividualSeasonData?.lineupOptimization ? (
@@ -2314,7 +2320,7 @@ const GMCareer = () => {
                                                 </TableHeader>
                                                 <TableBody>
                                                     {gmIndividualSeasonData.lineupOptimization.weeklyOptimization.map(item => (
-                                                        <TableRow key={item.week}>
+                                                        <TableRow key={`lineup-opt-wk-${item.week}`}>
                                                             <TableCell className="text-center font-medium">{item.week}</TableCell>
                                                             <TableCell className="text-right">{item.optimal?.toFixed(1) ?? '-'}</TableCell>
                                                             <TableCell className="text-right">{item.actual?.toFixed(1) ?? '-'}</TableCell>
@@ -2327,7 +2333,7 @@ const GMCareer = () => {
                                                 </TableBody>
                                             </Table>
                                         </div>
-                                         ) : <p className="text-muted-foreground text-center py-4">Weekly lineup optimization data not available.</p>}
+                                        ) : <p className="text-muted-foreground text-center py-4">Weekly lineup optimization data not available.</p>}
                                     </CardContent>
                                 </Card>
                                 {gmIndividualSeasonData.lineupOptimization.feelingItSummary && (
@@ -2337,13 +2343,13 @@ const GMCareer = () => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
                                                 <div><p className="text-xs text-muted-foreground">Total Starts</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.totalStarts ?? '-'}</p></div>
                                                 <div><p className="text-xs text-muted-foreground">Success Rate</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.successRate?.toFixed(1) ?? '-'}%</p></div>
-                                                <div><p className="text-xs text-muted-foreground">Avg Pts Gained/Lost</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >=0 ? '+':''}
+                                                <div><p className="text-xs text-muted-foreground">Avg Pts Gained/Lost</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >=0 ? '+':''}
                                                     {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost?.toFixed(1) ?? '-'}
                                                     </p>
                                                 </div>
-                                                <div><p className="text-xs text-muted-foreground">Avg Proj Diff.</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' &&gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
+                                                <div><p className="text-xs text-muted-foreground">Avg Proj Diff.</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
                                                     {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference?.toFixed(1) ?? '-'}
                                                     </p>
                                                 </div>
@@ -2366,7 +2372,7 @@ const GMCareer = () => {
                                                     </TableHeader>
                                                     <TableBody>
                                                         {gmIndividualSeasonData.lineupOptimization.feelingItSummary.details.map((item, idx) => (
-                                                            <TableRow key={idx}>
+                                                            <TableRow key={`feeling-it-${idx}`}>
                                                                 <TableCell className="text-center font-medium">{item.week}</TableCell>
                                                                 <TableCell>{item.starterName}</TableCell>
                                                                 <TableCell className="text-right">{item.starterActual?.toFixed(1) ?? '-'}</TableCell>
@@ -2374,8 +2380,8 @@ const GMCareer = () => {
                                                                 <TableCell>{item.benchName}</TableCell>
                                                                 <TableCell className="text-right">{item.benchActual?.toFixed(1) ?? '-'}</TableCell>
                                                                 <TableCell className="text-right">{item.benchProjected?.toFixed(1) ?? '-'}</TableCell>
-                                                                <TableCell className={cn("text-right", typeof item.pointsDifference === 'number' && item.pointsDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{typeof item.pointsDifference === 'number' && item.pointsDifference >=0 ? '+':''} {item.pointsDifference?.toFixed(1) ?? '-'}</TableCell>
-                                                                <TableCell className={cn("text-right", typeof item.projectionDifference === 'number' && item.projectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{typeof item.projectionDifference === 'number' &&item.projectionDifference >=0 ? '+':''} {item.projectionDifference?.toFixed(1) ?? '-'}</TableCell>
+                                                                <TableCell className={cn("text-right", typeof item.pointsDifference === 'number' && item.pointsDifference != null && item.pointsDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{typeof item.pointsDifference === 'number' && item.pointsDifference != null && item.pointsDifference >=0 ? '+':''} {item.pointsDifference?.toFixed(1) ?? '-'}</TableCell>
+                                                                <TableCell className={cn("text-right", typeof item.projectionDifference === 'number' && item.projectionDifference != null && item.projectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>{typeof item.projectionDifference === 'number' && item.projectionDifference != null && item.projectionDifference >=0 ? '+':''} {item.projectionDifference?.toFixed(1) ?? '-'}</TableCell>
                                                             </TableRow>
                                                         ))}
                                                     </TableBody>
@@ -2389,7 +2395,7 @@ const GMCareer = () => {
                         ) : <p className="text-muted-foreground text-center py-4">Lineup optimization data not available.</p>}
                     </TabsContent>
                     <TabsContent value="streaming-success">
-                         {gmIndividualSeasonData?.streamingSuccess ? (
+                          {gmIndividualSeasonData?.streamingSuccess ? (
                             <div className="space-y-6">
                                 <Card>
                                     <CardHeader><CardTitle className="flex items-center text-lg"><Repeat className="mr-2 h-5 w-5 text-primary"/>Streaming Summary</CardTitle></CardHeader>
@@ -2411,7 +2417,7 @@ const GMCareer = () => {
                                                 </TableHeader>
                                                 <TableBody>
                                                     {gmIndividualSeasonData.streamingSuccess.streamingSummary.map(item => (
-                                                        <TableRow key={item.position}>
+                                                        <TableRow key={`streaming-summary-${item.position}`}>
                                                             <TableCell className="font-medium">{item.position}</TableCell>
                                                             <TableCell>{item.status?.replace(/_/g, ' ')}</TableCell>
                                                             <TableCell className="text-center">{item.uniqueStarters ?? '-'}</TableCell>
@@ -2434,7 +2440,7 @@ const GMCareer = () => {
 
                                 {Object.entries(gmIndividualSeasonData.streamingSuccess.streamingWeeklyPerformance || {}).map(([position, weeklyData]) => (
                                    Array.isArray(weeklyData) && weeklyData.length > 0 && (
-                                    <Card key={position} className="mt-6">
+                                    <Card key={`streaming-weekly-${position}`} className="mt-6">
                                         <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(position)} Streaming Performance</CardTitle></CardHeader>
                                         <CardContent>
                                             <div className="overflow-x-auto">
@@ -2448,8 +2454,8 @@ const GMCareer = () => {
                                                         </TableRow>
                                                     </TableHeader>
                                                     <TableBody>
-                                                        {weeklyData.map(item => (
-                                                            <TableRow key={item.week}>
+                                                        {weeklyData.map((item, index) => (
+                                                            <TableRow key={`streaming-wk-detail-${position}-${index}`}>
                                                                 <TableCell className="text-center">{item.week}</TableCell>
                                                                 <TableCell>{item.playerName}</TableCell>
                                                                 <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
@@ -2470,10 +2476,10 @@ const GMCareer = () => {
             </div>
         ) : (
             <Card className="mt-6">
-                 <CardHeader><CardTitle className="flex items-center gap-2"><User className="text-primary"/>{selectedGmName} - {selectedViewOption} Season</CardTitle></CardHeader>
-                 <CardContent className="pt-6 text-center text-muted-foreground">
+                <CardHeader><CardTitle className="flex items-center gap-2"><User className="text-primary"/>{selectedGmName} - {selectedViewOption} Season</CardTitle></CardHeader>
+                <CardContent className="pt-6 text-center text-muted-foreground">
                     No detailed data found for {selectedGmName} for the {selectedViewOption} season.
-                 </CardContent>
+                </CardContent>
             </Card>
         )
       )}
@@ -2551,7 +2557,10 @@ export default function LeagueHistoryPage() {
             setLoadingLeagueData(false);
           });
     } else if (activeMainTab !== 'all-seasons' && leagueData) {
+        // leagueData already loaded, no need to re-fetch for other tabs in this specific component
     } else if (activeMainTab !== 'all-seasons' && !leagueData) {
+      // If navigating directly to a sub-tab and leagueData isn't loaded, don't block by setting loadingLeagueData to false.
+      // The individual components (SeasonDetail, GMCareer) will handle their own data fetching.
       setLoadingLeagueData(false);
     }
 
@@ -2569,3 +2578,5 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
+    
