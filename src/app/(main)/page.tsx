@@ -18,7 +18,7 @@ import type {
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
   TopPerformerPlayer,
-  // PositionalTopPerformersData, // Already included in SeasonDetailData
+  PositionalTopPerformersData,
   SeasonBestOverallGameEntry,
   GMCareerData,
   GMIndividualSeasonDetailData,
@@ -27,22 +27,22 @@ import type {
   GMRosterPlayer,
   // GMPositionContribution, // Included in GMIndividualSeasonDetailData
   // GMLeagueAvgPositionData, // Included in GMIndividualSeasonDetailData
-  GMPlayerPerformanceData, // Included in GMIndividualSeasonDetailData
-  GMPositionalAdvantageData, // Included in GMIndividualSeasonDetailData
-  GMStreamingSuccessData, // Included in GMIndividualSeasonDetailData
+  // GMPlayerPerformanceData, // Included in GMIndividualSeasonDetailData
+  // GMPositionalAdvantageData, // Included in GMIndividualSeasonDetailData
+  // GMStreamingSuccessData, // Included in GMIndividualSeasonDetailData
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, UserCircle2 } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Legend, Bar, LabelList } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Bar, LabelList, BarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -101,7 +101,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
   }, [leagueData?.finalStandingsHeatmap]);
 
-  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
+ const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; borderClass: string; style: React.CSSProperties } => {
     const defaultStyle = { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
     
     if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', borderClass: '', style: {} };
@@ -137,8 +137,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     let backgroundColor = '';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-      // For neutral zone, return default (no specific background)
-      return { textClass: 'font-semibold text-foreground', borderClass: '', style: {} };
+      return { textClass: 'font-semibold text-neutral-800', borderClass: '', style: {} };
     } else if (clampedNormalizedRank < neutralZoneStart) {
       const greenZoneWidth = neutralZoneStart; 
       const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; 
@@ -159,6 +158,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     };
   };
 
+
   const createSortHandler = <T,>(
     config: SortConfig<T>,
     setConfig: React.Dispatch<React.SetStateAction<SortConfig<T>>>
@@ -177,7 +177,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     return <ArrowUpDown className="ml-2 h-4 w-4 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
   };
 
- const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
+  const sortData = <T,>(data: T[] | undefined | null, config: SortConfig<T>): T[] => {
     if (!config || !config.key || !data) {
       return Array.isArray(data) ? data : [];
     }
@@ -474,22 +474,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <TableHeader>
                 <TableRow>
                   <TableHead>
-                    <Button variant="ghost" onClick={() => requestRecordsSort('record_category')} className="px-1 group">
+                    <Button variant="ghost" onClick={() => requestRecordsSort('record_category')} className="px-1 group text-xs md:text-sm py-2">
                       Category {getSortIcon(recordsSortConfig, 'record_category')}
                     </Button>
                   </TableHead>
                   <TableHead>
-                    <Button variant="ghost" onClick={() => requestRecordsSort('gm_name')} className="px-1 group">
+                    <Button variant="ghost" onClick={() => requestRecordsSort('gm_name')} className="px-1 group text-xs md:text-sm py-2">
                       GM {getSortIcon(recordsSortConfig, 'gm_name')}
                     </Button>
                   </TableHead>
                   <TableHead>
-                    <Button variant="ghost" onClick={() => requestRecordsSort('value')} className="px-1 group">
+                    <Button variant="ghost" onClick={() => requestRecordsSort('value')} className="px-1 group text-xs md:text-sm py-2">
                       Value {getSortIcon(recordsSortConfig, 'value')}
                     </Button>
                   </TableHead>
                   <TableHead>
-                    <Button variant="ghost" onClick={() => requestRecordsSort('seasons')} className="px-1 group">
+                    <Button variant="ghost" onClick={() => requestRecordsSort('seasons')} className="px-1 group text-xs md:text-sm py-2">
                       Season(s) {getSortIcon(recordsSortConfig, 'seasons')}
                     </Button>
                   </TableHead>
@@ -533,7 +533,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardTitle>Final Standings Heatmap</CardTitle>
           <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
-        <CardContent> {/* Removed overflow-x-auto here, relying on Table's internal scroll */}
+        <CardContent>
           <Table className="min-w-full">
             <TableHeader>
               <TableRow>
@@ -588,14 +588,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <TableHeader>
                 <TableRow>
                   <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group text-xs md:text-sm py-2">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full text-xs py-2">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full text-xs py-2">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full text-xs py-2">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full text-xs py-2">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full text-xs py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full text-xs py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full text-xs py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
-                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full text-xs py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
+                  <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -735,7 +735,7 @@ const SeasonDetail = () => {
             console.error(`[SeasonDetail] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
             throw new Error(`Failed to fetch ${seasonFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${shortErrorBody}...`);
           }
-          const data = await res.json();
+          const data: SeasonDetailData = await res.json();
           console.log(`[SeasonDetail] Successfully fetched and parsed data for ${selectedSeason}:`, data);
           
           if (!data || !data.seasonData || !data.standingsData) {
@@ -813,8 +813,8 @@ const SeasonDetail = () => {
   return (
     <div className="space-y-6">
         <Card className="overflow-visible">
-          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
+          <CardHeader className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
                 <CalendarDays className="text-primary h-6 w-6" /> 
                 {seasonData?.seasonData?.year || selectedSeason || ""} Season Detail
@@ -971,7 +971,7 @@ const SeasonDetail = () => {
                                 <BarChart2 className="mr-2 h-5 w-5 text-primary" />
                                 <CardTitle>Weekly Performance</CardTitle>
                             </div>
-                            <RadioGroup
+                             <RadioGroup
                                 value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
                                 className="flex items-center space-x-2"
@@ -982,7 +982,7 @@ const SeasonDetail = () => {
                                 </div>
                                 <div className="flex items-center space-x-1">
                                     <RadioGroupItem value="results" id="results-mode" />
-                                    <Label htmlFor="results-mode" className="text-sm cursor-pointer">Results</Label>
+                                    <Label htmlFor="results-mode" className="text-sm cursor-pointer">W/L</Label>
                                 </div>
                             </RadioGroup>
                         </CardHeader>
@@ -1023,13 +1023,13 @@ const SeasonDetail = () => {
                                                         } else { 
                                                             if (result === 'W') {
                                                                 cellContent = <span className="font-semibold">W</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
                                                             } else if (result === 'L') {
                                                                 cellContent = <span className="font-semibold">L</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700 font-semibold");
                                                             } else if (result === 'T') {
                                                                 cellContent = <span className="font-semibold">T</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700 font-semibold");
                                                             } else {
                                                                 cellContent = '-';
                                                                 innerDivClasses = cn(innerDivClasses, "bg-muted/30 text-muted-foreground");
@@ -1306,22 +1306,23 @@ const formatPvdreValue = (value: number | null | undefined): string => {
 
 // GM Career Component
 const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(var(--chart-4))', 
-  RB: 'hsl(var(--chart-1))', 
-  WR: 'hsl(var(--chart-2))', 
-  TE: 'hsl(var(--chart-5))', 
-  FLEX: 'hsl(var(--chart-3))',
-  K: 'hsl(39, 100%, 50%)',  
-  DST: 'hsl(27, 100%, 50%)', 
+  QB: 'hsl(var(--chart-4))', // Purple
+  RB: 'hsl(var(--chart-1))', // Blue (primary)
+  WR: 'hsl(var(--chart-2))', // Cyan (accent)
+  TE: 'hsl(var(--chart-5))', // Green
+  FLEX: 'hsl(var(--chart-3))',// Yellow/Orange
+  K: 'hsl(39, 100%, 50%)',  // Gold/Orange
+  DST: 'hsl(27, 100%, 50%)', // Brown/Orange
   DEFAULT: 'hsl(var(--muted))'
 };
 
 const GM_CHART_COLORS = {
-  GM_STARTED_PTS: 'hsl(var(--primary))', 
-  LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  
+  GM_STARTED_PTS: 'hsl(var(--primary))', // Primary (e.g., blue)
+  LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  // Accent (e.g., green)
 };
 
-const SeasonPerformanceCard = ({ performance, year }: { performance: GMSeasonPerformance; year: string }) => {
+
+const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMSeasonPerformance; year: string, gmName?: string }) => {
     const winRate = (performance.wins + performance.losses + (performance.ties || 0) > 0) 
       ? (performance.wins / (performance.wins + performance.losses + (performance.ties || 0))) * 100 
       : 0;
@@ -1417,7 +1418,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
           </TableBody>
         </Table>
       </CardContent>
-      <CardContent className="pt-4">
+       <CardContent className="pt-4">
         <h4 className="text-md font-semibold mb-2 text-center">Weekly Scoring Trend</h4>
         <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -1472,7 +1473,7 @@ const GMCareer = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedViewOption, setSelectedViewOption] = useState<string>("all-seasons");
+  const [selectedViewOption, setSelectedViewOption] = useState<string>("all-seasons"); // "all-seasons" or a year string like "2019"
   const [gmIndividualSeasonData, setGmIndividualSeasonData] = useState<GMIndividualSeasonDetailData | null>(null);
   const [loadingGmIndividualSeason, setLoadingGmIndividualSeason] = useState(false);
   const [errorGmIndividualSeason, setErrorGmIndividualSeason] = useState<string | null>(null);
@@ -1603,7 +1604,7 @@ const GMCareer = () => {
   }, [gmData?.seasonProgression]);
 
 
-  const pieChartData = useMemo(() => {
+ const pieChartData = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints || 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
@@ -2019,20 +2020,20 @@ const GMCareer = () => {
                     </TabsList>
                     <TabsContent value="season-summary">
                        {gmIndividualSeasonData.seasonSummary?.seasonPerformance && selectedViewOption && (
-                         <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} />
+                         <SeasonPerformanceCard performance={gmIndividualSeasonData.seasonSummary.seasonPerformance} year={selectedViewOption} gmName={gmIndividualSeasonData.gmName}/>
                        )}
                        {gmIndividualSeasonData.seasonSummary?.gameByGame && (
-                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} gmName={selectedGmName}/>
+                        <GameByGameTable games={gmIndividualSeasonData.seasonSummary.gameByGame} gmName={gmIndividualSeasonData.gmName}/>
                        )}
                     </TabsContent>
                     <TabsContent value="roster-breakdown">
                         <Card>
-                            <CardHeader>
+                            <CardHeader className="pb-2">
                                 <CardTitle className="flex items-center text-lg">
                                     <PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
                                     Position Contribution
                                 </CardTitle>
-                                 <CardDescription>(Based on Started Players)</CardDescription>
+                                 <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {gmIndividualSeasonData.rosterBreakdown?.positionContributionData && gmIndividualSeasonData.rosterBreakdown?.leagueAvgPositionData ? (
