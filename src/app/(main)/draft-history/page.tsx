@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, GMDraftHistoryData, DraftPickDetail, SeasonDraftBoardData } from '@/lib/types';
-import { BarChart3, ArrowUpDown, Info } from 'lucide-react';
+import { BarChart3, ArrowUpDown, Info, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -397,7 +397,9 @@ const DraftOverview = () => {
 
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
-  const [draftData, setDraftData] = useState<SeasonDraftBoardData | null>(null);
+  // The state 'draftData' should hold an array of DraftPickDetail if data is successfully fetched and processed.
+  // Or it can be null if there's an error or no data.
+  const [draftData, setDraftData] = useState<DraftPickDetail[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -409,34 +411,39 @@ const SeasonDraftDetail = () => {
       const fetchData = async () => {
         setLoading(true);
         setError(null);
-        setDraftData(null);
+        setDraftData(null); 
         try {
           const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
-          console.log(`Fetching ${filePath}`);
+          console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
           const response = await fetch(filePath);
+
           if (!response.ok) {
             const errorText = await response.text();
-            console.error("Fetch failed for season draft data:", response.status, errorText);
+            console.error(`[SeasonDraftDetail] Fetch failed for season draft data (Status: ${response.status}):`, errorText.substring(0, 200));
             throw new Error(`Failed to fetch data for season ${selectedSeason}: ${response.status} ${response.statusText}.`);
           }
-          const data: SeasonDraftBoardData = await response.json();
-          console.log(`Fetched draft data for season ${selectedSeason}:`, data);
+          
+          const jsonData: any = await response.json(); // Fetch as 'any' to inspect its structure first
+          console.log(`[SeasonDraftDetail] Fetched raw JSON data for season ${selectedSeason}:`, jsonData);
 
-          if (!Array.isArray(data)) {
-            console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not an array as expected. Received:`, data);
-            setError(`Data for season ${selectedSeason} is not in the expected array format. Check the JSON file structure.`);
+          // Check if jsonData is an object and has the draft_board property which is an array
+          if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
+            setDraftData(jsonData.draft_board); // Use the draft_board array
+            console.log(`[SeasonDraftDetail] Successfully processed draft_board for season ${selectedSeason}.`);
+          } else {
+            // Handle error: data is not in the expected object format with a 'draft_board' array
+            console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not in the expected object format with a 'draft_board' array. Received:`, jsonData);
+            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array.`);
             setDraftData(null);
-            setLoading(false);
-            return;
           }
-          setDraftData(data);
+
         } catch (err) {
           if (err instanceof Error) {
-              setError(err.message);
+              setError(`Error loading draft data: ${err.message}`);
           } else {
               setError("An unknown error occurred while fetching season draft data.");
           }
-          console.error("Error in fetchData for season draft data:", err);
+          console.error("[SeasonDraftDetail] Error in fetchData for season draft data:", err);
           setDraftData(null);
         } finally {
           setLoading(false);
@@ -447,7 +454,8 @@ const SeasonDraftDetail = () => {
   }, [selectedSeason]);
 
   const { boardLayout, gmNamesForColumns, maxRound } = useMemo(() => {
-    if (!draftData || !Array.isArray(draftData)) { // Ensure draftData is an array
+    // This useMemo hook now expects draftData to be DraftPickDetail[] | null
+    if (!draftData || !Array.isArray(draftData)) { 
       console.warn("[SeasonDraftDetail useMemo] draftData is not an array or is null. draftData:", draftData);
       return { boardLayout: {}, gmNamesForColumns: [], maxRound: 0 };
     }
@@ -458,8 +466,8 @@ const SeasonDraftDetail = () => {
 
     draftData.forEach(pick => {
       if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number') {
-        console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered:", pick);
-        return; // Skip this pick
+        console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered (missing gm_name, round, or pick_in_round):", pick);
+        return; 
       }
       gms.add(pick.gm_name);
       if (pick.round > currentMaxRound) {
@@ -468,9 +476,18 @@ const SeasonDraftDetail = () => {
       if (!picksByRoundAndGm[pick.round]) {
         picksByRoundAndGm[pick.round] = {};
       }
+      // Store the pick; if a GM has multiple picks in a round, this logic might need adjustment
+      // For simplicity, this assumes one primary pick per GM per round for the board display.
+      // A more complex board might show all picks or traded picks.
+      // This example takes the first pick encountered for a GM in a round based on iteration order.
+      // If picks are already sorted by pick_in_round or if we want the *earliest* pick, this is okay.
+      // If a GM can have multiple, non-sequential picks in the same round on the board, this needs change.
+      // Current logic implies showing one "representative" pick per GM per round.
+      // If the JSON can have multiple picks for one GM in a round for the same cell, we'd need to decide which one to show.
+      // Assuming the JSON structure for the board provides ONE definitive pick for each GM slot per round.
       const existingPick = picksByRoundAndGm[pick.round][pick.gm_name];
-      if (!existingPick || pick.pick_in_round < existingPick.pick_in_round) {
-        picksByRoundAndGm[pick.round][pick.gm_name] = pick;
+      if (!existingPick || pick.pick_in_round < existingPick.pick_in_round) { // Prefer earlier pick in round if multiple
+         picksByRoundAndGm[pick.round][pick.gm_name] = pick;
       }
     });
     
@@ -488,7 +505,7 @@ const SeasonDraftDetail = () => {
       return <p className="text-destructive text-center py-4">Error loading draft data: {error}</p>;
     }
     if (!draftData || gmNamesForColumns.length === 0 || maxRound === 0) {
-      return <p className="text-muted-foreground text-center py-4">No draft data available for the selected season, or data is malformed.</p>;
+      return <p className="text-muted-foreground text-center py-4">No draft data available for the selected season, or data is malformed. Check console for details.</p>;
     }
 
     return (
@@ -661,5 +678,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-    
