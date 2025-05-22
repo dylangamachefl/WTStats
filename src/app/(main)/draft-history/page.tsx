@@ -3,13 +3,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData } from '@/lib/types';
-import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide } from 'lucide-react';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, PositionalProfileEntry as GMDraftPositionalProfileEntry } from '@/lib/types';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -802,6 +802,34 @@ const SeasonDraftDetail = () => {
   );
 };
 
+
+const getPositionIcon = (position?: string): React.ReactNode => {
+  if (!position) return <Replace size={18} className="text-muted-foreground" />;
+  switch (position.toUpperCase()) {
+    case 'QB':
+      return <UserCircle2 size={18} className="text-red-500" />;
+    case 'RB':
+      return <UsersIcon size={18} className="text-blue-500" />;
+    case 'WR':
+      return <PersonStanding size={18} className="text-green-500" />; // Using PersonStanding as a placeholder for WR
+    case 'TE':
+      return <Replace size={18} className="text-yellow-500" />; // Replace for TE if specific icon not found
+    case 'K':
+      return <Target size={18} className="text-purple-500" />;
+    case 'DST':
+    case 'DEF':
+      return <Shield size={18} className="text-indigo-500" />;
+    default:
+      return <Replace size={18} className="text-muted-foreground" />;
+  }
+};
+
+const formatPvdreValue = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return 'N/A';
+  return value.toFixed(2);
+};
+
+
 const GMDraftHistory = () => {
   const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGms[0]?.id);
   const [gmDraftData, setGmDraftData] = useState<GMDraftHistoryDetailData | null>(null);
@@ -856,14 +884,6 @@ const GMDraftHistory = () => {
     })) || [];
   }, [gmDraftData?.round_efficiency]);
 
-  const positionalProfileChartData = useMemo(() => {
-    if (!gmDraftData?.positional_profile) return [];
-    return gmDraftData.positional_profile.map(p => ({
-      name: p.position,
-      'GM Avg POE': p.gm_average_pvdre,
-      'League Avg POE': p.league_average_pvdre ?? 0, // Default to 0 if null/undefined
-    }));
-  }, [gmDraftData?.positional_profile]);
 
   if (!selectedGmId) {
     return (
@@ -938,7 +958,7 @@ const GMDraftHistory = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Career Hit Rate</p>
-                    <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage * 100).toFixed(1)}%</p>
+                    <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
                   </div>
                    <div>
                     <p className="text-sm text-muted-foreground">Total Hits</p>
@@ -1026,23 +1046,63 @@ const GMDraftHistory = () => {
               </div>
 
               <Card>
-                <CardHeader><CardTitle className="text-lg">Positional Drafting Profile (Avg. POE vs League Avg) (DH.2.5)</CardTitle></CardHeader>
-                <CardContent className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={positionalProfileChartData} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" />
-                      <YAxis dataKey="name" type="category" width={80} />
-                      <RechartsTooltip formatter={(value, name) => name === 'GM Avg POE' || name === 'League Avg POE' ? (value as number).toFixed(2) : value} />
-                      <RechartsLegend />
-                      <Bar dataKey="GM Avg POE" name="GM Avg POE">
-                         {positionalProfileChartData.map((entry, index) => (
-                          <RechartsCell key={`cell-gm-${index}`} fill={entry['GM Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
-                        ))}
-                      </Bar>
-                      <Bar dataKey="League Avg POE" name="League Avg POE" fill="hsl(var(--muted))" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <CardHeader>
+                  <CardTitle className="text-lg">Positional Performance Analysis</CardTitle>
+                  <CardDescription>Comparing GM draft value vs. league averages by position.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                {gmDraftData.positional_profile && gmDraftData.positional_profile.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gmDraftData.positional_profile.map((profile) => {
+                        const isOutperforming = typeof profile.gm_average_pvdre === 'number' && 
+                                                typeof profile.league_average_pvdre === 'number' && 
+                                                profile.gm_average_pvdre > profile.league_average_pvdre;
+                        const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && 
+                                                 typeof profile.league_average_pvdre === 'number' && 
+                                                 profile.gm_average_pvdre < profile.league_average_pvdre;
+                        
+                        let borderColorClass = 'border-border';
+                        if (isOutperforming) borderColorClass = 'border-green-500';
+                        if (isUnderperforming) borderColorClass = 'border-red-500';
+
+                        return (
+                        <Card key={profile.position} className={cn("shadow-md", borderColorClass, "border-2")}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4 px-4">
+                            <div className="flex items-center gap-2">
+                                {getPositionIcon(profile.position)}
+                                <CardTitle className="text-base font-medium">{profile.position}</CardTitle>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Picks: {profile.picks_count}</p>
+                            </CardHeader>
+                            <CardContent className="px-4 pb-4 space-y-1">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">GM Avg PVDRE:</span>
+                                <span className={cn("font-semibold", typeof profile.gm_average_pvdre === 'number' && profile.gm_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.gm_average_pvdre)}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">League Avg PVDRE:</span>
+                                <span className={cn("font-semibold", typeof profile.league_average_pvdre === 'number' && profile.league_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.league_average_pvdre)}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">GM Total PVDRE:</span>
+                                <span className={cn("font-semibold", typeof profile.gm_total_pvdre === 'number' && profile.gm_total_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.gm_total_pvdre)}</span>
+                            </div>
+                            </CardContent>
+                            {(isOutperforming || isUnderperforming) && (
+                                <CardFooter className="pt-0 pb-3 px-4">
+                                    <div className={cn("flex items-center text-xs font-medium", isOutperforming ? "text-green-600" : "text-red-600")}>
+                                    {isOutperforming ? <TrendingUp size={16} className="mr-1" /> : <TrendingDown size={16} className="mr-1" />}
+                                    {isOutperforming ? "Outperforming League Avg" : "Underperforming League Avg"}
+                                    </div>
+                                </CardFooter>
+                            )}
+                        </Card>
+                        );
+                    })}
+                    </div>
+                ) : (
+                    <p className="text-muted-foreground">No positional profile data available.</p>
+                )}
                 </CardContent>
               </Card>
               
@@ -1074,5 +1134,7 @@ export default function DraftHistoryPage() {
   );
 }
 
+
+    
 
     
