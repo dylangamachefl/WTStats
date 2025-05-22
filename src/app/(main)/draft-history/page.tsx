@@ -92,55 +92,49 @@ const getPositionBadgeClass = (position?: string): string => {
   }
 };
 
-// Helper for PVDRE heatmap cell styling
 const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, maxPvdre: number): string => {
     if (pvdre === null || pvdre === undefined) return 'bg-muted/30 text-muted-foreground';
     
+    const baseClasses = "font-semibold ";
+
     const range = maxPvdre - minPvdre;
-    if (range === 0) return 'bg-neutral-100 text-neutral-700'; // Neutral if all values are the same
+    if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700'; // Neutral if all values are the same
 
     const normalizedValue = (pvdre - minPvdre) / range;
-    let hue;
-    const saturation = 70;
-    let lightness = 90; // Base lightness for pastel colors
-
-    // Define a neutral band, e.g., 40th to 60th percentile
-    const neutralBandStart = 0.4;
-    const neutralBandEnd = 0.6;
+    
+    const neutralBandStart = 0.45; 
+    const neutralBandEnd = 0.55;   
 
     if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
-        return 'bg-neutral-100 text-neutral-700'; // Neutral color for mid-range values
-    } else if (normalizedValue < neutralBandStart) {
-        hue = 0; // Red for lower values
-        const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-        lightness = 90 - (intensity * 20); // Make it less light as it gets more intensely red
-    } else { // normalizedValue > neutralBandEnd
-        hue = 120; // Green for higher values
-        const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
-        lightness = 90 - (intensity * 20); // Make it less light as it gets more intensely green
+      return baseClasses + 'bg-neutral-100 text-neutral-700';
+    } else if (normalizedValue < neutralBandStart) { // Worse than average
+      const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
+      if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800'; 
+      if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800'; 
+      return baseClasses + 'bg-red-100 text-red-700';                   
+    } else { // normalizedValue > neutralBandEnd -- Better than average
+      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd)); 
+      if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800'; 
+      if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800'; 
+      return baseClasses + 'bg-green-100 text-green-700';                  
     }
-    
-    const textColor = lightness < 65 ? 'text-primary-foreground' : 'text-foreground';
-    return `bg-[hsl(${hue},${saturation}%,${lightness}%)] ${textColor} font-medium`;
 };
 
-// Helper for Reach/Steal heatmap cell styling
 const getReachStealCellStyle = (reachStealValue: number | null | undefined): string => {
     if (reachStealValue === null || reachStealValue === undefined) return 'bg-muted/30 text-muted-foreground';
     
-    const threshold = 0.1; // Small threshold to consider values around 0 as neutral
+    const baseClasses = "font-semibold ";
+    const threshold = 0.1; 
     if (reachStealValue > threshold) {
-        // Green scale for steals (positive values)
-        if (reachStealValue > 10) return 'bg-green-300 text-green-800 font-medium';
-        if (reachStealValue > 5) return 'bg-green-200 text-green-800 font-medium';
-        return 'bg-green-100 text-green-700 font-medium';
+        if (reachStealValue > 10) return baseClasses + 'bg-green-300 text-green-800';
+        if (reachStealValue > 5) return baseClasses + 'bg-green-200 text-green-800';
+        return baseClasses + 'bg-green-100 text-green-700';
     } else if (reachStealValue < -threshold) {
-        // Red scale for reaches (negative values)
-        if (reachStealValue < -10) return 'bg-red-300 text-red-800 font-medium';
-        if (reachStealValue < -5) return 'bg-red-200 text-red-800 font-medium';
-        return 'bg-red-100 text-red-700 font-medium';
+        if (reachStealValue < -10) return baseClasses + 'bg-red-300 text-red-800';
+        if (reachStealValue < -5) return baseClasses + 'bg-red-200 text-red-800';
+        return baseClasses + 'bg-red-100 text-red-700';
     } else {
-        return 'bg-neutral-100 text-neutral-700 font-medium'; // Neutral for values close to 0
+        return baseClasses + 'bg-neutral-100 text-neutral-700'; 
     }
 };
 
@@ -219,22 +213,22 @@ const DraftOverview = () => {
     
     const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.season_id.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
-  }, [rawData, sortConfig, selectedMetric]);
+  }, [rawData, sortConfig]);
 
   const getCellStyle = (
     performanceData: GMDraftSeasonPerformance | undefined, 
     metricKey: HeatmapMetricKey,
     metricMinValue: number, 
     metricMaxValue: number 
-  ): string => { // Return Tailwind string instead of CSSProperties
-    if (!performanceData) return 'text-muted-foreground';
+  ): string => {
+    if (!performanceData) return 'bg-muted/30 text-muted-foreground';
 
     const value = performanceData[metricKey];
     if (typeof value !== 'number') {
-      return 'text-muted-foreground';
+      return 'bg-muted/30 text-muted-foreground';
     }
 
-    let baseClasses = "font-medium ";
+    let baseClasses = "font-semibold ";
 
     if (metricKey === 'avg_value_vs_adp') {
         const adpThreshold = 0.1; 
@@ -253,7 +247,7 @@ const DraftOverview = () => {
         } else {
             return baseClasses + 'bg-neutral-100 text-neutral-700';
         }
-    } else { // For POE and Hit Rate
+    } else { 
         const range = metricMaxValue - metricMinValue;
         if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
 
@@ -268,7 +262,7 @@ const DraftOverview = () => {
           if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
           if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
           return baseClasses + 'bg-red-100 text-red-700';
-        } else { // normalizedValue > neutralBandEnd
+        } else { 
           const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
            if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
            if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
@@ -886,3 +880,5 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
+
+    
