@@ -154,7 +154,7 @@ const DraftOverview = () => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
     
     const validRawData = rawData.filter(
-      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number' && typeof item[selectedMetric] === 'number'
+      item => typeof item.gm_name === 'string' && typeof item.season_id === 'number' && (typeof item[selectedMetric] === 'number' || item[selectedMetric] === null || item[selectedMetric] === undefined)
     );
 
     const transformed: TransformedHeatmapData = validRawData.reduce((acc, item) => {
@@ -615,11 +615,11 @@ const SeasonDraftDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <Card>
                   <CardHeader><CardTitle>Draft Grades (DH.1.5)</CardTitle></CardHeader>
-                  <CardContent><p className="text-muted-foreground">Placeholder for draft grade dashboard.</p></CardContent>
+                  <CardContent><p className="text-muted-foreground">Placeholder for draft grade dashboard. This section will feature individual GM draft grades and analysis for the selected season.</p></CardContent>
               </Card>
                 <Card>
                   <CardHeader><CardTitle>Season's Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
-                  <CardContent><p className="text-muted-foreground">Placeholder for season's top steals and busts.</p></CardContent>
+                  <CardContent><p className="text-muted-foreground">Placeholder for season's top steals and busts. This section will highlight players who significantly over or underperformed relative to their draft position.</p></CardContent>
               </Card>
           </div>
         </CardContent>
