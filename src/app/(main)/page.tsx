@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -127,7 +126,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return { 
         textClass: 'text-neutral-800 font-semibold', 
         backgroundClass: 'bg-[hsl(50,95%,60%)]', // Gold
-        borderClass: 'border-2 border-foreground' 
+        borderClass: '' // Removed border: 'border-2 border-foreground'
       };
     }
 
@@ -330,7 +329,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }
 
   return (
-    <div className="space-y-8 w-full">
+    <div className="space-y-8">
       <Card>
         <CardHeader>
           <CardTitle>Championship Timeline</CardTitle>
@@ -473,15 +472,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                   {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                     <TableRow key={stat.name}>
-                      <TableCell className="font-medium px-2 py-2 text-sm">{stat.name}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.wins}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.losses}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.ties}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.winPct}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.championships}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                      <TableCell className="font-medium px-2 py-1 text-xs">{stat.name}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.wins}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.losses}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.ties}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.winPct}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.championships}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -520,10 +519,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                   {Array.isArray(sortedLeagueRecords) && sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium px-2 py-2 text-sm">{record.record_category}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{record.gm_name}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{record.value}{record.record_category === "Lowest Score" || record.record_category === "Highest Score" ? " pts" : ""}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm">{record.seasons}{record.week ? ` (Wk ${record.week})` : ""}</TableCell>
+                      <TableCell className="font-medium px-2 py-1 text-xs">{record.record_category}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{record.gm_name}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{record.value}{record.record_category === "Lowest Score" || record.record_category === "Highest Score" ? " pts" : ""}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs">{record.seasons}{record.week ? ` (Wk ${record.week})` : ""}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -536,7 +535,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. 1st place is yellow with a dark border. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
+          <CardDescription>GM finishing positions by year. 1st place is yellow. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
         <CardContent className="overflow-x-auto">
           <Table>
@@ -583,29 +582,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {Array.isArray(leagueData.playoffQualificationRate) && leagueData.playoffQualificationRate.length > 0 && (
-          <Card>
-            <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-            <CardContent className="h-[300px] pt-6">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsBarChart data={sortedPlayoffRates}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="gm_name" />
-                  <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
-                  <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
-                  <RechartsLegend />
-                  <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
-                </RechartsBarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        )}
-
-        {Array.isArray(leagueData.gmPlayoffPerformance) && leagueData.gmPlayoffPerformance.length > 0 && (
-          <Card className="overflow-hidden">
+        <Card className="overflow-hidden">
             <CardHeader>
-              <CardTitle>GM Playoff Performance</CardTitle>
-              <CardDescription>Statistics from playoff appearances.</CardDescription>
+                <CardTitle>GM Playoff Performance</CardTitle>
+                <CardDescription>Statistics from playoff appearances.</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto">
               <Table>
@@ -625,22 +605,39 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                   {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                     <TableRow key={gmPerf.gm_name}>
-                      <TableCell className="font-medium px-2 py-2 text-xs">{gmPerf.gm_name}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.total_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.wins}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.losses}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.quarterfinal_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.semifinal_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.championship_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="text-right px-2 py-2 text-xs">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                      <TableCell className="font-medium px-2 py-1 text-xs">{gmPerf.gm_name}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.total_matchups}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.wins}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.losses}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.quarterfinal_matchups}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.semifinal_matchups}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.championship_matchups}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </CardContent>
+        </Card>
+        {Array.isArray(leagueData.playoffQualificationRate) && leagueData.playoffQualificationRate.length > 0 && (
+          <Card>
+            <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+            <CardContent className="h-[300px] pt-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsBarChart data={sortedPlayoffRates}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="gm_name" />
+                  <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
+                  <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
+                  <RechartsLegend />
+                  <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
+                </RechartsBarChart>
+              </ResponsiveContainer>
+            </CardContent>
           </Card>
         )}
+
       </div>
     </div>
   );
@@ -826,9 +823,9 @@ const SeasonDetail = () => {
   ];
 
   const weeklyResultLegendItems = [
-    { label: 'Win', className: 'bg-green-100 text-green-700', symbol: 'W' },
-    { label: 'Loss', className: 'bg-red-100 text-red-700', symbol: 'L' },
-    { label: 'Tie', className: 'bg-gray-100 text-gray-700', symbol: 'T' },
+    { label: 'Win', className: 'bg-green-100 text-green-700 font-semibold', symbol: 'W' },
+    { label: 'Loss', className: 'bg-red-100 text-red-700 font-semibold', symbol: 'L' },
+    { label: 'Tie', className: 'bg-gray-100 text-gray-700 font-semibold', symbol: 'T' },
   ];
 
   const isModernWaiverSeason = useMemo(() => {
@@ -997,7 +994,7 @@ const SeasonDetail = () => {
                                 <BarChart2 className="mr-2 h-5 w-5 text-primary" />
                                 Weekly Performance
                             </CardTitle>
-                            <RadioGroup
+                             <RadioGroup
                                 value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
                                 className="flex items-center space-x-2 mt-3 sm:mt-0"
@@ -1041,7 +1038,7 @@ const SeasonDetail = () => {
                                                         const result = Array.isArray(seasonData.weeklyScoresData!.results) && Array.isArray(seasonData.weeklyScoresData!.results[weekIndex]) ? seasonData.weeklyScoresData!.results[weekIndex][teamIndex] : undefined;
                                                         
                                                         let cellContent;
-                                                        let innerDivClasses = "p-1.5 text-center text-xs rounded-md w-full h-full flex items-center justify-center";
+                                                        let innerDivClasses = "p-1.5 text-xs rounded-md w-full h-full flex items-center justify-center";
 
                                                         if (weeklyScoresDisplayMode === 'scores') {
                                                             cellContent = score?.toFixed(1) ?? '-';
@@ -1126,10 +1123,10 @@ const SeasonDetail = () => {
                                       </TableHeader>
                                       <TableBody>
                                       {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
-                                          <TableRow key={sos.owner_name || sos.team}>
+                                          <TableRow key={sos.team}>
                                           <TableCell className="text-left">{sos.rank}</TableCell>
                                           <TableCell className="text-left">{sos.team}</TableCell>
-                                          <TableCell className="text-left">{sos.owner_name}</TableCell>
+                                          <TableCell className="text-left">{sos.owner || sos.owner_name}</TableCell>
                                           <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
@@ -1206,7 +1203,7 @@ const SeasonDetail = () => {
                     </Card>
                 </TabsContent>
                 <TabsContent value="top_performers" className="pt-4 space-y-6">
-                    <Card>
+                   <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center text-lg">
                                 <BarChart2 className="mr-2 h-5 w-5 text-primary" />
@@ -1220,7 +1217,7 @@ const SeasonDetail = () => {
                                         Array.isArray(players) && players.length > 0 ? (
                                             <div key={position} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
                                                 <div className="flex items-center gap-2 mb-3">
-                                                    <span className={cn("h-3 w-3 rounded-sm", getPositionBadgeClass(position).split(' ')[0].replace('bg-', 'bg-'))} style={{ backgroundColor: getPositionBadgeClass(position).split(' ')[0].startsWith('bg-') ? undefined : `var(--color-${position.toLowerCase()})` }}></span>
+                                                    <span className={cn("h-3 w-3 rounded-sm", getPositionBadgeClass(position).split(' ')[0].replace('bg-', 'bg-'))} ></span>
                                                     <h4 className="text-md font-semibold text-foreground">{getPositionName(position)}</h4>
                                                 </div>
                                                 <div className="space-y-1 text-sm">
@@ -1630,10 +1627,10 @@ const GMCareer = () => {
 
  const pieChartData = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
-    const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints || 0), 0);
+    const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints ?? 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
       name: `${p.name} ${totalPoints > 0 && p.startedPoints ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
-      value: p.startedPoints || 0,
+      value: p.startedPoints ?? 0,
       fill: CHART_COLORS[p.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT,
     }));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
@@ -1649,25 +1646,25 @@ const GMCareer = () => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData) || !gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData)) return [];
     
     const mergedData: any[] = [];
-    const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints || 0]));
+    const gmPointsMap = new Map(gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => [p.name, p.startedPoints ?? 0]));
     
     gmIndividualSeasonData.rosterBreakdown.leagueAvgPositionData.forEach(lgAvg => {
         mergedData.push({
             position: lgAvg.name,
             "GM Started Pts": gmPointsMap.get(lgAvg.name) || 0,
-            "League Avg Pts": lgAvg.leagueAvg || 0,
+            "League Avg Pts": lgAvg.leagueAvg ?? 0,
         });
     });
     gmIndividualSeasonData.rosterBreakdown.positionContributionData.forEach(gmPos => {
         if (!mergedData.find(d => d.position === gmPos.name)) {
             mergedData.push({
                 position: gmPos.name,
-                "GM Started Pts": gmPos.startedPoints || 0, 
+                "GM Started Pts": gmPos.startedPoints ?? 0, 
                 "League Avg Pts": 0, 
             });
         }
     });
-    return mergedData.sort((a,b) => b["GM Started Pts"] - a["GM Started Pts"]);
+    return mergedData.sort((a,b) => (b["GM Started Pts"] ?? 0) - (a["GM Started Pts"] ?? 0));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
 
   const positionalAdvantageBarData = useMemo(() => {
@@ -2175,7 +2172,7 @@ const GMCareer = () => {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="text-xs text-muted-foreground pt-4">
-                                      * Based on average points difference vs weekly projection with a minimum of 3 starts.
+                                        * Based on average points difference vs weekly projection with a minimum of 3 starts.
                                     </CardFooter>
                                 </Card>
 
