@@ -53,14 +53,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, BarChart, LineChart as RechartsLineChart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, LabelList, Bar, ReferenceLine, BarChart as RechartsBarChart } from 'recharts';
+import { LineChart as RechartsChart_Line, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart as RechartsChart_Pie, Pie, LabelList, Bar as RechartsChart_Bar, ReferenceLine, BarChart as RechartsBarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -119,15 +119,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
   }, [leagueData?.finalStandingsHeatmap]);
 
- const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; backgroundClass: string; borderClass: string; } => {
-    const defaultStyle = { textClass: 'text-muted-foreground', backgroundClass: '', borderClass: '' };
+  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; backgroundStyle: React.CSSProperties; borderClass: string; } => {
+    const defaultStyle = { textClass: 'text-muted-foreground', backgroundStyle: {}, borderClass: '' };
     if (rank === null || rank === undefined) return defaultStyle;
 
     if (rank === 1) {
-        return { 
-            textClass: 'text-neutral-800 font-semibold', 
-            backgroundClass: 'bg-[hsl(50,95%,60%)]', 
-            borderClass: '' // Removed border-2 border-foreground
+        return {
+            textClass: 'text-neutral-800 font-semibold',
+            backgroundStyle: { backgroundColor: 'hsl(50, 95%, 60%)' }, // Yellow
+            borderClass: '' // 'border-2 border-foreground'
         };
     }
 
@@ -138,45 +138,45 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const MIN_LIGHTNESS_GREEN = 78;
     const MAX_LIGHTNESS_RED = 92;
     const MIN_LIGHTNESS_RED = 78;
-    const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
+    const NEUTRAL_BANDWIDTH_PERCENT = 0.25;
 
-    const numRanksToScale = maxRankInYear - 1; 
-    if (numRanksToScale <= 0) return defaultStyle; 
+    const numRanksToScale = maxRankInYear - 1;
+    if (numRanksToScale <= 0) return defaultStyle;
 
-    const rankPositionInScale = rank - 2; 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / (numRanksToScale -1) : 0.5; 
+    const rankPositionInScale = rank - 2;
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / (numRanksToScale - 1) : 0.5;
     const clampedNormalizedRank = Math.min(1, Math.max(0, normalizedRank));
 
     const neutralZoneStart = 0.5 - NEUTRAL_BANDWIDTH_PERCENT / 2;
     const neutralZoneEnd = 0.5 + NEUTRAL_BANDWIDTH_PERCENT / 2;
 
-    const GREEN_HUE = 120; 
-    const RED_HUE = 0;     
+    const GREEN_HUE = 120;
+    const RED_HUE = 0;
 
     let backgroundColor = '';
-    let textColor = 'text-neutral-800 font-semibold'; 
+    let textColor = 'text-neutral-800 font-semibold';
 
     if (clampedNormalizedRank >= neutralZoneStart && clampedNormalizedRank <= neutralZoneEnd) {
-        return { textClass: 'text-foreground font-semibold', backgroundClass: '', borderClass: '' };
+        return { textClass: 'text-foreground font-semibold', backgroundStyle: {}, borderClass: '' };
     } else if (clampedNormalizedRank < neutralZoneStart) {
-      const greenZoneWidth = neutralZoneStart; 
-      const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1; 
-      const lightness = MAX_LIGHTNESS_GREEN - t_green * (MAX_LIGHTNESS_GREEN - MIN_LIGHTNESS_GREEN);
-      backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
-    } else { 
-      const redZoneEffectiveStart = neutralZoneEnd;
-      const redZoneWidth = 1 - redZoneEffectiveStart; 
-      const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0; 
-      const lightness = MAX_LIGHTNESS_RED - t_red * (MAX_LIGHTNESS_RED - MIN_LIGHTNESS_RED);
-      backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
+        const greenZoneWidth = neutralZoneStart;
+        const t_green = greenZoneWidth > 0 ? (neutralZoneStart - clampedNormalizedRank) / greenZoneWidth : 1;
+        const lightness = MAX_LIGHTNESS_GREEN - t_green * (MAX_LIGHTNESS_GREEN - MIN_LIGHTNESS_GREEN);
+        backgroundColor = `hsl(${GREEN_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
+    } else {
+        const redZoneEffectiveStart = neutralZoneEnd;
+        const redZoneWidth = 1 - redZoneEffectiveStart;
+        const t_red = redZoneWidth > 0 ? (clampedNormalizedRank - redZoneEffectiveStart) / redZoneWidth : 0;
+        const lightness = MAX_LIGHTNESS_RED - t_red * (MAX_LIGHTNESS_RED - MIN_LIGHTNESS_RED);
+        backgroundColor = `hsl(${RED_HUE}, ${SATURATION}%, ${lightness.toFixed(0)}%)`;
     }
-    
-    return { 
-      textClass: textColor, 
-      backgroundClass: `bg-[${backgroundColor}]`, 
-      borderClass: ''
+
+    return {
+        textClass: textColor,
+        backgroundStyle: { backgroundColor: backgroundColor },
+        borderClass: ''
     };
-};
+  };
 
 
   const createSortHandler = <T,>(
@@ -248,7 +248,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return sortedData;
     } catch (e) {
       console.error("[AllSeasonsOverview:sortData] Error in sortData:", e, { data, config });
-      return Array.isArray(data) ? data : []; 
+      return Array.isArray(data) ? data : [];
     }
   };
 
@@ -282,7 +282,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
     const dataWithNumericRate = leagueData.playoffQualificationRate.map(item => ({
       ...item,
-      qualification_rate: Number(item.qualification_rate) || 0 
+      qualification_rate: Number(item.qualification_rate) || 0
     }));
     return sortData([...dataWithNumericRate], { key: 'qualification_rate', direction: 'desc' });
   }, [leagueData?.playoffQualificationRate]);
@@ -291,7 +291,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   if (loading) {
     return (
       <div className="space-y-8 w-full">
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
           <CardContent className="px-0 sm:px-6 flex items-center justify-center">
             <Skeleton className="w-full h-[260px] mx-auto" />
@@ -331,7 +331,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   return (
     <div className="space-y-8">
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Championship Timeline</CardTitle>
           <CardDescription>A chronological display of league champions and their key players.</CardDescription>
@@ -347,7 +347,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CarouselContent className="-ml-1">
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="p-1 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <Card className="flex flex-col p-4 h-full gap-3 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden">
+                   <Card className="flex flex-col p-4 h-full gap-3 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden">
                     <div className="flex flex-col items-center text-center pt-3 relative">
                        <Badge
                         variant="default"
@@ -415,7 +415,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           </Carousel>
         </CardContent>
       </Card>
-
+      
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="overflow-hidden">
             <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
@@ -558,7 +558,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <TableCell className="font-medium sticky left-0 bg-card z-10 p-1 border text-xs md:text-sm whitespace-nowrap">{gmEntry.gm_name}</TableCell>
                   {heatmapYears.map(year => {
                     const rank = gmEntry[year] as number | null | undefined;
-                    const { textClass, backgroundClass, borderClass } = getRankStyle(rank, maxRankPerYear[year] || 0);
+                    const { textClass, backgroundStyle, borderClass } = getRankStyle(rank, maxRankPerYear[year] || 0);
                     const displayValue = (rank !== undefined && rank !== null) ? rank : '-';
 
                     return (
@@ -567,8 +567,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         className="p-0 border text-center text-xs"
                       >
                         <div 
-                          className={cn("p-0.5 h-full w-full flex items-center justify-center", textClass, backgroundClass, borderClass)}
-                          style={backgroundClass.startsWith('bg-[hsl') ? { backgroundColor: backgroundClass.slice(4, -1) } : {}}
+                          className={cn("p-0.5 h-full w-full flex items-center justify-center", textClass, borderClass)}
+                          style={backgroundStyle}
                         >
                           {displayValue}
                         </div>
@@ -628,7 +628,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
                   <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
                   <RechartsLegend />
-                  <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
+                  <RechartsChart_Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
                 </RechartsBarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -828,6 +828,75 @@ const SeasonDetail = () => {
     return year >= 2019;
   }, [selectedSeason]);
 
+  const { transformedHeatmapData, minScore, maxScore } = useMemo(() => {
+    if (!seasonData?.weeklyScoresData?.teams || !seasonData.weeklyScoresData.scores) {
+      return { transformedHeatmapData: [], minScore: 0, maxScore: 0 };
+    }
+    let currentMinScore = Infinity;
+    let currentMaxScore = -Infinity;
+    const data: { week: number; teamName: string; score: number | null; result: string | null; }[] = [];
+
+    seasonData.weeklyScoresData.scores.forEach((weekScores, weekIndex) => {
+      seasonData.weeklyScoresData!.teams.forEach((teamName, teamIndex) => {
+        const score = weekScores[teamIndex];
+        const result = seasonData.weeklyScoresData!.results[weekIndex]?.[teamIndex] || null;
+        if (typeof score === 'number') {
+          currentMinScore = Math.min(currentMinScore, score);
+          currentMaxScore = Math.max(currentMaxScore, score);
+        }
+        data.push({
+          week: weekIndex + 1,
+          teamName,
+          score,
+          result,
+        });
+      });
+    });
+    return { 
+        transformedHeatmapData: data, 
+        minScore: currentMinScore === Infinity ? 0 : currentMinScore, 
+        maxScore: currentMaxScore === -Infinity ? 0 : currentMaxScore 
+    };
+  }, [seasonData?.weeklyScoresData]);
+
+  const heatmapCellSize = 35; 
+  const chartHeight = (seasonData?.weeklyScoresData?.teams.length || 0) * heatmapCellSize + 100;
+
+  const getHeatmapScoreColor = (score: number | null, currentMin: number, currentMax: number): string => {
+      if (score === null || currentMin === currentMax) return 'hsl(var(--muted))';
+      const range = currentMax - currentMin;
+      const normalized = (score - currentMin) / range;
+
+      if (normalized < 0.2) return 'hsl(0, 70%, 80%)'; // Light Red
+      if (normalized < 0.4) return 'hsl(30, 70%, 80%)'; // Light Orange
+      if (normalized < 0.6) return 'hsl(60, 70%, 80%)'; // Light Yellow
+      if (normalized < 0.8) return 'hsl(90, 70%, 80%)'; // Light Lime
+      return 'hsl(120, 70%, 80%)'; // Light Green
+  };
+
+  const getHeatmapResultColor = (result: string | null): string => {
+      if (result === 'W') return 'hsl(120, 60%, 75%)'; // Green
+      if (result === 'L') return 'hsl(0, 60%, 75%)';   // Red
+      if (result === 'T') return 'hsl(var(--muted))'; // Gray
+      return 'hsl(var(--muted-foreground))';
+  };
+
+  const HeatmapTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="p-2 bg-popover text-popover-foreground shadow-md rounded-lg border text-xs">
+          <p><strong>Team:</strong> {data.teamName}</p>
+          <p><strong>Week:</strong> {data.week}</p>
+          {data.score !== null && <p><strong>Score:</strong> {data.score.toFixed(1)}</p>}
+          {data.result && <p><strong>Result:</strong> {data.result}</p>}
+        </div>
+      );
+    }
+    return null;
+  };
+
+
   return (
     <div className="space-y-6 w-full">
         <Card className="overflow-visible">
@@ -982,25 +1051,25 @@ const SeasonDetail = () => {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="weekly_performance" className="pt-4 space-y-4">
+               <TabsContent value="weekly_performance" className="pt-4 space-y-4">
                     <Card>
-                         <CardHeader className="flex flex-col sm:flex-row items-center justify-between">
+                        <CardHeader className="flex flex-col sm:flex-row items-center justify-between">
                             <CardTitle className="flex items-center text-xl">
                                 <BarChart2 className="mr-2 h-5 w-5 text-primary" />
                                 Weekly Performance
                             </CardTitle>
-                             <RadioGroup
+                            <RadioGroup
                                 value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
                                 className="flex items-center space-x-2 mt-3 sm:mt-0"
                             >
                                 <div className="flex items-center space-x-1">
-                                    <RadioGroupItem value="scores" id="scores-mode" />
-                                    <Label htmlFor="scores-mode" className="text-sm cursor-pointer">Scores</Label>
+                                    <RadioGroupItem value="scores" id="scores-mode-radio" />
+                                    <Label htmlFor="scores-mode-radio" className="text-sm cursor-pointer">Scores</Label>
                                 </div>
                                 <div className="flex items-center space-x-1">
-                                    <RadioGroupItem value="results" id="results-mode" />
-                                    <Label htmlFor="results-mode" className="text-sm cursor-pointer">W/L</Label>
+                                    <RadioGroupItem value="results" id="results-mode-radio" />
+                                    <Label htmlFor="results-mode-radio" className="text-sm cursor-pointer">W/L</Label>
                                 </div>
                             </RadioGroup>
                         </CardHeader>
@@ -1073,7 +1142,7 @@ const SeasonDetail = () => {
                                     {weeklyScoresDisplayMode === 'scores' ? 
                                         weeklyScoreLegendItems.map(item => (
                                             <div key={item.label} className="flex items-center gap-1.5">
-                                                <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ')[0])}></span>
+                                                <span className={cn("h-3 w-5 rounded-sm", item.className.split(' ').find(cls => cls.startsWith('bg-')))}></span>
                                                 <span>{item.label}</span>
                                             </div>
                                         )) :
@@ -1327,8 +1396,8 @@ const CHART_COLORS: { [key: string]: string } = {
   WR: 'hsl(var(--chart-2))', 
   TE: 'hsl(var(--chart-5))', 
   FLEX: 'hsl(var(--chart-3))',
-  K: 'hsl(39, 90%, 60%)',
-  DST: 'hsl(27, 85%, 55%)',
+  K: 'hsl(39, 90%, 60%)', // Gold/Yellow
+  DST: 'hsl(27, 85%, 55%)', // Orange
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -1438,7 +1507,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
         <h4 className="text-md font-semibold mb-2 text-center">Weekly Scoring Trend</h4>
         <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={games} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <RechartsChart_Line data={games} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="week" tickFormatter={(tick) => `Wk ${tick}`} />
                     <YAxis domain={['auto', 'auto']} />
@@ -1446,7 +1515,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
                     <RechartsLegend verticalAlign="bottom" wrapperStyle={{paddingTop: "10px"}}/>
                     <Line type="monotone" dataKey="points" name={`${gmName || 'GM'} Points`} stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 6 }} />
                     <Line type="monotone" dataKey="opponent_points" name="Opponent Points" stroke="hsl(var(--chart-3))" strokeWidth={2} activeDot={{ r: 6 }} />
-                </LineChart>
+                </RechartsChart_Line>
             </ResponsiveContainer>
         </div>
       </CardContent>
@@ -1504,7 +1573,7 @@ const GMCareer = () => {
       setErrorGmIndividualSeason(null);
 
       const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
-      const gmSlug = gmInfoFromMock?.name.toLowerCase() || selectedGmId; // Use selectedGmId if not in mock for some reason
+      const gmSlug = gmInfoFromMock?.name.toLowerCase().replace(/\s+/g, '') || selectedGmId; 
       const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
       
       console.log(`[GMCareer] Attempting to fetch data for GM: ${selectedGmId} (slug: ${gmSlug}) from ${gmFilePath}`);
@@ -1641,7 +1710,7 @@ const GMCareer = () => {
   const pieChartCells = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map((entry) => (
-        <PieCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT} />
+        <RechartsCell key={`cell-${entry.name}`} fill={CHART_COLORS[entry.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT} />
     ));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
 
@@ -1805,7 +1874,7 @@ const GMCareer = () => {
             </div>
           </CardHeader>
             <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                <div>
+                 <div>
                     <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
                     <div className="space-y-0.5 text-sm max-w-sm">
                         <div className="flex justify-between">
@@ -1874,7 +1943,7 @@ const GMCareer = () => {
                 <CardHeader><CardTitle className="text-xl">Season Progression</CardTitle></CardHeader>
                 <CardContent className="h-[350px] pt-6">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={gmData.seasonProgression}>
+                    <RechartsChart_Line data={gmData.seasonProgression}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="year" />
                       <YAxis reversed={true} allowDecimals={false} domain={['dataMin -1', 'dataMax + 1']} tickFormatter={(value) => Math.round(value).toString()} />
@@ -1897,7 +1966,7 @@ const GMCareer = () => {
                         name="PF Rank" 
                         activeDot={{ r: 6 }}
                       />
-                    </LineChart>
+                    </RechartsChart_Line>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
@@ -1939,11 +2008,11 @@ const GMCareer = () => {
                                 <YAxis dataKey="position" type="category" width={80} tickFormatter={(value) => getPositionName(value)} />
                                 <RechartsTooltip formatter={(value: number) => value.toFixed(1)} />
                                 <RechartsLegend />
-                                <Bar dataKey="value" name="Strength vs Avg">
+                                <RechartsChart_Bar dataKey="value" name="Strength vs Avg">
                                     {gmData.positionStrength.map((entry, index) => (
                                         <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
                                     ))}
-                                </Bar>
+                                </RechartsChart_Bar>
                             </RechartsBarChart>
                         </ResponsiveContainer>
                     </div>
@@ -2065,7 +2134,7 @@ const GMCareer = () => {
                                             <h3 className="text-md font-semibold text-center mb-2">Started Points by Position (%)</h3>
                                             <div className="h-[300px]">
                                                 <ResponsiveContainer width="100%" height="100%">
-                                                    <PieChart>
+                                                    <RechartsChart_Pie>
                                                         <Pie
                                                             data={pieChartData}
                                                             cx="50%"
@@ -2100,7 +2169,7 @@ const GMCareer = () => {
                                                             }
                                                             wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}
                                                         />
-                                                    </PieChart>
+                                                    </RechartsChart_Pie>
                                                 </ResponsiveContainer>
                                             </div>
                                         </div>
@@ -2118,8 +2187,8 @@ const GMCareer = () => {
                                                         <YAxis dataKey="position" type="category" width={50} tick={{fontSize: 11}}/>
                                                         <RechartsTooltip />
                                                         <RechartsLegend verticalAlign="bottom" wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
-                                                        <Bar dataKey="GM Started Pts" fill={GM_CHART_COLORS.GM_STARTED_PTS} barSize={12} />
-                                                        <Bar dataKey="League Avg Pts" fill={GM_CHART_COLORS.LEAGUE_AVG_PTS} barSize={12} />
+                                                        <RechartsChart_Bar dataKey="GM Started Pts" fill={GM_CHART_COLORS.GM_STARTED_PTS} barSize={12} />
+                                                        <RechartsChart_Bar dataKey="League Avg Pts" fill={GM_CHART_COLORS.LEAGUE_AVG_PTS} barSize={12} />
                                                     </RechartsBarChart>
                                                 </ResponsiveContainer>
                                             </div>
@@ -2273,7 +2342,7 @@ const GMCareer = () => {
                                         <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
                                         <CardContent className="h-[400px] pt-6">
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                                                <RechartsChart_Line data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                                                     <CartesianGrid strokeDasharray="3 3" />
                                                     <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
                                                     <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
@@ -2290,7 +2359,7 @@ const GMCareer = () => {
                                                             activeDot={{ r: 6 }} 
                                                         />
                                                     ))}
-                                                </LineChart>
+                                                </RechartsChart_Line>
                                             </ResponsiveContainer>
                                         </CardContent>
                                         <CardFooter className="text-xs text-muted-foreground pt-2">
@@ -2490,7 +2559,7 @@ const GMCareer = () => {
       )}
 
       {!loading && !error && !gmData && selectedGmId && (
-         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId.toLowerCase()}/{selectedGmId.toLowerCase()}.json' exists and is correctly formatted as per the expected structure (e.g., chris/chris.json).</CardContent></Card>
+         <Card><CardContent className="pt-6 text-center text-muted-foreground">No data found for {selectedGmName}. Ensure the file 'public/data/league_data/{selectedGmId.toLowerCase().replace(/\s+/g, '')}/{selectedGmId.toLowerCase().replace(/\s+/g, '')}.json' exists and is correctly formatted as per the expected structure.</CardContent></Card>
        )}
        {!loading && !error && !gmData && !selectedGmId && (
          <Card><CardContent className="pt-6 text-center text-muted-foreground">Please select a GM to view career details.</CardContent></Card>
