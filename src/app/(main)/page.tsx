@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -52,14 +53,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart2, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart as BarChartLucide, MoreHorizontal, GripVertical } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Bar, LabelList, BarChart as RechartsBarChart } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Scatter, ZAxis, Cell as RechartsCell, PieChart, Pie, Cell as PieCell, Bar, LabelList, BarChart } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
@@ -119,14 +120,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }, [leagueData?.finalStandingsHeatmap]);
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { textClass: string; backgroundClass: string; borderClass: string; } => {
-    const defaultStyle = { textClass: 'text-foreground', backgroundClass: '', borderClass: '' };
-    if (rank === null || rank === undefined) return { textClass: 'text-muted-foreground', backgroundClass: '', borderClass: '' };
+    const defaultStyle = { textClass: 'text-muted-foreground', backgroundClass: '', borderClass: '' };
+    if (rank === null || rank === undefined) return defaultStyle;
     
     if (rank === 1) {
       return { 
         textClass: 'text-neutral-800 font-semibold', 
-        backgroundClass: 'bg-[hsl(50,95%,60%)]', // Gold
-        borderClass: '' // Removed border: 'border-2 border-foreground'
+        backgroundClass: 'bg-[hsl(50,95%,60%)]',
+        borderClass: ''
       };
     }
 
@@ -139,8 +140,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const MIN_LIGHTNESS_RED = 78; 
     const NEUTRAL_BANDWIDTH_PERCENT = 0.25; 
 
-    const numRanksToScale = maxRankInYear - 1;
-    if (numRanksToScale <= 0) return defaultStyle;
+    const numRanksToScale = maxRankInYear - 1; 
+    if (numRanksToScale <= 0) return defaultStyle; 
 
     const rankPositionInScale = rank - 2; 
     const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / (numRanksToScale -1) : 0.5; 
@@ -308,16 +309,16 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </div>
         <Card className="overflow-hidden">
           <CardHeader><CardTitle>Final Standings Heatmap</CardTitle></CardHeader>
-          <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
+          <CardContent className="p-0 overflow-x-auto"><Skeleton className="h-64" /></CardContent>
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
-             <Card>
-                <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-                <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
-            </Card>
             <Card className="overflow-hidden">
                 <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
+            </Card>
+             <Card>
+                <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+                <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
             </Card>
         </div>
       </div>
@@ -415,121 +416,121 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-6">
-          <Card className="overflow-hidden">
-            <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
-            <CardContent className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('name')} className="px-1 group text-xs md:text-sm py-2">
-                        GM {getSortIcon(careerSortConfig, 'name')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('wins')} className="px-1 group text-xs md:text-sm py-2">
-                        W {getSortIcon(careerSortConfig, 'wins')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('losses')} className="px-1 group text-xs md:text-sm py-2">
-                        L {getSortIcon(careerSortConfig, 'losses')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('ties')} className="px-1 group text-xs md:text-sm py-2">
-                        T {getSortIcon(careerSortConfig, 'ties')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('winPct')} className="px-1 group text-xs md:text-sm py-2">
-                        Win% {getSortIcon(careerSortConfig, 'winPct')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('championships')} className="px-1 group text-xs md:text-sm py-2">
-                        Champs {getSortIcon(careerSortConfig, 'championships')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('pointsFor')} className="px-1 group text-xs md:text-sm py-2">
-                        PF {getSortIcon(careerSortConfig, 'pointsFor')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('pointsAgainst')} className="px-1 group text-xs md:text-sm py-2">
-                        PA {getSortIcon(careerSortConfig, 'pointsAgainst')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestCareerSort('playoffRate')} className="px-1 group text-xs md:text-sm py-2">
-                        Playoff Rate {getSortIcon(careerSortConfig, 'playoffRate')}
-                      </Button>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
-                    <TableRow key={stat.name}>
-                      <TableCell className="font-medium px-2 py-1 text-xs">{stat.name}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.wins}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.losses}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.ties}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.winPct}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.championships}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+    <div className="grid md:grid-cols-2 gap-6">
+        <Card className="overflow-hidden">
+        <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
+        <CardContent className="overflow-x-auto">
+            <Table>
+            <TableHeader>
+                <TableRow>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('name')} className="px-1 group text-xs py-2">
+                    GM {getSortIcon(careerSortConfig, 'name')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('wins')} className="px-1 group text-xs py-2">
+                    W {getSortIcon(careerSortConfig, 'wins')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('losses')} className="px-1 group text-xs py-2">
+                    L {getSortIcon(careerSortConfig, 'losses')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('ties')} className="px-1 group text-xs py-2">
+                    T {getSortIcon(careerSortConfig, 'ties')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('winPct')} className="px-1 group text-xs py-2">
+                    Win% {getSortIcon(careerSortConfig, 'winPct')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('championships')} className="px-1 group text-xs py-2">
+                    Champs {getSortIcon(careerSortConfig, 'championships')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('pointsFor')} className="px-1 group text-xs py-2">
+                    PF {getSortIcon(careerSortConfig, 'pointsFor')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('pointsAgainst')} className="px-1 group text-xs py-2">
+                    PA {getSortIcon(careerSortConfig, 'pointsAgainst')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestCareerSort('playoffRate')} className="px-1 group text-xs py-2">
+                    Playoff Rate {getSortIcon(careerSortConfig, 'playoffRate')}
+                    </Button>
+                </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
+                <TableRow key={stat.name}>
+                    <TableCell className="font-medium px-2 py-1 text-xs">{stat.name}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.wins}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.losses}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.ties}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.winPct}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.championships}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                </TableRow>
+                ))}
+            </TableBody>
+            </Table>
+        </CardContent>
+        </Card>
 
-          <Card className="overflow-hidden">
-            <CardHeader><CardTitle>League Records</CardTitle></CardHeader>
-            <CardContent className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestRecordsSort('record_category')} className="px-1 group text-xs md:text-sm py-2">
-                        Category {getSortIcon(recordsSortConfig, 'record_category')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestRecordsSort('gm_name')} className="px-1 group text-xs md:text-sm py-2">
-                        GM {getSortIcon(recordsSortConfig, 'gm_name')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestRecordsSort('value')} className="px-1 group text-xs md:text-sm py-2">
-                        Value {getSortIcon(recordsSortConfig, 'value')}
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button variant="ghost" onClick={() => requestRecordsSort('seasons')} className="px-1 group text-xs md:text-sm py-2">
-                        Season(s) {getSortIcon(recordsSortConfig, 'seasons')}
-                      </Button>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Array.isArray(sortedLeagueRecords) && sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium px-2 py-1 text-xs">{record.record_category}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{record.gm_name}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{record.value}{record.record_category === "Lowest Score" || record.record_category === "Highest Score" ? " pts" : ""}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs">{record.seasons}{record.week ? ` (Wk ${record.week})` : ""}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-      </div>
+        <Card className="overflow-hidden">
+        <CardHeader><CardTitle>League Records</CardTitle></CardHeader>
+        <CardContent className="overflow-x-auto">
+            <Table>
+            <TableHeader>
+                <TableRow>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('record_category')} className="px-1 group text-xs py-2">
+                    Category {getSortIcon(recordsSortConfig, 'record_category')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('gm_name')} className="px-1 group text-xs py-2">
+                    GM {getSortIcon(recordsSortConfig, 'gm_name')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('value')} className="px-1 group text-xs py-2">
+                    Value {getSortIcon(recordsSortConfig, 'value')}
+                    </Button>
+                </TableHead>
+                <TableHead>
+                    <Button variant="ghost" onClick={() => requestRecordsSort('seasons')} className="px-1 group text-xs py-2">
+                    Season(s) {getSortIcon(recordsSortConfig, 'seasons')}
+                    </Button>
+                </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {Array.isArray(sortedLeagueRecords) && sortedLeagueRecords.map((record: LeagueRecord, index: number) => (
+                <TableRow key={index}>
+                    <TableCell className="font-medium px-2 py-1 text-xs">{record.record_category}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{record.gm_name}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{record.value}{record.record_category === "Lowest Score" || record.record_category === "Highest Score" ? " pts" : ""}</TableCell>
+                    <TableCell className="px-2 py-1 text-xs">{record.seasons}{record.week ? ` (Wk ${record.week})` : ""}</TableCell>
+                </TableRow>
+                ))}
+            </TableBody>
+            </Table>
+        </CardContent>
+        </Card>
+    </div>
       
 
       <Card className="overflow-hidden">
@@ -537,11 +538,11 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardTitle>Final Standings Heatmap</CardTitle>
           <CardDescription>GM finishing positions by year. 1st place is yellow. Other ranks transition from light green (better) through neutral to light red (worse).</CardDescription>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
+        <CardContent className="p-0 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="sticky left-0 bg-card z-10 p-1 border text-xs md:text-sm">
+                <TableHead className="sticky left-0 bg-card z-10 p-1 border text-xs">
                   <Button variant="ghost" onClick={() => requestHeatmapSort('gm_name')} className="px-1 group text-xs py-1">
                     GM {getSortIcon(heatmapSortConfig, 'gm_name')}
                   </Button>
@@ -554,7 +555,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <TableBody>
               {Array.isArray(sortedFinalStandingsHeatmap) && sortedFinalStandingsHeatmap.map((gmEntry: FinalStandingsHeatmapEntry) => (
                 <TableRow key={gmEntry.gm_name}>
-                  <TableCell className="font-medium sticky left-0 bg-card z-10 p-1 border text-xs md:text-sm whitespace-nowrap">{gmEntry.gm_name}</TableCell>
+                  <TableCell className="font-medium sticky left-0 bg-card z-10 p-1 border text-xs whitespace-nowrap">{gmEntry.gm_name}</TableCell>
                   {heatmapYears.map(year => {
                     const rank = gmEntry[year] as number | null | undefined;
                     const { textClass, backgroundClass, borderClass } = getRankStyle(rank, maxRankPerYear[year] || 0);
@@ -581,43 +582,40 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="overflow-hidden">
-            <CardHeader>
-                <CardTitle>GM Playoff Performance</CardTitle>
-                <CardDescription>Statistics from playoff appearances.</CardDescription>
-            </CardHeader>
+    <div className="grid md:grid-cols-2 gap-6">
+       <Card className="overflow-hidden">
+            <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
-              <Table>
+                <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group text-xs md:text-sm py-2">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
-                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full text-xs md:text-sm py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
-                  </TableRow>
+                    <TableRow>
+                    <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="px-1 group text-xs py-2">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="px-1 group justify-end w-full text-xs py-2">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="px-1 group justify-end w-full text-xs py-2">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="px-1 group justify-end w-full text-xs py-2">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="px-1 group justify-end w-full text-xs py-2">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="px-1 group justify-end w-full text-xs py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="px-1 group justify-end w-full text-xs py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="px-1 group justify-end w-full text-xs py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
+                    <TableHead className="text-right"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="px-1 group justify-end w-full text-xs py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
+                    {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                     <TableRow key={gmPerf.gm_name}>
-                      <TableCell className="font-medium px-2 py-1 text-xs">{gmPerf.gm_name}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.total_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.wins}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.losses}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.quarterfinal_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.semifinal_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.championship_matchups}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                        <TableCell className="font-medium px-2 py-1 text-xs">{gmPerf.gm_name}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.total_matchups}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.wins}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.losses}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.quarterfinal_matchups}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.semifinal_matchups}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.championship_matchups}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="text-right px-2 py-1 text-xs">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                     </TableRow>
-                  ))}
+                    ))}
                 </TableBody>
-              </Table>
+                </Table>
             </CardContent>
         </Card>
         {Array.isArray(leagueData.playoffQualificationRate) && leagueData.playoffQualificationRate.length > 0 && (
@@ -625,14 +623,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
             <CardContent className="h-[300px] pt-6">
               <ResponsiveContainer width="100%" height="100%">
-                <RechartsBarChart data={sortedPlayoffRates}>
+                <BarChart data={sortedPlayoffRates}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="gm_name" />
                   <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
                   <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
                   <RechartsLegend />
                   <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
-                </RechartsBarChart>
+                </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
@@ -1217,7 +1215,7 @@ const SeasonDetail = () => {
                                         Array.isArray(players) && players.length > 0 ? (
                                             <div key={position} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
                                                 <div className="flex items-center gap-2 mb-3">
-                                                    <span className={cn("h-3 w-3 rounded-sm", getPositionBadgeClass(position).split(' ')[0].replace('bg-', 'bg-'))} ></span>
+                                                    <span className={cn("h-3 w-3 rounded-sm", getPositionBadgeClass(position).split(' ').find(cls => cls.startsWith('bg-')))} ></span>
                                                     <h4 className="text-md font-semibold text-foreground">{getPositionName(position)}</h4>
                                                 </div>
                                                 <div className="space-y-1 text-sm">
@@ -1256,7 +1254,7 @@ const SeasonDetail = () => {
                                             <TableHead>RANK</TableHead>
                                             <TableHead>PLAYER</TableHead>
                                             <TableHead>POS</TableHead>
-                                            <TableHead>FANTASY TEAM</TableHead>
+                                            <TableHead className="hidden sm:table-cell">FANTASY TEAM</TableHead>
                                             <TableHead className="text-center">WEEK</TableHead>
                                             <TableHead className="text-right">POINTS</TableHead>
                                         </TableRow>
@@ -1271,7 +1269,7 @@ const SeasonDetail = () => {
                                                         {game.position}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
+                                                <TableCell className="hidden sm:table-cell">{game.fantasyTeam || 'Unmanaged'}</TableCell>
                                                 <TableCell className="text-center">{game.week}</TableCell>
                                                 <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
                                             </TableRow>
@@ -1322,7 +1320,7 @@ const getPositionIcon = (position?: string): React.ReactNode => {
 // Helper to format PVDRE values
 const formatPvdreValue = (value: number | null | undefined): string => {
   if (value === null || value === undefined) return 'N/A';
-  return (value > 0 ? '+' : '') + value.toFixed(1);
+  return (value >= 0 ? '+' : '') + value.toFixed(1);
 };
 
 
@@ -1332,8 +1330,8 @@ const CHART_COLORS: { [key: string]: string } = {
   WR: 'hsl(var(--chart-2))', 
   TE: 'hsl(var(--chart-5))', 
   FLEX: 'hsl(var(--chart-3))',
-  K: 'hsl(39, 100%, 50%)',   
-  DST: 'hsl(27, 100%, 50%)', 
+  K: 'hsl(39, 90%, 60%)',
+  DST: 'hsl(27, 85%, 55%)',
   DEFAULT: 'hsl(var(--muted))'
 };
 
@@ -1383,7 +1381,7 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
-                        {performance.sosDifferential != null && performance.sosDifferential < 0 ? '' : '+'}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
+                        {performance.sosDifferential != null && performance.sosDifferential > 0 ? '+' : ''}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
                     </span>
                     <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
                 </div>
@@ -1507,7 +1505,7 @@ const GMCareer = () => {
       setGmData(null);
       setGmIndividualSeasonData(null); 
       setErrorGmIndividualSeason(null);
-      // setSelectedViewOption("all-seasons"); // Reset to all seasons when GM changes
+      setSelectedViewOption("all-seasons");
 
       const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
       const gmSlug = gmInfoFromMock?.name.toLowerCase() || selectedGmId;
@@ -1533,8 +1531,6 @@ const GMCareer = () => {
             throw new Error(`Fetched data for ${gmSlug} is incomplete.`);
           }
           setGmData(data);
-          // Automatically set the view to "all-seasons" when a new GM's data is loaded
-          setSelectedViewOption("all-seasons"); 
         })
         .catch(err => {
           console.error(`[GMCareer] Failed to load or process GM data for ${gmSlug} from ${gmFilePath}:`, err);
@@ -1625,7 +1621,7 @@ const GMCareer = () => {
     return [];
   }, [gmData?.seasonProgression]);
 
- const pieChartData = useMemo(() => {
+  const pieChartData = useMemo(() => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints ?? 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
@@ -1666,7 +1662,7 @@ const GMCareer = () => {
     });
     return mergedData.sort((a,b) => (b["GM Started Pts"] ?? 0) - (a["GM Started Pts"] ?? 0));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
-
+  
   const positionalAdvantageBarData = useMemo(() => {
     if (!gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage || !Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage)) {
       return [];
@@ -1710,7 +1706,6 @@ const GMCareer = () => {
     });
   }, [gmIndividualSeasonData?.positionalAdvantage?.cumulativeWeeklyPositionalAdvantage]);
 
-
   return (
     <div className="space-y-6 w-full">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -1727,7 +1722,7 @@ const GMCareer = () => {
                     </SelectContent>
                 </Select>
             </div>
-            {gmData && ( 
+             {gmData && ( 
                 <div className="space-y-1.5">
                     <Label htmlFor="view-select">Select View</Label>
                     <Select value={selectedViewOption} onValueChange={setSelectedViewOption}>
@@ -1931,7 +1926,7 @@ const GMCareer = () => {
                 <CardContent>
                     <div className="h-[250px] w-full max-w-lg mx-auto">
                         <ResponsiveContainer width="100%" height="100%">
-                            <RechartsBarChart data={gmData.positionStrength} layout="vertical" margin={{ right: 20 }}>
+                            <BarChart data={gmData.positionStrength} layout="vertical" margin={{ right: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" />
                                 <YAxis dataKey="position" type="category" width={80} tickFormatter={(value) => getPositionName(value)} />
@@ -1942,7 +1937,7 @@ const GMCareer = () => {
                                         <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
                                     ))}
                                 </Bar>
-                            </RechartsBarChart>
+                            </BarChart>
                         </ResponsiveContainer>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2 text-center">Positive values indicate stronger than league average at that position, negative values indicate weaker.</p>
@@ -2057,7 +2052,7 @@ const GMCareer = () => {
                                 <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {gmIndividualSeasonData.rosterBreakdown?.positionContributionData && gmIndividualSeasonData.rosterBreakdown?.leagueAvgPositionData ? (
+                                {gmIndividualSeasonData.rosterBreakdown?.positionContributionData && gmIndividualSeasonData.rosterBreakdown?.leagueAvgPositionData && barChartData.length > 0 ? (
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                                         <div>
                                             <h3 className="text-md font-semibold text-center mb-2">Started Points by Position (%)</h3>
@@ -2106,7 +2101,7 @@ const GMCareer = () => {
                                             <h3 className="text-md font-semibold text-center mb-2">Started Points vs. League Average</h3>
                                             <div className="h-[300px]">
                                                 <ResponsiveContainer width="100%" height="100%">
-                                                    <RechartsBarChart 
+                                                    <BarChart 
                                                         layout="vertical" 
                                                         data={barChartData}
                                                         margin={{ top: 5, right: 30, left: 5, bottom: 20 }}
@@ -2118,7 +2113,7 @@ const GMCareer = () => {
                                                         <RechartsLegend verticalAlign="bottom" wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
                                                         <Bar dataKey="GM Started Pts" fill={GM_CHART_COLORS.GM_STARTED_PTS} barSize={12} />
                                                         <Bar dataKey="League Avg Pts" fill={GM_CHART_COLORS.LEAGUE_AVG_PTS} barSize={12} />
-                                                    </RechartsBarChart>
+                                                    </BarChart>
                                                 </ResponsiveContainer>
                                             </div>
                                             <p className="text-xs text-muted-foreground text-center mt-1">* League Average data is placeholder if not available.</p>
@@ -2225,7 +2220,7 @@ const GMCareer = () => {
                             </div>
                         ) : <p className="text-muted-foreground text-center py-4">Player performance data not available for this season.</p>}
                     </TabsContent>
-                    <TabsContent value="positional-advantage">
+                     <TabsContent value="positional-advantage">
                          {gmIndividualSeasonData?.positionalAdvantage ? (
                             <div className="space-y-6">
                                 <Card>
@@ -2344,15 +2339,19 @@ const GMCareer = () => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
                                                 <div><p className="text-xs text-muted-foreground">Total Starts</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.totalStarts ?? '-'}</p></div>
                                                 <div><p className="text-xs text-muted-foreground">Success Rate</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.successRate?.toFixed(1) ?? '-'}%</p></div>
-                                                <div><p className="text-xs text-muted-foreground">Avg Pts Gained/Lost</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >=0 ? '+':''}
-                                                    {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost?.toFixed(1) ?? '-'}
-                                                    </p>
+                                                <div>
+                                                  <p className="text-xs text-muted-foreground">Avg Pts Gained/Lost</p>
+                                                  <p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                                                      {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost >=0 ? '+':''}
+                                                      {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgPointsGainedLost?.toFixed(1) ?? '-'}
+                                                  </p>
                                                 </div>
-                                                <div><p className="text-xs text-muted-foreground">Avg Proj Diff.</p><p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference != null && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
+                                                <div>
+                                                  <p className="text-xs text-muted-foreground">Avg Proj Diff.</p>
+                                                  <p className={cn("text-xl font-semibold", typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                                                    {typeof gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference === 'number' && gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference >=0 ? '+':''}
                                                     {gmIndividualSeasonData.lineupOptimization.feelingItSummary.avgProjectionDifference?.toFixed(1) ?? '-'}
-                                                    </p>
+                                                  </p>
                                                 </div>
                                             </div>
                                             {gmIndividualSeasonData.lineupOptimization.feelingItSummary.details && Array.isArray(gmIndividualSeasonData.lineupOptimization.feelingItSummary.details) && gmIndividualSeasonData.lineupOptimization.feelingItSummary.details.length > 0 && (
@@ -2577,3 +2576,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
