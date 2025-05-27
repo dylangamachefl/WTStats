@@ -63,15 +63,15 @@ const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
     label: 'Hit Rate %', 
     key: 'pvdre_hit_rate', 
     format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
-    tooltipLabel: 'PVDRE Hit Rate',
-    description: 'PVDRE Hit Rate indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average for that metric (green=above, red=below, neutral=mid-range).'
+    tooltipLabel: 'Hit Rate %',
+    description: 'Hit Rate % indicates the percentage of draft picks that met or exceeded expected performance.'
   },
   avg_value_vs_adp: { 
     label: 'Value vs ADP', 
     key: 'avg_value_vs_adp', 
     format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
     tooltipLabel: 'Avg Value vs ADP',
-    description: 'Average Value vs ADP measures draft value relative to Average Draft Position. Positive values (green) indicate better value; negative (red) indicate lesser value. Neutral for near-zero values.'
+    description: 'Average Value vs ADP measures draft value relative to Average Draft Position. Green for positive (steal), red for negative (reach).'
   },
 };
 
@@ -568,8 +568,8 @@ const DraftOverview = () => {
                             {pick.player_position || 'N/A'}{pick.league_positional_draft_rank ?? ''}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-center">
-                           {pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? (
+                         <TableCell className="text-center">
+                          {pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? (
                             <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
                               {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank}
                             </Badge>
@@ -802,7 +802,7 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     if (!pick) {
-                      return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20"></TableCell>;
+                      return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-1.5 border text-xs min-h-[60px] bg-muted/20" style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
                     }
                     
                     let cellContent;
@@ -825,7 +825,7 @@ const SeasonDraftDetail = () => {
                     }
                     
                     return (
-                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top min-h-[60px]" style={{minWidth: '120px' }}>
+                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top" style={{minWidth: '120px', minHeight: '60px' }}>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <div className={cn("h-full w-full p-1.5 flex flex-col justify-center items-center text-center", cellStyleClasses)}>
@@ -837,9 +837,9 @@ const SeasonDraftDetail = () => {
                                 <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
                                 <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
                                 <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
+                                <p><span className="font-medium">Drafted Pos:</span> {pick.player_position}{pick.league_positional_draft_rank ?? ''}</p>
+                                <p><span className="font-medium">Finished Pos:</span> {pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? `${pick.player_position}${pick.actual_positional_finish_rank}` : '-'}</p>
                                 {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">POE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.fantasy_points_per_game_season !== null && <p><span className="font-medium">Season PPG:</span> {pick.fantasy_points_per_game_season?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Position Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
                                 {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
                                 {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
                             </div>
@@ -1358,5 +1358,7 @@ export default function DraftHistoryPage() {
   );
 }
 
+
+    
 
     
