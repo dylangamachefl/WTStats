@@ -428,7 +428,7 @@ const DraftOverview = () => {
                   </TableHeader>
                   <TableBody>
                     {gmNames.map(gm_name => {
-                      const gmAvgData = overviewData.gmAverages?.find(avg => avg.gm_name === gm_name || avg.gm_id === rawData.find(rd => rd.gm_name === gm_name)?.gm_id);
+                      const gmAvgData = overviewData.gmAverages?.find(avg => avg.gm_name === gm_name || (avg.gm_id && rawData.find(rd => rd.gm_name === gm_name)?.gm_id === avg.gm_id));
                       let gmAvgValueForMetric: number | undefined | null = undefined;
                       if (gmAvgData && selectedMetric in gmAvgData) {
                         gmAvgValueForMetric = gmAvgData[selectedMetric as keyof GMAverageMetrics] as number | undefined | null;
@@ -799,29 +799,38 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = "p-1.5 border text-xs align-top"; // Base classes for TableCell
-                    let innerDivLayoutClasses = "flex items-center justify-center text-center w-full h-full";
+                    let cellClasses = "border text-xs align-top"; // Base classes for TableCell
+                    let innerDivLayoutClasses = "flex flex-col items-center justify-center text-center w-full h-full";
 
 
                     if (!pick) {
-                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
+                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "p-1.5 bg-muted/20")} style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
                     }
                     
                     if (analysisMode === 'none') {
                         cellContent = (
                             <>
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
-                                <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
+                                <p className="text-muted-foreground truncate w-full text-xs">{pick.player_position} - {pick.nfl_team_id}</p>
                             </>
                         );
-                        cellClasses = cn(cellClasses, getPositionBadgeClass(pick.player_position));
-                        innerDivLayoutClasses = cn(innerDivLayoutClasses, "flex-col");
+                        cellClasses = cn(cellClasses, "p-1.5", getPositionBadgeClass(pick.player_position));
                     } else if (analysisMode === 'value') {
-                        cellContent = <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>;
-                        cellClasses = cn(cellClasses, getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
+                        cellContent = (
+                            <>
+                                <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
+                                <p className="text-transparent select-none text-xs invisible">&nbsp;</p> 
+                            </>
+                        );
+                        cellClasses = cn(cellClasses, "p-1.5", getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
                     } else { // analysisMode === 'reachSteal'
-                        cellContent = <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>;
-                        cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
+                        cellContent = (
+                            <>
+                                <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
+                                <p className="text-transparent select-none text-xs invisible">&nbsp;</p>
+                            </>
+                        );
+                        cellClasses = cn(cellClasses, "p-1.5", getReachStealCellStyle(pick.overall_reach_steal_value));
                     }
                     
                     return (
@@ -928,14 +937,14 @@ const SeasonDraftDetail = () => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {teamDraftPerformance.sort((a,b) => b.avg_pvdre_per_pick - a.avg_pvdre_per_pick).map((perf, index) => (
+                          {teamDraftPerformance.sort((a,b) => (b.avg_pvdre_per_pick ?? -Infinity) - (a.avg_pvdre_per_pick ?? -Infinity)).map((perf, index) => (
                             <TableRow key={index}>
                               <TableCell>
                                 <p className="font-medium">{perf.gm_name}</p>
                                 <p className="text-xs text-muted-foreground">{perf.fantasy_team_name}</p>
                               </TableCell>
-                              <TableCell className="text-right font-semibold">{perf.avg_pvdre_per_pick?.toFixed(2)}</TableCell>
-                              <TableCell className="text-right">{perf.hit_rate_percentage?.toFixed(1)}%</TableCell>
+                              <TableCell className="text-right font-semibold">{perf.avg_pvdre_per_pick?.toFixed(2) ?? 'N/A'}</TableCell>
+                              <TableCell className="text-right">{perf.hit_rate_percentage?.toFixed(1) ?? 'N/A'}%</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -1239,7 +1248,7 @@ const GMDraftHistory = () => {
                         </TableHeader>
                         <TableBody>
                           {gmDraftData.best_picks.slice(0,5).map(pick => (
-                            <TableRow key={pick.player_id + (pick.draft_id || pick.pick_overall)}>
+                            <TableRow key={pick.player_id + (pick.draft_id?.toString() || pick.pick_overall.toString())}>
                               <TableCell>
                                 <p className="font-medium">{pick.player_name}</p>
                                 <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
@@ -1263,7 +1272,7 @@ const GMDraftHistory = () => {
                         </TableHeader>
                         <TableBody>
                           {gmDraftData.worst_picks.slice(0,5).map(pick => (
-                            <TableRow key={pick.player_id + (pick.draft_id || pick.pick_overall)}>
+                            <TableRow key={pick.player_id + (pick.draft_id?.toString() || pick.pick_overall.toString())}>
                               <TableCell>
                                 <p className="font-medium">{pick.player_name}</p>
                                 <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
@@ -1371,3 +1380,4 @@ export default function DraftHistoryPage() {
 }
 
     
+
