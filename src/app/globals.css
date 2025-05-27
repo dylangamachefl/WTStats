@@ -117,26 +117,26 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0; /* Places the pseudo-element behind the card's content */
+  z-index: 0; /* Places the pseudo-element to act as background */
 
-  background-image: 
-    linear-gradient(135deg, 
-      hsla(207, 70%, 65%, 0.7), /* Lighter primary blue */
-      hsla(220, 60%, 75%, 0.6), /* Slightly different blue */
-      hsla(50, 90%, 70%, 0.5),  /* Gold accent */
-      hsla(200, 65%, 70%, 0.7), /* Another blue shade */
-      hsla(45, 85%, 65%, 0.6)   /* Softer gold accent */
+  background-image:
+    linear-gradient(135deg,
+      hsla(207, 70%, 60%, 0.65), /* Theme-based Blue */
+      hsla(145, 44%, 55%, 0.55), /* Theme-based Green */
+      hsla(50, 85%, 65%, 0.45),  /* Gold/Yellow Accent */
+      hsla(207, 65%, 55%, 0.6),  /* Another Blue variant */
+      hsla(145, 40%, 50%, 0.5)   /* Another Green variant */
     ),
-    linear-gradient(45deg, 
-      hsla(48, 90%, 60%, 0.6),  /* Gold */
-      hsla(210, 70%, 70%, 0.7), /* Light blue */
-      hsla(205, 65%, 60%, 0.6)  /* Medium blue */
+    linear-gradient(45deg,
+      hsla(50, 80%, 60%, 0.5),   /* Gold/Yellow */
+      hsla(207, 75%, 65%, 0.65), /* Lighter Theme Blue */
+      hsla(145, 50%, 60%, 0.55)  /* Lighter Theme Green */
     );
   background-size: 150% 150%, 130% 130%; /* Reduced size for more localized effect */
   background-position: 0% 0%;
-  
+
   opacity: 1; /* Make it fully opaque to act as the background */
-  
+
   animation: iridescent-shimmer-blue-gold 12s ease-in-out infinite alternate;
   pointer-events: none; /* Allows interaction with card content */
 }
@@ -146,7 +146,7 @@ body {
     background-position: 0% 0%, 100% 100%;
   }
   50% {
-    background-position: 50% 50%, 50% 50%; /* Smaller sweep */
+    background-position: 50% 50%, 50% 50%;
   }
   100% {
     background-position: 100% 100%, 0% 0%;
