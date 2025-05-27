@@ -119,40 +119,51 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
   }, [leagueData?.finalStandingsHeatmap]);
 
-  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; } => {
+ const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; } => {
     if (rank === null || rank === undefined || maxRankInYear <= 0) {
       return { cellClasses: 'text-muted-foreground font-semibold' };
     }
     
     if (rank === 1) {
-      return { cellClasses: 'bg-yellow-300 text-neutral-800 font-semibold' };
+      // Champion style - Yellow background, dark text
+      return { cellClasses: 'bg-yellow-400 text-neutral-800 font-semibold' };
     }
     
+    // For ranks 2 and below, use a green-to-neutral-to-red scale
     if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' };
     
-    const rankPositionInScale = rank - 2; 
-    const numRanksToScale = maxRankInYear - 2; 
+    // Normalize rank for the scale (considering 1st place is handled separately)
+    // The scale now applies to ranks from 2 to maxRankInYear.
+    // A rank of 2 is best (greenest), maxRankInYear is worst (reddest).
+    const rankPositionInScale = rank - 2; // 2nd place is 0, 3rd is 1, etc.
+    const numRanksToScale = maxRankInYear - 2; // Total number of ranks in the scale (e.g., for 12 teams, ranks 2-12 means 11 spots)
 
-    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' };
+    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; // Should not happen if maxRankInYear > 1
 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Handle division by zero if maxRank is 2
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Avoid division by zero if maxRank is 2
     
+    // Define a neutral band, e.g., 40th to 60th percentile of the scaled ranks
     const NEUTRAL_BAND_START_PERCENT = 0.425; 
     const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
+    let backgroundColorClass = '';
+    let textColorClass = 'text-neutral-800'; // Default dark text for pastel backgrounds
+
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        return { cellClasses: cn('text-foreground font-semibold') }; 
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better ranks
+        backgroundColorClass = 'bg-neutral-100 dark:bg-neutral-800'; // Neutral pastel
+        textColorClass = 'text-foreground'; // Default text for neutral
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better ranks (closer to 2nd)
         const intensity = Math.min(1, (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT);
-        if (intensity > 0.66) return { cellClasses: cn('bg-green-300 text-green-800 font-semibold') }; 
-        if (intensity > 0.33) return { cellClasses: cn('bg-green-200 text-green-800 font-semibold') };
-        return { cellClasses: cn('bg-green-100 text-green-700 font-semibold') }; 
-    } else { // Worse ranks
+        if (intensity > 0.66) backgroundColorClass = 'bg-green-300 dark:bg-green-700/50'; 
+        else if (intensity > 0.33) backgroundColorClass = 'bg-green-200 dark:bg-green-800/50';
+        else backgroundColorClass = 'bg-green-100 dark:bg-green-900/50'; 
+    } else { // Worse ranks (closer to last)
         const intensity = Math.min(1, (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT));
-        if (intensity > 0.66) return { cellClasses: cn('bg-red-300 text-red-800 font-semibold') }; 
-        if (intensity > 0.33) return { cellClasses: cn('bg-red-200 text-red-800 font-semibold') };
-        return { cellClasses: cn('bg-red-100 text-red-700 font-semibold') }; 
+        if (intensity > 0.66) backgroundColorClass = 'bg-red-300 dark:bg-red-700/50'; 
+        else if (intensity > 0.33) backgroundColorClass = 'bg-red-200 dark:bg-red-800/50';
+        else backgroundColorClass = 'bg-red-100 dark:bg-red-900/50'; 
     }
+    return { cellClasses: cn(backgroundColorClass, textColorClass, 'font-semibold') };
   };
 
 
@@ -400,7 +411,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </CardContent>
       </Card>
       
-      <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-6">
         <Card className="overflow-hidden">
             <CardHeader><CardTitle>Career Leaderboard</CardTitle></CardHeader>
             <CardContent className="overflow-x-auto">
@@ -506,7 +517,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. 1st place is yellow. Ranks 2nd and below are on a green (good) to red (bad) scale, with neutral ranks having no specific background.</CardDescription>
+          <CardDescription>GM finishing positions by year. 1st place is yellow. Other ranks are on a green (good) to red (bad) scale, with neutral ranks having no specific background.</CardDescription>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <Table className="table-auto">
@@ -672,24 +683,24 @@ const PlayoffMatchupCard = ({
   roundName: string;
   isChampionship?: boolean;
 }) => (
-  <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
-    <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
-    <div className="text-xs space-y-1">
-      <div className="flex justify-between">
-        <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
-        <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
+    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
+      <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
+      <div className="text-xs space-y-1">
+        <div className="flex justify-between">
+          <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
+          <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
+          <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
+        </div>
+        {matchup.home.score !== undefined && matchup.home.score !== null && matchup.away.score !== undefined && matchup.away.score !== null && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
+          </p>
+        )}
       </div>
-      <div className="flex justify-between">
-        <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
-        <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
-      </div>
-      {matchup.home.score !== undefined && matchup.home.score !== null && matchup.away.score !== undefined && matchup.away.score !== null && (
-        <p className="text-xs text-muted-foreground mt-1">
-          Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
-        </p>
-      )}
     </div>
-  </div>
 );
 
 
@@ -877,7 +888,7 @@ const SeasonDetail = () => {
                                 {seasonData.standingsData.map((s: SeasonStandingEntry) => (
                                 <TableRow key={s.owner_name}>
                                     <TableCell className="font-medium text-center">
-                                     {s.regular_season_finish}
+                                        {s.regular_season_finish}
                                     </TableCell>
                                     <TableCell>{s.wt_team_name}</TableCell>
                                     <TableCell>{s.owner_name}</TableCell>
@@ -1091,7 +1102,7 @@ const SeasonDetail = () => {
                                           <TableRow key={sos.owner}>
                                           <TableCell className="text-left">{sos.rank}</TableCell>
                                           <TableCell className="text-left">{sos.team}</TableCell>
-                                          <TableCell className="text-left">{sos.owner}</TableCell>
+                                          <TableCell className="text-left">{sos.owner_name || sos.owner}</TableCell>
                                           <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
@@ -1178,7 +1189,7 @@ const SeasonDetail = () => {
                         <CardContent>
                             {seasonData.topPerformersData && typeof seasonData.topPerformersData === 'object' && Object.keys(seasonData.topPerformersData).length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {Object.entries(seasonData.topPerformersData).map(([position, players]) => (
+                                    {Object.entries(seasonData.topPerformersData).map(([position, players], posIndex) => (
                                         Array.isArray(players) && players.length > 0 ? (
                                             <div key={position} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
                                                 <div className="flex items-center gap-2 mb-3">
@@ -1230,6 +1241,8 @@ const SeasonDetail = () => {
                                             <TableHead>RANK</TableHead>
                                             <TableHead>PLAYER</TableHead>
                                             <TableHead>POS</TableHead>
+                                            <TableHead>TEAM</TableHead>
+                                            {(seasonData.seasonData?.year ?? 0) > 2018 && <TableHead>FANTASY TEAM</TableHead> }
                                             <TableHead className="text-center">WEEK</TableHead>
                                             <TableHead className="text-right">POINTS</TableHead>
                                         </TableRow>
@@ -1237,38 +1250,23 @@ const SeasonDetail = () => {
                                     <TableBody>
                                         {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => {
                                           const currentSeasonYear = seasonData.seasonData?.year;
-                                          let fantasyTeamDisplay = game.fantasyTeam || 'Unmanaged';
-                                          if (currentSeasonYear && currentSeasonYear <= 2018) {
-                                            return (
-                                                <TableRow key={game.rank}>
-                                                    <TableCell>{game.rank}</TableCell>
-                                                    <TableCell>{game.player} ({game.team})</TableCell>
-                                                    <TableCell>
-                                                        <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
-                                                            {game.position}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">{game.week}</TableCell>
-                                                    <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
-                                                </TableRow>
-                                            );
-                                          } else {
-                                              return (
-                                                <TableRow key={game.rank}>
-                                                    <TableCell>{game.rank}</TableCell>
-                                                    <TableCell>{game.player} ({game.team})</TableCell>
-                                                    <TableCell>
-                                                        <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
-                                                            {game.position}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableHead>FANTASY TEAM</TableHead> 
-                                                    <TableCell>{fantasyTeamDisplay}</TableCell>
-                                                    <TableCell className="text-center">{game.week}</TableCell>
-                                                    <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
-                                                </TableRow>
-                                              );
-                                          }
+                                          return (
+                                            <TableRow key={game.rank}>
+                                                <TableCell>{game.rank}</TableCell>
+                                                <TableCell>{game.player}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
+                                                        {game.position}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>{game.team}</TableCell>
+                                                {currentSeasonYear && currentSeasonYear > 2018 && (
+                                                    <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
+                                                )}
+                                                <TableCell className="text-center">{game.week}</TableCell>
+                                                <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
+                                            </TableRow>
+                                          );
                                         })}
                                     </TableBody>
                                 </Table>
@@ -1291,7 +1289,6 @@ const SeasonDetail = () => {
   );
 };
 
-// Helper for positional icons
 const getPositionIcon = (position?: string): React.ReactNode => {
   if (!position) return <MoreHorizontal size={18} className="text-muted-foreground" />;
   switch (position.toUpperCase()) {
@@ -1345,6 +1342,8 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential != null) {
+        // Negative SOS differential is "good luck" / easier schedule, so green
+        // Positive SOS differential is "bad luck" / harder schedule, so red
         sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"; 
     }
 
@@ -1378,7 +1377,7 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                  <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
-                        {performance.sosDifferential != null && performance.sosDifferential < 0 ? '' : '+'}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
+                        {performance.sosDifferential != null && performance.sosDifferential >= 0 ? '+' : ''}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
                     </span>
                     <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
                 </div>
@@ -1604,13 +1603,11 @@ const GMCareer = () => {
     const { cx, cy, stroke, payload } = props;
     if (payload.isChampion) {
       return (
-        <svg x={cx - 10} y={cy - 10} width="20" height="20" fill="hsl(var(--primary))" viewBox="0 0 24 24" stroke="hsl(var(--foreground))" strokeWidth="0.5">
-          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
-        </svg>
+        <Trophy x={(cx ?? 0) - 8} y={(cy ?? 0) - 8} width={16} height={16} className="text-yellow-500 fill-yellow-400" />
       );
     }
     if (payload.madePlayoffs) {
-      return <circle cx={cx} cy={cy} r={6} stroke={stroke} fill="hsl(var(--accent))" strokeWidth={1} />;
+      return <circle cx={cx} cy={cy} r={6} stroke="hsl(var(--accent))" fill="hsl(var(--accent))" strokeWidth={1} />;
     }
     return <circle cx={cx} cy={cy} r={3} stroke={stroke} fill="#fff" />;
   };
@@ -1667,7 +1664,7 @@ const GMCareer = () => {
     return mergedData.sort((a,b) => (b["GM Started Pts"] ?? 0) - (a["GM Started Pts"] ?? 0));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData, gmIndividualSeasonData?.rosterBreakdown?.leagueAvgPositionData]);
   
-  const positionalAdvantageBarData = useMemo(() => {
+ const positionalAdvantageBarData = useMemo(() => {
     if (!gmIndividualSeasonData?.positionalAdvantage?.weeklyPositionalAdvantage || !Array.isArray(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage)) {
       return [];
     }
@@ -1802,66 +1799,66 @@ const GMCareer = () => {
             </div>
           </CardHeader>
             <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                <div className="space-y-1.5">
-                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
-                    <div className="space-y-0.5 text-sm max-w-sm">
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Wins:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
-                        </div>
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Losses:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.losses}</span>
-                        </div>
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Ties:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.ties}</span>
-                        </div>
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Win Pct:</span>
-                        <span className="font-medium text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
-                        </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
+                  <div className="space-y-0.5 text-sm max-w-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Wins:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.wins}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Losses:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.losses}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Ties:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.ties}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Win Pct:</span>
+                      <span className="font-medium text-foreground">{(gmData.careerStats.winPct * 100).toFixed(1)}%</span>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="space-y-1.5">
-                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
-                    <div className="space-y-0.5 text-sm max-w-sm">
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Total Points For:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Total Points Against:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                        <span className="text-muted-foreground">Avg Points/Game:</span>
-                        <span className="font-medium text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
-                        </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Scoring Stats</h4>
+                  <div className="space-y-0.5 text-sm max-w-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total Points For:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.totalPointsFor?.toFixed(1)}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total Points Against:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.totalPointsAgainst?.toFixed(1)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Avg Points/Game:</span>
+                      <span className="font-medium text-foreground">{gmData.careerStats.avgPointsPerGame?.toFixed(1)}</span>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="space-y-1.5">
-                    <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
-                    <div className="space-y-0.5 text-sm max-w-sm">
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Total Seasons:</span>
-                            <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Playoff Appearances:</span>
-                            <span className="font-medium text-foreground">{gmData.careerStats.playoffAppearances}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Playoff Record:</span>
-                            <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
-                        </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Championships:</span>
-                            <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
-                        </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Career Milestones</h4>
+                   <div className="space-y-0.5 text-sm max-w-sm">
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Total Seasons:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.totalSeasons}</span>
                     </div>
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Playoff Appearances:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.playoffAppearances}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="text-muted-foreground">Playoff Record:</span>
+                        <span className="font-medium text-foreground">{gmData.careerStats.playoffWins}-{gmData.careerStats.playoffLosses}</span>
+                    </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Championships:</span>
+                        <span className="font-medium text-foreground">{gmData.gmInfo.championshipYears?.length || 0}</span>
+                    </div>
+                  </div>
                 </div>
             </CardContent>
         </Card>
@@ -2155,7 +2152,8 @@ const GMCareer = () => {
                                                     </div>
                                                     <p className="text-xl font-bold text-foreground">{gmIndividualSeasonData.playerPerformance.overPerformer.name}</p>
                                                     <p className="text-sm font-semibold text-green-600 dark:text-green-400">
-                                                        +{gmIndividualSeasonData.playerPerformance.overPerformer.avgDifference?.toFixed(1) ?? 'N/A'} Points vs Projection / Week
+                                                        {gmIndividualSeasonData.playerPerformance.overPerformer.avgDifference != null && gmIndividualSeasonData.playerPerformance.overPerformer.avgDifference >= 0 ? '+' : ''}
+                                                        {gmIndividualSeasonData.playerPerformance.overPerformer.avgDifference?.toFixed(1) ?? 'N/A'} Points vs Projection / Week
                                                     </p>
                                                 </div>
                                             )}
@@ -2167,6 +2165,7 @@ const GMCareer = () => {
                                                     </div>
                                                     <p className="text-xl font-bold text-foreground">{gmIndividualSeasonData.playerPerformance.underPerformer.name}</p>
                                                     <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                                                        {gmIndividualSeasonData.playerPerformance.underPerformer.avgDifference != null && gmIndividualSeasonData.playerPerformance.underPerformer.avgDifference >= 0 ? '+' : ''}
                                                         {gmIndividualSeasonData.playerPerformance.underPerformer.avgDifference?.toFixed(1) ?? 'N/A'} Points vs Projection / Week
                                                     </p>
                                                 </div>
@@ -2325,7 +2324,7 @@ const GMCareer = () => {
                                                         <TableCell className="text-right">{item.optimal?.toFixed(1) ?? '-'}</TableCell>
                                                         <TableCell className="text-right">{item.actual?.toFixed(1) ?? '-'}</TableCell>
                                                         <TableCell className="text-right">{item.efficiency?.toFixed(1) ?? '-'}%</TableCell>
-                                                        <TableCell className={cn("text-right", typeof item.pointsLeft === 'number' && item.pointsLeft > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")}>{item.pointsLeft?.toFixed(1) ?? '-'}</TableCell>
+                                                        <TableCell className={cn("text-right", typeof item.pointsLeft === 'number' && item.pointsLeft != null && item.pointsLeft > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")}>{item.pointsLeft?.toFixed(1) ?? '-'}</TableCell>
                                                         <TableCell className="text-center">{item.correctDecisions ?? '-'}</TableCell>
                                                         <TableCell className="text-center">{item.totalDecisions ?? '-'}</TableCell>
                                                     </TableRow>
@@ -2575,3 +2574,4 @@ export default function LeagueHistoryPage() {
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
     
+
