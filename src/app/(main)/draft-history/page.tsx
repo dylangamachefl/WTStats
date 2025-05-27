@@ -799,8 +799,7 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = "border text-xs align-top"; // Base classes for TableCell
-                    let innerDivLayoutClasses = "flex flex-col items-center justify-center text-center w-full h-full";
+                    let cellClasses = "border text-xs"; 
 
 
                     if (!pick) {
@@ -809,26 +808,20 @@ const SeasonDraftDetail = () => {
                     
                     if (analysisMode === 'none') {
                         cellContent = (
-                            <>
+                             <div className="flex flex-col items-center justify-center text-center">
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
                                 <p className="text-muted-foreground truncate w-full text-xs">{pick.player_position} - {pick.nfl_team_id}</p>
-                            </>
+                            </div>
                         );
                         cellClasses = cn(cellClasses, "p-1.5", getPositionBadgeClass(pick.player_position));
                     } else if (analysisMode === 'value') {
                         cellContent = (
-                            <>
-                                <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
-                                <p className="text-transparent select-none text-xs invisible">&nbsp;</p> 
-                            </>
+                            <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
                         );
                         cellClasses = cn(cellClasses, "p-1.5", getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
                     } else { // analysisMode === 'reachSteal'
                         cellContent = (
-                            <>
-                                <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
-                                <p className="text-transparent select-none text-xs invisible">&nbsp;</p>
-                            </>
+                             <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
                         );
                         cellClasses = cn(cellClasses, "p-1.5", getReachStealCellStyle(pick.overall_reach_steal_value));
                     }
@@ -836,12 +829,13 @@ const SeasonDraftDetail = () => {
                     return (
                       <TableCell 
                         key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} 
-                        className={cellClasses}
-                        style={{minWidth: '120px', minHeight: '60px' }}
+                        className={cellClasses} // Background and base styling applied here
+                        style={{minWidth: '120px', minHeight: '60px' }} // Min height to ensure consistency
                       >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            <div className={innerDivLayoutClasses}>
+                            {/* This div ensures its content is centered within the TableCell's height */}
+                            <div className="flex items-center justify-center h-full w-full text-center">
                                 {cellContent}
                             </div>
                           </TooltipTrigger>
