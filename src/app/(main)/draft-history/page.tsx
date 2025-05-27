@@ -57,14 +57,14 @@ const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
     key: 'avg_pvdre', 
     format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
     tooltipLabel: 'POE (Points Over Expected)',
-    description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average (green=above, red=below, neutral=mid-range).'
+    description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average for that metric (green=above, red=below, neutral=mid-range).'
   },
   pvdre_hit_rate: { 
     label: 'Hit Rate %', 
     key: 'pvdre_hit_rate', 
     format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
     tooltipLabel: 'PVDRE Hit Rate',
-    description: 'PVDRE Hit Rate indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average (green=above, red=below, neutral=mid-range).'
+    description: 'PVDRE Hit Rate indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average for that metric (green=above, red=below, neutral=mid-range).'
   },
   avg_value_vs_adp: { 
     label: 'Value vs ADP', 
@@ -151,6 +151,7 @@ const DraftOverview = () => {
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
   const [selectedMetric, setSelectedMetric] = useState<HeatmapMetricKey>('avg_pvdre');
 
+  // Min/Max for the main individual data points
   const { currentMin, currentMax } = useMemo(() => {
     if (!rawData) return { currentMin: 0, currentMax: 0 };
     const values = rawData
@@ -160,6 +161,27 @@ const DraftOverview = () => {
     if (values.length === 0) return { currentMin: 0, currentMax: 0 };
     return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
   }, [rawData, selectedMetric]);
+
+  // Min/Max for GM Averages
+  const { minGmAvg, maxGmAvg } = useMemo(() => {
+    if (!overviewData?.gmAverages) return { minGmAvg: 0, maxGmAvg: 0 };
+    const values = overviewData.gmAverages
+        .map(item => item[selectedMetric as keyof GMAverageMetrics] as number | undefined | null)
+        .filter(val => typeof val === 'number') as number[];
+    if (values.length === 0) return { minGmAvg: 0, maxGmAvg: 0 };
+    return { minGmAvg: Math.min(...values), maxGmAvg: Math.max(...values) };
+  }, [overviewData?.gmAverages, selectedMetric]);
+  
+  // Min/Max for Season Averages
+  const { minSeasonAvg, maxSeasonAvg } = useMemo(() => {
+    if (!overviewData?.seasonAverages) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
+    const values = overviewData.seasonAverages
+        .map(item => item[selectedMetric as keyof SeasonAverageMetrics] as number | undefined | null)
+        .filter(val => typeof val === 'number') as number[];
+    if (values.length === 0) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
+    return { minSeasonAvg: Math.min(...values), maxSeasonAvg: Math.max(...values) };
+  }, [overviewData?.seasonAverages, selectedMetric]);
+
 
   const overallAverage = useMemo(() => {
     if (!rawData || rawData.length === 0) return null;
@@ -242,15 +264,12 @@ const DraftOverview = () => {
   }, [rawData, sortConfig]);
 
   const getCellStyle = (
-    performanceData: GMDraftSeasonPerformance | undefined, 
+    value: number | undefined | null, 
     metricKey: HeatmapMetricKey,
     metricMinValue: number, 
     metricMaxValue: number 
   ): string => {
-    if (!performanceData) return 'bg-muted/30 text-muted-foreground';
-
-    const value = performanceData[metricKey];
-    if (typeof value !== 'number' || value === null || value === undefined) { 
+    if (value === null || value === undefined) { 
       return 'bg-muted/30 text-muted-foreground';
     }
 
@@ -424,7 +443,7 @@ const DraftOverview = () => {
                         {seasonYears.map(year => {
                           const performanceData = heatmapData[gm_name]?.[year];
                           const metricValue = performanceData?.[selectedMetric];
-                          const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
+                          const cellClasses = getCellStyle(metricValue as number | undefined | null, selectedMetric, currentMin, currentMax);
                           const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
                           
                           return (
@@ -459,7 +478,7 @@ const DraftOverview = () => {
                         <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/50" style={{minWidth: '70px'}}>
                            <Tooltip delayDuration={100}>
                                 <TooltipTrigger asChild>
-                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: gmAvgValueForMetric} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(gmAvgValueForMetric, selectedMetric, minGmAvg, maxGmAvg))}>
                                      {metricConfigs[selectedMetric].format(gmAvgValueForMetric)}
                                   </div>
                                 </TooltipTrigger>
@@ -486,7 +505,7 @@ const DraftOverview = () => {
                                     <TableCell key={`season-avg-${year}`} className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/60" style={{minWidth: '70px'}}>
                                          <Tooltip delayDuration={100}>
                                             <TooltipTrigger asChild>
-                                               <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: seasonAvgValueForMetric} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                               <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(seasonAvgValueForMetric, selectedMetric, minSeasonAvg, maxSeasonAvg))}>
                                                  {metricConfigs[selectedMetric].format(seasonAvgValueForMetric)}
                                                </div>
                                             </TooltipTrigger>
@@ -501,7 +520,7 @@ const DraftOverview = () => {
                             <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/80" style={{minWidth: '70px'}}>
                                 <Tooltip delayDuration={100}>
                                     <TooltipTrigger asChild>
-                                        <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: overallAverage} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                        <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(overallAverage, selectedMetric, currentMin, currentMax))}>
                                             {metricConfigs[selectedMetric].format(overallAverage)}
                                         </div>
                                     </TooltipTrigger>
@@ -1250,7 +1269,7 @@ const GMDraftHistory = () => {
 
              <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Positional Performance Analysis (Avg. POE vs League Avg)</CardTitle>
+                  <CardTitle className="text-lg">Positional Performance Analysis</CardTitle>
                   <CardDescription>Comparing GM draft value vs. league averages by position.</CardDescription>
                 </CardHeader>
                 <CardContent>
