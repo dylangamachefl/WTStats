@@ -57,14 +57,14 @@ const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
     key: 'avg_pvdre', 
     format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
     tooltipLabel: 'POE (Points Over Expected)',
-    description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average for that metric (green=above, red=below, neutral=mid-range).'
+    description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
   pvdre_hit_rate: { 
     label: 'Hit Rate %', 
     key: 'pvdre_hit_rate', 
     format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
     tooltipLabel: 'Hit Rate %',
-    description: 'Hit Rate % indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average for that metric (green=above, red=below, neutral=mid-range).'
+    description: 'Hit Rate % indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
   avg_value_vs_adp: { 
     label: 'Value vs ADP', 
@@ -743,6 +743,10 @@ const SeasonDraftDetail = () => {
     let currentMaxPVDRE = -Infinity;
 
     sortedPicks.forEach(pick => {
+      if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number' || typeof pick.pick_overall !== 'number') {
+        console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered (missing gm_name, round, pick_in_round or pick_overall):", pick);
+        return; 
+      }
       picksByOverall[pick.pick_overall] = pick;
       if (pick.pvdre_points_vs_league_draft_rank_exp !== null && pick.pvdre_points_vs_league_draft_rank_exp !== undefined) {
         currentMinPVDRE = Math.min(currentMinPVDRE, pick.pvdre_points_vs_league_draft_rank_exp);
@@ -756,7 +760,6 @@ const SeasonDraftDetail = () => {
 
     sortedPicks.forEach(pick => {
       if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number' || typeof pick.pick_overall !== 'number') {
-        console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered (missing gm_name, round, pick_in_round or pick_overall):", pick);
         return; 
       }
       gmNames.add(pick.gm_name);
@@ -826,16 +829,16 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = `border text-xs align-middle p-1.5 h-[60px]`; 
-
+                    let cellClasses = `border text-xs align-middle p-1.5 h-[40px]`; 
 
                     if (!pick) {
                        return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
                     }
                     
-                    const innerDivLayoutClasses = "flex flex-col items-center justify-center text-center w-full h-full";
+                    let innerDivLayoutClasses = "flex items-center justify-center h-full w-full text-center";
 
                     if (analysisMode === 'none') {
+                        innerDivLayoutClasses = "flex flex-col items-center justify-center h-full w-full text-center";
                         cellContent = (
                              <>
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
@@ -875,7 +878,7 @@ const SeasonDraftDetail = () => {
                                 <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>
                                 <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
                                 <p><span className="font-medium">Drafted Pos:</span> {pick.player_position}{pick.league_positional_draft_rank ?? ''}</p>
-                                <p>
+                                 <p>
                                   <span className="font-medium">Finished Pos:</span> {
                                     pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined 
                                     ? `${pick.player_position}${pick.actual_positional_finish_rank}` 
@@ -1379,3 +1382,4 @@ export default function DraftHistoryPage() {
 
 
     
+
