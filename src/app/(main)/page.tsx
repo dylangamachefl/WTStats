@@ -18,7 +18,6 @@ import type {
   StrengthOfScheduleEntry,
   WaiverPickupEntry,
   TopPerformerPlayer,
-  PositionalTopPerformersData,
   SeasonBestOverallGameEntry,
   GMCareerData,
   GMInfo,
@@ -129,29 +128,29 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
     if (rank === 1) {
         return {
-            cellClasses: cn('bg-yellow-400', textClass),
+            cellClasses: cn('bg-yellow-400', textClass), // Gold background for 1st place, no border
         };
     }
-    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' }; // Should not happen if rank > 1
+    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' }; 
     
     const rankPositionInScale = rank - 2; 
     const numRanksToScale = maxRankInYear - 2;
 
-    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; // e.g. 2-team league, rank 2 is last
+    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; 
 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Treat a 2nd place in a 2-team league as mid-scale for coloring
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; 
 
     const NEUTRAL_BAND_START_PERCENT = 0.425; 
     const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        return { cellClasses: cn('text-foreground font-semibold') }; // Neutral (default background)
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better than average (excluding 1st)
+        return { cellClasses: cn('text-foreground font-semibold') }; 
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
         const intensity = (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT;
         if (intensity > 0.66) return { cellClasses: cn('bg-green-200', textClass) }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-green-100', textClass) };
         return { cellClasses: cn('bg-green-50', textClass) }; 
-    } else { // Worse than average
+    } else { 
         const intensity = (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT);
         if (intensity > 0.66) return { cellClasses: cn('bg-red-200', textClass) }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-red-100', textClass) };
@@ -280,7 +279,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <div className="space-y-8 w-full">
         <Card className="overflow-hidden">
           <CardHeader><CardTitle>Championship Timeline</CardTitle></CardHeader>
-          <CardContent className="px-0 sm:px-6 flex items-center justify-center">
+          <CardContent className="px-0 sm:px-6 w-full">
             <Skeleton className="w-full h-[260px] mx-auto" />
           </CardContent>
         </Card>
@@ -300,12 +299,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
             <Card className="overflow-hidden">
-                <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
-                <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
-            </Card>
-             <Card className="overflow-hidden">
                 <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
+            </Card>
+            <Card className="overflow-hidden">
+                <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
+                <CardContent className="h-[300px]"><Skeleton className="h-full w-full" /></CardContent>
             </Card>
         </div>
       </div>
@@ -334,7 +333,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             <CarouselContent className="-ml-1">
               {Array.isArray(leagueData.championshipTimeline) && leagueData.championshipTimeline.map((champion: ChampionTimelineEntry, index: number) => (
                 <CarouselItem key={index} className="p-1 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                   <Card className="flex flex-col p-4 h-full gap-3 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1">
+                   <Card className="card-iridescent flex flex-col p-4 h-full gap-3 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1">
                     <div className="flex flex-col items-center text-center pt-3 relative">
                       <Badge
                         variant="default"
@@ -460,15 +459,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                     <TableRow key={stat.name}>
-                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{stat.name}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.wins}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.losses}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.ties}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.winPct}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.championships}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{stat.name}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.wins}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.losses}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.ties}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.winPct}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.championships}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
@@ -575,15 +574,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                     <TableRow key={gmPerf.gm_name}>
-                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{gmPerf.gm_name}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.total_matchups}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.wins}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.losses}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{gmPerf.gm_name}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.total_matchups}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.wins}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.losses}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
@@ -747,7 +746,7 @@ const SeasonDetail = () => {
       setError(null);
     }
   }, [selectedSeason]);
-  
+
   const getScoreCellClass = (score?: number | null): string => {
     if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
     if (score >= 140) return 'bg-green-200 text-green-800';
@@ -794,7 +793,8 @@ const SeasonDetail = () => {
   ];
 
   const isModernWaiverSeason = useMemo(() => {
-    const year = parseInt(selectedSeason || "0");
+    if (!selectedSeason) return false;
+    const year = parseInt(selectedSeason);
     return year >= 2019;
   }, [selectedSeason]);
 
@@ -878,7 +878,7 @@ const SeasonDetail = () => {
                                 {seasonData.standingsData.map((s: SeasonStandingEntry) => (
                                 <TableRow key={s.owner_name}>
                                     <TableCell className="font-medium text-center">
-                                        {s.regular_season_finish}
+                                     {s.regular_season_finish}
                                     </TableCell>
                                     <TableCell>{s.wt_team_name}</TableCell>
                                     <TableCell>{s.owner_name}</TableCell>
@@ -1089,7 +1089,7 @@ const SeasonDetail = () => {
                                       </TableHeader>
                                       <TableBody>
                                       {seasonData.strengthOfScheduleData.map((sos: StrengthOfScheduleEntry) => (
-                                          <TableRow key={sos.owner_name}>
+                                          <TableRow key={sos.owner}>
                                           <TableCell className="text-left">{sos.rank}</TableCell>
                                           <TableCell className="text-left">{sos.team}</TableCell>
                                           <TableCell className="text-left">{sos.owner}</TableCell>
@@ -1187,15 +1187,24 @@ const SeasonDetail = () => {
                                                     <h4 className="text-md font-semibold text-foreground">{getPositionName(position)}</h4>
                                                 </div>
                                                 <div className="space-y-1 text-sm">
-                                                    {players.slice(0, 5).map((player: TopPerformerPlayer, idx: number) => (
+                                                    {players.slice(0, 5).map((player: TopPerformerPlayer, idx: number) => {
+                                                      const currentSeasonYear = seasonData.seasonData?.year;
+                                                      let teamDisplay = player.team; // Default to NFL team
+                                                      if (currentSeasonYear && currentSeasonYear > 2018 && player.fantasyTeam) {
+                                                        teamDisplay = player.fantasyTeam;
+                                                      } else if (currentSeasonYear && currentSeasonYear > 2018 && !player.fantasyTeam) {
+                                                        teamDisplay = 'Unmanaged';
+                                                      }
+                                                      return (
                                                         <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
                                                             <div className="flex items-center gap-1.5">
                                                                 <span className="mr-1.5 font-medium">{(idx + 1)}.</span>
-                                                                <span>{player.player} ({player.fantasyTeam || 'N/A'})</span>
+                                                                <span>{player.player} ({teamDisplay})</span>
                                                             </div>
                                                             <span className="font-medium">{player.totalPoints?.toFixed(1) ?? 'N/A'}</span>
                                                         </div>
-                                                    ))}
+                                                      );
+                                                    })}
                                                 </div>
                                             </div>
                                         ) : null
@@ -1222,26 +1231,33 @@ const SeasonDetail = () => {
                                             <TableHead>RANK</TableHead>
                                             <TableHead>PLAYER</TableHead>
                                             <TableHead>POS</TableHead>
-                                            <TableHead className="hidden sm:table-cell">FANTASY TEAM</TableHead>
+                                            <TableHead>FANTASY TEAM</TableHead>
                                             <TableHead className="text-center">WEEK</TableHead>
                                             <TableHead className="text-right">POINTS</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => (
+                                        {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => {
+                                          const currentSeasonYear = seasonData.seasonData?.year;
+                                          let fantasyTeamDisplay = game.fantasyTeam || 'Unmanaged';
+                                          if (currentSeasonYear && currentSeasonYear <= 2018) {
+                                            fantasyTeamDisplay = '-';
+                                          }
+                                          return (
                                             <TableRow key={game.rank}>
                                                 <TableCell>{game.rank}</TableCell>
-                                                <TableCell>{game.player} ({game.fantasyTeam || 'Unmanaged'})</TableCell>
+                                                <TableCell>{game.player} ({game.team})</TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
                                                         {game.position}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="hidden sm:table-cell">{game.fantasyTeam || 'Unmanaged'}</TableCell>
+                                                <TableCell>{fantasyTeamDisplay}</TableCell>
                                                 <TableCell className="text-center">{game.week}</TableCell>
                                                 <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
                                             </TableRow>
-                                        ))}
+                                          );
+                                        })}
                                     </TableBody>
                                 </Table>
                             </CardContent>
@@ -1498,8 +1514,6 @@ const GMCareer = () => {
             throw new Error(`Fetched data for ${gmSlug} is incomplete.`);
           }
           setGmData(data);
-          
-          // Default to all-seasons view when a new GM is selected
           setSelectedViewOption("all-seasons");
         })
         .catch(err => {
@@ -1523,7 +1537,7 @@ const GMCareer = () => {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
       setGmIndividualSeasonData(null); 
-      setActiveGmSeasonTab("season-summary"); // Default to summary tab when new season data loads
+      setActiveGmSeasonTab("season-summary"); 
 
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
@@ -1536,7 +1550,7 @@ const GMCareer = () => {
             try { errorBody = await res.text(); } catch (e) { console.error("Error parsing error response body:", e); }
             const shortErrorBody = errorBody.substring(0,200);
             console.error(`[GMCareer-IndividualSeason] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
-            throw new Error(`Failed to fetch ${seasonDetailFilePath}. Status: ${res.status}. Server: ${shortErrorBody}...`);
+            throw new Error(`Failed to fetch ${seasonDetailFilePath}. Status: ${res.status} ${res.statusText}. Server: ${shortErrorBody}...`);
           }
           const data: GMIndividualSeasonDetailData = await res.json();
           console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
@@ -1561,7 +1575,7 @@ const GMCareer = () => {
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       fetchIndividualSeasonData(gmData.gmInfo.slug, gmData.gmInfo.id, selectedViewOption);
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); // Clear individual season data if "All Seasons" is selected
+        setGmIndividualSeasonData(null); 
     }
   }, [selectedViewOption, gmData]);
 
@@ -2523,8 +2537,6 @@ export default function LeagueHistoryPage() {
     } else if (activeMainTab !== 'all-seasons' && leagueData) {
         // leagueData already loaded, no need to re-fetch for other tabs in this specific component
     } else if (activeMainTab !== 'all-seasons' && !leagueData) {
-      // If navigating directly to a sub-tab and leagueData isn't loaded, don't block by setting loadingLeagueData to false.
-      // The individual components (SeasonDetail, GMCareer) will handle their own data fetching.
       setLoadingLeagueData(false);
     }
 
@@ -2542,5 +2554,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-
     
