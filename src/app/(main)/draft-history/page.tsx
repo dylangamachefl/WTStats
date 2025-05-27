@@ -826,31 +826,33 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = "border text-xs align-middle h-[70px]"; 
+                    let cellClasses = `border text-xs align-middle p-1.5 h-[60px]`; 
 
 
                     if (!pick) {
-                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "p-1.5 bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
+                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
                     }
                     
+                    const innerDivLayoutClasses = "flex flex-col items-center justify-center text-center w-full h-full";
+
                     if (analysisMode === 'none') {
                         cellContent = (
-                             <div className="flex flex-col items-center justify-center text-center">
+                             <>
                                 <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
                                 <p className="text-muted-foreground truncate w-full text-xs">{pick.player_position} - {pick.nfl_team_id}</p>
-                            </div>
+                            </>
                         );
-                        cellClasses = cn(cellClasses, "p-1.5", getPositionBadgeClass(pick.player_position));
+                        cellClasses = cn(cellClasses, getPositionBadgeClass(pick.player_position));
                     } else if (analysisMode === 'value') {
                         cellContent = (
                             <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
                         );
-                        cellClasses = cn(cellClasses, "p-1.5", getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
+                        cellClasses = cn(cellClasses, getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
                     } else { // analysisMode === 'reachSteal'
                         cellContent = (
                              <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
                         );
-                        cellClasses = cn(cellClasses, "p-1.5", getReachStealCellStyle(pick.overall_reach_steal_value));
+                        cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
                     }
                     
                     return (
@@ -861,7 +863,7 @@ const SeasonDraftDetail = () => {
                       >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            <div className="flex flex-col items-center justify-center h-full w-full text-center">
+                            <div className={innerDivLayoutClasses}>
                                 {cellContent}
                             </div>
                           </TooltipTrigger>
