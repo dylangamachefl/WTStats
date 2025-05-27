@@ -108,44 +108,38 @@ body {
 .card-iridescent {
   position: relative; 
   overflow: hidden; 
+  /* The card's default background (bg-card) will be covered by the ::before pseudo-element */
 }
 
 .card-iridescent::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0; /* Cover the entire card */
+  z-index: 0; /* Sits on top of the card's default background, but below content with z-index:1 */
   
   background-image: 
     linear-gradient(115deg, 
-      hsla(190, 85%, 65%, 0.6), /* Brighter Cyan */
-      hsla(270, 75%, 70%, 0.6), /* Brighter Purple */
-      hsla(330, 80%, 65%, 0.6), /* Brighter Pink */
-      hsla(45, 90%, 60%, 0.6)   /* Brighter Gold */
+      hsla(30, 90%, 70%, 0.75),  /* Gold/Orange */
+      hsla(50, 95%, 60%, 0.75),  /* Yellow */
+      hsla(40, 90%, 65%, 0.75),  /* Light Orange */
+      hsla(60, 90%, 70%, 0.75)   /* Light Yellow */
     ),
     linear-gradient(245deg, 
-      hsla(45, 90%, 60%, 0.6),   /* Brighter Gold */
-      hsla(120, 65%, 60%, 0.6),  /* Brighter Green */
-      hsla(220, 85%, 70%, 0.6)   /* Brighter Blue */
+      hsla(50, 90%, 60%, 0.75),   /* Yellow */
+      hsla(35, 85%, 65%, 0.75),  /* Orange-Yellow */
+      hsla(25, 80%, 60%, 0.75)   /* Light Brown/Gold */
     );
   background-size: 250% 250%; 
   background-position: 0% 0%;
   
-  /* mix-blend-mode: overlay; */ /* Temporarily removed for visibility test */
+  opacity: 1; /* Make it fully opaque as it's now the primary visual background */
+  /* mix-blend-mode is removed as we want this to be the direct background effect */
   
-  opacity: 0.75; /* Increased opacity */
-  
-  z-index: 0; 
-  
-  animation: iridescent-shimmer-debug 7s ease-in-out infinite alternate;
+  animation: iridescent-shimmer-gold 8s ease-in-out infinite alternate;
   pointer-events: none; 
 }
 
-@keyframes iridescent-shimmer-debug {
+@keyframes iridescent-shimmer-gold {
   0% {
     background-position: 0% 0%;
   }
@@ -155,4 +149,10 @@ body {
   100% {
     background-position: 0% 0%;
   }
+}
+
+/* Ensure card content (direct children of .card-iridescent) is rendered on top */
+.card-iridescent > * {
+  position: relative;
+  z-index: 1;
 }
