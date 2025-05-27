@@ -492,6 +492,55 @@
             "week": "11",
             "value": 134.1,
             "record_category": "Worst Beat"
+        },
+        {
+            "gm_name": "Mark",
+            "seasons": "2022",
+            "week": "5",
+            "value": 105.18,
+            "record_category": "Biggest Blowout"
+        },
+        {
+            "gm_name": "Zach",
+            "seasons": "2021",
+            "week": "5",
+            "value": 0.12,
+            "record_category": "Closest Win"
+        },
+        {
+            "gm_name": "Josh",
+            "seasons": "2023",
+            "week": "",
+            "value": 1543.8,
+            "record_category": "Most Points Against (Season)"
+        },
+        {
+            "gm_name": "Sean",
+            "seasons": "2020",
+            "week": "Championship",
+            "value": 53.2,
+            "record_category": "Highest Scoring Player (Week): Alvin Kamara"
+        },
+        {
+            "gm_name": "Zach",
+            "seasons": "2013",
+            "week": "",
+            "value": 8,
+            "record_category": "Longest Losing Streak"
+        },
+        {
+            "gm_name": "Dylan",
+            "seasons": "2017",
+            "week": "",
+            "value": 69,
+            "record_category": "Most Transactions (Season)"
+        },
+        {
+            "gm_name": "Jake",
+            "seasons": "2020",
+            "week": "",
+            "value": 1036.16,
+            "record_category": "Fewest Points Against (Season)"
         }
     ],
     "finalStandingsHeatmap": [
