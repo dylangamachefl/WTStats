@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, PositionalProfileEntry as GMDraftPositionalProfileEntry } from '@/lib/types';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData } from '@/lib/types';
 import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -144,7 +144,10 @@ const getReachStealCellStyle = (reachStealValue: number | null | undefined): str
 
 
 const DraftOverview = () => {
+  const [overviewData, setOverviewData] = useState<DraftOverviewData | null>(null);
   const [rawData, setRawData] = useState<GMDraftSeasonPerformance[] | null>(null);
+  const [allTimeStealsData, setAllTimeStealsData] = useState<DraftPickDetail[] | null>(null);
+  const [allTimeBustsData, setAllTimeBustsData] = useState<DraftPickDetail[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
@@ -174,9 +177,13 @@ const DraftOverview = () => {
           console.error("[DraftOverview] Fetch failed:", response.status, errorText);
           throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}. ${errorText.substring(0,100)}`);
         }
-        const data: GMDraftSeasonPerformance[] = await response.json();
+        const data: DraftOverviewData = await response.json();
         console.log("[DraftOverview] Fetched data:", data);
-        setRawData(data);
+        setOverviewData(data);
+        setRawData(data.gmSeasonPerformanceGrid || null);
+        setAllTimeStealsData(data.allTimeDraftSteals || null);
+        setAllTimeBustsData(data.allTimeDraftBusts || null);
+
       } catch (err) {
         if (err instanceof Error) {
             setError(err.message);
@@ -185,6 +192,8 @@ const DraftOverview = () => {
         }
         console.error("[DraftOverview] Error in fetchData:", err);
         setRawData(null);
+        setAllTimeStealsData(null);
+        setAllTimeBustsData(null);
       } finally {
         setLoading(false);
       }
@@ -293,20 +302,26 @@ const DraftOverview = () => {
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
-          <CardDescription>Loading GM draft performance metrics across seasons...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-8 w-1/2 mb-4" /> {/* Placeholder for toggle */}
-          <div className="space-y-2">
-            {[...Array(10)].map((_, i) => (
-              <Skeleton key={i} className="h-10 w-full" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
+            <CardDescription>Loading GM draft performance metrics across seasons...</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-1/2 mb-4" /> {/* Placeholder for toggle */}
+            <div className="space-y-2">
+              {[...Array(10)].map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+         <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
     );
   }
 
@@ -326,7 +341,7 @@ const DraftOverview = () => {
     );
   }
 
-  if (!rawData || rawData.length === 0) {
+  if (!overviewData || !rawData || rawData.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -344,88 +359,164 @@ const DraftOverview = () => {
 
   return (
     <TooltipProvider>
-      <Card>
-        <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <div>
-                <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
-                <CardDescription>
-                    {metricConfigs[selectedMetric].description} Hover over a cell for more details.
-                </CardDescription>
-            </div>
-            <RadioGroup
-                value={selectedMetric}
-                onValueChange={(value) => setSelectedMetric(value as HeatmapMetricKey)}
-                className="flex flex-wrap gap-x-4 gap-y-2 mt-4 sm:mt-0"
-            >
-                {Object.values(metricConfigs).map(config => (
-                    <div key={config.key} className="flex items-center space-x-2">
-                        <RadioGroupItem value={config.key} id={config.key} />
-                        <Label htmlFor={config.key} className="text-sm cursor-pointer">{config.label}</Label>
-                    </div>
-                ))}
-            </RadioGroup>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-              <Table className="min-w-full border-collapse">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm">
-                      <Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">
-                          GM Name {getSortIcon('gm_name')}
-                      </Button>
-                    </TableHead>
-                    {seasonYears.map(year => (
-                      <TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {gmNames.map(gm_name => (
-                    <TableRow key={gm_name}>
-                      <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
-                      {seasonYears.map(year => {
-                        const performanceData = heatmapData[gm_name]?.[year];
-                        const metricValue = performanceData?.[selectedMetric];
-                        const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
-                        const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
-                        
-                        return (
-                          <TableCell
-                            key={`${gm_name}-${year}-${selectedMetric}`}
-                            className="p-0 border text-center text-xs md:text-sm"
-                            style={{minWidth: '70px'}}
-                          >
-                            <Tooltip delayDuration={100}>
-                              <TooltipTrigger asChild>
-                                <div className={cn("p-2 h-full w-full flex items-center justify-center", cellClasses)}>
-                                  {displayValue}
-                                </div>
-                              </TooltipTrigger>
-                              {performanceData && (
-                                <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
-                                  <div className="space-y-1.5 text-left">
-                                    <p className="font-semibold">{performanceData.gm_name} - {performanceData.season_id}</p>
-                                    <p><span className="font-medium">POE (Avg PVDRE):</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
-                                    <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined && performanceData.pvdre_hit_rate !== null ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
-                                    <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
-                                    <p><span className="font-medium">Total Picks:</span> {performanceData.total_picks ?? 'N/A'}</p>
-                                    <p><span className="font-medium">1st Round Pos:</span> {performanceData.first_round_draft_position ?? 'N/A'}</p>
-                                    <p><span className="font-medium">Total PVDRE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
-                                  </div>
-                                </TooltipContent>
-                              )}
-                            </Tooltip>
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+              <div>
+                  <CardTitle className="flex items-center gap-2"><BarChartLucide /> Draft Performance Heatmap</CardTitle>
+                  <CardDescription>
+                      {metricConfigs[selectedMetric].description} Hover over a cell for more details.
+                  </CardDescription>
+              </div>
+              <RadioGroup
+                  value={selectedMetric}
+                  onValueChange={(value) => setSelectedMetric(value as HeatmapMetricKey)}
+                  className="flex flex-wrap gap-x-4 gap-y-2 mt-4 sm:mt-0"
+              >
+                  {Object.values(metricConfigs).map(config => (
+                      <div key={config.key} className="flex items-center space-x-2">
+                          <RadioGroupItem value={config.key} id={config.key} />
+                          <Label htmlFor={config.key} className="text-sm cursor-pointer">{config.label}</Label>
+                      </div>
                   ))}
-                </TableBody>
-              </Table>
-          </div>
-        </CardContent>
-      </Card>
+              </RadioGroup>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+                <Table className="min-w-full border-collapse">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm">
+                        <Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">
+                            GM Name {getSortIcon('gm_name')}
+                        </Button>
+                      </TableHead>
+                      {seasonYears.map(year => (
+                        <TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {gmNames.map(gm_name => (
+                      <TableRow key={gm_name}>
+                        <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
+                        {seasonYears.map(year => {
+                          const performanceData = heatmapData[gm_name]?.[year];
+                          const metricValue = performanceData?.[selectedMetric];
+                          const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
+                          const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
+                          
+                          return (
+                            <TableCell
+                              key={`${gm_name}-${year}-${selectedMetric}`}
+                              className="p-0 border text-center text-xs md:text-sm"
+                              style={{minWidth: '70px'}}
+                            >
+                              <Tooltip delayDuration={100}>
+                                <TooltipTrigger asChild>
+                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", cellClasses)}>
+                                    {displayValue}
+                                  </div>
+                                </TooltipTrigger>
+                                {performanceData && (
+                                  <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                    <div className="space-y-1.5 text-left">
+                                      <p className="font-semibold">{performanceData.gm_name} - {performanceData.season_id}</p>
+                                      <p><span className="font-medium">POE (Avg PVDRE):</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                      <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined && performanceData.pvdre_hit_rate !== null ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
+                                      <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
+                                      <p><span className="font-medium">Total Picks:</span> {performanceData.total_picks ?? 'N/A'}</p>
+                                      <p><span className="font-medium">1st Round Pos:</span> {performanceData.first_round_draft_position ?? 'N/A'}</p>
+                                      <p><span className="font-medium">Total PVDRE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                    </div>
+                                  </TooltipContent>
+                                )}
+                              </Tooltip>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><ArrowUpCircle className="text-green-500" /> All-Time Top Draft Steals</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {allTimeStealsData && allTimeStealsData.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Player</TableHead>
+                      <TableHead className="text-center">Season</TableHead>
+                      <TableHead className="text-center">Overall Pick</TableHead>
+                      <TableHead>GM</TableHead>
+                      <TableHead className="text-center">Pos</TableHead>
+                      <TableHead className="text-right">PVDRE</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allTimeStealsData.slice(0, 10).map((pick, index) => (
+                      <TableRow key={`steal-${pick.player_id}-${pick.season_id}-${index}`}>
+                        <TableCell className="font-medium">{pick.player_name}</TableCell>
+                        <TableCell className="text-center">{pick.season_id}</TableCell>
+                        <TableCell className="text-center">{pick.pick_overall}</TableCell>
+                        <TableCell>{pick.gm_name}</TableCell>
+                        <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>{pick.player_position}</Badge></TableCell>
+                        <TableCell className="text-right font-semibold text-green-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-muted-foreground text-center">No all-time steals data available.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><ArrowDownCircle className="text-red-500" /> All-Time Top Draft Busts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {allTimeBustsData && allTimeBustsData.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                     <TableRow>
+                      <TableHead>Player</TableHead>
+                      <TableHead className="text-center">Season</TableHead>
+                      <TableHead className="text-center">Overall Pick</TableHead>
+                      <TableHead>GM</TableHead>
+                      <TableHead className="text-center">Pos</TableHead>
+                      <TableHead className="text-right">PVDRE</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allTimeBustsData.slice(0, 10).map((pick, index) => (
+                      <TableRow key={`bust-${pick.player_id}-${pick.season_id}-${index}`}>
+                        <TableCell className="font-medium">{pick.player_name}</TableCell>
+                        <TableCell className="text-center">{pick.season_id}</TableCell>
+                        <TableCell className="text-center">{pick.pick_overall}</TableCell>
+                        <TableCell>{pick.gm_name}</TableCell>
+                        <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>{pick.player_position}</Badge></TableCell>
+                        <TableCell className="text-right font-semibold text-red-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p className="text-muted-foreground text-center">No all-time busts data available.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </TooltipProvider>
   );
 };
@@ -884,6 +975,15 @@ const GMDraftHistory = () => {
     })) || [];
   }, [gmDraftData?.round_efficiency]);
 
+  const positionalProfileChartData = useMemo(() => {
+    if (!gmDraftData?.positional_profile) return [];
+    return gmDraftData.positional_profile.map(p => ({
+      name: p.position,
+      'GM Avg POE': p.gm_average_pvdre,
+      'League Avg POE': p.league_average_pvdre ?? 0, // Default to 0 if null/undefined
+    }));
+  }, [gmDraftData?.positional_profile]);
+
 
   if (!selectedGmId) {
     return (
@@ -983,7 +1083,7 @@ const GMDraftHistory = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
-                      <RechartsTooltip />
+                      <RechartsTooltip formatter={(value: number) => value.toFixed(1)}/>
                       <Bar dataKey="Avg POE" fill="hsl(var(--primary))">
                         {roundEfficiencyChartData.map((entry, index) => (
                           <RechartsCell key={`cell-${index}`} fill={entry['Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
@@ -1045,7 +1145,7 @@ const GMDraftHistory = () => {
                 </Card>
               </div>
 
-              <Card>
+             <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Positional Performance Analysis</CardTitle>
                   <CardDescription>Comparing GM draft value vs. league averages by position.</CardDescription>
@@ -1056,9 +1156,11 @@ const GMDraftHistory = () => {
                     {gmDraftData.positional_profile.map((profile) => {
                         const isOutperforming = typeof profile.gm_average_pvdre === 'number' && 
                                                 typeof profile.league_average_pvdre === 'number' && 
+                                                profile.league_average_pvdre !== null && // Ensure league average is not null
                                                 profile.gm_average_pvdre > profile.league_average_pvdre;
                         const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && 
                                                  typeof profile.league_average_pvdre === 'number' && 
+                                                 profile.league_average_pvdre !== null && // Ensure league average is not null
                                                  profile.gm_average_pvdre < profile.league_average_pvdre;
                         
                         let borderColorClass = 'border-border';

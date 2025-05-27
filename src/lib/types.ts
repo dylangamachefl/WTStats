@@ -108,6 +108,7 @@ export interface PlayoffMatchupTeam {
 export interface PlayoffMatchup {
   home: PlayoffMatchupTeam;
   away: PlayoffMatchupTeam;
+  matchup_type?: string; // Added for new H2H JSON structure
 }
 
 export interface PlayoffData {
@@ -281,8 +282,7 @@ export interface GMCareerData {
   rivalryPerformance: RivalryPerformanceEntry[];
 }
 
-
-// For GM Individual Season View (e.g., gm_career_11_2019.json)
+// === GM Individual Season Detail (gm_career_GMID_YEAR.json) ===
 export interface GMSeasonPerformance {
   wins: number;
   losses: number;
@@ -340,12 +340,12 @@ export interface GMPlayerSummaryPerformanceEntry {
   playerId: number;
   name: string;
   position: string;
-  avgActual: number;
-  avgProjected: number;
-  avgDifference: number;
-  percentBeatProjection: number;
-  boomWeeks: number;
-  bustWeeks: number;
+  avgActual: number | null;
+  avgProjected: number | null;
+  avgDifference: number | null;
+  percentBeatProjection: number | null;
+  boomWeeks: number | null;
+  bustWeeks: number | null;
 }
 
 export interface GMPlayerPerformanceHighlight {
@@ -445,6 +445,7 @@ export interface GMStreamingSuccessData {
 }
 
 export interface GMIndividualSeasonDetailData {
+  gmInfo?: GMInfo; // Optional, if it's available in the file
   seasonSummary: GMSeasonSummary;
   rosterBreakdown: GMRosterBreakdown;
   playerPerformance?: GMPlayerPerformanceData;
@@ -466,12 +467,11 @@ export interface GMDraftSeasonPerformance {
   avg_value_vs_adp?: number | null; 
 }
 
-
 // For Draft History -> Season View (e.g., /data/draft_data/seasons/season_YYYY_draft_detail.json)
 export interface DraftPickDetail {
   season_id: number;
   pick_overall: number;
-  draft_id?: number;
+  draft_id?: number; // Can be undefined or null
   round: number;
   pick_in_round: number;
   player_id: number;
@@ -515,9 +515,10 @@ export interface SeasonHighlights {
   top_busts_by_pvdre: DraftPickDetail[];
 }
 
+// This is the type for the root object in season_YYYY_draft_detail.json
 export interface SeasonDraftDetailJson {
   draft_board: DraftPickDetail[];
-  team_draft_performance_ranking?: TeamDraftPerformanceEntry[];
+  team_draft_performance_ranking?: TeamDraftPerformanceEntry[]; // Renamed from draft_grades
   season_highlights?: SeasonHighlights;
 }
 
@@ -552,8 +553,8 @@ export interface GMDraftHistoryDetailData {
   gm_name: string;
   career_summary: GMDraftHistoryCareerSummary;
   round_efficiency: GMDraftHistoryRoundEfficiencyEntry[];
-  best_picks: DraftPickDetail[];
-  worst_picks: DraftPickDetail[];
+  best_picks: DraftPickDetail[]; // Reusing DraftPickDetail
+  worst_picks: DraftPickDetail[]; // Reusing DraftPickDetail
   positional_profile: GMDraftPositionalProfileEntry[];
   draft_strategy_summary: string;
 }
@@ -593,7 +594,6 @@ export interface H2HMatchupTimelineEntry {
   is_championship_matchup?: boolean; 
 }
 
-// For derived extreme matchup details
 export interface ExtremeMatchupInfo {
   margin: number;
   winnerName: string;
@@ -606,7 +606,7 @@ export interface ExtremeMatchupInfo {
 export interface H2HPlayoffMeetingDetail {
   season_id: number;
   fantasy_week: string; 
-  matchup_type?: string;
+  matchup_type?: string; // Added for more descriptive playoff round names
   owner1_score: number;
   owner2_score: number;
   winner_owner_id: number | null; 
@@ -627,6 +627,14 @@ export interface H2HRivalryData {
   matchup_timeline: H2HMatchupTimelineEntry[];
   playoff_meetings: H2HPlayoffMeetingSummary;
 }
+
+// For the root object of /data/draft_data/gm_season_performance_grid.json
+export interface DraftOverviewData {
+  gmSeasonPerformanceGrid: GMDraftSeasonPerformance[];
+  allTimeDraftSteals: DraftPickDetail[]; // Assuming DraftPickDetail is suitable
+  allTimeDraftBusts: DraftPickDetail[];  // Assuming DraftPickDetail is suitable
+}
+
 
 export interface Season {
   id: string;
