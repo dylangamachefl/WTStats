@@ -3,13 +3,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+// Removed Button import as it's no longer used for a compare button
 import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo, H2HOwnerInfo } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, DotProps } from 'recharts';
 import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown, BarChart2, CalendarDays, Info } from 'lucide-react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import { Separator } from '@/components/ui/separator';
 
 // Using the same mockGms as draft-history for consistency in IDs
@@ -37,7 +37,7 @@ const CustomizedDot = (props: DotProps & { payload?: H2HMatchupTimelineEntry }) 
 
 const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string }; 
+    const data = payload[0].payload as H2HMatchupTimelineEntry & { margin: number, winnerName: string };
     const isChampionship = data.is_championship_matchup;
     const isPlayoff = data.is_playoff_matchup;
 
@@ -49,7 +49,7 @@ const CustomTooltip = ({ active, payload, label, gm1Name, gm2Name }: any) => {
         <p className="text-xs"><span className="font-medium">{data.owner2_team_name || gm2Name}:</span> {data.owner2_score?.toFixed(1)}</p>
         {data.winnerName && <p className="text-xs mt-1"><span className="font-medium">Winner:</span> {data.winnerName}</p>}
         {data.margin !== undefined && <p className="text-xs"><span className="font-medium">Margin:</span> {data.margin.toFixed(1)}</p>}
-        {(isPlayoff || isChampionship) && 
+        {(isPlayoff || isChampionship) &&
           <p className={cn("text-xs font-semibold mt-1", isChampionship ? "text-yellow-500" : "text-accent")}>
             {isChampionship ? "Championship Game" : "Playoff Game"}
           </p>}
@@ -69,13 +69,7 @@ export default function H2HPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<MatchupSortConfig>({ key: 'season_id', direction: 'desc' });
-  const [comparisonAttempted, setComparisonAttempted] = useState(false);
-
-  useEffect(() => {
-    setComparisonAttempted(false);
-    setComparisonData(null); 
-    setError(null);
-  }, [gm1Id, gm2Id]);
+  // comparisonAttempted state is removed
 
   const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
     if (!comparisonData?.matchup_timeline || comparisonData.matchup_timeline.length === 0) {
@@ -93,7 +87,7 @@ export default function H2HPage() {
       } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
         winnerName = comparisonData.owner2_info.owner_name;
       }
-      
+
       const currentMatchupInfo: ExtremeMatchupInfo = {
         margin,
         winnerName,
@@ -114,112 +108,112 @@ export default function H2HPage() {
   }, [comparisonData]);
 
 
-  const handleCompare = async () => {
-    if (!gm1Id || !gm2Id) {
-      setError("Please select two GMs.");
-      setComparisonAttempted(false); 
-      return;
-    }
-    if (gm1Id === gm2Id) {
-      setError("Please select two different GMs.");
-      setComparisonAttempted(false); 
-      return;
-    }
-
-    setComparisonAttempted(true); 
-    setLoading(true);
-    setError(null);
-    setComparisonData(null);
-
+  useEffect(() => {
     const selectedGm1 = mockGms.find(gm => gm.id === gm1Id);
     const selectedGm2 = mockGms.find(gm => gm.id === gm2Id);
 
-    let tempGm1Name = selectedGm1?.name || "GM 1";
-    let tempGm2Name = selectedGm2?.name || "GM 2";
-    
-    const numGm1Id = parseInt(gm1Id);
-    const numGm2Id = parseInt(gm2Id);
-    
-    const ids = [numGm1Id, numGm2Id].sort((a, b) => a - b);
-    const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
-    
-    console.log(`[H2HPage] Fetching ${filePath}`);
+    setDisplayedGm1Name(selectedGm1?.name || "GM 1");
+    setDisplayedGm2Name(selectedGm2?.name || "GM 2");
 
-    try {
-      const response = await fetch(filePath);
-      if (response.status === 404) {
-        console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
-        setError(null); 
-        setComparisonData(null); 
-      } else if (!response.ok) {
-        const errorText = await response.text();
-        console.error("[H2HPage] Fetch failed:", response.status, errorText);
-        throw new Error(`Failed to fetch H2H data: ${response.status} ${response.statusText}. File: ${filePath}.`);
-      } else {
-        const data: H2HRivalryData = await response.json();
-        console.log("[H2HPage] Fetched H2H data:", data);
-
-        if (data.owner1_info.owner_id.toString() === gm1Id) {
-          setComparisonData(data);
-          tempGm1Name = data.owner1_info.owner_name;
-          tempGm2Name = data.owner2_info.owner_name;
-        } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-          tempGm1Name = data.owner2_info.owner_name;
-          tempGm2Name = data.owner1_info.owner_name;
-          setComparisonData({
-            owner1_info: data.owner2_info,
-            owner2_info: data.owner1_info,
-            rivalry_summary: {
-              ...data.rivalry_summary,
-              owner1_wins: data.rivalry_summary.owner2_wins,
-              owner2_wins: data.rivalry_summary.owner1_wins,
-              owner1_total_points_scored_in_h2h: data.rivalry_summary.owner2_total_points_scored_in_h2h,
-              owner2_total_points_scored_in_h2h: data.rivalry_summary.owner1_total_points_scored_in_h2h,
-              owner1_average_score_in_h2h: data.rivalry_summary.owner2_average_score_in_h2h,
-              owner2_average_score_in_h2h: data.rivalry_summary.owner1_average_score_in_h2h,
-              average_margin_of_victory_owner1: data.rivalry_summary.average_margin_of_victory_owner2,
-              average_margin_of_victory_owner2: data.rivalry_summary.average_margin_of_victory_owner1,
-            },
-            matchup_timeline: data.matchup_timeline.map(m => ({
-              ...m,
-              owner1_score: m.owner2_score,
-              owner2_score: m.owner1_score,
-              owner1_team_name: m.owner2_team_name,
-              owner2_team_name: m.owner1_team_name,
-            })),
-            playoff_meetings: { 
-              ...data.playoff_meetings,
-              owner1_playoff_wins: data.playoff_meetings.owner2_playoff_wins,
-              owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
-              matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
-                  ...pm,
-                  owner1_score: pm.owner2_score, 
-                  owner2_score: pm.owner1_score,
-              }))
-            }
-          });
-        } else {
-          console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is, but this might be incorrect. Ensure JSON owner_ids match selection IDs.");
-          setComparisonData(data); 
-          tempGm1Name = data.owner1_info.owner_name;
-          tempGm2Name = data.owner2_info.owner_name;
-        }
+    if (gm1Id && gm2Id) {
+      if (gm1Id === gm2Id) {
+        setError("Please select two different GMs.");
+        setComparisonData(null);
+        setLoading(false);
+        return;
       }
-      setDisplayedGm1Name(tempGm1Name);
-      setDisplayedGm2Name(tempGm2Name);
 
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred while fetching H2H data.");
-      }
-      console.error("[H2HPage] Error in handleCompare:", err);
+      setLoading(true);
+      setError(null);
       setComparisonData(null);
-    } finally {
+
+      const numGm1Id = parseInt(gm1Id);
+      const numGm2Id = parseInt(gm2Id);
+      const ids = [numGm1Id, numGm2Id].sort((a, b) => a - b);
+      const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
+      console.log(`[H2HPage] Fetching ${filePath}`);
+
+      const fetchData = async () => {
+        try {
+          const response = await fetch(filePath);
+          if (response.status === 404) {
+            console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
+            setError(null);
+            setComparisonData(null);
+          } else if (!response.ok) {
+            const errorText = await response.text();
+            console.error("[H2HPage] Fetch failed:", response.status, errorText);
+            throw new Error(`Failed to fetch H2H data: ${response.status} ${response.statusText}. File: ${filePath}.`);
+          } else {
+            const data: H2HRivalryData = await response.json();
+            console.log("[H2HPage] Fetched H2H data:", data);
+
+            if (data.owner1_info.owner_id.toString() === gm1Id) {
+              setComparisonData(data);
+              setDisplayedGm1Name(data.owner1_info.owner_name);
+              setDisplayedGm2Name(data.owner2_info.owner_name);
+            } else if (data.owner2_info.owner_id.toString() === gm1Id) {
+              setDisplayedGm1Name(data.owner2_info.owner_name);
+              setDisplayedGm2Name(data.owner1_info.owner_name);
+              setComparisonData({
+                owner1_info: data.owner2_info,
+                owner2_info: data.owner1_info,
+                rivalry_summary: {
+                  ...data.rivalry_summary,
+                  owner1_wins: data.rivalry_summary.owner2_wins,
+                  owner2_wins: data.rivalry_summary.owner1_wins,
+                  owner1_total_points_scored_in_h2h: data.rivalry_summary.owner2_total_points_scored_in_h2h,
+                  owner2_total_points_scored_in_h2h: data.rivalry_summary.owner1_total_points_scored_in_h2h,
+                  owner1_average_score_in_h2h: data.rivalry_summary.owner2_average_score_in_h2h,
+                  owner2_average_score_in_h2h: data.rivalry_summary.owner1_average_score_in_h2h,
+                  average_margin_of_victory_owner1: data.rivalry_summary.average_margin_of_victory_owner2,
+                  average_margin_of_victory_owner2: data.rivalry_summary.average_margin_of_victory_owner1,
+                },
+                matchup_timeline: data.matchup_timeline.map(m => ({
+                  ...m,
+                  owner1_score: m.owner2_score,
+                  owner2_score: m.owner1_score,
+                  owner1_team_name: m.owner2_team_name,
+                  owner2_team_name: m.owner1_team_name,
+                })),
+                playoff_meetings: {
+                  ...data.playoff_meetings,
+                  owner1_playoff_wins: data.playoff_meetings.owner2_playoff_wins,
+                  owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
+                  matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
+                      ...pm,
+                      owner1_score: pm.owner2_score,
+                      owner2_score: pm.owner1_score,
+                  }))
+                }
+              });
+            } else {
+              console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is, but this might be incorrect. Ensure JSON owner_ids match selection IDs.");
+              setComparisonData(data);
+              setDisplayedGm1Name(data.owner1_info.owner_name);
+              setDisplayedGm2Name(data.owner2_info.owner_name);
+            }
+          }
+        } catch (err) {
+          if (err instanceof Error) {
+            setError(err.message);
+          } else {
+            setError("An unknown error occurred while fetching H2H data.");
+          }
+          console.error("[H2HPage] Error in fetchData:", err);
+          setComparisonData(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    } else {
+      setComparisonData(null);
+      setError(null);
       setLoading(false);
     }
-  };
+  }, [gm1Id, gm2Id]);
+
 
   const chartData = useMemo(() => {
     if (!comparisonData?.matchup_timeline) return [];
@@ -228,7 +222,7 @@ export default function H2HPage() {
       .map((m) => {
         const margin = Math.abs(m.owner1_score - m.owner2_score);
         let winnerName = 'Tie';
-        if (comparisonData.owner1_info && comparisonData.owner2_info) { 
+        if (comparisonData.owner1_info && comparisonData.owner2_info) {
             if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
                 winnerName = comparisonData.owner1_info.owner_name;
             } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
@@ -236,7 +230,7 @@ export default function H2HPage() {
             }
         }
         return {
-            ...m, 
+            ...m,
             name: `S${m.season_id} W${m.fantasy_week}`,
             [displayedGm1Name]: m.owner1_score,
             [displayedGm2Name]: m.owner2_score,
@@ -254,9 +248,9 @@ export default function H2HPage() {
     }
     setSortConfig({ key, direction });
   };
-  
+
   const getWinnerName = (winnerId: number | null, gm1Info?: H2HOwnerInfo, gm2Info?: H2HOwnerInfo): string => {
-    if (!gm1Info || !gm2Info) return "N/A"; 
+    if (!gm1Info || !gm2Info) return "N/A";
     if (winnerId === null) return "Tie";
     if (winnerId === gm1Info.owner_id) return gm1Info.owner_name;
     if (winnerId === gm2Info.owner_id) return gm2Info.owner_name;
@@ -280,7 +274,7 @@ export default function H2HPage() {
 
         if (valA === null || valA === undefined) return 1;
         if (valB === null || valB === undefined) return -1;
-        
+
         let comparison = 0;
         if (typeof valA === 'number' && typeof valB === 'number') {
           comparison = valA - valB;
@@ -292,7 +286,7 @@ export default function H2HPage() {
     }
     return sortableItems;
   }, [comparisonData, sortConfig]);
-  
+
   const getSortIcon = (columnKey: MatchupSortConfig['key']) => {
     if (sortConfig.key === columnKey) {
       return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
@@ -336,16 +330,14 @@ export default function H2HPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={handleCompare} disabled={loading || !gm1Id || !gm2Id} className="w-full sm:w-auto">
-            {loading && comparisonAttempted ? "Comparing..." : "Compare"}
-          </Button>
+          {/* Compare Button Removed */}
         </CardContent>
-        {error && !comparisonAttempted && ( 
-            <CardContent><p className="text-destructive text-center">{error}</p></CardContent>
+        {error && !loading && (
+            <CardContent><p className="text-destructive text-center py-2">{error}</p></CardContent>
         )}
       </Card>
 
-      {comparisonAttempted && loading && (
+      {loading && (
         <div className="space-y-6">
           <Skeleton className="h-64 w-full" />
           <Skeleton className="h-80 w-full" />
@@ -353,26 +345,17 @@ export default function H2HPage() {
         </div>
       )}
 
-      {comparisonAttempted && !loading && error && (
-        <Card>
-            <CardContent className="pt-6 text-center text-destructive">
-                <Info className="mx-auto h-12 w-12 text-destructive mb-4" />
-                <p className="font-semibold">Error During Comparison:</p>
-                <p className="text-sm mt-1">{error}</p>
-            </CardContent>
-        </Card>
-      )}
-      
-      {comparisonAttempted && !loading && !error && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && (
+      {/* Show "No data found" message if not loading, no error, no data, but GMs are validly selected */}
+      {!loading && !error && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && (
         <Card>
             <CardContent className="pt-6 text-center text-muted-foreground">
                 <Info className="mx-auto h-12 w-12 text-primary mb-4" />
-                <p className="font-semibold">No H2H comparison data found for {mockGms.find(gm => gm.id === gm1Id)?.name} and {mockGms.find(gm => gm.id === gm2Id)?.name}.</p>
+                <p className="font-semibold">No H2H comparison data found for {displayedGm1Name} and {displayedGm2Name}.</p>
             </CardContent>
         </Card>
       )}
 
-      {comparisonAttempted && !loading && !error && comparisonData && (
+      {!loading && !error && comparisonData && (
         <div className="space-y-8">
           <Card className="bg-card shadow-lg">
             <CardHeader className="pb-4">
@@ -389,8 +372,8 @@ export default function H2HPage() {
                   )}
                 </p>
                 <div className="w-full h-3 bg-primary/20 rounded-full overflow-hidden my-3">
-                  <div 
-                    className="h-full bg-primary" 
+                  <div
+                    className="h-full bg-primary"
                     style={{ width: `${(comparisonData.rivalry_summary.owner1_wins / (comparisonData.rivalry_summary.total_matchups || 1)) * 100}%`}}
                   ></div>
                 </div>
@@ -407,8 +390,8 @@ export default function H2HPage() {
                   )}
                 </p>
                  <div className="w-full h-3 bg-accent/20 rounded-full overflow-hidden my-3">
-                  <div 
-                    className="h-full bg-accent" 
+                  <div
+                    className="h-full bg-accent"
                     style={{ width: `${(comparisonData.rivalry_summary.owner2_wins / (comparisonData.rivalry_summary.total_matchups || 1)) * 100}%`}}
                   ></div>
                 </div>
@@ -422,7 +405,7 @@ export default function H2HPage() {
                    {comparisonData.rivalry_summary.ties > 0 && `, Ties: ${comparisonData.rivalry_summary.ties}`}
                 </p>
                 {closestMatchupDetail && (
-                    <p><span className="font-semibold text-foreground">Closest Matchup:</span> {closestMatchupDetail.margin.toFixed(1)} pts 
+                    <p><span className="font-semibold text-foreground">Closest Matchup:</span> {closestMatchupDetail.margin.toFixed(1)} pts
                     (Winner: {closestMatchupDetail.winnerName}, {closestMatchupDetail.season} Wk {closestMatchupDetail.week})</p>
                 )}
                 {largestBlowoutDetail && (
@@ -479,8 +462,8 @@ export default function H2HPage() {
                         <TableRow>
                           <TableHead>Season</TableHead>
                           <TableHead>Round</TableHead>
-                          <TableHead className="text-right">{displayedGm1Name}'s Score</TableHead>
-                          <TableHead className="text-right">{displayedGm2Name}'s Score</TableHead>
+                          <TableHead className="text-left">{displayedGm1Name}'s Score</TableHead> {/* Changed to text-left */}
+                          <TableHead className="text-left">{displayedGm2Name}'s Score</TableHead> {/* Changed to text-left */}
                           <TableHead>Winner</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -495,8 +478,8 @@ export default function H2HPage() {
                                 {isChampionshipGame && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
                                 {roundDescription}
                              </TableCell>
-                             <TableCell className={cn("text-right font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell>
-                             <TableCell className={cn("text-right font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell>
+                             <TableCell className={cn("text-left font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell> {/* Changed to text-left */}
+                             <TableCell className={cn("text-left font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell> {/* Changed to text-left */}
                              <TableCell className="font-semibold">
                                 {getWinnerName(meeting.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}
                              </TableCell>
@@ -510,7 +493,7 @@ export default function H2HPage() {
                 )}
             </CardContent>
         </Card>
-          
+
           <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><CalendarDays /> Full Matchup History</CardTitle>
@@ -521,16 +504,16 @@ export default function H2HPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('season_id')} className="px-1 group text-xs">Season {getSortIcon('season_id')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('fantasy_week')} className="px-1 group text-xs">Week {getSortIcon('fantasy_week')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_team_name')} className="px-1 group text-xs">{displayedGm1Name}'s Team {getSortIcon('owner1_team_name')}</Button></TableHead>
-                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group justify-end w-full text-xs">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
-                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group justify-end w-full text-xs">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_team_name')} className="px-1 group text-xs">{displayedGm2Name}'s Team {getSortIcon('owner2_team_name')}</Button></TableHead>
-                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('winner_name')} className="px-1 group text-xs">Winner {getSortIcon('winner_name')}</Button></TableHead>
-                      <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group justify-end w-full text-xs">Margin {getSortIcon('margin')}</Button></TableHead>
-                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('is_playoff_display')} className="px-1 group text-xs">Playoff {getSortIcon('is_playoff_display')}</Button></TableHead>
-                      <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('is_championship_display')} className="px-1 group text-xs">Championship {getSortIcon('is_championship_display')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('season_id')} className="px-1 group text-xs justify-start">Season {getSortIcon('season_id')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('fantasy_week')} className="px-1 group text-xs justify-start">Week {getSortIcon('fantasy_week')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_team_name')} className="px-1 group text-xs justify-start">{displayedGm1Name}'s Team {getSortIcon('owner1_team_name')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group justify-start w-full text-xs">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group justify-start w-full text-xs">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_team_name')} className="px-1 group text-xs justify-start">{displayedGm2Name}'s Team {getSortIcon('owner2_team_name')}</Button></TableHead>
+                      <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('winner_name')} className="px-1 group text-xs justify-start">Winner {getSortIcon('winner_name')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group justify-start w-full text-xs">Margin {getSortIcon('margin')}</Button></TableHead>
+                      <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_playoff_display')} className="px-1 group text-xs justify-start">Playoff {getSortIcon('is_playoff_display')}</Button></TableHead>
+                      <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_championship_display')} className="px-1 group text-xs justify-start">Championship {getSortIcon('is_championship_display')}</Button></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -539,13 +522,13 @@ export default function H2HPage() {
                           <TableCell className="text-xs">{matchup.season_id}</TableCell>
                           <TableCell className="text-xs">{matchup.fantasy_week}</TableCell>
                           <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner1_team_name}</TableCell>
-                          <TableCell className={cn("text-right font-semibold text-xs", matchup.owner1_score > matchup.owner2_score ? 'text-green-600' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600' : '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
-                          <TableCell className={cn("text-right font-semibold text-xs", matchup.owner2_score > matchup.owner1_score ? 'text-green-600' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600' : '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
+                          <TableCell className={cn("text-left font-semibold text-xs", matchup.owner1_score > matchup.owner2_score ? 'text-green-600' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600' : '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
+                          <TableCell className={cn("text-left font-semibold text-xs", matchup.owner2_score > matchup.owner1_score ? 'text-green-600' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600' : '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
                           <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner2_team_name}</TableCell>
-                          <TableCell className="text-center text-xs font-medium">{getWinnerName(matchup.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}</TableCell>
-                          <TableCell className="text-right text-xs">{matchup.margin.toFixed(1)}</TableCell>
-                          <TableCell className="text-center text-xs">{matchup.is_playoff_matchup ? <CheckCircle2 className="h-4 w-4 text-green-500 mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground mx-auto" />}</TableCell>
-                          <TableCell className="text-center text-xs">{matchup.is_championship_matchup ? <Trophy className="h-4 w-4 text-yellow-500 mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground mx-auto" />}</TableCell>
+                          <TableCell className="text-left text-xs font-medium">{getWinnerName(matchup.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}</TableCell>
+                          <TableCell className="text-left text-xs">{matchup.margin.toFixed(1)}</TableCell>
+                          <TableCell className="text-left text-xs">{matchup.is_playoff_matchup ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-muted-foreground" />}</TableCell>
+                          <TableCell className="text-left text-xs">{matchup.is_championship_matchup ? <Trophy className="h-4 w-4 text-yellow-500" /> : <XCircle className="h-4 w-4 text-muted-foreground" />}</TableCell>
                         </TableRow>
                       )
                     )}
@@ -554,9 +537,11 @@ export default function H2HPage() {
               </div>
             </CardContent>
           </Card>
-          
+
         </div>
       )}
     </div>
   );
 }
+
+    
