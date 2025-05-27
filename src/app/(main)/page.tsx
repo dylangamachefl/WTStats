@@ -53,11 +53,9 @@ import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
-  LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, BarChart, Bar, Cell as RechartsCell, PieChart as RechartsPieChart, Pie, LabelList, ScatterChart, Scatter, ZAxis
+  ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, BarChart as RechartsBarChartImport, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, Bar, ScatterChart, Scatter, ZAxis, LineChart as RechartsLineChartImport, LabelList
 } from 'recharts';
-import {
-  ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch
-} from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -74,7 +72,8 @@ import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
 // These mocks are used for populating the Select dropdowns.
 const mockSeasonsForTabs: SeasonType_Mock[] = [
   { id: "2009", year: 2009 }, { id: "2010", year: 2010 }, { id: "2011", year: 2011 }, { id: "2012", year: 2012 }, { id: "2013", year: 2013 }, { id: "2014", year: 2014 }, { id: "2015", year: 2015 }, { id: "2016", year: 2016 }, { id: "2017", year: 2017 }, { id: "2018", year: 2018 }, { id: "2019", year: 2019 }, { id: "2020", year: 2020 }, { id: "2021", year: 2021 }, { id: "2022", year: 2022 }, { id: "2023", year: 2023 }, { id: "2024", year: 2024 },
-];
+].sort((a,b) => b.year - a.year);
+
 
 const mockGmsForTabs: GM_Mock[] = [
   { id: "chris", name: "Chris" }, { id: "dan", name: "Dan" }, { id: "dylan", name: "Dylan" }, { id: "fitz", name: "Fitz" }, { id: "jack", name: "Jack" }, { id: "jake", name: "Jake" }, { id: "josh", name: "Josh" }, { id: "lac", name: "Lac" }, { id: "mark", name: "Mark" }, { id: "nick", name: "Nick" }, { id: "sean", name: "Sean" }, { id: "will", name: "Will" }, { id: "zach", name: "Zach" },
@@ -126,31 +125,33 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     if (rank === null || rank === undefined) return defaultStyle;
 
     let textClass = 'text-neutral-800 font-semibold';
+    let borderClass = '';
 
     if (rank === 1) {
         return {
-            cellClasses: cn('bg-yellow-400 text-neutral-800 font-semibold'), // No border
+            cellClasses: cn('bg-yellow-400', textClass),
         };
     }
-    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' };
+    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' }; // Should not happen if rank > 1
+    
     const rankPositionInScale = rank - 2; 
     const numRanksToScale = maxRankInYear - 2;
 
-    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' };
+    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; // e.g. 2-team league, rank 2 is last
 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5;
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Treat a 2nd place in a 2-team league as mid-scale for coloring
 
     const NEUTRAL_BAND_START_PERCENT = 0.425; 
     const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        return { cellClasses: 'text-foreground font-semibold' }; // Neutral (default background)
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
+        return { cellClasses: cn('text-foreground font-semibold') }; // Neutral (default background)
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better than average (excluding 1st)
         const intensity = (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT;
         if (intensity > 0.66) return { cellClasses: cn('bg-green-200', textClass) }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-green-100', textClass) };
         return { cellClasses: cn('bg-green-50', textClass) }; 
-    } else { 
+    } else { // Worse than average
         const intensity = (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT);
         if (intensity > 0.66) return { cellClasses: cn('bg-red-200', textClass) }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-red-100', textClass) };
@@ -317,7 +318,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   return (
     <div className="space-y-8">
-      <Card className="overflow-hidden"> {/* Added overflow-hidden */}
+      <Card className="overflow-hidden"> 
         <CardHeader>
           <CardTitle>Championship Timeline</CardTitle>
           <CardDescription>A chronological display of league champions and their key players.</CardDescription>
@@ -335,7 +336,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <CarouselItem key={index} className="p-1 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                    <Card className="flex flex-col p-4 h-full gap-3 rounded-xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1">
                     <div className="flex flex-col items-center text-center pt-3 relative">
-                       <Badge
+                      <Badge
                         variant="default"
                         className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
                       >
@@ -436,7 +437,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                     </TableHead>
                     <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
                         <Button variant="ghost" onClick={() => requestCareerSort('championships')}  className="w-full justify-start px-0 group text-xs md:text-sm py-1">
-                        Champs {getSortIcon(careerSortConfig, 'championships')}
+                        Rings {getSortIcon(careerSortConfig, 'championships')}
                         </Button>
                     </TableHead>
                     <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
@@ -459,15 +460,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                     <TableRow key={stat.name}>
-                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{stat.name}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.wins}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.losses}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.ties}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.winPct}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.championships}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{stat.name}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.wins}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.losses}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.ties}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.winPct}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.championships}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
@@ -508,7 +509,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. 1st place is yellow. Ranks 2nd and below are on a green (good) to red (bad) scale, with neutral ranks having no specific background. Hover over a cell to see the exact rank.</CardDescription>
+          <CardDescription>GM finishing positions by year. 1st place is yellow. Ranks 2nd and below are on a green (good) to red (bad) scale, with neutral ranks having no specific background.</CardDescription>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <Table className="table-auto">
@@ -574,33 +575,33 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                     <TableRow key={gmPerf.gm_name}>
-                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{gmPerf.gm_name}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.total_matchups}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.wins}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.losses}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{gmPerf.gm_name}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.total_matchups}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.wins}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.losses}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
                 </Table>
             </CardContent>
         </Card>
-         <Card className="overflow-hidden">
+        <Card className="overflow-hidden">
             <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
             <CardContent className="h-[300px] pt-6">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sortedPlayoffRates}>
+                <RechartsBarChartImport data={sortedPlayoffRates}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="gm_name" />
                   <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
                   <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
                   <RechartsLegend />
                   <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
-                </BarChart>
+                </RechartsBarChartImport>
               </ResponsiveContainer>
             </CardContent>
           </Card>
@@ -672,32 +673,30 @@ const PlayoffMatchupCard = ({
   matchup: PlayoffMatchup;
   roundName: string;
   isChampionship?: boolean;
-}) => {
-  return (
-    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
-      <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
-      <div className="text-xs space-y-1">
-        <div className="flex justify-between">
-          <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
-          <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
-          <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
-        </div>
-        {matchup.home.score !== undefined && matchup.home.score !== null && matchup.away.score !== undefined && matchup.away.score !== null && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
-          </p>
-        )}
+}) => (
+  <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
+    <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
+    <div className="text-xs space-y-1">
+      <div className="flex justify-between">
+        <span>{matchup.home.seed}. {matchup.home.name} ({matchup.home.owner})</span>
+        <span className="font-medium">{matchup.home.score?.toFixed(1) ?? 'N/A'}</span>
       </div>
+      <div className="flex justify-between">
+        <span>{matchup.away.seed}. {matchup.away.name} ({matchup.away.owner})</span>
+        <span className="font-medium">{matchup.away.score?.toFixed(1) ?? 'N/A'}</span>
+      </div>
+      {matchup.home.score !== undefined && matchup.home.score !== null && matchup.away.score !== undefined && matchup.away.score !== null && (
+        <p className="text-xs text-muted-foreground mt-1">
+          Winner: {matchup.home.score > matchup.away.score ? matchup.home.owner : matchup.away.owner}
+        </p>
+      )}
     </div>
-  );
-};
+  </div>
+);
 
 
 const SeasonDetail = () => {
-  const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[mockSeasonsForTabs.length-1]?.id);
+  const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasonsForTabs[0]?.id);
   const [seasonData, setSeasonData] = useState<SeasonDetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -727,10 +726,10 @@ const SeasonDetail = () => {
           const jsonData: SeasonDetailData = await res.json(); 
           console.log(`[SeasonDetail] Successfully fetched and parsed data for ${selectedSeason}:`, jsonData);
           
-          if (!jsonData || !jsonData.seasonData || !jsonData.standingsData) {
-            console.error("[SeasonDetail] Fetched data is missing crucial fields (e.g. seasonData or standingsData). Full data:", jsonData);
+          if (!jsonData || typeof jsonData !== 'object' || !jsonData.seasonData || !jsonData.standingsData) {
+            console.error("[SeasonDetail] Fetched data is missing crucial fields (e.g. seasonData or standingsData) or is not an object. Full data:", jsonData);
             setSeasonData(null); 
-            throw new Error(`Fetched data for ${selectedSeason} is incomplete. Essential fields like 'seasonData' or 'standingsData' are missing.`);
+            throw new Error(`Fetched data for ${selectedSeason} is incomplete or not in the expected object format. Essential fields like 'seasonData' or 'standingsData' are missing.`);
           }
           setSeasonData(jsonData);
         })
@@ -822,7 +821,7 @@ const SeasonDetail = () => {
                 <SelectValue placeholder="Select a season" />
                 </SelectTrigger>
                 <SelectContent>
-                {mockSeasonsForTabs.sort((a,b) => b.year - a.year).map(season => (
+                {mockSeasonsForTabs.map(season => (
                     <SelectItem key={season.id} value={season.id}>{season.year} Season</SelectItem>
                 ))}
                 </SelectContent>
@@ -879,7 +878,7 @@ const SeasonDetail = () => {
                                 {seasonData.standingsData.map((s: SeasonStandingEntry) => (
                                 <TableRow key={s.owner_name}>
                                     <TableCell className="font-medium text-center">
-                                    {s.regular_season_finish === 1 ? <Trophy className="h-5 w-5 text-yellow-500 inline-block" /> : s.regular_season_finish}
+                                        {s.regular_season_finish}
                                     </TableCell>
                                     <TableCell>{s.wt_team_name}</TableCell>
                                     <TableCell>{s.owner_name}</TableCell>
@@ -1093,7 +1092,7 @@ const SeasonDetail = () => {
                                           <TableRow key={sos.owner_name}>
                                           <TableCell className="text-left">{sos.rank}</TableCell>
                                           <TableCell className="text-left">{sos.team}</TableCell>
-                                          <TableCell className="text-left">{sos.owner_name}</TableCell>
+                                          <TableCell className="text-left">{sos.owner}</TableCell>
                                           <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
@@ -1191,8 +1190,8 @@ const SeasonDetail = () => {
                                                     {players.slice(0, 5).map((player: TopPerformerPlayer, idx: number) => (
                                                         <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
                                                             <div className="flex items-center gap-1.5">
-                                                                <TrendingUp size={14} className="text-muted-foreground" />
-                                                                <span>{player.player} ({player.team})</span>
+                                                                <span className="mr-1.5 font-medium">{(idx + 1)}.</span>
+                                                                <span>{player.player} ({player.fantasyTeam || 'N/A'})</span>
                                                             </div>
                                                             <span className="font-medium">{player.totalPoints?.toFixed(1) ?? 'N/A'}</span>
                                                         </div>
@@ -1232,7 +1231,7 @@ const SeasonDetail = () => {
                                         {seasonData.bestOverallGamesData.map((game: SeasonBestOverallGameEntry) => (
                                             <TableRow key={game.rank}>
                                                 <TableCell>{game.rank}</TableCell>
-                                                <TableCell>{game.player} ({game.team})</TableCell>
+                                                <TableCell>{game.player} ({game.fantasyTeam || 'Unmanaged'})</TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline" className={cn("text-xs font-semibold", getPositionBadgeClass(game.position))}>
                                                         {game.position}
@@ -1410,7 +1409,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
         <h4 className="text-md font-semibold mb-2 text-center">Weekly Scoring Trend</h4>
         <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={games} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <RechartsLineChartImport data={games} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="week" tickFormatter={(tick) => `Wk ${tick}`} />
                     <YAxis domain={['auto', 'auto']} />
@@ -1418,7 +1417,7 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
                     <RechartsLegend verticalAlign="bottom" wrapperStyle={{paddingTop: "10px"}}/>
                     <Line type="monotone" dataKey="points" name={`${gmName || 'GM'} Points`} stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 6 }} />
                     <Line type="monotone" dataKey="opponent_points" name="Opponent Points" stroke="hsl(var(--chart-3))" strokeWidth={2} activeDot={{ r: 6 }} />
-                </LineChart>
+                </RechartsLineChartImport>
             </ResponsiveContainer>
         </div>
       </CardContent>
@@ -1500,6 +1499,7 @@ const GMCareer = () => {
           }
           setGmData(data);
           
+          // Default to all-seasons view when a new GM is selected
           setSelectedViewOption("all-seasons");
         })
         .catch(err => {
@@ -1523,7 +1523,7 @@ const GMCareer = () => {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
       setGmIndividualSeasonData(null); 
-      setActiveGmSeasonTab("season-summary");
+      setActiveGmSeasonTab("season-summary"); // Default to summary tab when new season data loads
 
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
@@ -1561,7 +1561,7 @@ const GMCareer = () => {
     if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
       fetchIndividualSeasonData(gmData.gmInfo.slug, gmData.gmInfo.id, selectedViewOption);
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); 
+        setGmIndividualSeasonData(null); // Clear individual season data if "All Seasons" is selected
     }
   }, [selectedViewOption, gmData]);
 
@@ -1840,7 +1840,7 @@ const GMCareer = () => {
                 <CardHeader><CardTitle className="text-xl">Season Progression</CardTitle></CardHeader>
                 <CardContent className="h-[350px] pt-6">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={gmData.seasonProgression}>
+                    <RechartsLineChartImport data={gmData.seasonProgression}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="year" />
                       <YAxis reversed={true} allowDecimals={false} domain={['dataMin -1', 'dataMax + 1']} tickFormatter={(value) => Math.round(value).toString()} />
@@ -1863,7 +1863,7 @@ const GMCareer = () => {
                         name="PF Rank" 
                         activeDot={{ r: 6 }}
                       />
-                    </LineChart>
+                    </RechartsLineChartImport>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
@@ -1899,7 +1899,7 @@ const GMCareer = () => {
                 <CardContent>
                     <div className="h-[250px] w-full max-w-lg mx-auto">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={gmData.positionStrength} layout="vertical" margin={{ right: 20 }}>
+                            <RechartsBarChartImport data={gmData.positionStrength} layout="vertical" margin={{ right: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" />
                                 <YAxis dataKey="position" type="category" width={80} tickFormatter={(value) => getPositionName(value)} />
@@ -1910,7 +1910,7 @@ const GMCareer = () => {
                                         <RechartsCell key={`cell-${index}`} fill={entry.value >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />
                                     ))}
                                 </Bar>
-                            </BarChart>
+                            </RechartsBarChartImport>
                         </ResponsiveContainer>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2 text-center">Positive values indicate stronger than league average at that position, negative values indicate weaker.</p>
@@ -2031,7 +2031,7 @@ const GMCareer = () => {
                                             <h3 className="text-md font-semibold text-center mb-2">Started Points by Position (%)</h3>
                                             <div className="h-[300px]">
                                                 <ResponsiveContainer width="100%" height="100%">
-                                                    <RechartsPieChart>
+                                                    <RechartsPieChartComponent>
                                                         <Pie
                                                             data={pieChartData}
                                                             cx="50%"
@@ -2066,7 +2066,7 @@ const GMCareer = () => {
                                                             }
                                                             wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}
                                                         />
-                                                    </RechartsPieChart>
+                                                    </RechartsPieChartComponent>
                                                 </ResponsiveContainer>
                                             </div>
                                         </div>
@@ -2074,7 +2074,7 @@ const GMCareer = () => {
                                             <h3 className="text-md font-semibold text-center mb-2">Started Points vs. League Average</h3>
                                             <div className="h-[300px]">
                                                 <ResponsiveContainer width="100%" height="100%">
-                                                    <BarChart 
+                                                    <RechartsBarChartImport 
                                                         layout="vertical" 
                                                         data={barChartData}
                                                         margin={{ top: 5, right: 30, left: 5, bottom: 20 }}
@@ -2086,7 +2086,7 @@ const GMCareer = () => {
                                                         <RechartsLegend verticalAlign="bottom" wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
                                                         <Bar dataKey="GM Started Pts" fill={GM_CHART_COLORS.GM_STARTED_PTS} barSize={12} />
                                                         <Bar dataKey="League Avg Pts" fill={GM_CHART_COLORS.LEAGUE_AVG_PTS} barSize={12} />
-                                                    </BarChart>
+                                                    </RechartsBarChartImport>
                                                 </ResponsiveContainer>
                                             </div>
                                             <p className="text-xs text-muted-foreground text-center mt-1">* League Average data is placeholder if not available.</p>
@@ -2237,7 +2237,7 @@ const GMCareer = () => {
                                         <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
                                         <CardContent className="h-[400px] pt-6">
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                                                <RechartsLineChartImport data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                                                     <CartesianGrid strokeDasharray="3 3" />
                                                     <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
                                                     <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
@@ -2254,7 +2254,7 @@ const GMCareer = () => {
                                                             activeDot={{ r: 6 }} 
                                                         />
                                                     ))}
-                                                </LineChart>
+                                                </RechartsLineChartImport>
                                             </ResponsiveContainer>
                                         </CardContent>
                                         <CardFooter className="text-xs text-muted-foreground pt-2">
