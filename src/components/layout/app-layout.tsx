@@ -40,7 +40,7 @@ const navItems: NavItemConfig[] = [
     href: "/",
     label: "League History",
     icon: <Trophy />,
-    matchSegments: 1, // Only active if pathname is exactly "/"
+    matchSegments: 1, 
     subItems: [
       { href: "/?section=all-seasons", label: "All Seasons Overview", queryParamValue: "all-seasons" },
       { href: "/?section=season-detail", label: "Season Detail", queryParamValue: "season-detail" },
@@ -51,7 +51,7 @@ const navItems: NavItemConfig[] = [
     href: "/draft-history",
     label: "Draft History",
     icon: <ListChecks />,
-    matchSegments: 2, // Active if first segment is "draft-history"
+    matchSegments: 2, 
     subItems: [
       { href: "/draft-history?section=overview", label: "Overview", queryParamValue: "overview" },
       { href: "/draft-history?section=season-view", label: "Season View", queryParamValue: "season-view" },
@@ -71,8 +71,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
     const isBasePathCorrect = pathname === href || (href === "/" && pathname.startsWith("/?")) || (href.startsWith("/") && pathname.startsWith(href) && (pathname.length === href.length || pathname[href.length] === '?'));
 
     if (isSubItem && subItemQueryParam) {
-        // For sub-items, the main path must match, and the query param must match
-        // or (if it's the default sub-item like 'all-seasons' or 'overview') the query param can be absent.
         const isDefaultSubItemForLeagueHistory = href === "/" && subItemQueryParam === 'all-seasons';
         const isDefaultSubItemForDraftHistory = href === "/draft-history" && subItemQueryParam === 'overview';
         
@@ -81,8 +79,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 ((isDefaultSubItemForLeagueHistory || isDefaultSubItemForDraftHistory) && !currentSectionQuery));
     }
     
-    // For main items
-    if (pathname === "/" && href === "/") return true; // Special case for homepage
+    if (pathname === "/" && href === "/") return true;
     if (href !== "/") return pathname.startsWith(href);
 
     return false;
@@ -96,12 +93,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
         const activeSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === currentSectionQuery);
         if (activeSubItem) return activeSubItem.label;
       }
-      // Fallback to default subitem label or main item label if no specific subitem is active via query
       if (activeMainItem.subItems) {
-        const defaultSubItemQuery = activeMainItem.href === "/" ? "all-seasons" : "overview";
-        const defaultSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === defaultSubItemQuery);
-        if (defaultSubItem && (currentSectionQuery === defaultSubItemQuery || !currentSectionQuery)) {
-          return defaultSubItem.label;
+        const defaultSubItemQuery = activeMainItem.href === "/" ? "all-seasons" : (activeMainItem.href === "/draft-history" ? "overview" : undefined);
+        if (defaultSubItemQuery) {
+            const defaultSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === defaultSubItemQuery);
+            if (defaultSubItem && (currentSectionQuery === defaultSubItemQuery || !currentSectionQuery)) {
+              return defaultSubItem.label;
+            }
         }
       }
       return activeMainItem.label;
@@ -172,14 +170,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
            </div>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset className="flex flex-col">
+      <SidebarInset className="flex flex-col overflow-x-hidden"> {/* Added overflow-x-hidden here */}
         <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
-          <h1 className="text-xl font-semibold">
-            {getPageTitle()}
-          </h1>
+          {/* Removed the h1 page title */}
           <div>
-            {/* User Avatar or other header items can go here */}
+            {/* User Avatar or other header items can go here, ensure it doesn't push layout if empty */}
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
@@ -189,5 +185,3 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
-
-    
