@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Removed Button import as it's no longer used for a compare button
+import { Button } from "@/components/ui/button"; // Added Button import
 import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo, H2HOwnerInfo } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, DotProps } from 'recharts';
 import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown, BarChart2, CalendarDays, Info } from 'lucide-react';
@@ -69,7 +69,7 @@ export default function H2HPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<MatchupSortConfig>({ key: 'season_id', direction: 'desc' });
-  // comparisonAttempted state is removed
+
 
   const { closestMatchupDetail, largestBlowoutDetail } = useMemo(() => {
     if (!comparisonData?.matchup_timeline || comparisonData.matchup_timeline.length === 0) {
@@ -125,7 +125,7 @@ export default function H2HPage() {
 
       setLoading(true);
       setError(null);
-      setComparisonData(null);
+      setComparisonData(null); // Clear previous data before fetching new
 
       const numGm1Id = parseInt(gm1Id);
       const numGm2Id = parseInt(gm2Id);
@@ -138,8 +138,8 @@ export default function H2HPage() {
           const response = await fetch(filePath);
           if (response.status === 404) {
             console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
-            setError(null);
-            setComparisonData(null);
+            setError(null); // Clear generic error
+            setComparisonData(null); // Ensure no data is displayed
           } else if (!response.ok) {
             const errorText = await response.text();
             console.error("[H2HPage] Fetch failed:", response.status, errorText);
@@ -148,11 +148,13 @@ export default function H2HPage() {
             const data: H2HRivalryData = await response.json();
             console.log("[H2HPage] Fetched H2H data:", data);
 
+            // Determine if GM1 in selection matches owner1_info in data
             if (data.owner1_info.owner_id.toString() === gm1Id) {
               setComparisonData(data);
               setDisplayedGm1Name(data.owner1_info.owner_name);
               setDisplayedGm2Name(data.owner2_info.owner_name);
             } else if (data.owner2_info.owner_id.toString() === gm1Id) {
+              // Selected GM1 matches owner2_info, so we need to swap
               setDisplayedGm1Name(data.owner2_info.owner_name);
               setDisplayedGm2Name(data.owner1_info.owner_name);
               setComparisonData({
@@ -175,6 +177,7 @@ export default function H2HPage() {
                   owner2_score: m.owner1_score,
                   owner1_team_name: m.owner2_team_name,
                   owner2_team_name: m.owner1_team_name,
+                  // winner_owner_id remains the same absolute ID
                 })),
                 playoff_meetings: {
                   ...data.playoff_meetings,
@@ -184,12 +187,13 @@ export default function H2HPage() {
                       ...pm,
                       owner1_score: pm.owner2_score,
                       owner2_score: pm.owner1_score,
+                      // winner_owner_id remains the same absolute ID
                   }))
                 }
               });
             } else {
               console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is, but this might be incorrect. Ensure JSON owner_ids match selection IDs.");
-              setComparisonData(data);
+              setComparisonData(data); // Display as-is if no clear match for swapping
               setDisplayedGm1Name(data.owner1_info.owner_name);
               setDisplayedGm2Name(data.owner2_info.owner_name);
             }
@@ -208,6 +212,7 @@ export default function H2HPage() {
       };
       fetchData();
     } else {
+      // Clear data if GMs are not fully selected
       setComparisonData(null);
       setError(null);
       setLoading(false);
@@ -330,7 +335,6 @@ export default function H2HPage() {
               </SelectContent>
             </Select>
           </div>
-          {/* Compare Button Removed */}
         </CardContent>
         {error && !loading && (
             <CardContent><p className="text-destructive text-center py-2">{error}</p></CardContent>
@@ -345,7 +349,6 @@ export default function H2HPage() {
         </div>
       )}
 
-      {/* Show "No data found" message if not loading, no error, no data, but GMs are validly selected */}
       {!loading && !error && !comparisonData && gm1Id && gm2Id && gm1Id !== gm2Id && (
         <Card>
             <CardContent className="pt-6 text-center text-muted-foreground">
@@ -462,8 +465,8 @@ export default function H2HPage() {
                         <TableRow>
                           <TableHead>Season</TableHead>
                           <TableHead>Round</TableHead>
-                          <TableHead className="text-left">{displayedGm1Name}'s Score</TableHead> {/* Changed to text-left */}
-                          <TableHead className="text-left">{displayedGm2Name}'s Score</TableHead> {/* Changed to text-left */}
+                          <TableHead className="text-left">{displayedGm1Name}'s Score</TableHead> 
+                          <TableHead className="text-left">{displayedGm2Name}'s Score</TableHead> 
                           <TableHead>Winner</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -478,8 +481,8 @@ export default function H2HPage() {
                                 {isChampionshipGame && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
                                 {roundDescription}
                              </TableCell>
-                             <TableCell className={cn("text-left font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell> {/* Changed to text-left */}
-                             <TableCell className={cn("text-left font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell> {/* Changed to text-left */}
+                             <TableCell className={cn("text-left font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell> 
+                             <TableCell className={cn("text-left font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell> 
                              <TableCell className="font-semibold">
                                 {getWinnerName(meeting.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}
                              </TableCell>
@@ -507,11 +510,11 @@ export default function H2HPage() {
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('season_id')} className="px-1 group text-xs justify-start">Season {getSortIcon('season_id')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('fantasy_week')} className="px-1 group text-xs justify-start">Week {getSortIcon('fantasy_week')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_team_name')} className="px-1 group text-xs justify-start">{displayedGm1Name}'s Team {getSortIcon('owner1_team_name')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group justify-start w-full text-xs">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group justify-start w-full text-xs">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group text-xs justify-start">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group text-xs justify-start">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_team_name')} className="px-1 group text-xs justify-start">{displayedGm2Name}'s Team {getSortIcon('owner2_team_name')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('winner_name')} className="px-1 group text-xs justify-start">Winner {getSortIcon('winner_name')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group justify-start w-full text-xs">Margin {getSortIcon('margin')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group text-xs justify-start">Margin {getSortIcon('margin')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_playoff_display')} className="px-1 group text-xs justify-start">Playoff {getSortIcon('is_playoff_display')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_championship_display')} className="px-1 group text-xs justify-start">Championship {getSortIcon('is_championship_display')}</Button></TableHead>
                     </TableRow>
@@ -519,12 +522,12 @@ export default function H2HPage() {
                   <TableBody>
                     {sortedMatchupTimeline.map((matchup, index) => (
                         <TableRow key={matchup.matchup_id || index}>
-                          <TableCell className="text-xs">{matchup.season_id}</TableCell>
-                          <TableCell className="text-xs">{matchup.fantasy_week}</TableCell>
-                          <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner1_team_name}</TableCell>
+                          <TableCell className="text-xs text-left">{matchup.season_id}</TableCell>
+                          <TableCell className="text-xs text-left">{matchup.fantasy_week}</TableCell>
+                          <TableCell className="text-xs text-left truncate max-w-[100px]">{matchup.owner1_team_name}</TableCell>
                           <TableCell className={cn("text-left font-semibold text-xs", matchup.owner1_score > matchup.owner2_score ? 'text-green-600' : matchup.owner1_score < matchup.owner2_score ? 'text-red-600' : '')}>{matchup.owner1_score.toFixed(1)}</TableCell>
                           <TableCell className={cn("text-left font-semibold text-xs", matchup.owner2_score > matchup.owner1_score ? 'text-green-600' : matchup.owner2_score < matchup.owner1_score ? 'text-red-600' : '')}>{matchup.owner2_score.toFixed(1)}</TableCell>
-                          <TableCell className="text-xs truncate max-w-[100px]">{matchup.owner2_team_name}</TableCell>
+                          <TableCell className="text-xs text-left truncate max-w-[100px]">{matchup.owner2_team_name}</TableCell>
                           <TableCell className="text-left text-xs font-medium">{getWinnerName(matchup.winner_owner_id, comparisonData.owner1_info, comparisonData.owner2_info)}</TableCell>
                           <TableCell className="text-left text-xs">{matchup.margin.toFixed(1)}</TableCell>
                           <TableCell className="text-left text-xs">{matchup.is_playoff_matchup ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-muted-foreground" />}</TableCell>
@@ -543,5 +546,7 @@ export default function H2HPage() {
     </div>
   );
 }
+
+    
 
     
