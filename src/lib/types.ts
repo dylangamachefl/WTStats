@@ -282,7 +282,7 @@ export interface GMCareerData {
   rivalryPerformance: RivalryPerformanceEntry[];
 }
 
-// === GM Individual Season Detail (gm_career_GMID_YEAR.json) ===
+// GM Individual Season Detail (gm_career_GMID_YEAR.json)
 export interface GMSeasonPerformance {
   wins: number;
   losses: number;
@@ -355,8 +355,8 @@ export interface GMPlayerPerformanceHighlight {
 
 export interface GMPlayerPerformanceData {
   playerSummaryPerformance: GMPlayerSummaryPerformanceEntry[];
-  overPerformer: GMPlayerPerformanceHighlight;
-  underPerformer: GMPlayerPerformanceHighlight;
+  overPerformer?: GMPlayerPerformanceHighlight; // Made optional
+  underPerformer?: GMPlayerPerformanceHighlight; // Made optional
 }
 
 export interface GMLineupOptimizationWeekly {
@@ -382,13 +382,13 @@ export interface GMLineupOptimizationFeelingItDetail {
 }
 
 export interface GMLineupOptimizationData {
-  weeklyOptimization: GMLineupOptimizationWeekly[];
-  feelingItSummary: {
+  weeklyOptimization?: GMLineupOptimizationWeekly[]; // Made optional
+  feelingItSummary?: { // Made optional
     totalStarts: number | null;
     successRate: number | null;
     avgPointsGainedLost: number | null;
     avgProjectionDifference: number | null;
-    details: GMLineupOptimizationFeelingItDetail[];
+    details?: GMLineupOptimizationFeelingItDetail[]; // Made optional
   };
 }
 
@@ -415,8 +415,8 @@ export interface GMPositionalAdvantageCumulative {
 }
 
 export interface GMPositionalAdvantageData {
-  weeklyPositionalAdvantage: GMPositionalAdvantageWeeklyEntry[];
-  cumulativeWeeklyPositionalAdvantage: GMPositionalAdvantageCumulative[];
+  weeklyPositionalAdvantage?: GMPositionalAdvantageWeeklyEntry[]; // Made optional
+  cumulativeWeeklyPositionalAdvantage?: GMPositionalAdvantageCumulative[]; // Made optional
 }
 
 export interface GMStreamingSummaryEntry {
@@ -438,8 +438,8 @@ export interface GMStreamingWeeklyPerformanceEntry {
 }
 
 export interface GMStreamingSuccessData {
-  streamingSummary: GMStreamingSummaryEntry[];
-  streamingWeeklyPerformance: {
+  streamingSummary?: GMStreamingSummaryEntry[]; // Made optional
+  streamingWeeklyPerformance?: { // Made optional
     [position: string]: GMStreamingWeeklyPerformanceEntry[];
   };
 }
@@ -515,10 +515,9 @@ export interface SeasonHighlights {
   top_busts_by_pvdre: DraftPickDetail[];
 }
 
-// This is the type for the root object in season_YYYY_draft_detail.json
 export interface SeasonDraftDetailJson {
   draft_board: DraftPickDetail[];
-  team_draft_performance_ranking?: TeamDraftPerformanceEntry[]; // Renamed from draft_grades
+  team_draft_performance_ranking?: TeamDraftPerformanceEntry[]; 
   season_highlights?: SeasonHighlights;
 }
 
@@ -553,8 +552,8 @@ export interface GMDraftHistoryDetailData {
   gm_name: string;
   career_summary: GMDraftHistoryCareerSummary;
   round_efficiency: GMDraftHistoryRoundEfficiencyEntry[];
-  best_picks: DraftPickDetail[]; // Reusing DraftPickDetail
-  worst_picks: DraftPickDetail[]; // Reusing DraftPickDetail
+  best_picks: DraftPickDetail[]; 
+  worst_picks: DraftPickDetail[]; 
   positional_profile: GMDraftPositionalProfileEntry[];
   draft_strategy_summary: string;
 }
@@ -606,7 +605,7 @@ export interface ExtremeMatchupInfo {
 export interface H2HPlayoffMeetingDetail {
   season_id: number;
   fantasy_week: string; 
-  matchup_type?: string; // Added for more descriptive playoff round names
+  matchup_type?: string; 
   owner1_score: number;
   owner2_score: number;
   winner_owner_id: number | null; 
@@ -629,10 +628,26 @@ export interface H2HRivalryData {
 }
 
 // For the root object of /data/draft_data/gm_season_performance_grid.json
+export interface GMAverageMetrics {
+  gm_id: number;
+  gm_name?: string; // Optional: primarily match by gm_id
+  avg_pvdre?: number | null;
+  pvdre_hit_rate?: number | null;
+  avg_value_vs_adp?: number | null;
+}
+
+export interface SeasonAverageMetrics {
+  season_id: number;
+  avg_pvdre?: number | null;
+  pvdre_hit_rate?: number | null;
+  avg_value_vs_adp?: number | null;
+}
 export interface DraftOverviewData {
   gmSeasonPerformanceGrid: GMDraftSeasonPerformance[];
-  allTimeDraftSteals: DraftPickDetail[]; // Assuming DraftPickDetail is suitable
-  allTimeDraftBusts: DraftPickDetail[];  // Assuming DraftPickDetail is suitable
+  allTimeDraftSteals: DraftPickDetail[]; 
+  allTimeDraftBusts: DraftPickDetail[];  
+  gmAverages?: GMAverageMetrics[];      
+  seasonAverages?: SeasonAverageMetrics[]; 
 }
 
 
@@ -640,3 +655,5 @@ export interface Season {
   id: string;
   year: number;
 }
+
+```

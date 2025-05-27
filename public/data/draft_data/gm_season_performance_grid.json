@@ -1805,6 +1805,184 @@
       "avg_value_vs_adp": -14.2
     }
   ],
+  "gmAverages": [
+    {
+      "gm_id": 1,
+      "avg_pvdre": -27.88,
+      "pvdre_hit_rate": 0.3406,
+      "avg_value_vs_adp": -6.86
+    },
+    {
+      "gm_id": 2,
+      "avg_pvdre": -22.79,
+      "pvdre_hit_rate": 0.2994,
+      "avg_value_vs_adp": -7.07
+    },
+    {
+      "gm_id": 3,
+      "avg_pvdre": -23.17,
+      "pvdre_hit_rate": 0.2956,
+      "avg_value_vs_adp": -5.78
+    },
+    {
+      "gm_id": 4,
+      "avg_pvdre": -20.96,
+      "pvdre_hit_rate": 0.37,
+      "avg_value_vs_adp": -0.96
+    },
+    {
+      "gm_id": 5,
+      "avg_pvdre": -15.38,
+      "pvdre_hit_rate": 0.3575,
+      "avg_value_vs_adp": -1.15
+    },
+    {
+      "gm_id": 6,
+      "avg_pvdre": -24.07,
+      "pvdre_hit_rate": 0.2938,
+      "avg_value_vs_adp": -7.62
+    },
+    {
+      "gm_id": 7,
+      "avg_pvdre": -23.72,
+      "pvdre_hit_rate": 0.3431,
+      "avg_value_vs_adp": -4.6
+    },
+    {
+      "gm_id": 8,
+      "avg_pvdre": -14.62,
+      "pvdre_hit_rate": 0.3819,
+      "avg_value_vs_adp": 1.21
+    },
+    {
+      "gm_id": 9,
+      "avg_pvdre": -21.61,
+      "pvdre_hit_rate": 0.406,
+      "avg_value_vs_adp": 3.22
+    },
+    {
+      "gm_id": 11,
+      "avg_pvdre": -25.24,
+      "pvdre_hit_rate": 0.3281,
+      "avg_value_vs_adp": -5.06
+    },
+    {
+      "gm_id": 12,
+      "avg_pvdre": -18.05,
+      "pvdre_hit_rate": 0.3809,
+      "avg_value_vs_adp": -0.86
+    },
+    {
+      "gm_id": 13,
+      "avg_pvdre": -21.89,
+      "pvdre_hit_rate": 0.245,
+      "avg_value_vs_adp": -2.05
+    },
+    {
+      "gm_id": 14,
+      "avg_pvdre": -26.59,
+      "pvdre_hit_rate": 0.25,
+      "avg_value_vs_adp": -9.95
+    }
+  ],
+  "seasonAverages": [
+    {
+      "season_id": 2009,
+      "avg_pvdre": -17.38,
+      "pvdre_hit_rate": 0.335,
+      "avg_value_vs_adp": -4.03
+    },
+    {
+      "season_id": 2010,
+      "avg_pvdre": -27.59,
+      "pvdre_hit_rate": 0.283,
+      "avg_value_vs_adp": -4.37
+    },
+    {
+      "season_id": 2011,
+      "avg_pvdre": -23.71,
+      "pvdre_hit_rate": 0.321,
+      "avg_value_vs_adp": 1.38
+    },
+    {
+      "season_id": 2012,
+      "avg_pvdre": -22.88,
+      "pvdre_hit_rate": 0.319,
+      "avg_value_vs_adp": 5.49
+    },
+    {
+      "season_id": 2013,
+      "avg_pvdre": -26.63,
+      "pvdre_hit_rate": 0.318,
+      "avg_value_vs_adp": -2.33
+    },
+    {
+      "season_id": 2014,
+      "avg_pvdre": -21.85,
+      "pvdre_hit_rate": 0.371,
+      "avg_value_vs_adp": 1.16
+    },
+    {
+      "season_id": 2015,
+      "avg_pvdre": -25.59,
+      "pvdre_hit_rate": 0.359,
+      "avg_value_vs_adp": -3.81
+    },
+    {
+      "season_id": 2016,
+      "avg_pvdre": -20.75,
+      "pvdre_hit_rate": 0.318,
+      "avg_value_vs_adp": -2.51
+    },
+    {
+      "season_id": 2017,
+      "avg_pvdre": -26.82,
+      "pvdre_hit_rate": 0.317,
+      "avg_value_vs_adp": -4.96
+    },
+    {
+      "season_id": 2018,
+      "avg_pvdre": -18.9,
+      "pvdre_hit_rate": 0.372,
+      "avg_value_vs_adp": -5.99
+    },
+    {
+      "season_id": 2019,
+      "avg_pvdre": -20.22,
+      "pvdre_hit_rate": 0.343,
+      "avg_value_vs_adp": -6.5
+    },
+    {
+      "season_id": 2020,
+      "avg_pvdre": -20.06,
+      "pvdre_hit_rate": 0.334,
+      "avg_value_vs_adp": -7.32
+    },
+    {
+      "season_id": 2021,
+      "avg_pvdre": -21.39,
+      "pvdre_hit_rate": 0.346,
+      "avg_value_vs_adp": -6.28
+    },
+    {
+      "season_id": 2022,
+      "avg_pvdre": -18.24,
+      "pvdre_hit_rate": 0.364,
+      "avg_value_vs_adp": -7.75
+    },
+    {
+      "season_id": 2023,
+      "avg_pvdre": -19.66,
+      "pvdre_hit_rate": 0.3417,
+      "avg_value_vs_adp": -7.29
+    },
+    {
+      "season_id": 2024,
+      "avg_pvdre": -17.72,
+      "pvdre_hit_rate": 0.3558,
+      "avg_value_vs_adp": -4.84
+    }
+  ],
   "allTimeDraftSteals": [
     {
       "season_id": 2012,

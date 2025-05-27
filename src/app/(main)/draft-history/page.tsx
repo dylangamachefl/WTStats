@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData } from '@/lib/types';
+import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics } from '@/lib/types';
 import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -146,8 +146,6 @@ const getReachStealCellStyle = (reachStealValue: number | null | undefined): str
 const DraftOverview = () => {
   const [overviewData, setOverviewData] = useState<DraftOverviewData | null>(null);
   const [rawData, setRawData] = useState<GMDraftSeasonPerformance[] | null>(null);
-  const [allTimeStealsData, setAllTimeStealsData] = useState<DraftPickDetail[] | null>(null);
-  const [allTimeBustsData, setAllTimeBustsData] = useState<DraftPickDetail[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
@@ -161,6 +159,15 @@ const DraftOverview = () => {
     
     if (values.length === 0) return { currentMin: 0, currentMax: 0 };
     return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
+  }, [rawData, selectedMetric]);
+
+  const overallAverage = useMemo(() => {
+    if (!rawData || rawData.length === 0) return null;
+    const values = rawData
+      .map(item => item[selectedMetric])
+      .filter(val => typeof val === 'number') as number[];
+    if (values.length === 0) return null;
+    return values.reduce((sum, val) => sum + val, 0) / values.length;
   }, [rawData, selectedMetric]);
 
 
@@ -181,8 +188,6 @@ const DraftOverview = () => {
         console.log("[DraftOverview] Fetched data:", data);
         setOverviewData(data);
         setRawData(data.gmSeasonPerformanceGrid || null);
-        setAllTimeStealsData(data.allTimeDraftSteals || null);
-        setAllTimeBustsData(data.allTimeDraftBusts || null);
 
       } catch (err) {
         if (err instanceof Error) {
@@ -191,9 +196,8 @@ const DraftOverview = () => {
             setError("An unknown error occurred");
         }
         console.error("[DraftOverview] Error in fetchData:", err);
+        setOverviewData(null); 
         setRawData(null);
-        setAllTimeStealsData(null);
-        setAllTimeBustsData(null);
       } finally {
         setLoading(false);
       }
@@ -216,7 +220,16 @@ const DraftOverview = () => {
       return acc;
     }, {} as TransformedHeatmapData);
 
-    let sortedGmNames = Object.keys(transformed);
+    let sortedGmNames = Array.from(new Set(validRawData.map(item => item.gm_name)));
+    const gmDataMap = new Map<string, GMDraftSeasonPerformance[]>();
+    validRawData.forEach(item => {
+      if (!gmDataMap.has(item.gm_name)) {
+        gmDataMap.set(item.gm_name, []);
+      }
+      gmDataMap.get(item.gm_name)!.push(item);
+    });
+
+
     if (sortConfig.key === 'gm_name') {
       sortedGmNames.sort((a, b) => {
         const comparison = a.localeCompare(b);
@@ -237,7 +250,7 @@ const DraftOverview = () => {
     if (!performanceData) return 'bg-muted/30 text-muted-foreground';
 
     const value = performanceData[metricKey];
-    if (typeof value !== 'number') {
+    if (typeof value !== 'number' || value === null || value === undefined) { 
       return 'bg-muted/30 text-muted-foreground';
     }
 
@@ -394,10 +407,18 @@ const DraftOverview = () => {
                       {seasonYears.map(year => (
                         <TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>
                       ))}
+                      <TableHead className="p-2 border text-center text-xs md:text-sm whitespace-nowrap font-bold bg-muted/50">GM Avg</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {gmNames.map(gm_name => (
+                    {gmNames.map(gm_name => {
+                      const gmAvgData = overviewData.gmAverages?.find(avg => avg.gm_name === gm_name || avg.gm_id === rawData.find(rd => rd.gm_name === gm_name)?.gm_id);
+                      let gmAvgValueForMetric: number | undefined | null = undefined;
+                      if (gmAvgData && selectedMetric in gmAvgData) {
+                        gmAvgValueForMetric = gmAvgData[selectedMetric as keyof GMAverageMetrics] as number | undefined | null;
+                      }
+                      
+                      return (
                       <TableRow key={gm_name}>
                         <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
                         {seasonYears.map(year => {
@@ -422,12 +443,12 @@ const DraftOverview = () => {
                                   <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
                                     <div className="space-y-1.5 text-left">
                                       <p className="font-semibold">{performanceData.gm_name} - {performanceData.season_id}</p>
-                                      <p><span className="font-medium">POE (Avg PVDRE):</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                      <p><span className="font-medium">POE per pick:</span> {performanceData.avg_pvdre?.toFixed(2) ?? 'N/A'}</p>
                                       <p><span className="font-medium">Hit Rate:</span> {performanceData.pvdre_hit_rate !== undefined && performanceData.pvdre_hit_rate !== null ? (performanceData.pvdre_hit_rate * 100).toFixed(1) + '%' : 'N/A'}</p>
                                       <p><span className="font-medium">Avg Value vs ADP:</span> {performanceData.avg_value_vs_adp?.toFixed(1) ?? 'N/A'}</p>
                                       <p><span className="font-medium">Total Picks:</span> {performanceData.total_picks ?? 'N/A'}</p>
                                       <p><span className="font-medium">1st Round Pos:</span> {performanceData.first_round_draft_position ?? 'N/A'}</p>
-                                      <p><span className="font-medium">Total PVDRE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
+                                      <p><span className="font-medium">Total POE:</span> {performanceData.total_pvdre?.toFixed(2) ?? 'N/A'}</p>
                                     </div>
                                   </TooltipContent>
                                 )}
@@ -435,9 +456,63 @@ const DraftOverview = () => {
                             </TableCell>
                           );
                         })}
+                        <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/50" style={{minWidth: '70px'}}>
+                           <Tooltip delayDuration={100}>
+                                <TooltipTrigger asChild>
+                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: gmAvgValueForMetric} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                     {metricConfigs[selectedMetric].format(gmAvgValueForMetric)}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                    <p className="font-semibold">{gm_name} - Career Avg</p>
+                                    <p><span className="font-medium">{metricConfigs[selectedMetric].tooltipLabel}:</span> {metricConfigs[selectedMetric].format(gmAvgValueForMetric)}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    );
+                    })}
                   </TableBody>
+                   <TableFooter>
+                        <TableRow>
+                            <TableCell className="font-bold sticky left-0 bg-muted/60 z-10 p-2 border text-xs md:text-sm whitespace-nowrap">Season Avg</TableCell>
+                            {seasonYears.map(year => {
+                                const seasonAvgData = overviewData.seasonAverages?.find(sa => sa.season_id.toString() === year);
+                                let seasonAvgValueForMetric: number | undefined | null = undefined;
+                                if (seasonAvgData && selectedMetric in seasonAvgData) {
+                                    seasonAvgValueForMetric = seasonAvgData[selectedMetric as keyof SeasonAverageMetrics] as number | undefined | null;
+                                }
+                                return (
+                                    <TableCell key={`season-avg-${year}`} className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/60" style={{minWidth: '70px'}}>
+                                         <Tooltip delayDuration={100}>
+                                            <TooltipTrigger asChild>
+                                               <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: seasonAvgValueForMetric} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                                 {metricConfigs[selectedMetric].format(seasonAvgValueForMetric)}
+                                               </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                                <p className="font-semibold">{year} Season Average</p>
+                                                <p><span className="font-medium">{metricConfigs[selectedMetric].tooltipLabel}:</span> {metricConfigs[selectedMetric].format(seasonAvgValueForMetric)}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TableCell>
+                                );
+                            })}
+                            <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/80" style={{minWidth: '70px'}}>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger asChild>
+                                        <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({[selectedMetric]: overallAverage} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
+                                            {metricConfigs[selectedMetric].format(overallAverage)}
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                        <p className="font-semibold">Overall League Average</p>
+                                        <p><span className="font-medium">{metricConfigs[selectedMetric].tooltipLabel}:</span> {metricConfigs[selectedMetric].format(overallAverage)}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TableCell>
+                        </TableRow>
+                    </TableFooter>
                 </Table>
             </div>
           </CardContent>
@@ -449,7 +524,7 @@ const DraftOverview = () => {
               <CardTitle className="flex items-center gap-2"><ArrowUpCircle className="text-green-500" /> All-Time Top Draft Steals</CardTitle>
             </CardHeader>
             <CardContent>
-              {allTimeStealsData && allTimeStealsData.length > 0 ? (
+              {overviewData.allTimeDraftSteals && overviewData.allTimeDraftSteals.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -459,11 +534,11 @@ const DraftOverview = () => {
                       <TableHead>GM</TableHead>
                       <TableHead className="text-center">Drafted (Pos)</TableHead>
                       <TableHead className="text-center">Finished (Pos)</TableHead>
-                      <TableHead className="text-right">PVDRE</TableHead>
+                      <TableHead className="text-right">POE</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {allTimeStealsData.slice(0, 10).map((pick, index) => (
+                    {overviewData.allTimeDraftSteals.slice(0, 10).map((pick, index) => (
                       <TableRow key={`steal-${pick.player_id}-${pick.season_id}-${index}`}>
                         <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
                         <TableCell className="text-center">{pick.season_id}</TableCell>
@@ -499,7 +574,7 @@ const DraftOverview = () => {
               <CardTitle className="flex items-center gap-2"><ArrowDownCircle className="text-red-500" /> All-Time Top Draft Busts</CardTitle>
             </CardHeader>
             <CardContent>
-              {allTimeBustsData && allTimeBustsData.length > 0 ? (
+              {overviewData.allTimeDraftBusts && overviewData.allTimeDraftBusts.length > 0 ? (
                 <Table>
                   <TableHeader>
                      <TableRow>
@@ -509,11 +584,11 @@ const DraftOverview = () => {
                       <TableHead>GM</TableHead>
                       <TableHead className="text-center">Drafted (Pos)</TableHead>
                       <TableHead className="text-center">Finished (Pos)</TableHead>
-                      <TableHead className="text-right">PVDRE</TableHead>
+                      <TableHead className="text-right">POE</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {allTimeBustsData.slice(0, 10).map((pick, index) => (
+                    {overviewData.allTimeDraftBusts.slice(0, 10).map((pick, index) => (
                       <TableRow key={`bust-${pick.player_id}-${pick.season_id}-${index}`}>
                         <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
                         <TableCell className="text-center">{pick.season_id}</TableCell>
@@ -743,9 +818,9 @@ const SeasonDraftDetail = () => {
                                 <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
                                 <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
                                 <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
-                                {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">PVDRE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
+                                {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">POE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
                                 {pick.fantasy_points_per_game_season !== null && <p><span className="font-medium">Season PPG:</span> {pick.fantasy_points_per_game_season?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
+                                {pick.actual_positional_finish_rank !== null && <p><span className="font-medium">Actual Position Finish:</span> {pick.actual_positional_finish_rank ?? 'N/A'}</p>}
                                 {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
                                 {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
                             </div>
@@ -817,7 +892,7 @@ const SeasonDraftDetail = () => {
                         <TableHeader>
                           <TableRow>
                             <TableHead>GM</TableHead>
-                            <TableHead className="text-right">Avg PVDRE</TableHead>
+                            <TableHead className="text-right">Avg POE (Per Pick)</TableHead>
                             <TableHead className="text-right">Hit Rate</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -855,7 +930,7 @@ const SeasonDraftDetail = () => {
                               <TableRow>
                                 <TableHead>Player</TableHead>
                                 <TableHead>Pos</TableHead>
-                                <TableHead className="text-right">PVDRE</TableHead>
+                                <TableHead className="text-right">POE (Points Over Expected)</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -885,7 +960,7 @@ const SeasonDraftDetail = () => {
                               <TableRow>
                                 <TableHead>Player</TableHead>
                                 <TableHead>Pos</TableHead>
-                                <TableHead className="text-right">PVDRE</TableHead>
+                                <TableHead className="text-right">POE (Points Over Expected)</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -1175,7 +1250,7 @@ const GMDraftHistory = () => {
 
              <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Positional Performance Analysis</CardTitle>
+                  <CardTitle className="text-lg">Positional Performance Analysis (Avg. POE vs League Avg)</CardTitle>
                   <CardDescription>Comparing GM draft value vs. league averages by position.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -1184,11 +1259,11 @@ const GMDraftHistory = () => {
                     {gmDraftData.positional_profile.map((profile) => {
                         const isOutperforming = typeof profile.gm_average_pvdre === 'number' && 
                                                 typeof profile.league_average_pvdre === 'number' && 
-                                                profile.league_average_pvdre !== null && // Ensure league average is not null
+                                                profile.league_average_pvdre !== null && 
                                                 profile.gm_average_pvdre > profile.league_average_pvdre;
                         const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && 
                                                  typeof profile.league_average_pvdre === 'number' && 
-                                                 profile.league_average_pvdre !== null && // Ensure league average is not null
+                                                 profile.league_average_pvdre !== null && 
                                                  profile.gm_average_pvdre < profile.league_average_pvdre;
                         
                         let borderColorClass = 'border-border';
@@ -1206,15 +1281,15 @@ const GMDraftHistory = () => {
                             </CardHeader>
                             <CardContent className="px-4 pb-4 space-y-1">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">GM Avg PVDRE:</span>
+                                <span className="text-muted-foreground">GM Avg POE:</span>
                                 <span className={cn("font-semibold", typeof profile.gm_average_pvdre === 'number' && profile.gm_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.gm_average_pvdre)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">League Avg PVDRE:</span>
+                                <span className="text-muted-foreground">League Avg POE:</span>
                                 <span className={cn("font-semibold", typeof profile.league_average_pvdre === 'number' && profile.league_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.league_average_pvdre)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">GM Total PVDRE:</span>
+                                <span className="text-muted-foreground">GM Total POE:</span>
                                 <span className={cn("font-semibold", typeof profile.gm_total_pvdre === 'number' && profile.gm_total_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.gm_total_pvdre)}</span>
                             </div>
                             </CardContent>
@@ -1263,14 +1338,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-
-    
-
-    
-
-
-
-    
-
-    
