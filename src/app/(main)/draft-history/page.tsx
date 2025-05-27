@@ -102,7 +102,7 @@ const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, m
     const baseClasses = "font-semibold ";
 
     const range = maxPvdre - minPvdre;
-    if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700'; // Neutral if all values are the same
+    if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
 
     const normalizedValue = (pvdre - minPvdre) / range;
     
@@ -111,12 +111,12 @@ const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, m
 
     if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
       return baseClasses + 'bg-neutral-100 text-neutral-700';
-    } else if (normalizedValue < neutralBandStart) { // Worse than average
+    } else if (normalizedValue < neutralBandStart) { 
       const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
       if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800'; 
       if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800'; 
       return baseClasses + 'bg-red-100 text-red-700';                   
-    } else { // normalizedValue > neutralBandEnd -- Better than average
+    } else { 
       const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd)); 
       if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800'; 
       if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800'; 
@@ -151,9 +151,8 @@ const DraftOverview = () => {
   const [sortConfig, setSortConfig] = useState<HeatmapSortConfig>({ key: 'gm_name', direction: 'asc' });
   const [selectedMetric, setSelectedMetric] = useState<HeatmapMetricKey>('avg_pvdre');
 
-  // Min/Max for the main individual data points
   const { currentMin, currentMax } = useMemo(() => {
-    if (!rawData) return { currentMin: 0, currentMax: 0 };
+    if (!rawData || !Array.isArray(rawData)) return { currentMin: 0, currentMax: 0 };
     const values = rawData
         .map(item => item[selectedMetric])
         .filter(val => typeof val === 'number') as number[];
@@ -162,9 +161,8 @@ const DraftOverview = () => {
     return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
   }, [rawData, selectedMetric]);
 
-  // Min/Max for GM Averages
   const { minGmAvg, maxGmAvg } = useMemo(() => {
-    if (!overviewData?.gmAverages) return { minGmAvg: 0, maxGmAvg: 0 };
+    if (!overviewData?.gmAverages || !Array.isArray(overviewData.gmAverages)) return { minGmAvg: 0, maxGmAvg: 0 };
     const values = overviewData.gmAverages
         .map(item => item[selectedMetric as keyof GMAverageMetrics] as number | undefined | null)
         .filter(val => typeof val === 'number') as number[];
@@ -172,9 +170,8 @@ const DraftOverview = () => {
     return { minGmAvg: Math.min(...values), maxGmAvg: Math.max(...values) };
   }, [overviewData?.gmAverages, selectedMetric]);
   
-  // Min/Max for Season Averages
   const { minSeasonAvg, maxSeasonAvg } = useMemo(() => {
-    if (!overviewData?.seasonAverages) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
+    if (!overviewData?.seasonAverages || !Array.isArray(overviewData.seasonAverages)) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
     const values = overviewData.seasonAverages
         .map(item => item[selectedMetric as keyof SeasonAverageMetrics] as number | undefined | null)
         .filter(val => typeof val === 'number') as number[];
@@ -793,22 +790,23 @@ const SeasonDraftDetail = () => {
                   <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
                   {gmNamesForColumns.map((_, gmIndex) => {
                     let targetPickInRound: number;
-                    if (roundNum % 2 !== 0) { // Odd rounds
+                    if (roundNum % 2 !== 0) { 
                       targetPickInRound = gmIndex + 1;
-                    } else { // Even rounds (snake)
+                    } else { 
                       targetPickInRound = numGms - gmIndex;
                     }
                     const targetOverallPick = (roundNum - 1) * numGms + targetPickInRound;
                     const pick = draftBoardPicks[targetOverallPick];
 
+                    let cellContent;
+                    let cellClasses = "p-1.5 border text-xs align-top"; // Base classes for TableCell
+                    let innerDivLayoutClasses = "flex items-center justify-center text-center w-full h-full";
+
+
                     if (!pick) {
-                      return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-0 border text-xs min-h-[60px] bg-muted/20" style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
+                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
                     }
                     
-                    let cellContent;
-                    let cellStyleClasses = "";
-                    let innerDivClasses = "h-full w-full p-1.5 flex items-center justify-center text-center";
-
                     if (analysisMode === 'none') {
                         cellContent = (
                             <>
@@ -816,21 +814,25 @@ const SeasonDraftDetail = () => {
                                 <p className="text-muted-foreground truncate w-full">{pick.player_position} - {pick.nfl_team_id}</p>
                             </>
                         );
-                        cellStyleClasses = getPositionBadgeClass(pick.player_position);
-                        innerDivClasses = cn(innerDivClasses, "flex-col"); // Keep flex-col for default view
+                        cellClasses = cn(cellClasses, getPositionBadgeClass(pick.player_position));
+                        innerDivLayoutClasses = cn(innerDivLayoutClasses, "flex-col");
                     } else if (analysisMode === 'value') {
                         cellContent = <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>;
-                        cellStyleClasses = getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE);
+                        cellClasses = cn(cellClasses, getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
                     } else { // analysisMode === 'reachSteal'
                         cellContent = <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>;
-                        cellStyleClasses = getReachStealCellStyle(pick.overall_reach_steal_value);
+                        cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
                     }
                     
                     return (
-                      <TableCell key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} className="p-0 border text-xs align-top" style={{minWidth: '120px', minHeight: '60px' }}>
+                      <TableCell 
+                        key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} 
+                        className={cellClasses}
+                        style={{minWidth: '120px', minHeight: '60px' }}
+                      >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            <div className={cn(innerDivClasses, cellStyleClasses)}>
+                            <div className={innerDivLayoutClasses}>
                                 {cellContent}
                             </div>
                           </TooltipTrigger>
@@ -839,8 +841,8 @@ const SeasonDraftDetail = () => {
                                 <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
                                 <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
                                 <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
-                                {pick.overall_adp_rank !== null && <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.overall_reach_steal_value !== null && <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>}
+                                <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>
+                                <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
                                 <p><span className="font-medium">Drafted Pos:</span> {pick.player_position}{pick.league_positional_draft_rank ?? ''}</p>
                                 <p>
                                   <span className="font-medium">Finished Pos:</span> {
@@ -849,9 +851,9 @@ const SeasonDraftDetail = () => {
                                     : '-'
                                   }
                                 </p>
-                                {pick.expected_points_for_league_draft_rank_smoothed !== null && <p><span className="font-medium">Expected Points:</span> {pick.expected_points_for_league_draft_rank_smoothed?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.actual_total_fantasy_points_season !== null && <p><span className="font-medium">Actual Points:</span> {pick.actual_total_fantasy_points_season?.toFixed(1) ?? 'N/A'}</p>}
-                                {pick.pvdre_points_vs_league_draft_rank_exp !== null && <p><span className="font-medium">POE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>}
+                                <p><span className="font-medium">Expected Points:</span> {pick.expected_points_for_league_draft_rank_smoothed?.toFixed(1) ?? 'N/A'}</p>
+                                <p><span className="font-medium">Actual Points:</span> {pick.actual_total_fantasy_points_season?.toFixed(1) ?? 'N/A'}</p>
+                                <p><span className="font-medium">POE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -1112,7 +1114,7 @@ const GMDraftHistory = () => {
     return gmDraftData.positional_profile.map(p => ({
       name: p.position,
       'GM Avg POE': p.gm_average_pvdre,
-      'League Avg POE': p.league_average_pvdre ?? 0, // Default to 0 if null/undefined
+      'League Avg POE': p.league_average_pvdre ?? 0, 
     }));
   }, [gmDraftData?.positional_profile]);
 
@@ -1367,10 +1369,5 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-
-    
-
-    
 
     
