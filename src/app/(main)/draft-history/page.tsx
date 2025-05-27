@@ -457,18 +457,28 @@ const DraftOverview = () => {
                       <TableHead className="text-center">Season</TableHead>
                       <TableHead className="text-center">Overall Pick</TableHead>
                       <TableHead>GM</TableHead>
-                      <TableHead className="text-center">Pos</TableHead>
+                      <TableHead className="text-center">Drafted (Pos)</TableHead>
+                      <TableHead className="text-center">Finished (Pos)</TableHead>
                       <TableHead className="text-right">PVDRE</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {allTimeStealsData.slice(0, 10).map((pick, index) => (
                       <TableRow key={`steal-${pick.player_id}-${pick.season_id}-${index}`}>
-                        <TableCell className="font-medium">{pick.player_name}</TableCell>
+                        <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
                         <TableCell className="text-center">{pick.season_id}</TableCell>
                         <TableCell className="text-center">{pick.pick_overall}</TableCell>
                         <TableCell>{pick.gm_name}</TableCell>
-                        <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>{pick.player_position}</Badge></TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                            {pick.player_position || 'N/A'}{pick.league_positional_draft_rank ?? ''}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center">
+                           <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                            {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank ?? ''}
+                          </Badge>
+                        </TableCell>
                         <TableCell className="text-right font-semibold text-green-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
                       </TableRow>
                     ))}
@@ -493,18 +503,28 @@ const DraftOverview = () => {
                       <TableHead className="text-center">Season</TableHead>
                       <TableHead className="text-center">Overall Pick</TableHead>
                       <TableHead>GM</TableHead>
-                      <TableHead className="text-center">Pos</TableHead>
+                      <TableHead className="text-center">Drafted (Pos)</TableHead>
+                      <TableHead className="text-center">Finished (Pos)</TableHead>
                       <TableHead className="text-right">PVDRE</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {allTimeBustsData.slice(0, 10).map((pick, index) => (
                       <TableRow key={`bust-${pick.player_id}-${pick.season_id}-${index}`}>
-                        <TableCell className="font-medium">{pick.player_name}</TableCell>
+                        <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
                         <TableCell className="text-center">{pick.season_id}</TableCell>
                         <TableCell className="text-center">{pick.pick_overall}</TableCell>
                         <TableCell>{pick.gm_name}</TableCell>
-                        <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>{pick.player_position}</Badge></TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                            {pick.player_position || 'N/A'}{pick.league_positional_draft_rank ?? ''}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center">
+                           <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                            {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank ?? ''}
+                          </Badge>
+                        </TableCell>
                         <TableCell className="text-right font-semibold text-red-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
                       </TableRow>
                     ))}
@@ -917,7 +937,7 @@ const getPositionIcon = (position?: string): React.ReactNode => {
 
 const formatPvdreValue = (value: number | null | undefined): string => {
   if (value === null || value === undefined) return 'N/A';
-  return value.toFixed(2);
+  return (value >= 0 ? '+' : '') + value.toFixed(1);
 };
 
 
@@ -1240,3 +1260,4 @@ export default function DraftHistoryPage() {
     
 
     
+

@@ -2087,12 +2087,12 @@
       "overall_adp_rank": 2,
       "market_positional_adp_rank": 2,
       "overall_reach_steal_value": -1.0,
-      "actual_total_fantasy_points_season": NaN,
-      "fantasy_points_per_game_season": NaN,
-      "actual_positional_finish_rank": NaN,
+      "actual_total_fantasy_points_season": 0,
+      "fantasy_points_per_game_season": 0,
+      "actual_positional_finish_rank": null,
       "expected_points_for_league_draft_rank_smoothed": 274.32,
       "pvdre_points_vs_league_draft_rank_exp": -274.32,
-      "rank_diff_vs_league_draft_rank": NaN
+      "rank_diff_vs_league_draft_rank": null
     },
     {
       "season_id": 2024,
