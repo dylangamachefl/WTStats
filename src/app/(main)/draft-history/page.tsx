@@ -476,7 +476,7 @@ const DraftOverview = () => {
                         </TableCell>
                         <TableCell className="text-center">
                            <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
-                            {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank ?? ''}
+                            {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? pick.actual_positional_finish_rank : '-'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right font-semibold text-green-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
@@ -522,7 +522,7 @@ const DraftOverview = () => {
                         </TableCell>
                         <TableCell className="text-center">
                            <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
-                            {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank ?? ''}
+                             {pick.player_position || 'N/A'}{pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? pick.actual_positional_finish_rank : '-'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right font-semibold text-red-600">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</TableCell>
@@ -1261,3 +1261,6 @@ export default function DraftHistoryPage() {
 
     
 
+
+
+    
