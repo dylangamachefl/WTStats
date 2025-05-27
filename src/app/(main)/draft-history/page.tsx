@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFoo
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics, GMDraftHistoryCareerSummary, GMDraftHistoryRoundEfficiencyEntry } from '@/lib/types';
-import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy } from 'lucide-react';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy, Crown, PackageSearch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -214,11 +214,13 @@ const DraftOverview = () => {
   }, [rawData, sortConfig]);
 
   const getCellStyle = (
-    value: number | undefined | null, 
+    performanceData: GMDraftSeasonPerformance | undefined | null, 
     metricKey: HeatmapMetricKey,
     metricMinValue: number, 
     metricMaxValue: number 
   ): string => {
+    const value = performanceData?.[metricKey as keyof GMDraftSeasonPerformance] as number | undefined | null;
+
     if (value === null || value === undefined) { 
       return 'bg-muted/30 text-muted-foreground';
     }
@@ -386,6 +388,14 @@ const DraftOverview = () => {
                       if (gmAvgData && selectedMetric in gmAvgData) {
                         gmAvgValueForMetric = gmAvgData[selectedMetric as keyof GMAverageMetrics] as number | undefined | null;
                       }
+                       const gmAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
+                        season_id: 0, // Dummy value
+                        gm_id: gmAvgData?.gm_id || 0, // Dummy value
+                        gm_name: gm_name,
+                        avg_pvdre: gmAvgData?.avg_pvdre,
+                        pvdre_hit_rate: gmAvgData?.pvdre_hit_rate,
+                        avg_value_vs_adp: gmAvgData?.avg_value_vs_adp,
+                      };
                       
                       return (
                       <TableRow key={gm_name}>
@@ -393,7 +403,7 @@ const DraftOverview = () => {
                         {seasonYears.map(year => {
                           const performanceData = heatmapData[gm_name]?.[year];
                           const metricValue = performanceData?.[selectedMetric as keyof GMDraftSeasonPerformance];
-                          const cellClasses = getCellStyle(metricValue as number | undefined | null, selectedMetric, currentMin, currentMax);
+                          const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
                           const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
                           
                           return (
@@ -428,7 +438,7 @@ const DraftOverview = () => {
                         <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/50" style={{minWidth: '70px'}}>
                            <Tooltip delayDuration={100}>
                                 <TooltipTrigger asChild>
-                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(gmAvgValueForMetric, selectedMetric, minGmAvg, maxGmAvg))}>
+                                  <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(gmAvgPerformanceObject, selectedMetric, minGmAvg, maxGmAvg))}>
                                      {metricConfigs[selectedMetric].format(gmAvgValueForMetric)}
                                   </div>
                                 </TooltipTrigger>
@@ -451,11 +461,19 @@ const DraftOverview = () => {
                                 if (seasonAvgData && selectedMetric in seasonAvgData) {
                                     seasonAvgValueForMetric = seasonAvgData[selectedMetric as keyof SeasonAverageMetrics] as number | undefined | null;
                                 }
+                                const seasonAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
+                                  season_id: parseInt(year), 
+                                  gm_id: 0, // Dummy value
+                                  gm_name: "League Average", // Dummy value
+                                  avg_pvdre: seasonAvgData?.avg_pvdre,
+                                  pvdre_hit_rate: seasonAvgData?.pvdre_hit_rate,
+                                  avg_value_vs_adp: seasonAvgData?.avg_value_vs_adp,
+                                };
                                 return (
                                     <TableCell key={`season-avg-${year}`} className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/60" style={{minWidth: '70px'}}>
                                          <Tooltip delayDuration={100}>
                                             <TooltipTrigger asChild>
-                                               <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(seasonAvgValueForMetric, selectedMetric, minSeasonAvg, maxSeasonAvg))}>
+                                               <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(seasonAvgPerformanceObject, selectedMetric, minSeasonAvg, maxSeasonAvg))}>
                                                  {metricConfigs[selectedMetric].format(seasonAvgValueForMetric)}
                                                </div>
                                             </TooltipTrigger>
@@ -470,7 +488,7 @@ const DraftOverview = () => {
                             <TableCell className="p-0 border text-center text-xs md:text-sm font-bold bg-muted/80" style={{minWidth: '70px'}}>
                                 <Tooltip delayDuration={100}>
                                     <TooltipTrigger asChild>
-                                        <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle(overallAverage, selectedMetric, currentMin, currentMax))}>
+                                        <div className={cn("p-2 h-full w-full flex items-center justify-center", getCellStyle({avg_pvdre: overallAverage, pvdre_hit_rate: overallAverage, avg_value_vs_adp: overallAverage} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>
                                             {metricConfigs[selectedMetric].format(overallAverage)}
                                         </div>
                                     </TooltipTrigger>
@@ -1131,7 +1149,6 @@ const GMDraftHistory = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><UserCircle2 /> GM Draft History</CardTitle>
-          <CardDescription>Select a GM to view their career draft history.</CardDescription>
         </CardHeader>
         <CardContent>
           <Select onValueChange={setSelectedGmId}>
@@ -1155,7 +1172,6 @@ const GMDraftHistory = () => {
         <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <CardTitle className="flex items-center gap-2"><UserCircle2 /> {gmDraftData?.gm_name || mockGms.find(g=>g.id===selectedGmId)?.name || 'GM'} Draft History</CardTitle>
-              <CardDescription>Career draft summary, efficiency, best/worst picks, and more.</CardDescription>
             </div>
             <Select value={selectedGmId} onValueChange={setSelectedGmId}>
               <SelectTrigger className="w-full sm:w-[280px] mt-2 sm:mt-0">
@@ -1184,34 +1200,32 @@ const GMDraftHistory = () => {
           
           {!loading && gmDraftData && (
             <div className="space-y-6">
-              <Card>
-                  <CardContent className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Picks Made</p>
-                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
-                      </div>
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Hits</p>
-                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
-                      </div>
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Misses</p>
-                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
-                      </div>
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Career Hit Rate</p>
-                          <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
-                      </div>
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Sum Total POE</p>
-                          <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
-                      </div>
-                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
-                          <p className="text-xs uppercase text-muted-foreground font-medium">Avg. POE / Pick</p>
-                          <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
-                      </div>
-                  </CardContent>
-              </Card>
+               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Total Picks Made</p>
+                        <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Total Hits</p>
+                        <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Total Misses</p>
+                        <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Career Hit Rate</p>
+                        <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Sum Total POE</p>
+                        <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                        <p className="text-xs uppercase text-muted-foreground font-medium">Avg. POE / Pick</p>
+                        <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
+                    </div>
+                </div>
 
 
               <Card>
