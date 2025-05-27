@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFoo
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics } from '@/lib/types';
-import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace } from 'lucide-react';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -95,53 +95,6 @@ const getPositionBadgeClass = (position?: string): string => {
       return "bg-muted text-muted-foreground";
   }
 };
-
-const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, maxPvdre: number): string => {
-    if (pvdre === null || pvdre === undefined) return 'bg-muted/30 text-muted-foreground';
-    
-    const baseClasses = "font-semibold ";
-
-    const range = maxPvdre - minPvdre;
-    if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
-
-    const normalizedValue = (pvdre - minPvdre) / range;
-    
-    const neutralBandStart = 0.45; 
-    const neutralBandEnd = 0.55;   
-
-    if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
-      return baseClasses + 'bg-neutral-100 text-neutral-700';
-    } else if (normalizedValue < neutralBandStart) { 
-      const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-      if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800'; 
-      if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800'; 
-      return baseClasses + 'bg-red-100 text-red-700';                   
-    } else { 
-      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd)); 
-      if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800'; 
-      if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800'; 
-      return baseClasses + 'bg-green-100 text-green-700';                  
-    }
-};
-
-const getReachStealCellStyle = (reachStealValue: number | null | undefined): string => {
-    if (reachStealValue === null || reachStealValue === undefined) return 'bg-muted/30 text-muted-foreground';
-    
-    const baseClasses = "font-semibold ";
-    const threshold = 0.1; 
-    if (reachStealValue > threshold) {
-        if (reachStealValue > 10) return baseClasses + 'bg-green-300 text-green-800';
-        if (reachStealValue > 5) return baseClasses + 'bg-green-200 text-green-800';
-        return baseClasses + 'bg-green-100 text-green-700';
-    } else if (reachStealValue < -threshold) {
-        if (reachStealValue < -10) return baseClasses + 'bg-red-300 text-red-800';
-        if (reachStealValue < -5) return baseClasses + 'bg-red-200 text-red-800';
-        return baseClasses + 'bg-red-100 text-red-700';
-    } else {
-        return baseClasses + 'bg-neutral-100 text-neutral-700'; 
-    }
-};
-
 
 const DraftOverview = () => {
   const [overviewData, setOverviewData] = useState<DraftOverviewData | null>(null);
@@ -641,30 +594,50 @@ const DraftOverview = () => {
 };
 
 
-const getPositionIcon = (position?: string): React.ReactNode => {
-  if (!position) return <Replace size={18} className="text-muted-foreground" />;
-  switch (position.toUpperCase()) {
-    case 'QB':
-      return <UserCircle2 size={18} className="text-red-500" />;
-    case 'RB':
-      return <UsersIcon size={18} className="text-blue-500" />;
-    case 'WR':
-      return <PersonStanding size={18} className="text-green-500" />; 
-    case 'TE':
-      return <Replace size={18} className="text-yellow-500" />; 
-    case 'K':
-      return <Target size={18} className="text-purple-500" />;
-    case 'DST':
-    case 'DEF':
-      return <Shield size={18} className="text-indigo-500" />;
-    default:
-      return <Replace size={18} className="text-muted-foreground" />;
-  }
+const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, maxPvdre: number): string => {
+    if (pvdre === null || pvdre === undefined) return 'bg-muted/30 text-muted-foreground';
+    
+    const baseClasses = "font-semibold ";
+
+    const range = maxPvdre - minPvdre;
+    if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
+
+    const normalizedValue = (pvdre - minPvdre) / range;
+    
+    const neutralBandStart = 0.45; 
+    const neutralBandEnd = 0.55;   
+
+    if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
+      return baseClasses + 'bg-neutral-100 text-neutral-700';
+    } else if (normalizedValue < neutralBandStart) { 
+      const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
+      if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800'; 
+      if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800'; 
+      return baseClasses + 'bg-red-100 text-red-700';                   
+    } else { 
+      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd)); 
+      if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800'; 
+      if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800'; 
+      return baseClasses + 'bg-green-100 text-green-700';                  
+    }
 };
 
-const formatPvdreValue = (value: number | null | undefined): string => {
-  if (value === null || value === undefined) return 'N/A';
-  return (value >= 0 ? '+' : '') + value.toFixed(1);
+const getReachStealCellStyle = (reachStealValue: number | null | undefined): string => {
+    if (reachStealValue === null || reachStealValue === undefined) return 'bg-muted/30 text-muted-foreground';
+    
+    const baseClasses = "font-semibold ";
+    const threshold = 0.1; 
+    if (reachStealValue > threshold) {
+        if (reachStealValue > 10) return baseClasses + 'bg-green-300 text-green-800';
+        if (reachStealValue > 5) return baseClasses + 'bg-green-200 text-green-800';
+        return baseClasses + 'bg-green-100 text-green-700';
+    } else if (reachStealValue < -threshold) {
+        if (reachStealValue < -10) return baseClasses + 'bg-red-300 text-red-800';
+        if (reachStealValue < -5) return baseClasses + 'bg-red-200 text-red-800';
+        return baseClasses + 'bg-red-100 text-red-700';
+    } else {
+        return baseClasses + 'bg-neutral-100 text-neutral-700'; 
+    }
 };
 
 
@@ -829,7 +802,7 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = `border text-xs align-middle p-1.5 h-[40px]`; 
+                    let cellClasses = `p-1.5 border text-xs align-middle h-[50px]`; 
 
                     if (!pick) {
                        return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
@@ -862,7 +835,7 @@ const SeasonDraftDetail = () => {
                       <TableCell 
                         key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} 
                         className={cellClasses}
-                        style={{minWidth: '120px'}} 
+                        style={{minWidth: '120px', minHeight: '50px'}} 
                       >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
@@ -872,7 +845,7 @@ const SeasonDraftDetail = () => {
                           </TooltipTrigger>
                           <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
                             <div className="space-y-1.5 text-left text-xs">
-                                <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
+                                <p className="font-bold text-sm">{pick.player_name} ({pick.nfl_team_id})</p>
                                 <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
                                 <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
                                 <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>
@@ -908,7 +881,7 @@ const SeasonDraftDetail = () => {
       <Card>
         <CardHeader>
           <CardTitle>Season Draft View</CardTitle>
-          <CardDescription>Select a season to view its draft board and analysis. (DH.1)</CardDescription>
+          <CardDescription>Select a season to view its draft board and analysis.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
@@ -948,7 +921,7 @@ const SeasonDraftDetail = () => {
 
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <Card>
-                  <CardHeader><CardTitle>Team Draft Performance (DH.1.5)</CardTitle></CardHeader>
+                  <CardHeader><CardTitle>Team Draft Performance</CardTitle></CardHeader>
                   <CardContent>
                     {loading && !teamDraftPerformance && <Skeleton className="h-24 w-full" />}
                     {!loading && error && <p className="text-destructive text-center py-4">Error loading draft performance data.</p>}
@@ -981,7 +954,7 @@ const SeasonDraftDetail = () => {
                   </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle>Season's Top Steals & Busts (DH.1.6)</CardTitle></CardHeader>
+                <CardHeader><CardTitle>Season's Top Steals & Busts</CardTitle></CardHeader>
                 <CardContent>
                   {loading && (!topSteals || !topBusts) && <Skeleton className="h-48 w-full" />}
                   {!loading && error && <p className="text-destructive text-center py-4">Error loading steals/busts.</p>}
@@ -1061,6 +1034,31 @@ const SeasonDraftDetail = () => {
   );
 };
 
+const getPositionIcon = (position?: string): React.ReactNode => {
+  if (!position) return <MoreHorizontal size={18} className="text-muted-foreground" />;
+  switch (position.toUpperCase()) {
+    case 'QB':
+      return <UserCircle2 size={18} className="text-red-500" />;
+    case 'RB':
+      return <UsersIcon size={18} className="text-blue-500" />;
+    case 'WR':
+      return <PersonStanding size={18} className="text-green-500" />; 
+    case 'TE':
+      return <GripVertical size={18} className="text-yellow-500" />; 
+    case 'K':
+      return <Target size={18} className="text-purple-500" />;
+    case 'DST':
+    case 'DEF':
+      return <Shield size={18} className="text-indigo-500" />; // Changed from ShieldAlert
+    default:
+      return <MoreHorizontal size={18} className="text-muted-foreground" />;
+  }
+};
+
+const formatPvdreValue = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return 'N/A';
+  return (value >= 0 ? '+' : '') + value.toFixed(1);
+};
 
 const GMDraftHistory = () => {
   const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGms[0]?.id);
@@ -1152,11 +1150,10 @@ const GMDraftHistory = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
               <CardTitle className="flex items-center gap-2"><UserCircle2 /> {gmDraftData?.gm_name || mockGms.find(g=>g.id===selectedGmId)?.name || 'GM'} Draft History</CardTitle>
-              <CardDescription>Career draft summary, efficiency, best/worst picks, and more. (DH.2)</CardDescription>
+              <CardDescription>Career draft summary, efficiency, best/worst picks, and more.</CardDescription>
             </div>
             <Select value={selectedGmId} onValueChange={setSelectedGmId}>
               <SelectTrigger className="w-full sm:w-[280px] mt-2 sm:mt-0">
@@ -1168,8 +1165,7 @@ const GMDraftHistory = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-        </CardHeader>
+          </CardHeader>
         <CardContent>
           {loading && (
             <div className="space-y-4">
@@ -1186,38 +1182,46 @@ const GMDraftHistory = () => {
           
           {!loading && gmDraftData && (
             <div className="space-y-6">
-              <Card>
-                <CardHeader><CardTitle className="text-lg">Career Draft Summary (DH.2.2)</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Picks</p>
-                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Avg. POE / Pick</p>
-                    <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Career Hit Rate</p>
-                    <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
-                  </div>
-                   <div>
-                    <p className="text-sm text-muted-foreground">Total Hits</p>
-                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Misses</p>
-                    <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
-                  </div>
-                   <div>
-                    <p className="text-sm text-muted-foreground">Sum Total POE</p>
-                    <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
-                  </div>
-                </CardContent>
-              </Card>
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <Card>
+                  <CardHeader><CardTitle className="text-lg">Pick Analysis</CardTitle></CardHeader>
+                  <CardContent className="space-y-2 text-center">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Picks Made</p>
+                      <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
+                    </div>
+                     <div>
+                      <p className="text-sm text-muted-foreground">Total Hits</p>
+                      <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Misses</p>
+                      <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Career Hit Rate</p>
+                      <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle className="text-lg">Performance Overview (POE)</CardTitle></CardHeader>
+                  <CardContent className="space-y-2 text-center">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Sum Total POE</p>
+                      <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Avg. POE / Pick</p>
+                      <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
 
               <Card>
-                <CardHeader><CardTitle className="text-lg">Round Efficiency (Avg. POE) (DH.2.3)</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="text-lg">Round Efficiency (Avg. POE)</CardTitle></CardHeader>
                 <CardContent className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={roundEfficiencyChartData}>
@@ -1237,21 +1241,40 @@ const GMDraftHistory = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowUpCircle className="text-green-500 mr-2 h-5 w-5" />Best Picks (by POE) (DH.2.4)</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowUpCircle className="text-green-500 mr-2 h-5 w-5" />Best Picks (by POE)</CardTitle></CardHeader>
                   <CardContent>
                     {gmDraftData.best_picks && gmDraftData.best_picks.length > 0 ? (
                       <Table>
                         <TableHeader>
-                          <TableRow><TableHead>Player</TableHead><TableHead>Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow>
+                          <TableRow>
+                            <TableHead>Player (Team)</TableHead>
+                            <TableHead className="text-center">Season</TableHead>
+                            <TableHead className="text-center">Pick (Overall)</TableHead>
+                            <TableHead className="text-center">Drafted (Pos)</TableHead>
+                            <TableHead className="text-center">Finished (Pos)</TableHead>
+                            <TableHead className="text-right">POE</TableHead>
+                          </TableRow>
                         </TableHeader>
                         <TableBody>
                           {gmDraftData.best_picks.slice(0,5).map(pick => (
                             <TableRow key={pick.player_id + (pick.draft_id?.toString() || pick.pick_overall.toString())}>
-                              <TableCell>
-                                <p className="font-medium">{pick.player_name}</p>
-                                <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
+                              <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
+                              <TableCell className="text-center">{pick.season_id}</TableCell>
+                              <TableCell className="text-center">R{pick.round}.{pick.pick_in_round} ({pick.pick_overall})</TableCell>
+                              <TableCell className="text-center">
+                                <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                                  {pick.player_position}{pick.league_positional_draft_rank ?? ''}
+                                </Badge>
                               </TableCell>
-                              <TableCell>{pick.season_id}</TableCell>
+                              <TableCell className="text-center">
+                                {pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? (
+                                  <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                                    {pick.player_position}{pick.actual_positional_finish_rank}
+                                  </Badge>
+                                ) : (
+                                  '-'
+                                )}
+                              </TableCell>
                               <TableCell className="text-right text-green-600 font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell>
                             </TableRow>
                           ))}
@@ -1261,21 +1284,40 @@ const GMDraftHistory = () => {
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowDownCircle className="text-red-500 mr-2 h-5 w-5" />Worst Picks (by POE) (DH.2.4)</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="text-lg flex items-center"><ArrowDownCircle className="text-red-500 mr-2 h-5 w-5" />Worst Picks (by POE)</CardTitle></CardHeader>
                   <CardContent>
                     {gmDraftData.worst_picks && gmDraftData.worst_picks.length > 0 ? (
                        <Table>
                         <TableHeader>
-                          <TableRow><TableHead>Player</TableHead><TableHead>Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow>
+                          <TableRow>
+                            <TableHead>Player (Team)</TableHead>
+                            <TableHead className="text-center">Season</TableHead>
+                            <TableHead className="text-center">Pick (Overall)</TableHead>
+                            <TableHead className="text-center">Drafted (Pos)</TableHead>
+                            <TableHead className="text-center">Finished (Pos)</TableHead>
+                            <TableHead className="text-right">POE</TableHead>
+                          </TableRow>
                         </TableHeader>
                         <TableBody>
                           {gmDraftData.worst_picks.slice(0,5).map(pick => (
                             <TableRow key={pick.player_id + (pick.draft_id?.toString() || pick.pick_overall.toString())}>
-                              <TableCell>
-                                <p className="font-medium">{pick.player_name}</p>
-                                <p className="text-xs text-muted-foreground">R{pick.round}.{pick.pick_in_round} (Overall: {pick.pick_overall})</p>
+                               <TableCell className="font-medium">{pick.player_name} ({pick.nfl_team_id || 'N/A'})</TableCell>
+                              <TableCell className="text-center">{pick.season_id}</TableCell>
+                              <TableCell className="text-center">R{pick.round}.{pick.pick_in_round} ({pick.pick_overall})</TableCell>
+                               <TableCell className="text-center">
+                                <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                                  {pick.player_position}{pick.league_positional_draft_rank ?? ''}
+                                </Badge>
                               </TableCell>
-                              <TableCell>{pick.season_id}</TableCell>
+                              <TableCell className="text-center">
+                                {pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined ? (
+                                  <Badge variant="outline" className={getPositionBadgeClass(pick.player_position)}>
+                                    {pick.player_position}{pick.actual_positional_finish_rank}
+                                  </Badge>
+                                ) : (
+                                  '-'
+                                )}
+                              </TableCell>
                               <TableCell className="text-right text-red-600 font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell>
                             </TableRow>
                           ))}
@@ -1349,12 +1391,6 @@ const GMDraftHistory = () => {
                 </CardContent>
               </Card>
               
-              <Card>
-                <CardHeader><CardTitle className="text-lg">Draft Strategy Overview (DH.2.6)</CardTitle></CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{gmDraftData.draft_strategy_summary || "No draft strategy summary available."}</p>
-                </CardContent>
-              </Card>
             </div>
           )}
         </CardContent>
@@ -1382,4 +1418,5 @@ export default function DraftHistoryPage() {
 
 
     
+
 
