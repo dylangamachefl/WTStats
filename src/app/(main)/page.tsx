@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -52,9 +51,9 @@ import Image from 'next/image';
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
-  ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, BarChart as RechartsBarChartImport, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, Bar, ScatterChart, Scatter, ZAxis, LineChart as RechartsLineChartImport, LabelList
+  ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, ScatterChart, Scatter, ZAxis, LineChart as RechartsLineChartImport, LabelList, BarChart as RechartsBarChartImport, Bar
 } from 'recharts';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch } from 'lucide-react'; // Removed RechartsBar
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -119,7 +118,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
   }, [leagueData?.finalStandingsHeatmap]);
 
- const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; } => {
+  const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; } => {
     if (rank === null || rank === undefined || maxRankInYear <= 0) {
       return { cellClasses: 'text-muted-foreground font-semibold' };
     }
@@ -128,12 +127,12 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       return { cellClasses: 'bg-yellow-400 text-neutral-800 font-semibold' };
     }
     
-    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' };
+    if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' }; 
     
     const rankPositionInScale = rank - 2; 
     const numRanksToScale = maxRankInYear - 2;
 
-    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; 
+    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' };
 
     const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; 
     
@@ -301,7 +300,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardContent className="p-0 overflow-x-auto"><Skeleton className="h-64" /></CardContent>
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
-             <Card className="overflow-hidden">
+            <Card className="overflow-hidden">
                 <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
             </Card>
@@ -462,15 +461,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                     <TableRow key={stat.name}>
-                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{stat.name}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.wins}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.losses}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.ties}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.winPct}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.championships}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-2 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{stat.name}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.wins}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.losses}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.ties}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.winPct}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.championships}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-1 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
@@ -509,9 +508,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       
 
       <Card className="overflow-hidden">
-        <CardHeader>
-          <CardTitle>Final Standings Heatmap</CardTitle>
-          <CardDescription>GM finishing positions by year. 1st place is yellow. Other ranks are on a green (good) to red (bad) scale, with neutral ranks having no specific background.</CardDescription>
+        <CardHeader><CardTitle>Final Standings Heatmap</CardTitle>
+          <CardDescription>Finishing positions. Yellow for 1st. Others on a green (good) to red (bad) scale, with neutral ranks having no specific background.</CardDescription>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <Table className="table-auto">
@@ -558,7 +556,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
       </Card>
 
     <div className="grid md:grid-cols-2 gap-6">
-      <Card className="overflow-hidden">
+       <Card className="overflow-hidden">
           <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
           <CardContent className="overflow-x-auto">
               <Table>
@@ -578,22 +576,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <TableBody>
                   {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                   <TableRow key={gmPerf.gm_name}>
-                      <TableCell className="font-medium px-2 py-2 text-xs text-left">{gmPerf.gm_name}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.total_matchups}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.wins}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.losses}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                      <TableCell className="font-medium px-2 py-1 text-xs text-left">{gmPerf.gm_name}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.total_matchups}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.wins}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.losses}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                   </TableRow>
                   ))}
               </TableBody>
               </Table>
           </CardContent>
       </Card>
-       <Card className="overflow-hidden">
+      <Card className="overflow-hidden">
           <CardHeader><CardTitle>Playoff Qualification Rate</CardTitle></CardHeader>
           <CardContent className="h-[300px] pt-6">
             <ResponsiveContainer width="100%" height="100%">
@@ -677,7 +675,7 @@ const PlayoffMatchupCard = ({
   roundName: string;
   isChampionship?: boolean;
 }) => (
-    <div className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
+    <div key={`${roundName}-${matchup.home.owner}-${matchup.away.owner}`} className={cn("p-3 border rounded-md shadow-sm", isChampionship ? "bg-yellow-100/50 dark:bg-yellow-800/30" : "bg-card")}>
       <p className="text-sm font-semibold text-center mb-1">{roundName}</p>
       <div className="text-xs space-y-1">
         <div className="flex justify-between">
@@ -810,7 +808,7 @@ const SeasonDetail = () => {
             <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
                 <CalendarDays className="text-primary h-6 w-6" /> 
-                 {selectedSeason} Season Detail
+                 {seasonData?.seasonData?.year || selectedSeason} Season Detail
                 </CardTitle>
                 {seasonData?.seasonData && (
                 <CardDescription className="mt-1.5">
@@ -882,7 +880,7 @@ const SeasonDetail = () => {
                                 {seasonData.standingsData.map((s: SeasonStandingEntry) => (
                                 <TableRow key={s.owner_name}>
                                     <TableCell className="font-medium text-center">
-                                        {s.regular_season_finish}
+                                        {s.regular_season_finish === 1 ? '1' : s.regular_season_finish}
                                     </TableCell>
                                     <TableCell>{s.wt_team_name}</TableCell>
                                     <TableCell>{s.owner_name}</TableCell>
@@ -1096,7 +1094,7 @@ const SeasonDetail = () => {
                                           <TableRow key={sos.owner}>
                                           <TableCell className="text-left">{sos.rank}</TableCell>
                                           <TableCell className="text-left">{sos.team}</TableCell>
-                                          <TableCell className="text-left">{sos.owner_name || sos.owner}</TableCell>
+                                          <TableCell className="text-left">{sos.owner}</TableCell>
                                           <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className={cn("text-right font-semibold", sos.differential && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
@@ -1326,6 +1324,20 @@ const CHART_COLORS: { [key: string]: string } = {
 const GM_CHART_COLORS = {
   GM_STARTED_PTS: 'hsl(var(--primary))', 
   LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  
+};
+
+const CustomPieTooltip = ({ active, payload }: any ) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload; 
+    return (
+      <div className="p-2 bg-background border rounded-md shadow-md">
+        <p className="text-sm" style={{ color: data.fill }}>
+          {`${data.positionName} ${data.percentage.toFixed(0)}% : ${data.actualPoints.toFixed(1)}`}
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 
@@ -1618,9 +1630,12 @@ const GMCareer = () => {
     if (!gmIndividualSeasonData?.rosterBreakdown?.positionContributionData || !Array.isArray(gmIndividualSeasonData.rosterBreakdown.positionContributionData)) return [];
     const totalPoints = gmIndividualSeasonData.rosterBreakdown.positionContributionData.reduce((sum, p) => sum + (p.startedPoints ?? 0), 0);
     return gmIndividualSeasonData.rosterBreakdown.positionContributionData.map(p => ({
-      name: `${p.name} ${totalPoints > 0 && p.startedPoints ? ((p.startedPoints / totalPoints) * 100).toFixed(0) : 0}%`,
+      name: p.name, // Just the position name for legend/tooltip
       value: p.startedPoints ?? 0,
       fill: CHART_COLORS[p.name?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT,
+      percentage: totalPoints > 0 && p.startedPoints ? ((p.startedPoints / totalPoints) * 100) : 0,
+      actualPoints: p.startedPoints ?? 0,
+      positionName: p.name, // Keep original position name for custom tooltip
     }));
   }, [gmIndividualSeasonData?.rosterBreakdown?.positionContributionData]);
 
@@ -2061,21 +2076,11 @@ const GMCareer = () => {
                                                             fill="#8884d8"
                                                             dataKey="value"
                                                             labelLine={false}
-                                                            label={({ name, percent, x, y, midAngle, outerRadius: pieOuterRadius, payload }) => {
-                                                                const RADIAN = Math.PI / 180;
-                                                                const radius = pieOuterRadius + 25;
-                                                                const lx = x + radius * Math.cos(-midAngle * RADIAN);
-                                                                const ly = y + radius * Math.sin(-midAngle * RADIAN);
-                                                                return (
-                                                                    <text x={lx} y={ly} fill={payload.fill} textAnchor={lx > x ? 'start' : 'end'} dominantBaseline="central" fontSize="12px">
-                                                                        {name}
-                                                                    </text>
-                                                                );
-                                                            }}
+                                                            label={false}
                                                         >
                                                             {pieChartCells}
                                                         </Pie>
-                                                        <RechartsTooltip />
+                                                        <RechartsTooltip content={<CustomPieTooltip />} />
                                                         <RechartsLegend 
                                                             payload={
                                                                 (gmIndividualSeasonData.rosterBreakdown.positionContributionData || []).map(entry => ({
@@ -2326,7 +2331,7 @@ const GMCareer = () => {
                                                         <TableCell className="text-right">{item.actual?.toFixed(1) ?? '-'}</TableCell>
                                                         <TableCell className="text-right">{item.efficiency?.toFixed(1) ?? '-'}%</TableCell>
                                                         <TableCell className={cn("text-right", typeof item.pointsLeft === 'number' && item.pointsLeft != null && item.pointsLeft > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")}>{item.pointsLeft?.toFixed(1) ?? '-'}</TableCell>
-                                                        <TableCell className="text-center">{item.correctDecisions ?? '-'}/{item.totalDecisions ?? '-'}</TableCell>
+                                                         <TableCell className="text-center">{item.correctDecisions ?? '-'}/{item.totalDecisions ?? '-'}</TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>
@@ -2609,4 +2614,3 @@ export default function LeagueHistoryPage() {
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
     
-
