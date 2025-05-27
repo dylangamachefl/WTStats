@@ -107,47 +107,46 @@ body {
 
 .card-iridescent {
   position: relative; 
-  overflow: hidden; 
-  /* The card's default background (bg-card) will be covered by the ::before pseudo-element */
+  overflow: hidden;
 }
 
 .card-iridescent::before {
   content: "";
   position: absolute;
-  inset: 0; /* Cover the entire card */
-  z-index: 0; /* Sits on top of the card's default background, but below content with z-index:1 */
+  inset: 0;
+  z-index: 0; /* Sits below card content, but above card's actual background */
   
   background-image: 
-    linear-gradient(115deg, 
-      hsla(30, 90%, 70%, 0.75),  /* Gold/Orange */
-      hsla(50, 95%, 60%, 0.75),  /* Yellow */
-      hsla(40, 90%, 65%, 0.75),  /* Light Orange */
-      hsla(60, 90%, 70%, 0.75)   /* Light Yellow */
+    linear-gradient(135deg, 
+      hsla(207, 70%, 65%, 0.7), /* Lighter primary blue */
+      hsla(220, 60%, 75%, 0.6), /* Slightly different blue */
+      hsla(50, 90%, 70%, 0.5),  /* Gold accent */
+      hsla(200, 65%, 70%, 0.7), /* Another blue shade */
+      hsla(45, 85%, 65%, 0.6)   /* Softer gold accent */
     ),
-    linear-gradient(245deg, 
-      hsla(50, 90%, 60%, 0.75),   /* Yellow */
-      hsla(35, 85%, 65%, 0.75),  /* Orange-Yellow */
-      hsla(25, 80%, 60%, 0.75)   /* Light Brown/Gold */
+    linear-gradient(45deg, 
+      hsla(48, 90%, 60%, 0.6),  /* Gold */
+      hsla(210, 70%, 70%, 0.7), /* Light blue */
+      hsla(205, 65%, 60%, 0.6)  /* Medium blue */
     );
-  background-size: 250% 250%; 
+  background-size: 250% 250%, 200% 200%; 
   background-position: 0% 0%;
   
-  opacity: 1; /* Make it fully opaque as it's now the primary visual background */
-  /* mix-blend-mode is removed as we want this to be the direct background effect */
+  opacity: 1; /* Make it fully opaque as it's the primary visual background */
   
-  animation: iridescent-shimmer-gold 8s ease-in-out infinite alternate;
+  animation: iridescent-shimmer-blue-gold 10s ease-in-out infinite alternate;
   pointer-events: none; 
 }
 
-@keyframes iridescent-shimmer-gold {
+@keyframes iridescent-shimmer-blue-gold {
   0% {
-    background-position: 0% 0%;
+    background-position: 0% 0%, 100% 100%;
   }
   50% {
-    background-position: 100% 100%;
+    background-position: 100% 100%, 0% 0%;
   }
   100% {
-    background-position: 0% 0%;
+    background-position: 0% 0%, 100% 100%;
   }
 }
 
