@@ -117,22 +117,22 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0; /* Places the pseudo-element to act as background */
+  z-index: 0; /* Sits behind the card content */
 
   background-image:
     linear-gradient(135deg,
       hsla(207, 70%, 60%, 0.65), /* Theme-based Blue */
       hsla(145, 44%, 55%, 0.55), /* Theme-based Green */
-      hsla(50, 85%, 65%, 0.45),  /* Gold/Yellow Accent */
+      hsla(0, 0%, 100%, 0.45),  /* White Accent */
       hsla(207, 65%, 55%, 0.6),  /* Another Blue variant */
       hsla(145, 40%, 50%, 0.5)   /* Another Green variant */
     ),
     linear-gradient(45deg,
-      hsla(50, 80%, 60%, 0.5),   /* Gold/Yellow */
+      hsla(0, 0%, 100%, 0.5),   /* White Accent */
       hsla(207, 75%, 65%, 0.65), /* Lighter Theme Blue */
       hsla(145, 50%, 60%, 0.55)  /* Lighter Theme Green */
     );
-  background-size: 150% 150%, 130% 130%; /* Reduced size for more localized effect */
+  background-size: 150% 150%, 130% 130%;
   background-position: 0% 0%;
 
   opacity: 1; /* Make it fully opaque to act as the background */
