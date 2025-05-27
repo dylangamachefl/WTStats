@@ -641,6 +641,33 @@ const DraftOverview = () => {
 };
 
 
+const getPositionIcon = (position?: string): React.ReactNode => {
+  if (!position) return <Replace size={18} className="text-muted-foreground" />;
+  switch (position.toUpperCase()) {
+    case 'QB':
+      return <UserCircle2 size={18} className="text-red-500" />;
+    case 'RB':
+      return <UsersIcon size={18} className="text-blue-500" />;
+    case 'WR':
+      return <PersonStanding size={18} className="text-green-500" />; 
+    case 'TE':
+      return <Replace size={18} className="text-yellow-500" />; 
+    case 'K':
+      return <Target size={18} className="text-purple-500" />;
+    case 'DST':
+    case 'DEF':
+      return <Shield size={18} className="text-indigo-500" />;
+    default:
+      return <Replace size={18} className="text-muted-foreground" />;
+  }
+};
+
+const formatPvdreValue = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return 'N/A';
+  return (value >= 0 ? '+' : '') + value.toFixed(1);
+};
+
+
 const SeasonDraftDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<string | undefined>(mockSeasons[0]?.id);
   const [draftData, setDraftData] = useState<DraftPickDetail[] | null>(null);
@@ -799,11 +826,11 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = "border text-xs"; 
+                    let cellClasses = "border text-xs align-middle h-[70px]"; 
 
 
                     if (!pick) {
-                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "p-1.5 bg-muted/20")} style={{minWidth: '120px', minHeight: '60px' }}></TableCell>;
+                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "p-1.5 bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
                     }
                     
                     if (analysisMode === 'none') {
@@ -829,13 +856,12 @@ const SeasonDraftDetail = () => {
                     return (
                       <TableCell 
                         key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} 
-                        className={cellClasses} // Background and base styling applied here
-                        style={{minWidth: '120px', minHeight: '60px' }} // Min height to ensure consistency
+                        className={cellClasses}
+                        style={{minWidth: '120px'}} 
                       >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
-                            {/* This div ensures its content is centered within the TableCell's height */}
-                            <div className="flex items-center justify-center h-full w-full text-center">
+                            <div className="flex flex-col items-center justify-center h-full w-full text-center">
                                 {cellContent}
                             </div>
                           </TooltipTrigger>
@@ -1028,33 +1054,6 @@ const SeasonDraftDetail = () => {
       </Card>
     </div>
   );
-};
-
-
-const getPositionIcon = (position?: string): React.ReactNode => {
-  if (!position) return <Replace size={18} className="text-muted-foreground" />;
-  switch (position.toUpperCase()) {
-    case 'QB':
-      return <UserCircle2 size={18} className="text-red-500" />;
-    case 'RB':
-      return <UsersIcon size={18} className="text-blue-500" />;
-    case 'WR':
-      return <PersonStanding size={18} className="text-green-500" />; 
-    case 'TE':
-      return <Replace size={18} className="text-yellow-500" />; 
-    case 'K':
-      return <Target size={18} className="text-purple-500" />;
-    case 'DST':
-    case 'DEF':
-      return <Shield size={18} className="text-indigo-500" />;
-    default:
-      return <Replace size={18} className="text-muted-foreground" />;
-  }
-};
-
-const formatPvdreValue = (value: number | null | undefined): string => {
-  if (value === null || value === undefined) return 'N/A';
-  return (value >= 0 ? '+' : '') + value.toFixed(1);
 };
 
 
@@ -1375,3 +1374,6 @@ export default function DraftHistoryPage() {
 
     
 
+
+
+    
