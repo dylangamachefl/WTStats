@@ -121,18 +121,18 @@ body {
   height: 100%;
   background: linear-gradient(
     110deg,
-    hsla(45, 100%, 75%, 0.3) 0%,  /* Light gold */
-    hsla(50, 100%, 80%, 0.4) 20%, /* Lighter gold/yellow */
-    hsla(35, 100%, 70%, 0.3) 40%, /* Light orange gold */
-    hsla(55, 90%, 85%, 0.25) 60%,/* Pale yellow highlight */
-    hsla(45, 100%, 75%, 0.35) 80%, /* Light gold */
-    hsla(50, 100%, 80%, 0.4) 100% /* Lighter gold/yellow */
+    hsla(45, 100%, 75%, 0.4) 0%,  /* Light gold - increased alpha */
+    hsla(50, 100%, 80%, 0.5) 20%, /* Lighter gold/yellow - increased alpha */
+    hsla(35, 100%, 70%, 0.4) 40%, /* Light orange gold - increased alpha */
+    hsla(55, 90%, 85%, 0.35) 60%,/* Pale yellow highlight - increased alpha */
+    hsla(45, 100%, 75%, 0.45) 80%, /* Light gold - increased alpha */
+    hsla(50, 100%, 80%, 0.5) 100% /* Lighter gold/yellow - increased alpha */
   );
   background-size: 300% 300%; /* Make gradient larger than element */
   animation: iridescent-shimmer 12s ease-in-out infinite alternate;
-  z-index: 0; 
+  z-index: 0; /* Place pseudo-element above card's own background, below content */
   mix-blend-mode: screen; 
-  opacity: 0.7; /* Adjust for subtlety */
+  opacity: 0.7; /* Adjust for subtlety - can be increased if still not visible */
   border-radius: inherit; /* Ensure pseudo-element respects card's border radius */
 }
 
