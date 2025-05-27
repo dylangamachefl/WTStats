@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button"; // Added Button import
+import { Button } from "@/components/ui/button";
 import type { GM, H2HRivalryData, H2HMatchupTimelineEntry, H2HPlayoffMeetingDetail, ExtremeMatchupInfo, H2HOwnerInfo } from '@/lib/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, DotProps } from 'recharts';
 import { Users, CheckCircle2, XCircle, Trophy, ArrowUpDown, BarChart2, CalendarDays, Info } from 'lucide-react';
@@ -82,11 +82,14 @@ export default function H2HPage() {
     comparisonData.matchup_timeline.forEach(m => {
       const margin = Math.abs(m.owner1_score - m.owner2_score);
       let winnerName = 'Tie';
-      if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
-        winnerName = comparisonData.owner1_info.owner_name;
-      } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
-        winnerName = comparisonData.owner2_info.owner_name;
+      if (comparisonData.owner1_info && comparisonData.owner2_info) {
+         if (m.winner_owner_id === comparisonData.owner1_info.owner_id) {
+          winnerName = comparisonData.owner1_info.owner_name;
+        } else if (m.winner_owner_id === comparisonData.owner2_info.owner_id) {
+          winnerName = comparisonData.owner2_info.owner_name;
+        }
       }
+
 
       const currentMatchupInfo: ExtremeMatchupInfo = {
         margin,
@@ -138,8 +141,8 @@ export default function H2HPage() {
           const response = await fetch(filePath);
           if (response.status === 404) {
             console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
-            setError(null); // Clear generic error
-            setComparisonData(null); // Ensure no data is displayed
+            setError(null);
+            setComparisonData(null);
           } else if (!response.ok) {
             const errorText = await response.text();
             console.error("[H2HPage] Fetch failed:", response.status, errorText);
@@ -148,13 +151,11 @@ export default function H2HPage() {
             const data: H2HRivalryData = await response.json();
             console.log("[H2HPage] Fetched H2H data:", data);
 
-            // Determine if GM1 in selection matches owner1_info in data
             if (data.owner1_info.owner_id.toString() === gm1Id) {
               setComparisonData(data);
               setDisplayedGm1Name(data.owner1_info.owner_name);
               setDisplayedGm2Name(data.owner2_info.owner_name);
             } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-              // Selected GM1 matches owner2_info, so we need to swap
               setDisplayedGm1Name(data.owner2_info.owner_name);
               setDisplayedGm2Name(data.owner1_info.owner_name);
               setComparisonData({
@@ -177,7 +178,6 @@ export default function H2HPage() {
                   owner2_score: m.owner1_score,
                   owner1_team_name: m.owner2_team_name,
                   owner2_team_name: m.owner1_team_name,
-                  // winner_owner_id remains the same absolute ID
                 })),
                 playoff_meetings: {
                   ...data.playoff_meetings,
@@ -187,13 +187,12 @@ export default function H2HPage() {
                       ...pm,
                       owner1_score: pm.owner2_score,
                       owner2_score: pm.owner1_score,
-                      // winner_owner_id remains the same absolute ID
                   }))
                 }
               });
             } else {
-              console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is, but this might be incorrect. Ensure JSON owner_ids match selection IDs.");
-              setComparisonData(data); // Display as-is if no clear match for swapping
+              console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
+              setComparisonData(data);
               setDisplayedGm1Name(data.owner1_info.owner_name);
               setDisplayedGm2Name(data.owner2_info.owner_name);
             }
@@ -212,7 +211,6 @@ export default function H2HPage() {
       };
       fetchData();
     } else {
-      // Clear data if GMs are not fully selected
       setComparisonData(null);
       setError(null);
       setLoading(false);
@@ -478,8 +476,8 @@ export default function H2HPage() {
                            <TableRow key={`playoff-detail-${index}-${meeting.season_id}-${meeting.fantasy_week}`} className={cn(isChampionshipGame && "bg-yellow-100/50 dark:bg-yellow-800/20")}>
                              <TableCell>{meeting.season_id}</TableCell>
                              <TableCell className="font-medium">
-                                {isChampionshipGame && <Trophy className="inline mr-2 h-4 w-4 text-yellow-500" />}
                                 {roundDescription}
+                                {isChampionshipGame && <Trophy className="inline ml-2 h-4 w-4 text-yellow-500" />}
                              </TableCell>
                              <TableCell className={cn("text-left font-semibold", meeting.owner1_score > meeting.owner2_score ? 'text-green-600' : '')}>{meeting.owner1_score.toFixed(1)}</TableCell> 
                              <TableCell className={cn("text-left font-semibold", meeting.owner2_score > meeting.owner1_score ? 'text-green-600' : '')}>{meeting.owner2_score.toFixed(1)}</TableCell> 
@@ -510,11 +508,11 @@ export default function H2HPage() {
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('season_id')} className="px-1 group text-xs justify-start">Season {getSortIcon('season_id')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('fantasy_week')} className="px-1 group text-xs justify-start">Week {getSortIcon('fantasy_week')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_team_name')} className="px-1 group text-xs justify-start">{displayedGm1Name}'s Team {getSortIcon('owner1_team_name')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group text-xs justify-start">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group text-xs justify-start">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner1_score')} className="px-1 group justify-start w-full text-xs">{displayedGm1Name}'s Score {getSortIcon('owner1_score')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_score')} className="px-1 group justify-start w-full text-xs">{displayedGm2Name}'s Score {getSortIcon('owner2_score')}</Button></TableHead>
                       <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('owner2_team_name')} className="px-1 group text-xs justify-start">{displayedGm2Name}'s Team {getSortIcon('owner2_team_name')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('winner_name')} className="px-1 group text-xs justify-start">Winner {getSortIcon('winner_name')}</Button></TableHead>
-                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group text-xs justify-start">Margin {getSortIcon('margin')}</Button></TableHead>
+                      <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('margin')} className="px-1 group justify-start w-full text-xs">Margin {getSortIcon('margin')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_playoff_display')} className="px-1 group text-xs justify-start">Playoff {getSortIcon('is_playoff_display')}</Button></TableHead>
                       <TableHead className="text-left"><Button variant="ghost" size="sm" onClick={() => requestSort('is_championship_display')} className="px-1 group text-xs justify-start">Championship {getSortIcon('is_championship_display')}</Button></TableHead>
                     </TableRow>
@@ -546,7 +544,3 @@ export default function H2HPage() {
     </div>
   );
 }
-
-    
-
-    
