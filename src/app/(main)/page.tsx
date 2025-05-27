@@ -120,13 +120,14 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   }, [leagueData?.finalStandingsHeatmap]);
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; } => {
-    const defaultStyle = { cellClasses: 'text-muted-foreground font-semibold' };
-    if (rank === null || rank === undefined || maxRankInYear <= 0) return defaultStyle;
-
+    if (rank === null || rank === undefined || maxRankInYear <= 0) {
+      return { cellClasses: 'text-muted-foreground font-semibold' };
+    }
+    
     if (rank === 1) {
       return { cellClasses: 'bg-yellow-300 text-neutral-800 font-semibold' };
     }
-
+    
     if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' };
     
     const rankPositionInScale = rank - 2; 
@@ -134,19 +135,19 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
     if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' };
 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5;
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Handle division by zero if maxRank is 2
     
     const NEUTRAL_BAND_START_PERCENT = 0.425; 
     const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
         return { cellClasses: cn('text-foreground font-semibold') }; 
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better ranks
         const intensity = Math.min(1, (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT);
         if (intensity > 0.66) return { cellClasses: cn('bg-green-300 text-green-800 font-semibold') }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-green-200 text-green-800 font-semibold') };
         return { cellClasses: cn('bg-green-100 text-green-700 font-semibold') }; 
-    } else { 
+    } else { // Worse ranks
         const intensity = Math.min(1, (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT));
         if (intensity > 0.66) return { cellClasses: cn('bg-red-300 text-red-800 font-semibold') }; 
         if (intensity > 0.33) return { cellClasses: cn('bg-red-200 text-red-800 font-semibold') };
@@ -295,7 +296,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
           <CardContent className="p-0 overflow-x-auto"><Skeleton className="h-64" /></CardContent>
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
-            <Card className="overflow-hidden">
+             <Card className="overflow-hidden">
                 <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
             </Card>
@@ -456,15 +457,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                 <TableBody>
                     {Array.isArray(sortedCareerLeaderboard) && sortedCareerLeaderboard.map((stat: CareerStat) => (
                     <TableRow key={stat.name}>
-                        <TableCell className="font-medium px-2 py-1 text-xs text-left">{stat.name}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.wins}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.losses}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.ties}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.winPct}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.championships}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
-                        <TableCell className="px-2 py-1 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
+                        <TableCell className="font-medium px-2 py-2 text-xs text-left">{stat.name}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.wins}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.losses}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.ties}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.winPct}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.championships}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsFor?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.pointsAgainst?.toFixed(1) ?? 'N/A'}</TableCell>
+                        <TableCell className="px-2 py-2 text-xs text-left">{stat.playoffRate !== undefined && stat.playoffRate !== null ? (stat.playoffRate * 100).toFixed(1) + '%' : 'N/A'}</TableCell>
                     </TableRow>
                     ))}
                 </TableBody>
@@ -534,7 +535,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       <TableCell
                         key={year}
                         className="p-0 border text-center text-xs"
-                        style={{minWidth: '50px'}} // Adjust min-width as needed
+                        style={{minWidth: '50px'}} 
                       >
                         <div 
                           className={cn("p-0.5 h-full w-full flex items-center justify-center", cellClasses)}
@@ -572,15 +573,15 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <TableBody>
                   {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
                   <TableRow key={gmPerf.gm_name}>
-                      <TableCell className="font-medium px-2 py-1 text-xs text-left">{gmPerf.gm_name}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.total_matchups}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.wins}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.losses}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-1 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                      <TableCell className="font-medium px-2 py-2 text-xs text-left">{gmPerf.gm_name}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.total_matchups}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.wins}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.losses}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.quarterfinal_matchups}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.semifinal_matchups}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.championship_matchups}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                      <TableCell className="px-2 py-2 text-xs text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
                   </TableRow>
                   ))}
               </TableBody>
@@ -1261,7 +1262,6 @@ const SeasonDetail = () => {
                                                             {game.position}
                                                         </Badge>
                                                     </TableCell>
-                                                    {/* Conditionally render fantasy team column header and cell */}
                                                     <TableHead>FANTASY TEAM</TableHead> 
                                                     <TableCell>{fantasyTeamDisplay}</TableCell>
                                                     <TableCell className="text-center">{game.week}</TableCell>
@@ -1345,8 +1345,7 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential != null) {
-        // Invert logic: positive SOS diff means harder schedule (bad luck), so red. Negative means easier (good luck), so green.
-        sosDifferentialColor = performance.sosDifferential > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"; 
+        sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"; 
     }
 
     return (
@@ -1379,7 +1378,7 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                  <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
-                        {performance.sosDifferential != null && performance.sosDifferential > 0 ? '+' : ''}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
+                        {performance.sosDifferential != null && performance.sosDifferential < 0 ? '' : '+'}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
                     </span>
                     <span className="text-xs text-muted-foreground">{performance.sosRating ?? 'N/A'}</span>
                 </div>
@@ -1503,7 +1502,6 @@ const GMCareer = () => {
       setGmData(null);
       setGmIndividualSeasonData(null); 
       setErrorGmIndividualSeason(null);
-      // setSelectedViewOption("all-seasons"); // Reset to all-seasons view when GM changes
 
       const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
       const gmSlug = gmInfoFromMock?.name.toLowerCase().replace(/\s+/g, '') || selectedGmId; 
@@ -1529,11 +1527,10 @@ const GMCareer = () => {
             throw new Error(`Fetched data for ${gmSlug} is incomplete.`);
           }
           setGmData(data);
-          // If default view is specific season, trigger fetch, otherwise it's already "all-seasons"
            if (selectedViewOption !== "all-seasons" && data.gmInfo && data.gmInfo.id && data.gmInfo.slug) {
              fetchIndividualSeasonData(data.gmInfo.slug, data.gmInfo.id, selectedViewOption);
            } else if (selectedViewOption === "all-seasons") {
-             setGmIndividualSeasonData(null); // Ensure individual season data is cleared
+             setGmIndividualSeasonData(null); 
            }
         })
         .catch(err => {
@@ -1931,12 +1928,12 @@ const GMCareer = () => {
                 <Card>
                     <CardHeader><CardTitle className="text-xl">Positional Strength vs League Avg.</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="h-[250px] w-full max-w-lg mx-auto">
+                        <div className="h-[300px] w-full max-w-lg mx-auto">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RechartsBarChartImport data={gmData.positionStrength} layout="vertical" margin={{ left: 30, right: 20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis type="number" />
-                                    <YAxis dataKey="position" type="category" width={120} tickFormatter={(value) => getPositionName(value)} />
+                                    <YAxis dataKey="position" type="category" width={120} tickFormatter={(value) => getPositionName(value)} interval={0} />
                                     <RechartsTooltip formatter={(value: number) => value.toFixed(1)} />
                                     <RechartsLegend />
                                     <Bar dataKey="value" name="Strength vs Avg">
@@ -2578,4 +2575,3 @@ export default function LeagueHistoryPage() {
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
     
-
