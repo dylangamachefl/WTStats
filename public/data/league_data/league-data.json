@@ -501,10 +501,10 @@
             "record_category": "Biggest Blowout"
         },
         {
-            "gm_name": "Zach",
-            "seasons": "2021",
-            "week": "5",
-            "value": 0.12,
+            "gm_name": "Mark",
+            "seasons": "2017",
+            "week": "Sacko",
+            "value": 0.1,
             "record_category": "Closest Win"
         },
         {
@@ -518,8 +518,8 @@
             "gm_name": "Sean",
             "seasons": "2020",
             "week": "Championship",
-            "value": 53.2,
-            "record_category": "Highest Scoring Player (Week): Alvin Kamara"
+            "value": "Alvin Kamara - 53.2",
+            "record_category": "Highest Scoring Player (Week)"
         },
         {
             "gm_name": "Zach",
