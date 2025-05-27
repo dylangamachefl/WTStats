@@ -106,8 +106,8 @@ body {
 }
 
 .card-iridescent {
-  position: relative; /* Essential for ::before positioning */
-  overflow: hidden; /* Good practice to contain pseudo-elements */
+  position: relative; 
+  overflow: hidden; 
 }
 
 .card-iridescent::before {
@@ -119,22 +119,33 @@ body {
   bottom: 0;
   width: 100%;
   height: 100%;
+  
   background-image: 
-    linear-gradient(115deg, hsla(190, 80%, 70%, 0.6), hsla(250, 80%, 75%, 0.6) 35%, hsla(310, 80%, 70%, 0.6) 70%, hsla(50, 80%, 65%, 0.6)),
-    linear-gradient(245deg, hsla(60, 80%, 65%, 0.6), hsla(120, 80%, 65%, 0.6) 50%, hsla(180, 80%, 65%, 0.6));
-  background-size: 250% 250%; /* Slightly larger for more movement */
+    linear-gradient(115deg, 
+      hsla(190, 85%, 65%, 0.6), /* Brighter Cyan */
+      hsla(270, 75%, 70%, 0.6), /* Brighter Purple */
+      hsla(330, 80%, 65%, 0.6), /* Brighter Pink */
+      hsla(45, 90%, 60%, 0.6)   /* Brighter Gold */
+    ),
+    linear-gradient(245deg, 
+      hsla(45, 90%, 60%, 0.6),   /* Brighter Gold */
+      hsla(120, 65%, 60%, 0.6),  /* Brighter Green */
+      hsla(220, 85%, 70%, 0.6)   /* Brighter Blue */
+    );
+  background-size: 250% 250%; 
   background-position: 0% 0%;
   
-  mix-blend-mode: overlay; /* Try overlay for a softer blend on light backgrounds */
-  opacity: 0.7; /* Adjust opacity as needed */
+  /* mix-blend-mode: overlay; */ /* Temporarily removed for visibility test */
   
-  z-index: 0; /* Positioned above card's direct background, below card's content */
+  opacity: 0.75; /* Increased opacity */
   
-  animation: iridescent-shimmer 10s ease-in-out infinite alternate;
-  pointer-events: none; /* Allow interaction with card content */
+  z-index: 0; 
+  
+  animation: iridescent-shimmer-debug 7s ease-in-out infinite alternate;
+  pointer-events: none; 
 }
 
-@keyframes iridescent-shimmer {
+@keyframes iridescent-shimmer-debug {
   0% {
     background-position: 0% 0%;
   }
