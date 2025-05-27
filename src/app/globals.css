@@ -105,9 +105,10 @@ body {
   }
 }
 
+/* Adapted Radiant Holo Style */
 .card-iridescent {
-  position: relative; /* Needed for absolute positioning of pseudo-elements */
-  overflow: hidden; /* To contain the pseudo-element if it uses blur or large spread */
+  position: relative;
+  overflow: hidden; /* Important to contain pseudo-elements */
 }
 
 .card-iridescent::before {
@@ -119,25 +120,68 @@ body {
   bottom: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    110deg,
-    hsla(45, 100%, 75%, 0.4) 0%,  /* Light gold - increased alpha */
-    hsla(50, 100%, 80%, 0.5) 20%, /* Lighter gold/yellow - increased alpha */
-    hsla(35, 100%, 70%, 0.4) 40%, /* Light orange gold - increased alpha */
-    hsla(55, 90%, 85%, 0.35) 60%,/* Pale yellow highlight - increased alpha */
-    hsla(45, 100%, 75%, 0.45) 80%, /* Light gold - increased alpha */
-    hsla(50, 100%, 80%, 0.5) 100% /* Lighter gold/yellow - increased alpha */
-  );
-  background-size: 300% 300%; /* Make gradient larger than element */
-  animation: iridescent-shimmer 12s ease-in-out infinite alternate;
-  z-index: 0; /* Place pseudo-element above card's own background, below content */
-  mix-blend-mode: screen; 
-  opacity: 0.7; /* Adjust for subtlety - can be increased if still not visible */
-  border-radius: inherit; /* Ensure pseudo-element respects card's border radius */
+  z-index: 0; /* Position it above the card's direct background but below content */
+  
+  --barwidth: 1.5%; /* Adjusted for visual */
+  --hue: 220; /* Base hue for the effect, can be changed */
+
+  background-image: 
+    /* Top layer - color dodge for highlights */
+    repeating-linear-gradient( 
+      60deg, 
+      hsla(var(--hue), 100%, 80%, 0.3) 0%, 
+      hsla(calc(var(--hue) + 30), 100%, 80%, 0.3) calc(var(--barwidth) * 2.5), 
+      hsla(calc(var(--hue) + 60), 100%, 80%, 0.3) calc(var(--barwidth) * 5),
+      hsla(calc(var(--hue) + 90), 100%, 80%, 0.3) calc(var(--barwidth) * 7.5),
+      hsla(calc(var(--hue) + 120), 100%, 80%, 0.3) calc(var(--barwidth) * 10)
+    ),
+    /* Middle layer - darker repeating lines */
+    repeating-linear-gradient( 
+      45deg, 
+      hsla(0,0%,10%,0.3) 0%,  
+      hsla(0,0%,10%,0.3) var(--barwidth),
+      hsla(0,0%,20%,0.2) var(--barwidth),
+      hsla(0,0%,20%,0.2) calc(var(--barwidth) * 2),
+      hsla(0,0%,35%,0.1) calc(var(--barwidth) * 2),
+      hsla(0,0%,35%,0.1) calc(var(--barwidth) * 3)
+    ),
+    /* Bottom layer - subtle radial glow, less prominent now */
+    radial-gradient( 
+      farthest-corner ellipse at 70% 30%, 
+      hsla(var(--hue), 70%, 70%, 0.2) 20%, 
+      hsla(calc(var(--hue) - 50), 50%, 50%, 0.05) 130% 
+    );
+
+  background-size: 
+    200% 200%, /* For top layer animation */
+    200% 200%, /* For middle layer animation */
+    cover;    /* Radial stays fixed */
+
+  background-position: 
+    50% 50%, 
+    50% 50%,
+    center;
+
+  background-blend-mode: color-dodge, darken, normal; 
+  
+  filter: brightness(0.8) contrast(1.5) saturate(1.5);
+  mix-blend-mode: color-dodge; /* This blends the whole pseudo-element with the card's actual background */
+  
+  opacity: 0.65; /* Adjust overall intensity */
+
+  animation: static-holo-shimmer 15s linear infinite alternate;
 }
 
-@keyframes iridescent-shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes static-holo-shimmer {
+  0% {
+    background-position: 0% 0%, 100% 100%, center;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, center;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%, center;
+  }
 }
+
+    
