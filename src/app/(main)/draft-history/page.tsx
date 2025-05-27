@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFoo
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics, GMDraftHistoryCareerSummary, GMDraftHistoryRoundEfficiencyEntry } from '@/lib/types';
-import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert } from 'lucide-react';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -802,10 +802,10 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
 
                     let cellContent;
-                    let cellClasses = `p-1.5 border text-xs align-middle h-[50px]`; 
+                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px]`; 
 
                     if (!pick) {
-                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px' }}></TableCell>;
+                       return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px', height: '60px' }}></TableCell>;
                     }
                     
                     let innerDivLayoutClasses = "flex items-center justify-center h-full w-full text-center";
@@ -1185,40 +1185,30 @@ const GMDraftHistory = () => {
           {!loading && gmDraftData && (
             <div className="space-y-6">
               <Card>
-                  <CardContent className="grid md:grid-cols-2 gap-6 pt-6">
-                      <div>
-                          <CardTitle className="text-lg mb-2">Pick Analysis</CardTitle>
-                          <div className="space-y-2 text-center">
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Total Picks Made</p>
-                                  <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
-                              </div>
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Total Hits</p>
-                                  <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
-                              </div>
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Total Misses</p>
-                                  <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
-                              </div>
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Career Hit Rate</p>
-                                  <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
-                              </div>
-                          </div>
+                  <CardContent className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Picks Made</p>
+                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p>
                       </div>
-                      <div>
-                          <CardTitle className="text-lg mb-2">Performance Overview (POE)</CardTitle>
-                          <div className="space-y-2 text-center">
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Sum Total POE</p>
-                                  <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
-                              </div>
-                              <div>
-                                  <p className="text-sm text-muted-foreground">Avg. POE / Pick</p>
-                                  <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
-                              </div>
-                          </div>
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Hits</p>
+                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p>
+                      </div>
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Total Misses</p>
+                          <p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p>
+                      </div>
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Career Hit Rate</p>
+                          <p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p>
+                      </div>
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Sum Total POE</p>
+                          <p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p>
+                      </div>
+                      <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm">
+                          <p className="text-xs uppercase text-muted-foreground font-medium">Avg. POE / Pick</p>
+                          <p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p>
                       </div>
                   </CardContent>
               </Card>
@@ -1425,3 +1415,6 @@ export default function DraftHistoryPage() {
 
 
 
+
+
+    
