@@ -54,7 +54,7 @@ import { cn } from "@/lib/utils";
 import {
   ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, BarChart as RechartsBarChartImport, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, Bar, ScatterChart, Scatter, ZAxis, LineChart as RechartsLineChartImport, LabelList
 } from 'recharts';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch } from 'lucide-react'; // Removed RechartsBar
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -125,39 +125,33 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
     
     if (rank === 1) {
-      // Champion style - Yellow background, dark text
       return { cellClasses: 'bg-yellow-400 text-neutral-800 font-semibold' };
     }
     
-    // For ranks 2 and below, use a green-to-neutral-to-red scale
     if (maxRankInYear <= 1) return { cellClasses: 'text-foreground font-semibold' };
     
-    // Normalize rank for the scale (considering 1st place is handled separately)
-    // The scale now applies to ranks from 2 to maxRankInYear.
-    // A rank of 2 is best (greenest), maxRankInYear is worst (reddest).
-    const rankPositionInScale = rank - 2; // 2nd place is 0, 3rd is 1, etc.
-    const numRanksToScale = maxRankInYear - 2; // Total number of ranks in the scale (e.g., for 12 teams, ranks 2-12 means 11 spots)
+    const rankPositionInScale = rank - 2; 
+    const numRanksToScale = maxRankInYear - 2;
 
-    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; // Should not happen if maxRankInYear > 1
+    if (numRanksToScale < 0) return { cellClasses: 'text-foreground font-semibold' }; 
 
-    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; // Avoid division by zero if maxRank is 2
+    const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5; 
     
-    // Define a neutral band, e.g., 40th to 60th percentile of the scaled ranks
     const NEUTRAL_BAND_START_PERCENT = 0.425; 
     const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
     let backgroundColorClass = '';
-    let textColorClass = 'text-neutral-800'; // Default dark text for pastel backgrounds
+    let textColorClass = 'text-neutral-800'; 
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        backgroundColorClass = 'bg-neutral-100 dark:bg-neutral-800'; // Neutral pastel
-        textColorClass = 'text-foreground'; // Default text for neutral
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { // Better ranks (closer to 2nd)
+        backgroundColorClass = 'bg-neutral-100 dark:bg-neutral-800'; 
+        textColorClass = 'text-foreground'; 
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
         const intensity = Math.min(1, (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT);
         if (intensity > 0.66) backgroundColorClass = 'bg-green-300 dark:bg-green-700/50'; 
         else if (intensity > 0.33) backgroundColorClass = 'bg-green-200 dark:bg-green-800/50';
         else backgroundColorClass = 'bg-green-100 dark:bg-green-900/50'; 
-    } else { // Worse ranks (closer to last)
+    } else { 
         const intensity = Math.min(1, (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT));
         if (intensity > 0.66) backgroundColorClass = 'bg-red-300 dark:bg-red-700/50'; 
         else if (intensity > 0.33) backgroundColorClass = 'bg-red-200 dark:bg-red-800/50';
@@ -816,7 +810,7 @@ const SeasonDetail = () => {
             <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
                 <CalendarDays className="text-primary h-6 w-6" /> 
-                {seasonData?.seasonData?.year || selectedSeason || ""} Season Detail
+                 {selectedSeason} Season Detail
                 </CardTitle>
                 {seasonData?.seasonData && (
                 <CardDescription className="mt-1.5">
@@ -858,7 +852,7 @@ const SeasonDetail = () => {
           {!loading && !error && seasonData && (
               <CardContent className="pt-0">
                 <Tabs value={activeSubTab} onValueChange={setActiveSubTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
+                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="weekly_performance">Weekly Performance</TabsTrigger>
                     <TabsTrigger value="strength_of_schedule">Strength of Schedule</TabsTrigger>
@@ -1201,15 +1195,15 @@ const SeasonDetail = () => {
                                                       const currentSeasonYear = seasonData.seasonData?.year;
                                                       let teamDisplay = player.team; 
                                                       if (currentSeasonYear && currentSeasonYear > 2018) {
-                                                        teamDisplay = player.fantasyTeam || 'Unmanaged';
+                                                        teamDisplay = `(${player.fantasyTeam || 'Unmanaged'})`;
                                                       } else {
-                                                        teamDisplay = player.team;
+                                                        teamDisplay = `(${player.team})`;
                                                       }
                                                       return (
                                                         <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
                                                             <div className="flex items-center gap-1.5">
                                                                 <span className="mr-1.5 font-medium">{(idx + 1)}.</span>
-                                                                <span>{player.player} ({teamDisplay})</span>
+                                                                <span>{player.player} {teamDisplay}</span>
                                                             </div>
                                                             <span className="font-medium">{player.totalPoints?.toFixed(1) ?? 'N/A'}</span>
                                                         </div>
@@ -1242,7 +1236,7 @@ const SeasonDetail = () => {
                                             <TableHead>PLAYER</TableHead>
                                             <TableHead>POS</TableHead>
                                             <TableHead>TEAM</TableHead>
-                                            {(seasonData.seasonData?.year ?? 0) > 2018 && <TableHead>FANTASY TEAM</TableHead> }
+                                            <TableHead>FANTASY TEAM</TableHead>
                                             <TableHead className="text-center">WEEK</TableHead>
                                             <TableHead className="text-right">POINTS</TableHead>
                                         </TableRow>
@@ -1260,9 +1254,9 @@ const SeasonDetail = () => {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>{game.team}</TableCell>
-                                                {currentSeasonYear && currentSeasonYear > 2018 && (
-                                                    <TableCell>{game.fantasyTeam || 'Unmanaged'}</TableCell>
-                                                )}
+                                                <TableCell>
+                                                    {currentSeasonYear && currentSeasonYear <= 2018 ? "-" : (game.fantasyTeam || 'Unmanaged')}
+                                                </TableCell>
                                                 <TableCell className="text-center">{game.week}</TableCell>
                                                 <TableCell className="text-right">{game.points?.toFixed(1) ?? 'N/A'}</TableCell>
                                             </TableRow>
@@ -1342,8 +1336,6 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
       
     let sosDifferentialColor = "text-foreground";
     if (performance.sosDifferential != null) {
-        // Negative SOS differential is "good luck" / easier schedule, so green
-        // Positive SOS differential is "bad luck" / harder schedule, so red
         sosDifferentialColor = performance.sosDifferential < 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"; 
     }
 
@@ -1771,8 +1763,7 @@ const GMCareer = () => {
       {!loading && !error && gmData && selectedViewOption === "all-seasons" && (
         <>
         <Card>
-          <CardHeader>
-            <div className="flex items-center gap-4">
+          <CardHeader className="flex items-center gap-4">
               {gmData.gmInfo.photoUrl ? (
                 <Image data-ai-hint="person avatar" src={gmData.gmInfo.photoUrl} alt={`${gmData.gmInfo.name} photo`} width={64} height={64} className="rounded-full border-2 border-primary"/>
               ) : (
@@ -1796,8 +1787,7 @@ const GMCareer = () => {
                 </CardDescription>
                   {gmData.gmInfo.bio && <p className="text-sm text-muted-foreground mt-2 max-w-prose">{gmData.gmInfo.bio}</p>}
               </div>
-            </div>
-          </CardHeader>
+            </CardHeader>
             <CardContent className="pt-2 md:pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div>
                   <h4 className="text-sm font-medium text-muted-foreground mb-1.5">Overall Record</h4>
@@ -2120,7 +2110,6 @@ const GMCareer = () => {
                                                     </RechartsBarChartImport>
                                                 </ResponsiveContainer>
                                             </div>
-                                            <p className="text-xs text-muted-foreground text-center mt-1">* League Average data is placeholder if not available.</p>
                                         </div>
                                     </div>
                                 ) : <p className="text-muted-foreground text-center py-4">Position contribution data not available.</p>}
@@ -2183,7 +2172,6 @@ const GMCareer = () => {
                                             <CardTitle className="flex items-center text-lg">
                                                 <Users className="mr-2 h-5 w-5 text-primary" /> Player Performance Details
                                             </CardTitle>
-                                            <CardDescription>Click on a player row to see their weekly performance chart.</CardDescription>
                                         </CardHeader>
                                         <CardContent className="overflow-x-auto">
                                             <Table>
@@ -2242,24 +2230,38 @@ const GMCareer = () => {
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
-                                                    {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.map((weekData, index) => (
-                                                        weekData.week !== "Total" && (
-                                                            <TableRow key={`pos-adv-wk-${index}`}>
-                                                                <TableCell className="text-center font-medium">{weekData.week}</TableCell>
+                                                    {gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.filter(item => item.week !== "Total").map((weekData, index) => (
+                                                        <TableRow key={`pos-adv-wk-${index}`}>
+                                                            <TableCell className="text-center font-medium">{weekData.week}</TableCell>
+                                                            {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
+                                                                const value = weekData[posKey];
+                                                                return (
+                                                                    <TableCell key={posKey} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
+                                                                        {typeof value === 'number' ? (value > 0 ? '+' : '') + value.toFixed(1) : (value ?? '-')}
+                                                                    </TableCell>
+                                                                );
+                                                            })}
+                                                        </TableRow>
+                                                    ))}
+                                                    {/* Total Row */}
+                                                    {(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.find(item => item.week === "Total")) && (() => {
+                                                        const totalRow = gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.find(item => item.week === "Total")!;
+                                                        return (
+                                                            <TableRow className="font-semibold bg-muted/50">
+                                                                <TableCell className="text-center">Total</TableCell>
                                                                 {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
-                                                                    const value = weekData[posKey];
+                                                                    const value = totalRow[posKey];
                                                                     return (
-                                                                        <TableCell key={posKey} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
+                                                                        <TableCell key={`total-${posKey}`} className={cn("text-right", typeof value === 'number' && value > 0 ? "text-green-600 dark:text-green-400" : (typeof value === 'number' && value < 0 ? "text-red-600 dark:text-red-400" : ""))}>
                                                                             {typeof value === 'number' ? (value > 0 ? '+' : '') + value.toFixed(1) : (value ?? '-')}
                                                                         </TableCell>
                                                                     );
                                                                 })}
                                                             </TableRow>
-                                                        )
-                                                    ))}
+                                                        );
+                                                    })()}
                                                 </TableBody>
                                             </Table>
-                                            <p className="text-xs text-muted-foreground mt-4">* Requires weekly lineup data for both GM and opponent. FLEX advantage is placeholder.</p>
                                             </>
                                         ) : <p className="text-muted-foreground text-center py-4">Weekly positional advantage data not available.</p>}
                                     </CardContent>
@@ -2313,8 +2315,7 @@ const GMCareer = () => {
                                                     <TableHead className="text-right">Actual</TableHead>
                                                     <TableHead className="text-right">Efficiency</TableHead>
                                                     <TableHead className="text-right">Pts Left</TableHead>
-                                                    <TableHead className="text-center">Correct</TableHead>
-                                                    <TableHead className="text-center">Total</TableHead>
+                                                    <TableHead className="text-center">Decisions</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -2325,8 +2326,7 @@ const GMCareer = () => {
                                                         <TableCell className="text-right">{item.actual?.toFixed(1) ?? '-'}</TableCell>
                                                         <TableCell className="text-right">{item.efficiency?.toFixed(1) ?? '-'}%</TableCell>
                                                         <TableCell className={cn("text-right", typeof item.pointsLeft === 'number' && item.pointsLeft != null && item.pointsLeft > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400")}>{item.pointsLeft?.toFixed(1) ?? '-'}</TableCell>
-                                                        <TableCell className="text-center">{item.correctDecisions ?? '-'}</TableCell>
-                                                        <TableCell className="text-center">{item.totalDecisions ?? '-'}</TableCell>
+                                                        <TableCell className="text-center">{item.correctDecisions ?? '-'}/{item.totalDecisions ?? '-'}</TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>
@@ -2437,35 +2437,70 @@ const GMCareer = () => {
                                     </CardContent>
                                 </Card>
 
-                                {Object.entries(gmIndividualSeasonData.streamingSuccess.streamingWeeklyPerformance || {}).map(([position, weeklyData]) => (
-                                   Array.isArray(weeklyData) && weeklyData.length > 0 && (
-                                    <Card key={`streaming-weekly-${position}`} className="mt-6">
-                                        <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(position)} Streaming Performance</CardTitle></CardHeader>
-                                        <CardContent className="overflow-x-auto">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead className="text-center">WK</TableHead>
-                                                        <TableHead>Player Started</TableHead>
-                                                        <TableHead className="text-right">GM Pts</TableHead>
-                                                        <TableHead className="text-right">League Avg Pts</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {weeklyData.map((item, index) => (
-                                                        <TableRow key={`streaming-wk-detail-${position}-${index}`}>
-                                                            <TableCell className="text-center">{item.week}</TableCell>
-                                                            <TableCell>{item.playerName}</TableCell>
-                                                            <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
-                                                            <TableCell className="text-right">{item.leagueAvgPts?.toFixed(1) ?? '-'}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </CardContent>
-                                    </Card>
-                                   )
-                                ))}
+                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {['QB', 'TE'].map(pos => {
+                                        const weeklyData = gmIndividualSeasonData.streamingSuccess?.streamingWeeklyPerformance?.[pos];
+                                        return Array.isArray(weeklyData) && weeklyData.length > 0 && (
+                                            <Card key={`streaming-weekly-${pos}`}>
+                                                <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(pos)} Streaming Performance</CardTitle></CardHeader>
+                                                <CardContent className="overflow-x-auto">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="text-center">WK</TableHead>
+                                                                <TableHead>Player Started</TableHead>
+                                                                <TableHead className="text-right">GM Pts</TableHead>
+                                                                <TableHead className="text-right">League Avg Pts</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {weeklyData.map((item, index) => (
+                                                                <TableRow key={`streaming-wk-detail-${pos}-${index}`}>
+                                                                    <TableCell className="text-center">{item.week}</TableCell>
+                                                                    <TableCell>{item.playerName}</TableCell>
+                                                                    <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
+                                                                    <TableCell className="text-right">{item.leagueAvgPts?.toFixed(1) ?? '-'}</TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </CardContent>
+                                            </Card>
+                                        )
+                                    })}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                     {['K', 'DST'].map(pos => {
+                                        const weeklyData = gmIndividualSeasonData.streamingSuccess?.streamingWeeklyPerformance?.[pos];
+                                        return Array.isArray(weeklyData) && weeklyData.length > 0 && (
+                                            <Card key={`streaming-weekly-${pos}`}>
+                                                <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(pos)} Streaming Performance</CardTitle></CardHeader>
+                                                <CardContent className="overflow-x-auto">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="text-center">WK</TableHead>
+                                                                <TableHead>Player Started</TableHead>
+                                                                <TableHead className="text-right">GM Pts</TableHead>
+                                                                <TableHead className="text-right">League Avg Pts</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {weeklyData.map((item, index) => (
+                                                                <TableRow key={`streaming-wk-detail-${pos}-${index}`}>
+                                                                    <TableCell className="text-center">{item.week}</TableCell>
+                                                                    <TableCell>{item.playerName}</TableCell>
+                                                                    <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
+                                                                    <TableCell className="text-right">{item.leagueAvgPts?.toFixed(1) ?? '-'}</TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </CardContent>
+                                            </Card>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         ) : <p className="text-muted-foreground text-center py-4">Streaming success data not available.</p>}
                     </TabsContent>
