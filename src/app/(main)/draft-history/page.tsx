@@ -389,8 +389,8 @@ const DraftOverview = () => {
                         gmAvgValueForMetric = gmAvgData[selectedMetric as keyof GMAverageMetrics] as number | undefined | null;
                       }
                        const gmAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
-                        season_id: 0, // Dummy value
-                        gm_id: gmAvgData?.gm_id || 0, // Dummy value
+                        season_id: 0, 
+                        gm_id: gmAvgData?.gm_id || 0, 
                         gm_name: gm_name,
                         avg_pvdre: gmAvgData?.avg_pvdre,
                         pvdre_hit_rate: gmAvgData?.pvdre_hit_rate,
@@ -463,8 +463,8 @@ const DraftOverview = () => {
                                 }
                                 const seasonAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
                                   season_id: parseInt(year), 
-                                  gm_id: 0, // Dummy value
-                                  gm_name: "League Average", // Dummy value
+                                  gm_id: 0, 
+                                  gm_name: "League Average", 
                                   avg_pvdre: seasonAvgData?.avg_pvdre,
                                   pvdre_hit_rate: seasonAvgData?.pvdre_hit_rate,
                                   avg_value_vs_adp: seasonAvgData?.avg_value_vs_adp,
@@ -1067,7 +1067,7 @@ const getPositionIcon = (position?: string): React.ReactNode => {
       return <Target size={18} className="text-purple-500" />;
     case 'DST':
     case 'DEF':
-      return <Shield size={18} className="text-indigo-500" />; // Changed from ShieldAlert
+      return <Shield size={18} className="text-indigo-500" />; 
     default:
       return <MoreHorizontal size={18} className="text-muted-foreground" />;
   }
@@ -1171,7 +1171,7 @@ const GMDraftHistory = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
-              <CardTitle className="flex items-center gap-2"><UserCircle2 /> {gmDraftData?.gm_name || mockGms.find(g=>g.id===selectedGmId)?.name || 'GM'} Draft History</CardTitle>
+              <CardTitle className="flex items-center gap-2"><UserCircle2 /> {gmDraftData?.gm_name || mockGms.find(g=>g.id===selectedGmId)?.name || 'GM'}'s Draft History</CardTitle>
             </div>
             <Select value={selectedGmId} onValueChange={setSelectedGmId}>
               <SelectTrigger className="w-full sm:w-[280px] mt-2 sm:mt-0">
@@ -1432,3 +1432,4 @@ export default function DraftHistoryPage() {
 
 
     
+
