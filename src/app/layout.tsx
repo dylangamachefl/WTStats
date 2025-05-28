@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Gridiron Archive',
+  title: 'WTStats',
   description: 'Fantasy Football Analytics Platform',
 };
 
