@@ -18,7 +18,6 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import * as React from "react";
 
 interface NavSubItem {
@@ -31,7 +30,7 @@ interface NavItemConfig {
   href: string;
   label: string;
   icon: ReactNode;
-  matchSegments?: number; // How many path segments to match for main item active state
+  matchSegments?: number; 
   subItems?: NavSubItem[];
 }
 
@@ -51,7 +50,7 @@ const navItems: NavItemConfig[] = [
     href: "/draft-history",
     label: "Draft History",
     icon: <ListChecks />,
-    matchSegments: 2,
+    matchSegments: 2, // Match /draft-history specifically
     subItems: [
       { href: "/draft-history?section=overview", label: "Overview", queryParamValue: "overview" },
       { href: "/draft-history?section=season-view", label: "Season View", queryParamValue: "season-view" },
@@ -71,6 +70,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     const isBasePathCorrect = pathname === href || (href === "/" && pathname.startsWith("/?")) || (href.startsWith("/") && pathname.startsWith(href) && (pathname.length === href.length || pathname[href.length] === '?'));
 
     if (isSubItem && subItemQueryParam) {
+        // Determine if it's a default sub-item for the main path
         const isDefaultSubItemForLeagueHistory = href === "/" && subItemQueryParam === 'all-seasons';
         const isDefaultSubItemForDraftHistory = href === "/draft-history" && subItemQueryParam === 'overview';
         
@@ -79,8 +79,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 ((isDefaultSubItemForLeagueHistory || isDefaultSubItemForDraftHistory) && !currentSectionQuery));
     }
     
-    if (pathname === "/" && href === "/") return true;
-    if (href !== "/") return pathname.startsWith(href);
+    // For main items:
+    // If it's the root path "/", it's active only if pathname is exactly "/".
+    if (href === "/") return pathname === "/";
+    // For other main paths, check if the pathname starts with this href.
+    // This is a simplified check for parent routes. For precise matching, you might need more segments.
+    if (matchSegments === 1) return pathname === href; // Exact match for single segment paths
+    if (matchSegments === 2) return pathname.startsWith(href); // For multi-segment paths like /draft-history
 
     return false;
   };
@@ -93,6 +98,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         const activeSubItem = activeMainItem.subItems.find(sub => sub.queryParamValue === currentSectionQuery);
         if (activeSubItem) return activeSubItem.label;
       }
+      // If no section query or specific sub-item not found, check for default sub-item title
       if (activeMainItem.subItems) {
         const defaultSubItemQuery = activeMainItem.href === "/" ? "all-seasons" : (activeMainItem.href === "/draft-history" ? "overview" : undefined);
         if (defaultSubItemQuery) {
@@ -102,9 +108,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
             }
         }
       }
-      return activeMainItem.label;
+      return activeMainItem.label; // Fallback to main item label
     }
-    return "WTStats";
+    return "WTStats"; // Default title
   };
 
 
@@ -114,7 +120,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SidebarHeader className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-                <Image src="/images/wtstats-logo.png" alt="WTStats Logo" width={32} height={32} className="rounded-sm"/>
+                {/* Image component removed */}
                 <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">WTStats</span>
              </Link>
           </div>
@@ -135,7 +141,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     </SidebarMenuButton>
                   </Link>
                 </SidebarMenuItem>
-                {isActive(item.href, item.matchSegments) && item.subItems && (
+                {/* Logic for showing sub-items when the main path is active */}
+                {((item.href === "/" && pathname === "/") || (item.href !== "/" && pathname.startsWith(item.href))) && item.subItems && (
                   <ul className="pl-2 pr-1 space-y-0.5 group-data-[collapsible=icon]:hidden">
                     {item.subItems.map((subItem) => (
                       <SidebarMenuItem key={subItem.href + subItem.label}>
@@ -170,12 +177,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
            </div>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset className="flex flex-col overflow-x-hidden"> {}
+      <SidebarInset className="flex flex-col"> {}
         <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
           
           <div>
-            
+            {/* Page title removed from here */}
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
