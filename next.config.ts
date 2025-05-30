@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  basePath: isProd ? '/WTStats' : '',
+  basePath: isProd ? '' : '',
   images: {
     remotePatterns: [
       {
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Required for next export with next/image
   },
-  assetPrefix: isProd ? '/WTStats/' : '', // Note the trailing slash for assetPrefix
+  assetPrefix: isProd ? '' : '', // Note the trailing slash for assetPrefix
 };
 
 export default nextConfig;
