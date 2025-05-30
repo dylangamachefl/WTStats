@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  basePath: isProd ? '' : '',
+  basePath: isProd ? '/WTStats' : '',
   images: {
     remotePatterns: [
       {
