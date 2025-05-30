@@ -1,6 +1,8 @@
 
 import type {NextConfig} from 'next';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
   output: 'export', // Enable static HTML export
   typescript: {
@@ -9,6 +11,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  basePath: isProd ? '/WTStats' : '',
   images: {
     remotePatterns: [
       {
@@ -62,6 +65,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Required for next export with next/image
   },
+  assetPrefix: isProd ? '/WTStats/' : '', // Note the trailing slash for assetPrefix
 };
 
 export default nextConfig;

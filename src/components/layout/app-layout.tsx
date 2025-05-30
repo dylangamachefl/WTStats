@@ -1,5 +1,5 @@
 
-"use client"
+"use client";
 
 import type { ReactNode } from "react";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy, BarChart3 } from "lucide-react";
+import { ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy, BarChart3 } from "lucide-react"; // Import BarChart3 if you plan to use it. Currently unused.
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 
@@ -29,7 +29,7 @@ interface NavSubItem {
 interface NavItemConfig {
   href: string;
   label: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
   matchSegments?: number; 
   subItems?: NavSubItem[];
 }
@@ -178,16 +178,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className="flex flex-col"> {}
-        <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <SidebarTrigger className="md:hidden" />
-          
-          <div>
-            {/* Page title removed from here */}
-          </div>
-        </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          {children}
-        </main>
+ <React.Suspense fallback={null}>
+ <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+ <SidebarTrigger className="md:hidden" />
+
+ <div>
+ {/* Page title removed from here */}
+ </div>
+ </header>
+ </React.Suspense>
+
+ <React.Suspense fallback={<div>Loading...</div>}>
+ <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+ {children}
+ </main>
+ </React.Suspense>
       </SidebarInset>
     </SidebarProvider>
   );
