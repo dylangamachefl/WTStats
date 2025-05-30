@@ -1,0 +1,318 @@
+{
+  "gmInfo": {
+    "id": 12,
+    "name": "Dylan",
+    "slug": "dylan",
+    "yearsActive": "2014-2024",
+    "championshipYears": []
+  },
+  "careerStats": {
+    "wins": 73,
+    "losses": 66,
+    "ties": 1,
+    "winPct": 0.521,
+    "totalPointsFor": 13495.02,
+    "totalPointsAgainst": 13512.34,
+    "avgPointsPerGame": 96.39,
+    "playoffAppearances": 4,
+    "totalSeasons": 11,
+    "playoffWins": 0,
+    "playoffLosses": 4
+  },
+  "careerExtremes": {
+    "highs": {
+      "mostPointsGame": {
+        "value": 158.1,
+        "season": 2021,
+        "week": "11"
+      },
+      "biggestWinMargin": {
+        "value": 65.5,
+        "season": 2015,
+        "week": "7",
+        "opponentName": "Mark"
+      },
+      "bestSeasonRecord": {
+        "wins": 11,
+        "losses": 2,
+        "season": 2015,
+        "isChampion": false
+      }
+    },
+    "lows": {
+      "fewestPointsGame": {
+        "value": 53.74,
+        "season": 2020,
+        "week": "6"
+      },
+      "worstLossMargin": {
+        "value": 81.34,
+        "season": 2020,
+        "week": "6",
+        "opponentName": "Zach"
+      },
+      "worstSeasonRecord": {
+        "wins": 4,
+        "losses": 9,
+        "season": 2017,
+        "isChampion": false
+      }
+    }
+  },
+  "seasonProgression": [
+    {
+      "year": 2014,
+      "finalStanding": 9,
+      "pointsForRank": 6,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2015,
+      "finalStanding": 3,
+      "pointsForRank": 1,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2016,
+      "finalStanding": 3,
+      "pointsForRank": 4,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2017,
+      "finalStanding": 10,
+      "pointsForRank": 9,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2018,
+      "finalStanding": 10,
+      "pointsForRank": 10,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2019,
+      "finalStanding": 8,
+      "pointsForRank": 7,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2020,
+      "finalStanding": 7,
+      "pointsForRank": 9,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2021,
+      "finalStanding": 5,
+      "pointsForRank": 1,
+      "madePlayoffs": false,
+      "isChampion": false
+    },
+    {
+      "year": 2022,
+      "finalStanding": 3,
+      "pointsForRank": 5,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2023,
+      "finalStanding": 3,
+      "pointsForRank": 2,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2024,
+      "finalStanding": 8,
+      "pointsForRank": 8,
+      "madePlayoffs": false,
+      "isChampion": false
+    }
+  ],
+  "positionStrength": [
+    {
+      "position": "QB",
+      "value": -4.8
+    },
+    {
+      "position": "RB",
+      "value": 3.2
+    },
+    {
+      "position": "WR",
+      "value": 7.0
+    },
+    {
+      "position": "TE",
+      "value": -11.5
+    },
+    {
+      "position": "FLEX",
+      "value": 11.6
+    },
+    {
+      "position": "K",
+      "value": -4.7
+    },
+    {
+      "position": "DST",
+      "value": -4.2
+    }
+  ],
+  "franchisePlayers": [
+    {
+      "playerId": 4314,
+      "name": "Tom Brady",
+      "position": "QB",
+      "seasonsWithGm": [
+        2014,
+        2017
+      ],
+      "totalPointsForGm": 574.0,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 11197,
+      "name": "Demaryius Thomas",
+      "position": "WR",
+      "seasonsWithGm": [
+        2014,
+        2016
+      ],
+      "totalPointsForGm": 366.2,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 16127,
+      "name": "Isaiah Crowell",
+      "position": "RB",
+      "seasonsWithGm": [
+        2016,
+        2017
+      ],
+      "totalPointsForGm": 280.6,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 11488,
+      "name": "Jimmy Graham",
+      "position": "TE",
+      "seasonsWithGm": [
+        2014,
+        2017
+      ],
+      "totalPointsForGm": 258.9,
+      "gamesStartedForGm": 26
+    },
+    {
+      "playerId": 16847,
+      "name": "David Johnson",
+      "position": "RB",
+      "seasonsWithGm": [
+        2016,
+        2018
+      ],
+      "totalPointsForGm": 524.4,
+      "gamesStartedForGm": 25
+    }
+  ],
+  "rivalryPerformance": [
+    {
+      "opponentId": 1,
+      "opponentName": "Jack",
+      "wins": 9,
+      "losses": 12,
+      "avgPointsFor": 112.77,
+      "avgPointsAgainst": 118.1
+    },
+    {
+      "opponentId": 11,
+      "opponentName": "Chris",
+      "wins": 12,
+      "losses": 8,
+      "avgPointsFor": 102.64,
+      "avgPointsAgainst": 101.63
+    },
+    {
+      "opponentId": 5,
+      "opponentName": "Sean",
+      "wins": 7,
+      "losses": 12,
+      "avgPointsFor": 103.75,
+      "avgPointsAgainst": 107.88
+    },
+    {
+      "opponentId": 4,
+      "opponentName": "Mark",
+      "wins": 11,
+      "losses": 6,
+      "avgPointsFor": 107.71,
+      "avgPointsAgainst": 97.57
+    },
+    {
+      "opponentId": 2,
+      "opponentName": "Josh",
+      "wins": 7,
+      "losses": 10,
+      "avgPointsFor": 111.04,
+      "avgPointsAgainst": 118.05
+    },
+    {
+      "opponentId": 7,
+      "opponentName": "Will",
+      "wins": 10,
+      "losses": 6,
+      "avgPointsFor": 113.69,
+      "avgPointsAgainst": 112.44
+    },
+    {
+      "opponentId": 3,
+      "opponentName": "Jake",
+      "wins": 9,
+      "losses": 7,
+      "avgPointsFor": 103.79,
+      "avgPointsAgainst": 97.56
+    },
+    {
+      "opponentId": 8,
+      "opponentName": "Zach",
+      "wins": 5,
+      "losses": 10,
+      "avgPointsFor": 106.9,
+      "avgPointsAgainst": 120.17
+    },
+    {
+      "opponentId": 6,
+      "opponentName": "Nick",
+      "wins": 8,
+      "losses": 6,
+      "avgPointsFor": 103.85,
+      "avgPointsAgainst": 103.54
+    },
+    {
+      "opponentId": 13,
+      "opponentName": "Dan",
+      "wins": 3,
+      "losses": 1,
+      "avgPointsFor": 143.63,
+      "avgPointsAgainst": 120.29
+    },
+    {
+      "opponentId": 14,
+      "opponentName": "Fitz",
+      "wins": 1,
+      "losses": 1,
+      "avgPointsFor": 108.65,
+      "avgPointsAgainst": 105.81
+    }
+  ]
+}

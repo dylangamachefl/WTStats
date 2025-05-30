@@ -1,0 +1,1156 @@
+{
+  "seasonData": {
+    "year": 2010,
+    "championName": "Nick",
+    "runnerUp": "Jack",
+    "teams": 10,
+    "regularSeasonWeeks": 13
+  },
+  "standingsData": [
+    {
+      "season_id": 2010,
+      "owner_name": "Zach",
+      "wt_team_name": "Felix Me!!!!",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1278.0,
+      "regular_season_points_against": 1058.0,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Jack",
+      "wt_team_name": "Never coming to my house again",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1256.0,
+      "regular_season_points_against": 1200.0,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Mark",
+      "wt_team_name": "Seriously What U Ganna Do?!",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1094.0,
+      "regular_season_points_against": 1086.0,
+      "regular_season_finish": 3,
+      "lastFive": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Nick",
+      "wt_team_name": "Hey... wanna  go for a walk?!",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1293.0,
+      "regular_season_points_against": 1152.0,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Josh",
+      "wt_team_name": "SHUT UP.... GRANDMA!!",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1214.0,
+      "regular_season_points_against": 1165.0,
+      "regular_season_finish": 5,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Lac",
+      "wt_team_name": "A LAC Thumper",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1122.0,
+      "regular_season_points_against": 1217.0,
+      "regular_season_finish": 6,
+      "lastFive": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Jake",
+      "wt_team_name": "VICK !!!!!!!!!!!!!!!",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1072.0,
+      "regular_season_points_against": 1120.0,
+      "regular_season_finish": 7,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Will",
+      "wt_team_name": "She's got the  Nicest Legs",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1142.0,
+      "regular_season_points_against": 1149.0,
+      "regular_season_finish": 8,
+      "lastFive": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Sean",
+      "wt_team_name": "I Just Remember One Time...",
+      "regular_season_wins": 4,
+      "regular_season_losses": 9,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 955.0,
+      "regular_season_points_against": 1098.0,
+      "regular_season_finish": 9,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2010,
+      "owner_name": "Chris",
+      "wt_team_name": "OMG.... CUBBBBSSSS!!!",
+      "regular_season_wins": 3,
+      "regular_season_losses": 10,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1029.0,
+      "regular_season_points_against": 1210.0,
+      "regular_season_finish": 10,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Felix Me!!!!",
+          "owner": "Zach",
+          "score": 146.0
+        },
+        "away": {
+          "seed": 4,
+          "name": "Hey... wanna  go for a walk?!",
+          "owner": "Nick",
+          "score": 203.0
+        }
+      },
+      {
+        "home": {
+          "seed": 2,
+          "name": "Never coming to my house again",
+          "owner": "Jack",
+          "score": 219.0
+        },
+        "away": {
+          "seed": 3,
+          "name": "Seriously What U Ganna Do?!",
+          "owner": "Mark",
+          "score": 207.0
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 2,
+          "name": "Never coming to my house again",
+          "owner": "Jack",
+          "score": 124.0
+        },
+        "away": {
+          "seed": 4,
+          "name": "Hey... wanna  go for a walk?!",
+          "owner": "Nick",
+          "score": 167.0
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Felix Me!!!!",
+      "Never coming to my house again",
+      "Seriously What U Ganna Do?!",
+      "Hey... wanna  go for a walk?!",
+      "SHUT UP.... GRANDMA!!",
+      "A LAC Thumper",
+      "VICK !!!!!!!!!!!!!!!",
+      "She's got the  Nicest Legs",
+      "I Just Remember One Time...",
+      "OMG.... CUBBBBSSSS!!!"
+    ],
+    "scores": [
+      [
+        96.0,
+        75.0,
+        69.0,
+        77.0,
+        72.0,
+        77.0,
+        85.0,
+        87.0,
+        62.0,
+        90.0
+      ],
+      [
+        82.0,
+        96.0,
+        69.0,
+        138.0,
+        89.0,
+        68.0,
+        67.0,
+        128.0,
+        53.0,
+        72.0
+      ],
+      [
+        90.0,
+        106.0,
+        117.0,
+        104.0,
+        65.0,
+        97.0,
+        87.0,
+        59.0,
+        95.0,
+        70.0
+      ],
+      [
+        86.0,
+        71.0,
+        85.0,
+        102.0,
+        70.0,
+        85.0,
+        78.0,
+        107.0,
+        61.0,
+        91.0
+      ],
+      [
+        129.0,
+        89.0,
+        100.0,
+        92.0,
+        96.0,
+        68.0,
+        114.0,
+        87.0,
+        60.0,
+        79.0
+      ],
+      [
+        75.0,
+        83.0,
+        93.0,
+        85.0,
+        98.0,
+        74.0,
+        90.0,
+        72.0,
+        106.0,
+        65.0
+      ],
+      [
+        78.0,
+        133.0,
+        100.0,
+        82.0,
+        106.0,
+        90.0,
+        77.0,
+        71.0,
+        63.0,
+        66.0
+      ],
+      [
+        115.0,
+        56.0,
+        57.0,
+        123.0,
+        58.0,
+        95.0,
+        44.0,
+        97.0,
+        85.0,
+        82.0
+      ],
+      [
+        121.0,
+        123.0,
+        59.0,
+        88.0,
+        111.0,
+        66.0,
+        89.0,
+        107.0,
+        55.0,
+        90.0
+      ],
+      [
+        111.0,
+        102.0,
+        81.0,
+        76.0,
+        119.0,
+        131.0,
+        106.0,
+        89.0,
+        80.0,
+        80.0
+      ],
+      [
+        135.0,
+        125.0,
+        96.0,
+        114.0,
+        115.0,
+        99.0,
+        66.0,
+        82.0,
+        101.0,
+        86.0
+      ],
+      [
+        92.0,
+        118.0,
+        73.0,
+        96.0,
+        116.0,
+        99.0,
+        78.0,
+        55.0,
+        78.0,
+        72.0
+      ],
+      [
+        68.0,
+        79.0,
+        95.0,
+        116.0,
+        99.0,
+        73.0,
+        91.0,
+        101.0,
+        56.0,
+        86.0
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "A LAC Thumper",
+      "owner": "Lac",
+      "leagueAvgPpg": 88.1,
+      "differential": 5.5,
+      "actualOpponentsPpg": 93.6,
+      "rank": 1,
+      "rating": "Hard"
+    },
+    {
+      "team": "OMG.... CUBBBBSSSS!!!",
+      "owner": "Chris",
+      "leagueAvgPpg": 88.1,
+      "differential": 5.0,
+      "actualOpponentsPpg": 93.1,
+      "rank": 2,
+      "rating": "Hard"
+    },
+    {
+      "team": "Never coming to my house again",
+      "owner": "Jack",
+      "leagueAvgPpg": 88.1,
+      "differential": 4.2,
+      "actualOpponentsPpg": 92.3,
+      "rank": 3,
+      "rating": "Hard"
+    },
+    {
+      "team": "SHUT UP.... GRANDMA!!",
+      "owner": "Josh",
+      "leagueAvgPpg": 88.1,
+      "differential": 1.5,
+      "actualOpponentsPpg": 89.6,
+      "rank": 4,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "Hey... wanna  go for a walk?!",
+      "owner": "Nick",
+      "leagueAvgPpg": 88.1,
+      "differential": 0.5,
+      "actualOpponentsPpg": 88.6,
+      "rank": 5,
+      "rating": "Average"
+    },
+    {
+      "team": "She's got the  Nicest Legs",
+      "owner": "Will",
+      "leagueAvgPpg": 88.1,
+      "differential": 0.3,
+      "actualOpponentsPpg": 88.4,
+      "rank": 6,
+      "rating": "Average"
+    },
+    {
+      "team": "VICK !!!!!!!!!!!!!!!",
+      "owner": "Jake",
+      "leagueAvgPpg": 88.1,
+      "differential": -2.0,
+      "actualOpponentsPpg": 86.2,
+      "rank": 7,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "I Just Remember One Time...",
+      "owner": "Sean",
+      "leagueAvgPpg": 88.1,
+      "differential": -3.7,
+      "actualOpponentsPpg": 84.5,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Seriously What U Ganna Do?!",
+      "owner": "Mark",
+      "leagueAvgPpg": 88.1,
+      "differential": -4.6,
+      "actualOpponentsPpg": 83.5,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "Felix Me!!!!",
+      "owner": "Zach",
+      "leagueAvgPpg": 88.1,
+      "differential": -6.7,
+      "actualOpponentsPpg": 81.4,
+      "rank": 10,
+      "rating": "Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Peyton Hillis",
+      "position": "RB",
+      "team": "Cleveland Browns",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 233.9,
+      "rank": 1
+    },
+    {
+      "player": "Brandon Lloyd",
+      "position": "WR",
+      "team": "Denver Broncos",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 209.0,
+      "rank": 2
+    },
+    {
+      "player": "BenJarvus Green-Ellis",
+      "position": "RB",
+      "team": "New England Patriots",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 187.3,
+      "rank": 3
+    },
+    {
+      "player": "Steve Johnson",
+      "position": "WR",
+      "team": "Buffalo Bills",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 165.3,
+      "rank": 4
+    },
+    {
+      "player": "Mike Williams",
+      "position": "WR",
+      "team": "Tampa Bay Buccaneers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 157.5,
+      "rank": 5
+    },
+    {
+      "player": "Mike Tolbert",
+      "position": "RB",
+      "team": "Los Angeles Chargers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 157.1,
+      "rank": 6
+    },
+    {
+      "player": "Mario Manningham",
+      "position": "WR",
+      "team": "New York Giants",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 146.6,
+      "rank": 7
+    },
+    {
+      "player": "LeGarrette Blount",
+      "position": "RB",
+      "team": "Tampa Bay Buccaneers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 132.1,
+      "rank": 8
+    },
+    {
+      "player": "Brandon Jackson",
+      "position": "RB",
+      "team": "Green Bay Packers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 128.5,
+      "rank": 9
+    },
+    {
+      "player": "Danny Woodhead",
+      "position": "RB",
+      "team": "New England Patriots",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 126.6,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Michael Vick",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": null,
+        "totalPoints": 310.3,
+        "ppg": 25.9,
+        "bestGame": {
+          "week": 10,
+          "points": 49.3
+        }
+      },
+      {
+        "player": "Aaron Rodgers",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 304.5,
+        "ppg": 20.3,
+        "bestGame": {
+          "week": 16,
+          "points": 34.8
+        }
+      },
+      {
+        "player": "Tom Brady",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 299.0,
+        "ppg": 18.7,
+        "bestGame": {
+          "week": 10,
+          "points": 32.3
+        }
+      },
+      {
+        "player": "Peyton Manning",
+        "team": "Indianapolis Colts",
+        "fantasyTeam": null,
+        "totalPoints": 285.8,
+        "ppg": 17.9,
+        "bestGame": {
+          "week": 1,
+          "points": 29.3
+        }
+      },
+      {
+        "player": "Philip Rivers",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": null,
+        "totalPoints": 281.6,
+        "ppg": 17.6,
+        "bestGame": {
+          "week": 9,
+          "points": 25.1
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Arian Foster",
+        "team": "Houston Texans",
+        "fantasyTeam": null,
+        "totalPoints": 326.0,
+        "ppg": 20.4,
+        "bestGame": {
+          "week": 1,
+          "points": 41.8
+        }
+      },
+      {
+        "player": "Adrian Peterson",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": null,
+        "totalPoints": 239.9,
+        "ppg": 16.0,
+        "bestGame": {
+          "week": 3,
+          "points": 31.0
+        }
+      },
+      {
+        "player": "Jamaal Charles",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 237.5,
+        "ppg": 14.8,
+        "bestGame": {
+          "week": 8,
+          "points": 23.8
+        }
+      },
+      {
+        "player": "Peyton Hillis",
+        "team": "Cleveland Browns",
+        "fantasyTeam": null,
+        "totalPoints": 233.9,
+        "ppg": 14.6,
+        "bestGame": {
+          "week": 12,
+          "points": 37.4
+        }
+      },
+      {
+        "player": "Chris Johnson",
+        "team": "Tennessee Titans",
+        "fantasyTeam": null,
+        "totalPoints": 228.9,
+        "ppg": 14.3,
+        "bestGame": {
+          "week": 1,
+          "points": 27.0
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Brandon Lloyd",
+        "team": "Denver Broncos",
+        "fantasyTeam": null,
+        "totalPoints": 209.0,
+        "ppg": 13.1,
+        "bestGame": {
+          "week": 5,
+          "points": 25.5
+        }
+      },
+      {
+        "player": "Dwayne Bowe",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 206.6,
+        "ppg": 12.9,
+        "bestGame": {
+          "week": 12,
+          "points": 35.0
+        }
+      },
+      {
+        "player": "Roddy White",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": null,
+        "totalPoints": 201.2,
+        "ppg": 12.6,
+        "bestGame": {
+          "week": 7,
+          "points": 32.1
+        }
+      },
+      {
+        "player": "Greg Jennings",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 198.4,
+        "ppg": 12.4,
+        "bestGame": {
+          "week": 11,
+          "points": 33.2
+        }
+      },
+      {
+        "player": "Mike Wallace",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 189.6,
+        "ppg": 11.8,
+        "bestGame": {
+          "week": 10,
+          "points": 25.6
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Jason Witten",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": null,
+        "totalPoints": 154.2,
+        "ppg": 9.6,
+        "bestGame": {
+          "week": 15,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "Antonio Gates",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": null,
+        "totalPoints": 138.2,
+        "ppg": 13.8,
+        "bestGame": {
+          "week": 4,
+          "points": 26.4
+        }
+      },
+      {
+        "player": "Vernon Davis",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": null,
+        "totalPoints": 135.4,
+        "ppg": 8.5,
+        "bestGame": {
+          "week": 13,
+          "points": 18.6
+        }
+      },
+      {
+        "player": "Marcedes Lewis",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": null,
+        "totalPoints": 126.0,
+        "ppg": 7.9,
+        "bestGame": {
+          "week": 5,
+          "points": 17.4
+        }
+      },
+      {
+        "player": "Rob Gronkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 112.6,
+        "ppg": 7.0,
+        "bestGame": {
+          "week": 10,
+          "points": 25.2
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Sebastian Janikowski",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": null,
+        "totalPoints": 148.0,
+        "ppg": 9.2,
+        "bestGame": {
+          "week": 16,
+          "points": 18.0
+        }
+      },
+      {
+        "player": "David Akers",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": null,
+        "totalPoints": 143.0,
+        "ppg": 8.9,
+        "bestGame": {
+          "week": 9,
+          "points": 14.0
+        }
+      },
+      {
+        "player": "Nick Folk",
+        "team": "New York Jets",
+        "fantasyTeam": null,
+        "totalPoints": 131.0,
+        "ppg": 8.2,
+        "bestGame": {
+          "week": 5,
+          "points": 19.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Patriots D/ST",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 187.0,
+        "ppg": 11.7,
+        "bestGame": {
+          "week": 4,
+          "points": 29.0
+        }
+      },
+      {
+        "player": "Steelers D/ST",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 185.0,
+        "ppg": 11.6,
+        "bestGame": {
+          "week": 2,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Packers D/ST",
+        "team": "Green Bay Packers",
+        "fantasyTeam": null,
+        "totalPoints": 177.0,
+        "ppg": 11.1,
+        "bestGame": {
+          "week": 9,
+          "points": 28.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Michael Vick",
+      "position": "QB",
+      "team": "Philadelphia Eagles",
+      "fantasyTeam": null,
+      "week": 10,
+      "points": 49.3
+    },
+    {
+      "rank": 2,
+      "player": "Darren McFadden",
+      "position": "RB",
+      "team": "Las Vegas Raiders",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 43.6
+    },
+    {
+      "rank": 3,
+      "player": "Arian Foster",
+      "position": "RB",
+      "team": "Houston Texans",
+      "fantasyTeam": null,
+      "week": 1,
+      "points": 41.8
+    },
+    {
+      "rank": 4,
+      "player": "Jahvid Best",
+      "position": "RB",
+      "team": "Detroit Lions",
+      "fantasyTeam": null,
+      "week": 2,
+      "points": 41.2
+    },
+    {
+      "rank": 5,
+      "player": "Kenny Britt",
+      "position": "WR",
+      "team": "Tennessee Titans",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 40.5
+    },
+    {
+      "rank": 6,
+      "player": "Peyton Hillis",
+      "position": "RB",
+      "team": "Cleveland Browns",
+      "fantasyTeam": null,
+      "week": 12,
+      "points": 37.4
+    },
+    {
+      "rank": 7,
+      "player": "Jason Snelling",
+      "position": "RB",
+      "team": "Atlanta Falcons",
+      "fantasyTeam": null,
+      "week": 2,
+      "points": 36.6
+    },
+    {
+      "rank": 8,
+      "player": "Ray Rice",
+      "position": "RB",
+      "team": "Baltimore Ravens",
+      "fantasyTeam": null,
+      "week": 15,
+      "points": 35.3
+    },
+    {
+      "rank": 9,
+      "player": "Dwayne Bowe",
+      "position": "WR",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": null,
+      "week": 12,
+      "points": 35.0
+    },
+    {
+      "rank": 10,
+      "player": "Aaron Rodgers",
+      "position": "QB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": null,
+      "week": 16,
+      "points": 34.8
+    }
+  ]
+}

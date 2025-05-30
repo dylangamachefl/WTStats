@@ -1,0 +1,1132 @@
+{
+  "seasonData": {
+    "year": 2020,
+    "championName": "Sean",
+    "runnerUp": "Jake",
+    "teams": 10,
+    "regularSeasonWeeks": 12
+  },
+  "standingsData": [
+    {
+      "season_id": 2020,
+      "owner_name": "Sean",
+      "wt_team_name": "Jupiter Clutch",
+      "regular_season_wins": 9,
+      "regular_season_losses": 3,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1200.38,
+      "regular_season_points_against": 1120.7,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Jake",
+      "wt_team_name": "Bend It Like  Beckham",
+      "regular_season_wins": 9,
+      "regular_season_losses": 3,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1129.3,
+      "regular_season_points_against": 1036.16,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Will",
+      "wt_team_name": "Back Nines Matter",
+      "regular_season_wins": 8,
+      "regular_season_losses": 3,
+      "regular_season_ties": 1,
+      "regular_season_points_for": 1359.08,
+      "regular_season_points_against": 1123.3,
+      "regular_season_finish": 3,
+      "lastFive": [
+        null,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Josh",
+      "wt_team_name": "Gauntlet Commish",
+      "regular_season_wins": 8,
+      "regular_season_losses": 4,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1329.9,
+      "regular_season_points_against": 1146.72,
+      "regular_season_finish": 4,
+      "lastFive": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Zach",
+      "wt_team_name": "MouseRat  FC",
+      "regular_season_wins": 6,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1242.24,
+      "regular_season_points_against": 1127.72,
+      "regular_season_finish": 5,
+      "lastFive": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Nick",
+      "wt_team_name": "Jupiter's Finest",
+      "regular_season_wins": 5,
+      "regular_season_losses": 6,
+      "regular_season_ties": 1,
+      "regular_season_points_for": 1235.78,
+      "regular_season_points_against": 1226.66,
+      "regular_season_finish": 6,
+      "lastFive": [
+        null,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Mark",
+      "wt_team_name": "Jupiter Joe's",
+      "regular_season_wins": 4,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1136.62,
+      "regular_season_points_against": 1230.08,
+      "regular_season_finish": 7,
+      "lastFive": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Dylan",
+      "wt_team_name": "Dak and the Ankle Breakers",
+      "regular_season_wins": 4,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1025.64,
+      "regular_season_points_against": 1300.58,
+      "regular_season_finish": 8,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Jack",
+      "wt_team_name": "Jupiter Jay Joy",
+      "regular_season_wins": 4,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 975.74,
+      "regular_season_points_against": 1146.46,
+      "regular_season_finish": 9,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2020,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 2,
+      "regular_season_losses": 10,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1148.36,
+      "regular_season_points_against": 1324.66,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 208.0
+        },
+        "away": {
+          "seed": 4,
+          "name": "Gauntlet Commish",
+          "owner": "Josh",
+          "score": 173.5
+        }
+      },
+      {
+        "home": {
+          "seed": 2,
+          "name": "Bend It Like  Beckham",
+          "owner": "Jake",
+          "score": 252.5
+        },
+        "away": {
+          "seed": 3,
+          "name": "Back Nines Matter",
+          "owner": "Will",
+          "score": 214.4
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 221.3
+        },
+        "away": {
+          "seed": 2,
+          "name": "Bend It Like  Beckham",
+          "owner": "Jake",
+          "score": 219.1
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Jupiter Clutch",
+      "Bend It Like  Beckham",
+      "Back Nines Matter",
+      "Gauntlet Commish",
+      "MouseRat  FC",
+      "Jupiter's Finest",
+      "Jupiter Joe's",
+      "Dak and the Ankle Breakers",
+      "Jupiter Jay Joy",
+      "All Madden Ultimate Team"
+    ],
+    "scores": [
+      [
+        96.7,
+        76.0,
+        117.98,
+        94.12,
+        95.98,
+        102.84,
+        124.3,
+        62.64,
+        90.5,
+        117.6
+      ],
+      [
+        91.88,
+        130.86,
+        144.32,
+        124.7,
+        108.8,
+        103.88,
+        103.24,
+        137.3,
+        67.12,
+        121.16
+      ],
+      [
+        112.82,
+        78.58,
+        133.5,
+        117.38,
+        113.64,
+        117.7,
+        95.6,
+        133.78,
+        96.12,
+        99.4
+      ],
+      [
+        142.78,
+        123.32,
+        83.8,
+        112.0,
+        98.62,
+        103.74,
+        94.72,
+        92.98,
+        65.4,
+        99.04
+      ],
+      [
+        84.14,
+        99.82,
+        127.88,
+        92.86,
+        85.96,
+        135.9,
+        102.1,
+        68.04,
+        65.54,
+        104.12
+      ],
+      [
+        60.6,
+        93.04,
+        100.78,
+        112.6,
+        135.08,
+        52.7,
+        101.72,
+        53.74,
+        116.44,
+        98.12
+      ],
+      [
+        110.72,
+        87.98,
+        87.62,
+        127.26,
+        93.88,
+        106.94,
+        99.9,
+        67.0,
+        111.32,
+        123.26
+      ],
+      [
+        74.74,
+        107.62,
+        122.54,
+        98.44,
+        70.66,
+        122.54,
+        82.56,
+        77.12,
+        70.34,
+        65.92
+      ],
+      [
+        99.6,
+        75.24,
+        129.4,
+        113.94,
+        94.9,
+        116.28,
+        72.52,
+        67.84,
+        69.36,
+        93.58
+      ],
+      [
+        120.0,
+        74.16,
+        60.82,
+        110.02,
+        69.76,
+        86.36,
+        102.0,
+        90.38,
+        80.72,
+        58.72
+      ],
+      [
+        117.46,
+        93.44,
+        105.44,
+        109.66,
+        125.78,
+        99.92,
+        95.36,
+        83.82,
+        66.58,
+        83.02
+      ],
+      [
+        88.94,
+        89.24,
+        145.0,
+        116.92,
+        149.18,
+        86.98,
+        62.6,
+        91.0,
+        76.3,
+        84.42
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "T",
+        "W",
+        "L",
+        "T",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 98.2,
+      "differential": 12.2,
+      "actualOpponentsPpg": 110.4,
+      "rank": 1,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Dak and the Ankle Breakers",
+      "owner": "Dylan",
+      "leagueAvgPpg": 98.2,
+      "differential": 10.2,
+      "actualOpponentsPpg": 108.4,
+      "rank": 2,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Jupiter Joe's",
+      "owner": "Mark",
+      "leagueAvgPpg": 98.2,
+      "differential": 4.3,
+      "actualOpponentsPpg": 102.5,
+      "rank": 3,
+      "rating": "Hard"
+    },
+    {
+      "team": "Jupiter's Finest",
+      "owner": "Nick",
+      "leagueAvgPpg": 98.2,
+      "differential": 4.0,
+      "actualOpponentsPpg": 102.2,
+      "rank": 4,
+      "rating": "Hard"
+    },
+    {
+      "team": "Gauntlet Commish",
+      "owner": "Josh",
+      "leagueAvgPpg": 98.2,
+      "differential": -2.6,
+      "actualOpponentsPpg": 95.6,
+      "rank": 5,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Jupiter Jay Joy",
+      "owner": "Jack",
+      "leagueAvgPpg": 98.2,
+      "differential": -2.6,
+      "actualOpponentsPpg": 95.5,
+      "rank": 6,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "MouseRat  FC",
+      "owner": "Zach",
+      "leagueAvgPpg": 98.2,
+      "differential": -4.2,
+      "actualOpponentsPpg": 94.0,
+      "rank": 7,
+      "rating": "Easy"
+    },
+    {
+      "team": "Back Nines Matter",
+      "owner": "Will",
+      "leagueAvgPpg": 98.2,
+      "differential": -4.6,
+      "actualOpponentsPpg": 93.6,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Clutch",
+      "owner": "Sean",
+      "leagueAvgPpg": 98.2,
+      "differential": -4.8,
+      "actualOpponentsPpg": 93.4,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "Bend It Like  Beckham",
+      "owner": "Jake",
+      "leagueAvgPpg": 98.2,
+      "differential": -11.8,
+      "actualOpponentsPpg": 86.3,
+      "rank": 10,
+      "rating": "Very Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Chase Claypool",
+      "position": "WR",
+      "team": "Pittsburgh Steelers",
+      "pickedUpBy": "Jake",
+      "week": 6,
+      "totalPoints": 152.9,
+      "rank": 1
+    },
+    {
+      "player": "Mike Davis",
+      "position": "RB",
+      "team": "Carolina Panthers",
+      "pickedUpBy": "Sean",
+      "week": 3,
+      "totalPoints": 147.5,
+      "rank": 2
+    },
+    {
+      "player": "Nyheim Hines",
+      "position": "RB",
+      "team": "Indianapolis Colts",
+      "pickedUpBy": "Dylan",
+      "week": 2,
+      "totalPoints": 130.2,
+      "rank": 3
+    },
+    {
+      "player": "Jeff Wilson Jr.",
+      "position": "RB",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": "Zach",
+      "week": 4,
+      "totalPoints": 129.3,
+      "rank": 4
+    },
+    {
+      "player": "Myles Gaskin",
+      "position": "RB",
+      "team": "Miami Dolphins",
+      "pickedUpBy": "Jack",
+      "week": 3,
+      "totalPoints": 123.2,
+      "rank": 5
+    },
+    {
+      "player": "Gus Edwards",
+      "position": "RB",
+      "team": "Baltimore Ravens",
+      "pickedUpBy": "Jack",
+      "week": 9,
+      "totalPoints": 119.2,
+      "rank": 6
+    },
+    {
+      "player": "Wayne Gallman",
+      "position": "RB",
+      "team": "New York Giants",
+      "pickedUpBy": "Dylan",
+      "week": 10,
+      "totalPoints": 115.6,
+      "rank": 7
+    },
+    {
+      "player": "Ryan Tannehill",
+      "position": "QB",
+      "team": "Tennessee Titans",
+      "pickedUpBy": "Sean",
+      "week": 2,
+      "totalPoints": 343.9,
+      "rank": 8
+    },
+    {
+      "player": "Justin Herbert",
+      "position": "QB",
+      "team": "Los Angeles Chargers",
+      "pickedUpBy": "Jake",
+      "week": 7,
+      "totalPoints": 332.8,
+      "rank": 9
+    },
+    {
+      "player": "Dolphins D/ST",
+      "position": "DST",
+      "team": "Miami Dolphins",
+      "pickedUpBy": "Jack",
+      "week": 6,
+      "totalPoints": 139.0,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Josh Allen",
+        "team": "Buffalo Bills",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 395.6,
+        "ppg": 24.7,
+        "bestGame": {
+          "week": 15,
+          "points": 37.7
+        }
+      },
+      {
+        "player": "Aaron Rodgers",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 382.8,
+        "ppg": 23.9,
+        "bestGame": {
+          "week": 14,
+          "points": 30.9
+        }
+      },
+      {
+        "player": "Kyler Murray",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 378.7,
+        "ppg": 23.7,
+        "bestGame": {
+          "week": 9,
+          "points": 37.9
+        }
+      },
+      {
+        "player": "Patrick Mahomes",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "Jupiter's Finest",
+        "totalPoints": 374.4,
+        "ppg": 25.0,
+        "bestGame": {
+          "week": 3,
+          "points": 40.0
+        }
+      },
+      {
+        "player": "Deshaun Watson",
+        "team": "Houston Texans",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 369.3,
+        "ppg": 23.1,
+        "bestGame": {
+          "week": 12,
+          "points": 33.1
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Derrick Henry",
+        "team": "Tennessee Titans",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 314.1,
+        "ppg": 19.6,
+        "bestGame": {
+          "week": 6,
+          "points": 38.4
+        }
+      },
+      {
+        "player": "Alvin Kamara",
+        "team": "New Orleans Saints",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 294.8,
+        "ppg": 19.7,
+        "bestGame": {
+          "week": 16,
+          "points": 53.2
+        }
+      },
+      {
+        "player": "Dalvin Cook",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 293.8,
+        "ppg": 21.0,
+        "bestGame": {
+          "week": 8,
+          "points": 46.6
+        }
+      },
+      {
+        "player": "Jonathan Taylor",
+        "team": "Indianapolis Colts",
+        "fantasyTeam": "Back Nines Matter",
+        "totalPoints": 216.8,
+        "ppg": 14.5,
+        "bestGame": {
+          "week": 17,
+          "points": 37.4
+        }
+      },
+      {
+        "player": "Aaron Jones",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 211.9,
+        "ppg": 15.1,
+        "bestGame": {
+          "week": 2,
+          "points": 41.6
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Davante Adams",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter's Finest",
+        "totalPoints": 243.4,
+        "ppg": 17.4,
+        "bestGame": {
+          "week": 16,
+          "points": 32.2
+        }
+      },
+      {
+        "player": "Tyreek Hill",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "Back Nines Matter",
+        "totalPoints": 241.9,
+        "ppg": 16.1,
+        "bestGame": {
+          "week": 12,
+          "points": 44.9
+        }
+      },
+      {
+        "player": "Stefon Diggs",
+        "team": "Buffalo Bills",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 201.6,
+        "ppg": 12.6,
+        "bestGame": {
+          "week": 16,
+          "points": 32.5
+        }
+      },
+      {
+        "player": "Calvin Ridley",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 191.5,
+        "ppg": 12.8,
+        "bestGame": {
+          "week": 1,
+          "points": 24.9
+        }
+      },
+      {
+        "player": "DK Metcalf",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": "Back Nines Matter",
+        "totalPoints": 188.3,
+        "ppg": 11.8,
+        "bestGame": {
+          "week": 8,
+          "points": 28.1
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Travis Kelce",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "Back Nines Matter",
+        "totalPoints": 207.8,
+        "ppg": 13.9,
+        "bestGame": {
+          "week": 13,
+          "points": 19.6
+        }
+      },
+      {
+        "player": "Darren Waller",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": "Dak and the Ankle Breakers",
+        "totalPoints": 171.6,
+        "ppg": 10.7,
+        "bestGame": {
+          "week": 13,
+          "points": 32.0
+        }
+      },
+      {
+        "player": "Robert Tonyan",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 124.6,
+        "ppg": 7.8,
+        "bestGame": {
+          "week": 4,
+          "points": 27.8
+        }
+      },
+      {
+        "player": "Mark Andrews",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 112.1,
+        "ppg": 8.0,
+        "bestGame": {
+          "week": 1,
+          "points": 17.8
+        }
+      },
+      {
+        "player": "T.J. Hockenson",
+        "team": "Detroit Lions",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 108.3,
+        "ppg": 6.8,
+        "bestGame": {
+          "week": 7,
+          "points": 11.9
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Jason Sanders",
+        "team": "Miami Dolphins",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 160.0,
+        "ppg": 10.0,
+        "bestGame": {
+          "week": 5,
+          "points": 21.0
+        }
+      },
+      {
+        "player": "Younghoe Koo",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": "Gauntlet Commish",
+        "totalPoints": 160.0,
+        "ppg": 10.7,
+        "bestGame": {
+          "week": 12,
+          "points": 21.0
+        }
+      },
+      {
+        "player": "Daniel Carlson",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 152.0,
+        "ppg": 9.5,
+        "bestGame": {
+          "week": 10,
+          "points": 15.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Colts D/ST",
+        "team": "Indianapolis Colts",
+        "fantasyTeam": "Jupiter's Finest",
+        "totalPoints": 151.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 3,
+          "points": 26.0
+        }
+      },
+      {
+        "player": "Steelers D/ST",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": "Bend It Like  Beckham",
+        "totalPoints": 150.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 6,
+          "points": 18.0
+        }
+      },
+      {
+        "player": "Rams D/ST",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": "Dak and the Ankle Breakers",
+        "totalPoints": 149.0,
+        "ppg": 9.3,
+        "bestGame": {
+          "week": 14,
+          "points": 21.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Alvin Kamara",
+      "position": "RB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": "Jupiter Clutch",
+      "week": 16,
+      "points": 53.2
+    },
+    {
+      "rank": 2,
+      "player": "Dalvin Cook",
+      "position": "RB",
+      "team": "Minnesota Vikings",
+      "fantasyTeam": "Gauntlet Commish",
+      "week": 8,
+      "points": 46.6
+    },
+    {
+      "rank": 3,
+      "player": "Tyreek Hill",
+      "position": "WR",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": "Back Nines Matter",
+      "week": 12,
+      "points": 44.9
+    },
+    {
+      "rank": 4,
+      "player": "Aaron Jones",
+      "position": "RB",
+      "team": "Green Bay Packers",
+      "fantasyTeam": "All Madden Ultimate Team",
+      "week": 2,
+      "points": 41.6
+    },
+    {
+      "rank": 5,
+      "player": "Patrick Mahomes",
+      "position": "QB",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": "Jupiter's Finest",
+      "week": 3,
+      "points": 40.0
+    },
+    {
+      "rank": 6,
+      "player": "Dak Prescott",
+      "position": "QB",
+      "team": "Dallas Cowboys",
+      "fantasyTeam": null,
+      "week": 2,
+      "points": 39.8
+    },
+    {
+      "rank": 7,
+      "player": "Justin Herbert",
+      "position": "QB",
+      "team": "Los Angeles Chargers",
+      "fantasyTeam": "Bend It Like  Beckham",
+      "week": 7,
+      "points": 38.5
+    },
+    {
+      "rank": 8,
+      "player": "Derrick Henry",
+      "position": "RB",
+      "team": "Tennessee Titans",
+      "fantasyTeam": "MouseRat  FC",
+      "week": 6,
+      "points": 38.4
+    },
+    {
+      "rank": 9,
+      "player": "Tyler Lockett",
+      "position": "WR",
+      "team": "Seattle Seahawks",
+      "fantasyTeam": "Jupiter Jay Joy",
+      "week": 7,
+      "points": 38.0
+    },
+    {
+      "rank": 10,
+      "player": "Kyler Murray",
+      "position": "QB",
+      "team": "Arizona Cardinals",
+      "fantasyTeam": "Jupiter Joe's",
+      "week": 9,
+      "points": 37.9
+    }
+  ]
+}

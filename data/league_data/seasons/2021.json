@@ -1,0 +1,1156 @@
+{
+  "seasonData": {
+    "year": 2021,
+    "championName": "Mark",
+    "runnerUp": "Sean",
+    "teams": 10,
+    "regularSeasonWeeks": 13
+  },
+  "standingsData": [
+    {
+      "season_id": 2021,
+      "owner_name": "Mark",
+      "wt_team_name": "Jupiter Joe's",
+      "regular_season_wins": 9,
+      "regular_season_losses": 4,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1316.48,
+      "regular_season_points_against": 1143.36,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Sean",
+      "wt_team_name": "Jupiter Clutch",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1257.68,
+      "regular_season_points_against": 1161.28,
+      "regular_season_finish": 2,
+      "lastFive": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1360.92,
+      "regular_season_points_against": 1215.02,
+      "regular_season_finish": 3,
+      "lastFive": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Jake",
+      "wt_team_name": "Herbie Fully Loaded",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1255.72,
+      "regular_season_points_against": 1298.06,
+      "regular_season_finish": 4,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Zach",
+      "wt_team_name": "MouseRat  FC",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1152.28,
+      "regular_season_points_against": 1238.16,
+      "regular_season_finish": 5,
+      "lastFive": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Dylan",
+      "wt_team_name": "We Wasted  JT",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1378.1,
+      "regular_season_points_against": 1344.84,
+      "regular_season_finish": 6,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Josh",
+      "wt_team_name": "Josh Brooks",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1211.64,
+      "regular_season_points_against": 1197.96,
+      "regular_season_finish": 7,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Jack",
+      "wt_team_name": "Jupiter Jay Joy",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1172.58,
+      "regular_season_points_against": 1150.24,
+      "regular_season_finish": 8,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Nick",
+      "wt_team_name": "Lights, Kamara, Action!",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1157.26,
+      "regular_season_points_against": 1193.16,
+      "regular_season_finish": 9,
+      "lastFive": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2021,
+      "owner_name": "Will",
+      "wt_team_name": "Will  Beattie",
+      "regular_season_wins": 4,
+      "regular_season_losses": 9,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1110.66,
+      "regular_season_points_against": 1431.24,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Jupiter Joe's",
+          "owner": "Mark",
+          "score": 211.0
+        },
+        "away": {
+          "seed": 4,
+          "name": "Herbie Fully Loaded",
+          "owner": "Jake",
+          "score": 201.6
+        }
+      },
+      {
+        "home": {
+          "seed": 2,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 219.3
+        },
+        "away": {
+          "seed": 3,
+          "name": "All Madden Ultimate Team",
+          "owner": "Chris",
+          "score": 166.1
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Jupiter Joe's",
+          "owner": "Mark",
+          "score": 218.6
+        },
+        "away": {
+          "seed": 2,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 202.0
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Jupiter Joe's",
+      "Jupiter Clutch",
+      "All Madden Ultimate Team",
+      "Herbie Fully Loaded",
+      "MouseRat  FC",
+      "We Wasted  JT",
+      "Josh Brooks",
+      "Jupiter Jay Joy",
+      "Lights, Kamara, Action!",
+      "Will  Beattie"
+    ],
+    "scores": [
+      [
+        100.5,
+        148.28,
+        97.76,
+        76.48,
+        110.2,
+        78.06,
+        102.66,
+        134.32,
+        97.64,
+        88.76
+      ],
+      [
+        106.16,
+        88.52,
+        141.24,
+        78.12,
+        114.46,
+        114.6,
+        78.8,
+        99.98,
+        71.52,
+        106.22
+      ],
+      [
+        113.02,
+        76.5,
+        130.68,
+        124.94,
+        80.58,
+        109.14,
+        96.44,
+        65.82,
+        103.62,
+        100.12
+      ],
+      [
+        68.52,
+        112.12,
+        104.36,
+        92.38,
+        94.04,
+        91.72,
+        116.42,
+        85.82,
+        110.9,
+        124.06
+      ],
+      [
+        154.0,
+        102.08,
+        121.64,
+        87.12,
+        126.28,
+        126.16,
+        80.66,
+        65.38,
+        105.5,
+        105.38
+      ],
+      [
+        105.82,
+        128.58,
+        118.68,
+        86.1,
+        84.38,
+        128.5,
+        84.26,
+        100.1,
+        63.84,
+        72.22
+      ],
+      [
+        87.54,
+        82.14,
+        136.44,
+        113.14,
+        101.78,
+        96.96,
+        79.84,
+        66.44,
+        132.36,
+        65.82
+      ],
+      [
+        108.86,
+        84.3,
+        110.8,
+        109.32,
+        60.36,
+        96.86,
+        94.06,
+        70.84,
+        92.3,
+        56.78
+      ],
+      [
+        74.06,
+        50.34,
+        69.08,
+        101.84,
+        98.74,
+        73.56,
+        96.38,
+        91.48,
+        102.06,
+        60.7
+      ],
+      [
+        111.54,
+        98.74,
+        89.6,
+        76.3,
+        64.12,
+        85.78,
+        50.28,
+        123.44,
+        59.62,
+        70.5
+      ],
+      [
+        91.26,
+        76.5,
+        44.68,
+        112.98,
+        96.42,
+        158.1,
+        96.42,
+        55.44,
+        65.02,
+        108.38
+      ],
+      [
+        74.0,
+        116.62,
+        69.24,
+        92.72,
+        57.1,
+        110.04,
+        116.5,
+        110.8,
+        73.38,
+        93.78
+      ],
+      [
+        121.2,
+        92.96,
+        126.72,
+        104.28,
+        63.82,
+        108.62,
+        118.92,
+        102.72,
+        79.5,
+        57.94
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "Will  Beattie",
+      "owner": "Will",
+      "leagueAvgPpg": 95.2,
+      "differential": 14.9,
+      "actualOpponentsPpg": 110.1,
+      "rank": 1,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "We Wasted  JT",
+      "owner": "Dylan",
+      "leagueAvgPpg": 95.2,
+      "differential": 8.3,
+      "actualOpponentsPpg": 103.5,
+      "rank": 2,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Herbie Fully Loaded",
+      "owner": "Jake",
+      "leagueAvgPpg": 95.2,
+      "differential": 4.7,
+      "actualOpponentsPpg": 99.8,
+      "rank": 3,
+      "rating": "Hard"
+    },
+    {
+      "team": "MouseRat  FC",
+      "owner": "Zach",
+      "leagueAvgPpg": 95.2,
+      "differential": 0.1,
+      "actualOpponentsPpg": 95.2,
+      "rank": 4,
+      "rating": "Average"
+    },
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 95.2,
+      "differential": -1.7,
+      "actualOpponentsPpg": 93.5,
+      "rank": 5,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Josh Brooks",
+      "owner": "Josh",
+      "leagueAvgPpg": 95.2,
+      "differential": -3.0,
+      "actualOpponentsPpg": 92.2,
+      "rank": 6,
+      "rating": "Easy"
+    },
+    {
+      "team": "Lights, Kamara, Action!",
+      "owner": "Nick",
+      "leagueAvgPpg": 95.2,
+      "differential": -3.4,
+      "actualOpponentsPpg": 91.8,
+      "rank": 7,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Clutch",
+      "owner": "Sean",
+      "leagueAvgPpg": 95.2,
+      "differential": -5.8,
+      "actualOpponentsPpg": 89.3,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Jay Joy",
+      "owner": "Jack",
+      "leagueAvgPpg": 95.2,
+      "differential": -6.7,
+      "actualOpponentsPpg": 88.5,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "Jupiter Joe's",
+      "owner": "Mark",
+      "leagueAvgPpg": 95.2,
+      "differential": -7.2,
+      "actualOpponentsPpg": 88.0,
+      "rank": 10,
+      "rating": "Very Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Cordarrelle Patterson",
+      "position": "RB",
+      "team": "Atlanta Falcons",
+      "pickedUpBy": "Josh",
+      "week": 3,
+      "totalPoints": 182.6,
+      "rank": 1
+    },
+    {
+      "player": "Hunter Renfrow",
+      "position": "WR",
+      "team": "Las Vegas Raiders",
+      "pickedUpBy": "Jack",
+      "week": 6,
+      "totalPoints": 156.1,
+      "rank": 2
+    },
+    {
+      "player": "Darrel Williams",
+      "position": "RB",
+      "team": "Kansas City Chiefs",
+      "pickedUpBy": "Mark",
+      "week": 6,
+      "totalPoints": 149.0,
+      "rank": 3
+    },
+    {
+      "player": "Elijah Mitchell",
+      "position": "RB",
+      "team": "San Francisco 49ers",
+      "pickedUpBy": "Jake",
+      "week": 2,
+      "totalPoints": 146.0,
+      "rank": 4
+    },
+    {
+      "player": "Amon-Ra St. Brown",
+      "position": "WR",
+      "team": "Detroit Lions",
+      "pickedUpBy": "Will",
+      "week": 7,
+      "totalPoints": 137.3,
+      "rank": 5
+    },
+    {
+      "player": "Cowboys D/ST",
+      "position": "DST",
+      "team": "Dallas Cowboys",
+      "pickedUpBy": "Nick",
+      "week": 3,
+      "totalPoints": 182.0,
+      "rank": 6
+    },
+    {
+      "player": "Dalton Schultz",
+      "position": "TE",
+      "team": "Dallas Cowboys",
+      "pickedUpBy": "Will",
+      "week": 5,
+      "totalPoints": 130.8,
+      "rank": 7
+    },
+    {
+      "player": "Daniel Carlson",
+      "position": "K",
+      "team": "Las Vegas Raiders",
+      "pickedUpBy": "Jake",
+      "week": 3,
+      "totalPoints": 162.0,
+      "rank": 8
+    },
+    {
+      "player": "Nick Folk",
+      "position": "K",
+      "team": "New England Patriots",
+      "pickedUpBy": "Zach",
+      "week": 6,
+      "totalPoints": 160.0,
+      "rank": 9
+    },
+    {
+      "player": "Rob Gronkowski",
+      "position": "TE",
+      "team": "Tampa Bay Buccaneers",
+      "pickedUpBy": "Dylan",
+      "week": 2,
+      "totalPoints": 116.2,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Josh Allen",
+        "team": "Buffalo Bills",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 402.6,
+        "ppg": 23.7,
+        "bestGame": {
+          "week": 3,
+          "points": 37.2
+        }
+      },
+      {
+        "player": "Justin Herbert",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": "Herbie Fully Loaded",
+        "totalPoints": 380.8,
+        "ppg": 22.4,
+        "bestGame": {
+          "week": 5,
+          "points": 42.8
+        }
+      },
+      {
+        "player": "Tom Brady",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 374.7,
+        "ppg": 22.0,
+        "bestGame": {
+          "week": 5,
+          "points": 37.7
+        }
+      },
+      {
+        "player": "Patrick Mahomes",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 361.7,
+        "ppg": 21.3,
+        "bestGame": {
+          "week": 10,
+          "points": 36.2
+        }
+      },
+      {
+        "player": "Aaron Rodgers",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 332.8,
+        "ppg": 20.8,
+        "bestGame": {
+          "week": 11,
+          "points": 33.5
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Jonathan Taylor",
+        "team": "Indianapolis Colts",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 333.1,
+        "ppg": 19.6,
+        "bestGame": {
+          "week": 11,
+          "points": 50.4
+        }
+      },
+      {
+        "player": "Austin Ekeler",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": "Will  Beattie",
+        "totalPoints": 273.8,
+        "ppg": 17.1,
+        "bestGame": {
+          "week": 11,
+          "points": 35.5
+        }
+      },
+      {
+        "player": "Joe Mixon",
+        "team": "Cincinnati Bengals",
+        "fantasyTeam": "Josh Brooks",
+        "totalPoints": 245.9,
+        "ppg": 15.4,
+        "bestGame": {
+          "week": 12,
+          "points": 28.3
+        }
+      },
+      {
+        "player": "Najee Harris",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": "Herbie Fully Loaded",
+        "totalPoints": 226.7,
+        "ppg": 13.3,
+        "bestGame": {
+          "week": 17,
+          "points": 26.6
+        }
+      },
+      {
+        "player": "James Conner",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 220.7,
+        "ppg": 14.7,
+        "bestGame": {
+          "week": 9,
+          "points": 35.3
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Cooper Kupp",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": "All Madden Ultimate Team",
+        "totalPoints": 294.5,
+        "ppg": 17.3,
+        "bestGame": {
+          "week": 2,
+          "points": 27.8
+        }
+      },
+      {
+        "player": "Deebo Samuel",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": "Herbie Fully Loaded",
+        "totalPoints": 262.0,
+        "ppg": 16.4,
+        "bestGame": {
+          "week": 4,
+          "points": 27.7
+        }
+      },
+      {
+        "player": "Ja'Marr Chase",
+        "team": "Cincinnati Bengals",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 223.6,
+        "ppg": 13.2,
+        "bestGame": {
+          "week": 17,
+          "points": 44.6
+        }
+      },
+      {
+        "player": "Justin Jefferson",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 222.4,
+        "ppg": 13.1,
+        "bestGame": {
+          "week": 11,
+          "points": 29.2
+        }
+      },
+      {
+        "player": "Davante Adams",
+        "team": "Green Bay Packers",
+        "fantasyTeam": "Jupiter Clutch",
+        "totalPoints": 221.3,
+        "ppg": 13.8,
+        "bestGame": {
+          "week": 5,
+          "points": 26.6
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Mark Andrews",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": "Jupiter Joe's",
+        "totalPoints": 194.1,
+        "ppg": 11.4,
+        "bestGame": {
+          "week": 5,
+          "points": 30.7
+        }
+      },
+      {
+        "player": "Travis Kelce",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": "MouseRat  FC",
+        "totalPoints": 170.8,
+        "ppg": 10.7,
+        "bestGame": {
+          "week": 15,
+          "points": 31.1
+        }
+      },
+      {
+        "player": "Dalton Schultz",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": "Will  Beattie",
+        "totalPoints": 130.8,
+        "ppg": 7.7,
+        "bestGame": {
+          "week": 3,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "George Kittle",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": "Josh Brooks",
+        "totalPoints": 127.0,
+        "ppg": 9.1,
+        "bestGame": {
+          "week": 13,
+          "points": 30.6
+        }
+      },
+      {
+        "player": "Rob Gronkowski",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 116.2,
+        "ppg": 9.7,
+        "bestGame": {
+          "week": 1,
+          "points": 21.0
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Daniel Carlson",
+        "team": "Las Vegas Raiders",
+        "fantasyTeam": "Lights, Kamara, Action!",
+        "totalPoints": 162.0,
+        "ppg": 9.5,
+        "bestGame": {
+          "week": 12,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "Nick Folk",
+        "team": "New England Patriots",
+        "fantasyTeam": "We Wasted  JT",
+        "totalPoints": 160.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 12,
+          "points": 20.0
+        }
+      },
+      {
+        "player": "Matt Gay",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 152.0,
+        "ppg": 8.9,
+        "bestGame": {
+          "week": 14,
+          "points": 14.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Cowboys D/ST",
+        "team": "Dallas Cowboys",
+        "fantasyTeam": "Lights, Kamara, Action!",
+        "totalPoints": 182.0,
+        "ppg": 10.7,
+        "bestGame": {
+          "week": 16,
+          "points": 25.0
+        }
+      },
+      {
+        "player": "Patriots D/ST",
+        "team": "New England Patriots",
+        "fantasyTeam": "Jupiter Jay Joy",
+        "totalPoints": 158.0,
+        "ppg": 9.3,
+        "bestGame": {
+          "week": 11,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Dolphins D/ST",
+        "team": "Miami Dolphins",
+        "fantasyTeam": "Lights, Kamara, Action!",
+        "totalPoints": 155.0,
+        "ppg": 9.1,
+        "bestGame": {
+          "week": 16,
+          "points": 25.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Jonathan Taylor",
+      "position": "RB",
+      "team": "Indianapolis Colts",
+      "fantasyTeam": "We Wasted  JT",
+      "week": 11,
+      "points": 50.4
+    },
+    {
+      "rank": 2,
+      "player": "Ja'Marr Chase",
+      "position": "WR",
+      "team": "Cincinnati Bengals",
+      "fantasyTeam": "We Wasted  JT",
+      "week": 17,
+      "points": 44.6
+    },
+    {
+      "rank": 3,
+      "player": "Justin Herbert",
+      "position": "QB",
+      "team": "Los Angeles Chargers",
+      "fantasyTeam": "Herbie Fully Loaded",
+      "week": 5,
+      "points": 42.8
+    },
+    {
+      "rank": 4,
+      "player": "Lamar Jackson",
+      "position": "QB",
+      "team": "Baltimore Ravens",
+      "fantasyTeam": "MouseRat  FC",
+      "week": 5,
+      "points": 41.9
+    },
+    {
+      "rank": 5,
+      "player": "Derrick Henry",
+      "position": "RB",
+      "team": "Tennessee Titans",
+      "fantasyTeam": "All Madden Ultimate Team",
+      "week": 2,
+      "points": 41.7
+    },
+    {
+      "rank": 6,
+      "player": "Joe Burrow",
+      "position": "QB",
+      "team": "Cincinnati Bengals",
+      "fantasyTeam": "Josh Brooks",
+      "week": 16,
+      "points": 38.1
+    },
+    {
+      "rank": 7,
+      "player": "Tom Brady",
+      "position": "QB",
+      "team": "Tampa Bay Buccaneers",
+      "fantasyTeam": "All Madden Ultimate Team",
+      "week": 5,
+      "points": 37.7
+    },
+    {
+      "rank": 8,
+      "player": "Josh Allen",
+      "position": "QB",
+      "team": "Buffalo Bills",
+      "fantasyTeam": "Jupiter Joe's",
+      "week": 3,
+      "points": 37.2
+    },
+    {
+      "rank": 9,
+      "player": "Leonard Fournette",
+      "position": "RB",
+      "team": "Tampa Bay Buccaneers",
+      "fantasyTeam": "Jupiter Clutch",
+      "week": 12,
+      "points": 37.1
+    },
+    {
+      "rank": 10,
+      "player": "Tyreek Hill",
+      "position": "WR",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": "Jupiter Clutch",
+      "week": 4,
+      "points": 36.6
+    }
+  ]
+}

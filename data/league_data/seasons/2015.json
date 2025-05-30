@@ -1,0 +1,1156 @@
+{
+  "seasonData": {
+    "year": 2015,
+    "championName": "Josh",
+    "runnerUp": "Chris",
+    "teams": 10,
+    "regularSeasonWeeks": 13
+  },
+  "standingsData": [
+    {
+      "season_id": 2015,
+      "owner_name": "Dylan",
+      "wt_team_name": "Kristin the Butterfly",
+      "regular_season_wins": 11,
+      "regular_season_losses": 2,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1324.7,
+      "regular_season_points_against": 1049.2,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1295.0,
+      "regular_season_points_against": 1214.7,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Sean",
+      "wt_team_name": "Jupiter Clutch",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1261.1,
+      "regular_season_points_against": 1079.8,
+      "regular_season_finish": 3,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Josh",
+      "wt_team_name": "KENDRAAAAA :)",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1292.0,
+      "regular_season_points_against": 1197.8,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Nick",
+      "wt_team_name": "Nikki  McTerrin",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1243.4,
+      "regular_season_points_against": 1236.5,
+      "regular_season_finish": 5,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Jake",
+      "wt_team_name": "Megan Alders",
+      "regular_season_wins": 7,
+      "regular_season_losses": 6,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1172.9,
+      "regular_season_points_against": 1111.4,
+      "regular_season_finish": 6,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Zach",
+      "wt_team_name": "Janna Banana",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1282.7,
+      "regular_season_points_against": 1459.2,
+      "regular_season_finish": 7,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Will",
+      "wt_team_name": "Big Kel (7 Deuce)",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1264.4,
+      "regular_season_points_against": 1217.6,
+      "regular_season_finish": 8,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Jack",
+      "wt_team_name": "Annie Bryan",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1117.7,
+      "regular_season_points_against": 1314.3,
+      "regular_season_finish": 9,
+      "lastFive": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2015,
+      "owner_name": "Mark",
+      "wt_team_name": "Steen  !!!!!",
+      "regular_season_wins": 2,
+      "regular_season_losses": 11,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 926.2,
+      "regular_season_points_against": 1299.6,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "Kristin the Butterfly",
+          "owner": "Dylan",
+          "score": 156.3
+        },
+        "away": {
+          "seed": 4,
+          "name": "KENDRAAAAA :)",
+          "owner": "Josh",
+          "score": 181.0
+        }
+      },
+      {
+        "home": {
+          "seed": 3,
+          "name": "Jupiter Clutch",
+          "owner": "Sean",
+          "score": 221.5
+        },
+        "away": {
+          "seed": 2,
+          "name": "All Madden Ultimate Team",
+          "owner": "Chris",
+          "score": 222.8
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 2,
+          "name": "All Madden Ultimate Team",
+          "owner": "Chris",
+          "score": 172.8
+        },
+        "away": {
+          "seed": 4,
+          "name": "KENDRAAAAA :)",
+          "owner": "Josh",
+          "score": 180.5
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "Kristin the Butterfly",
+      "All Madden Ultimate Team",
+      "Jupiter Clutch",
+      "KENDRAAAAA :)",
+      "Nikki  McTerrin",
+      "Megan Alders",
+      "Janna Banana",
+      "Big Kel (7 Deuce)",
+      "Annie Bryan",
+      "Steen  !!!!!"
+    ],
+    "scores": [
+      [
+        130.6,
+        107.1,
+        85.8,
+        112.1,
+        93.3,
+        76.3,
+        112.5,
+        91.1,
+        95.7,
+        81.1
+      ],
+      [
+        90.2,
+        109.1,
+        107.3,
+        99.9,
+        79.1,
+        90.0,
+        97.4,
+        84.0,
+        86.0,
+        30.2
+      ],
+      [
+        69.1,
+        119.1,
+        126.5,
+        131.6,
+        145.7,
+        87.7,
+        77.9,
+        139.9,
+        142.8,
+        55.6
+      ],
+      [
+        82.8,
+        90.5,
+        81.7,
+        97.5,
+        97.4,
+        81.5,
+        79.8,
+        75.8,
+        49.2,
+        85.0
+      ],
+      [
+        111.0,
+        121.7,
+        62.2,
+        105.9,
+        85.8,
+        117.0,
+        80.6,
+        93.6,
+        77.4,
+        69.6
+      ],
+      [
+        123.6,
+        136.6,
+        115.6,
+        101.7,
+        87.1,
+        98.9,
+        80.5,
+        91.1,
+        85.5,
+        80.6
+      ],
+      [
+        116.3,
+        80.0,
+        95.9,
+        95.3,
+        87.9,
+        162.8,
+        103.6,
+        142.8,
+        82.8,
+        50.8
+      ],
+      [
+        69.1,
+        95.1,
+        130.9,
+        78.1,
+        133.4,
+        59.4,
+        71.6,
+        109.5,
+        111.0,
+        51.5
+      ],
+      [
+        120.0,
+        101.0,
+        93.9,
+        90.5,
+        62.9,
+        93.3,
+        152.2,
+        95.3,
+        103.4,
+        115.3
+      ],
+      [
+        86.9,
+        55.8,
+        74.5,
+        81.0,
+        61.7,
+        89.4,
+        115.6,
+        62.3,
+        74.0,
+        79.5
+      ],
+      [
+        95.1,
+        106.3,
+        66.8,
+        78.8,
+        84.5,
+        56.4,
+        83.2,
+        87.4,
+        89.0,
+        95.6
+      ],
+      [
+        101.5,
+        49.1,
+        115.8,
+        126.0,
+        120.7,
+        70.4,
+        114.7,
+        99.3,
+        42.0,
+        65.4
+      ],
+      [
+        128.5,
+        123.6,
+        104.2,
+        93.6,
+        103.9,
+        89.8,
+        113.1,
+        92.3,
+        78.9,
+        66.0
+      ]
+    ],
+    "results": [
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "Janna Banana",
+      "owner": "Zach",
+      "leagueAvgPpg": 93.7,
+      "differential": 18.6,
+      "actualOpponentsPpg": 112.2,
+      "rank": 1,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Annie Bryan",
+      "owner": "Jack",
+      "leagueAvgPpg": 93.7,
+      "differential": 7.4,
+      "actualOpponentsPpg": 101.1,
+      "rank": 2,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Steen  !!!!!",
+      "owner": "Mark",
+      "leagueAvgPpg": 93.7,
+      "differential": 6.3,
+      "actualOpponentsPpg": 100.0,
+      "rank": 3,
+      "rating": "Hard"
+    },
+    {
+      "team": "Nikki  McTerrin",
+      "owner": "Nick",
+      "leagueAvgPpg": 93.7,
+      "differential": 1.4,
+      "actualOpponentsPpg": 95.1,
+      "rank": 4,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "Big Kel (7 Deuce)",
+      "owner": "Will",
+      "leagueAvgPpg": 93.7,
+      "differential": -0.0,
+      "actualOpponentsPpg": 93.7,
+      "rank": 5,
+      "rating": "Average"
+    },
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 93.7,
+      "differential": -0.2,
+      "actualOpponentsPpg": 93.4,
+      "rank": 6,
+      "rating": "Average"
+    },
+    {
+      "team": "KENDRAAAAA :)",
+      "owner": "Josh",
+      "leagueAvgPpg": 93.7,
+      "differential": -1.6,
+      "actualOpponentsPpg": 92.1,
+      "rank": 7,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Megan Alders",
+      "owner": "Jake",
+      "leagueAvgPpg": 93.7,
+      "differential": -8.2,
+      "actualOpponentsPpg": 85.5,
+      "rank": 8,
+      "rating": "Very Easy"
+    },
+    {
+      "team": "Jupiter Clutch",
+      "owner": "Sean",
+      "leagueAvgPpg": 93.7,
+      "differential": -10.6,
+      "actualOpponentsPpg": 83.1,
+      "rank": 9,
+      "rating": "Very Easy"
+    },
+    {
+      "team": "Kristin the Butterfly",
+      "owner": "Dylan",
+      "leagueAvgPpg": 93.7,
+      "differential": -13.0,
+      "actualOpponentsPpg": 80.7,
+      "rank": 10,
+      "rating": "Very Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Doug Baldwin",
+      "position": "WR",
+      "team": "Seattle Seahawks",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 190.9,
+      "rank": 1
+    },
+    {
+      "player": "David Johnson",
+      "position": "RB",
+      "team": "Arizona Cardinals",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 173.8,
+      "rank": 2
+    },
+    {
+      "player": "Allen Hurns",
+      "position": "WR",
+      "team": "Jacksonville Jaguars",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 161.1,
+      "rank": 3
+    },
+    {
+      "player": "Michael Crabtree",
+      "position": "WR",
+      "team": "Las Vegas Raiders",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 146.2,
+      "rank": 4
+    },
+    {
+      "player": "James Jones",
+      "position": "WR",
+      "team": "Green Bay Packers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 141.0,
+      "rank": 5
+    },
+    {
+      "player": "Tavon Austin",
+      "position": "WR",
+      "team": "Los Angeles Rams",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 140.7,
+      "rank": 6
+    },
+    {
+      "player": "Jeremy Langford",
+      "position": "RB",
+      "team": "Chicago Bears",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 125.6,
+      "rank": 7
+    },
+    {
+      "player": "James Starks",
+      "position": "RB",
+      "team": "Green Bay Packers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 123.3,
+      "rank": 8
+    },
+    {
+      "player": "Thomas Rawls",
+      "position": "RB",
+      "team": "Seattle Seahawks",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 118.6,
+      "rank": 9
+    },
+    {
+      "player": "Panthers D/ST",
+      "position": "DST",
+      "team": "Carolina Panthers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 171.0,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Cam Newton",
+        "team": "Carolina Panthers",
+        "fantasyTeam": null,
+        "totalPoints": 389.1,
+        "ppg": 24.3,
+        "bestGame": {
+          "week": 15,
+          "points": 41.6
+        }
+      },
+      {
+        "player": "Tom Brady",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 344.2,
+        "ppg": 21.5,
+        "bestGame": {
+          "week": 13,
+          "points": 31.8
+        }
+      },
+      {
+        "player": "Russell Wilson",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": null,
+        "totalPoints": 336.3,
+        "ppg": 21.0,
+        "bestGame": {
+          "week": 12,
+          "points": 35.2
+        }
+      },
+      {
+        "player": "Blake Bortles",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": null,
+        "totalPoints": 316.1,
+        "ppg": 19.8,
+        "bestGame": {
+          "week": 13,
+          "points": 32.8
+        }
+      },
+      {
+        "player": "Carson Palmer",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": null,
+        "totalPoints": 309.2,
+        "ppg": 19.3,
+        "bestGame": {
+          "week": 8,
+          "points": 29.6
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Devonta Freeman",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": null,
+        "totalPoints": 243.4,
+        "ppg": 16.2,
+        "bestGame": {
+          "week": 3,
+          "points": 37.3
+        }
+      },
+      {
+        "player": "Adrian Peterson",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": null,
+        "totalPoints": 230.7,
+        "ppg": 14.4,
+        "bestGame": {
+          "week": 12,
+          "points": 30.7
+        }
+      },
+      {
+        "player": "Doug Martin",
+        "team": "Tampa Bay Buccaneers",
+        "fantasyTeam": null,
+        "totalPoints": 199.3,
+        "ppg": 12.5,
+        "bestGame": {
+          "week": 5,
+          "points": 33.8
+        }
+      },
+      {
+        "player": "DeAngelo Williams",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 191.4,
+        "ppg": 12.0,
+        "bestGame": {
+          "week": 9,
+          "points": 36.5
+        }
+      },
+      {
+        "player": "Todd Gurley II",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": null,
+        "totalPoints": 187.4,
+        "ppg": 14.4,
+        "bestGame": {
+          "week": 7,
+          "points": 28.3
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "Antonio Brown",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 246.2,
+        "ppg": 15.4,
+        "bestGame": {
+          "week": 15,
+          "points": 30.9
+        }
+      },
+      {
+        "player": "Julio Jones",
+        "team": "Atlanta Falcons",
+        "fantasyTeam": null,
+        "totalPoints": 245.1,
+        "ppg": 15.3,
+        "bestGame": {
+          "week": 3,
+          "points": 28.4
+        }
+      },
+      {
+        "player": "Brandon Marshall",
+        "team": "New York Jets",
+        "fantasyTeam": null,
+        "totalPoints": 230.2,
+        "ppg": 14.4,
+        "bestGame": {
+          "week": 12,
+          "points": 25.1
+        }
+      },
+      {
+        "player": "Allen Robinson II",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": null,
+        "totalPoints": 224.0,
+        "ppg": 14.0,
+        "bestGame": {
+          "week": 13,
+          "points": 33.3
+        }
+      },
+      {
+        "player": "Odell Beckham Jr.",
+        "team": "New York Giants",
+        "fantasyTeam": null,
+        "totalPoints": 223.3,
+        "ppg": 14.9,
+        "bestGame": {
+          "week": 8,
+          "points": 31.0
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Rob Gronkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 183.6,
+        "ppg": 12.2,
+        "bestGame": {
+          "week": 1,
+          "points": 27.4
+        }
+      },
+      {
+        "player": "Gary Barnidge",
+        "team": "Cleveland Browns",
+        "fantasyTeam": null,
+        "totalPoints": 158.3,
+        "ppg": 9.9,
+        "bestGame": {
+          "week": 5,
+          "points": 19.9
+        }
+      },
+      {
+        "player": "Jordan Reed",
+        "team": "Washington Commanders",
+        "fantasyTeam": null,
+        "totalPoints": 157.2,
+        "ppg": 11.2,
+        "bestGame": {
+          "week": 16,
+          "points": 24.9
+        }
+      },
+      {
+        "player": "Greg Olsen",
+        "team": "Carolina Panthers",
+        "fantasyTeam": null,
+        "totalPoints": 150.4,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 3,
+          "points": 25.4
+        }
+      },
+      {
+        "player": "Delanie Walker",
+        "team": "Tennessee Titans",
+        "fantasyTeam": null,
+        "totalPoints": 150.4,
+        "ppg": 10.0,
+        "bestGame": {
+          "week": 9,
+          "points": 23.5
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Stephen Gostkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 159.0,
+        "ppg": 9.9,
+        "bestGame": {
+          "week": 2,
+          "points": 18.0
+        }
+      },
+      {
+        "player": "Graham Gano",
+        "team": "Carolina Panthers",
+        "fantasyTeam": null,
+        "totalPoints": 150.0,
+        "ppg": 9.4,
+        "bestGame": {
+          "week": 12,
+          "points": 17.0
+        }
+      },
+      {
+        "player": "Blair Walsh",
+        "team": "Minnesota Vikings",
+        "fantasyTeam": null,
+        "totalPoints": 147.0,
+        "ppg": 9.2,
+        "bestGame": {
+          "week": 16,
+          "points": 23.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Cardinals D/ST",
+        "team": "Arizona Cardinals",
+        "fantasyTeam": null,
+        "totalPoints": 186.0,
+        "ppg": 11.6,
+        "bestGame": {
+          "week": 16,
+          "points": 35.0
+        }
+      },
+      {
+        "player": "Chiefs D/ST",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 184.0,
+        "ppg": 11.5,
+        "bestGame": {
+          "week": 10,
+          "points": 21.0
+        }
+      },
+      {
+        "player": "Broncos D/ST",
+        "team": "Denver Broncos",
+        "fantasyTeam": null,
+        "totalPoints": 181.0,
+        "ppg": 11.3,
+        "bestGame": {
+          "week": 13,
+          "points": 23.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Drew Brees",
+      "position": "QB",
+      "team": "New Orleans Saints",
+      "fantasyTeam": null,
+      "week": 8,
+      "points": 44.3
+    },
+    {
+      "rank": 2,
+      "player": "Cam Newton",
+      "position": "QB",
+      "team": "Carolina Panthers",
+      "fantasyTeam": null,
+      "week": 15,
+      "points": 41.6
+    },
+    {
+      "rank": 3,
+      "player": "David Johnson",
+      "position": "RB",
+      "team": "Arizona Cardinals",
+      "fantasyTeam": null,
+      "week": 15,
+      "points": 40.9
+    },
+    {
+      "rank": 4,
+      "player": "Eli Manning",
+      "position": "QB",
+      "team": "New York Giants",
+      "fantasyTeam": null,
+      "week": 8,
+      "points": 38.0
+    },
+    {
+      "rank": 5,
+      "player": "Thomas Rawls",
+      "position": "RB",
+      "team": "Seattle Seahawks",
+      "fantasyTeam": null,
+      "week": 11,
+      "points": 37.5
+    },
+    {
+      "rank": 6,
+      "player": "Devonta Freeman",
+      "position": "RB",
+      "team": "Atlanta Falcons",
+      "fantasyTeam": null,
+      "week": 3,
+      "points": 37.3
+    },
+    {
+      "rank": 7,
+      "player": "DeAngelo Williams",
+      "position": "RB",
+      "team": "Pittsburgh Steelers",
+      "fantasyTeam": null,
+      "week": 9,
+      "points": 36.5
+    },
+    {
+      "rank": 8,
+      "player": "Kirk Cousins",
+      "position": "QB",
+      "team": "Washington Commanders",
+      "fantasyTeam": null,
+      "week": 15,
+      "points": 35.9
+    },
+    {
+      "rank": 9,
+      "player": "Marcus Mariota",
+      "position": "QB",
+      "team": "Tennessee Titans",
+      "fantasyTeam": null,
+      "week": 13,
+      "points": 35.9
+    },
+    {
+      "rank": 10,
+      "player": "Lamar Miller",
+      "position": "RB",
+      "team": "Miami Dolphins",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 35.6
+    }
+  ]
+}

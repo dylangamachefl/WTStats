@@ -1,0 +1,1156 @@
+{
+  "seasonData": {
+    "year": 2017,
+    "championName": "Josh",
+    "runnerUp": "Will",
+    "teams": 10,
+    "regularSeasonWeeks": 13
+  },
+  "standingsData": [
+    {
+      "season_id": 2017,
+      "owner_name": "Zach",
+      "wt_team_name": "MouseRat FC",
+      "regular_season_wins": 10,
+      "regular_season_losses": 3,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1298.8,
+      "regular_season_points_against": 1180.6,
+      "regular_season_finish": 1,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Josh",
+      "wt_team_name": "Gauntlet Commish",
+      "regular_season_wins": 9,
+      "regular_season_losses": 4,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1130.0,
+      "regular_season_points_against": 1087.4,
+      "regular_season_finish": 2,
+      "lastFive": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Sean",
+      "wt_team_name": "Frank Reynolds' Little Beauties",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1288.4,
+      "regular_season_points_against": 1186.1,
+      "regular_season_finish": 3,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Will",
+      "wt_team_name": "Fig Newton?",
+      "regular_season_wins": 8,
+      "regular_season_losses": 5,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1193.4,
+      "regular_season_points_against": 1132.4,
+      "regular_season_finish": 4,
+      "lastFive": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Jake",
+      "wt_team_name": "AP 's Daycare",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1277.4,
+      "regular_season_points_against": 1310.2,
+      "regular_season_finish": 5,
+      "lastFive": [
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Jack",
+      "wt_team_name": "Gauntlet Ring  Count?",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1140.5,
+      "regular_season_points_against": 1129.2,
+      "regular_season_finish": 6,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Nick",
+      "wt_team_name": "Abdullah Oblongata",
+      "regular_season_wins": 6,
+      "regular_season_losses": 7,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1071.7,
+      "regular_season_points_against": 1067.5,
+      "regular_season_finish": 7,
+      "lastFive": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Chris",
+      "wt_team_name": "All Madden Ultimate Team",
+      "regular_season_wins": 5,
+      "regular_season_losses": 8,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1179.3,
+      "regular_season_points_against": 1180.4,
+      "regular_season_finish": 8,
+      "lastFive": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Dylan",
+      "wt_team_name": "Diddlin' Ain't Easy",
+      "regular_season_wins": 4,
+      "regular_season_losses": 9,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1050.9,
+      "regular_season_points_against": 1191.8,
+      "regular_season_finish": 9,
+      "lastFive": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "playoffSeed": null
+    },
+    {
+      "season_id": 2017,
+      "owner_name": "Mark",
+      "wt_team_name": "Colin KaeperSit",
+      "regular_season_wins": 3,
+      "regular_season_losses": 10,
+      "regular_season_ties": 0,
+      "regular_season_points_for": 1048.8,
+      "regular_season_points_against": 1213.6,
+      "regular_season_finish": 10,
+      "lastFive": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "playoffSeed": null
+    }
+  ],
+  "playoffData": {
+    "quarterFinals": [],
+    "semiFinals": [
+      {
+        "home": {
+          "seed": 1,
+          "name": "MouseRat FC",
+          "owner": "Zach",
+          "score": 176.0
+        },
+        "away": {
+          "seed": 4,
+          "name": "Fig Newton?",
+          "owner": "Will",
+          "score": 226.9
+        }
+      },
+      {
+        "home": {
+          "seed": 3,
+          "name": "Frank Reynolds' Little Beauties",
+          "owner": "Sean",
+          "score": 171.1
+        },
+        "away": {
+          "seed": 2,
+          "name": "Gauntlet Commish",
+          "owner": "Josh",
+          "score": 214.0
+        }
+      }
+    ],
+    "championship": [
+      {
+        "home": {
+          "seed": 2,
+          "name": "Gauntlet Commish",
+          "owner": "Josh",
+          "score": 179.5
+        },
+        "away": {
+          "seed": 4,
+          "name": "Fig Newton?",
+          "owner": "Will",
+          "score": 168.0
+        }
+      }
+    ]
+  },
+  "weeklyScoresData": {
+    "teams": [
+      "MouseRat FC",
+      "Gauntlet Commish",
+      "Frank Reynolds' Little Beauties",
+      "Fig Newton?",
+      "AP 's Daycare",
+      "Gauntlet Ring  Count?",
+      "Abdullah Oblongata",
+      "All Madden Ultimate Team",
+      "Diddlin' Ain't Easy",
+      "Colin KaeperSit"
+    ],
+    "scores": [
+      [
+        56.0,
+        80.5,
+        92.1,
+        88.2,
+        73.3,
+        116.6,
+        95.9,
+        82.9,
+        71.2,
+        60.9
+      ],
+      [
+        118.7,
+        59.0,
+        99.6,
+        109.9,
+        100.1,
+        99.5,
+        85.8,
+        119.2,
+        69.8,
+        67.5
+      ],
+      [
+        60.4,
+        112.7,
+        101.9,
+        78.8,
+        84.7,
+        119.7,
+        44.1,
+        69.3,
+        105.1,
+        96.5
+      ],
+      [
+        103.4,
+        89.4,
+        116.1,
+        76.5,
+        133.0,
+        77.4,
+        60.0,
+        71.6,
+        75.6,
+        72.1
+      ],
+      [
+        108.6,
+        71.3,
+        104.3,
+        121.7,
+        97.4,
+        57.4,
+        67.0,
+        58.5,
+        75.9,
+        105.2
+      ],
+      [
+        110.4,
+        72.9,
+        98.5,
+        106.4,
+        91.9,
+        82.6,
+        85.6,
+        128.8,
+        68.2,
+        94.9
+      ],
+      [
+        100.3,
+        72.5,
+        107.4,
+        67.7,
+        92.6,
+        92.0,
+        119.9,
+        81.2,
+        61.0,
+        97.6
+      ],
+      [
+        100.3,
+        102.9,
+        127.6,
+        106.6,
+        96.5,
+        65.4,
+        70.0,
+        94.8,
+        83.0,
+        65.8
+      ],
+      [
+        86.4,
+        95.6,
+        85.9,
+        68.7,
+        113.5,
+        96.7,
+        69.3,
+        63.9,
+        74.6,
+        112.8
+      ],
+      [
+        107.4,
+        73.5,
+        55.8,
+        75.9,
+        94.5,
+        106.4,
+        72.8,
+        123.9,
+        82.5,
+        67.9
+      ],
+      [
+        116.1,
+        120.5,
+        129.4,
+        94.7,
+        96.2,
+        52.2,
+        110.0,
+        91.4,
+        78.1,
+        49.9
+      ],
+      [
+        125.1,
+        79.7,
+        98.4,
+        95.8,
+        84.4,
+        107.3,
+        112.7,
+        69.2,
+        100.4,
+        72.2
+      ],
+      [
+        105.7,
+        99.5,
+        71.4,
+        102.5,
+        119.3,
+        67.3,
+        78.6,
+        124.6,
+        105.5,
+        85.5
+      ]
+    ],
+    "results": [
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L"
+      ],
+      [
+        "L",
+        "L",
+        "L",
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W",
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      [
+        "W",
+        "L",
+        "L",
+        "L",
+        "W",
+        "L",
+        "W",
+        "W",
+        "L",
+        "W"
+      ]
+    ]
+  },
+  "strengthOfScheduleData": [
+    {
+      "team": "AP 's Daycare",
+      "owner": "Jake",
+      "leagueAvgPpg": 89.8,
+      "differential": 10.9,
+      "actualOpponentsPpg": 100.8,
+      "rank": 1,
+      "rating": "Very Hard"
+    },
+    {
+      "team": "Colin KaeperSit",
+      "owner": "Mark",
+      "leagueAvgPpg": 89.8,
+      "differential": 3.5,
+      "actualOpponentsPpg": 93.3,
+      "rank": 2,
+      "rating": "Hard"
+    },
+    {
+      "team": "Diddlin' Ain't Easy",
+      "owner": "Dylan",
+      "leagueAvgPpg": 89.8,
+      "differential": 1.8,
+      "actualOpponentsPpg": 91.7,
+      "rank": 3,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "Frank Reynolds' Little Beauties",
+      "owner": "Sean",
+      "leagueAvgPpg": 89.8,
+      "differential": 1.4,
+      "actualOpponentsPpg": 91.2,
+      "rank": 4,
+      "rating": "Above Avg"
+    },
+    {
+      "team": "MouseRat FC",
+      "owner": "Zach",
+      "leagueAvgPpg": 89.8,
+      "differential": 1.0,
+      "actualOpponentsPpg": 90.8,
+      "rank": 5,
+      "rating": "Average"
+    },
+    {
+      "team": "All Madden Ultimate Team",
+      "owner": "Chris",
+      "leagueAvgPpg": 89.8,
+      "differential": 1.0,
+      "actualOpponentsPpg": 90.8,
+      "rank": 6,
+      "rating": "Average"
+    },
+    {
+      "team": "Fig Newton?",
+      "owner": "Will",
+      "leagueAvgPpg": 89.8,
+      "differential": -2.7,
+      "actualOpponentsPpg": 87.1,
+      "rank": 7,
+      "rating": "Below Avg"
+    },
+    {
+      "team": "Gauntlet Ring  Count?",
+      "owner": "Jack",
+      "leagueAvgPpg": 89.8,
+      "differential": -3.0,
+      "actualOpponentsPpg": 86.9,
+      "rank": 8,
+      "rating": "Easy"
+    },
+    {
+      "team": "Gauntlet Commish",
+      "owner": "Josh",
+      "leagueAvgPpg": 89.8,
+      "differential": -6.2,
+      "actualOpponentsPpg": 83.7,
+      "rank": 9,
+      "rating": "Easy"
+    },
+    {
+      "team": "Abdullah Oblongata",
+      "owner": "Nick",
+      "leagueAvgPpg": 89.8,
+      "differential": -7.7,
+      "actualOpponentsPpg": 82.1,
+      "rank": 10,
+      "rating": "Very Easy"
+    }
+  ],
+  "waiverPickupsData": [
+    {
+      "player": "Alvin Kamara",
+      "position": "RB",
+      "team": "New Orleans Saints",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 233.4,
+      "rank": 1
+    },
+    {
+      "player": "Dion Lewis",
+      "position": "RB",
+      "team": "New England Patriots",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 165.0,
+      "rank": 2
+    },
+    {
+      "player": "Alex Collins",
+      "position": "RB",
+      "team": "Baltimore Ravens",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 148.0,
+      "rank": 3
+    },
+    {
+      "player": "Robby Anderson",
+      "position": "WR",
+      "team": "New York Jets",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 137.0,
+      "rank": 4
+    },
+    {
+      "player": "JuJu Smith-Schuster",
+      "position": "WR",
+      "team": "Pittsburgh Steelers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 133.7,
+      "rank": 5
+    },
+    {
+      "player": "Devin Funchess",
+      "position": "WR",
+      "team": "Carolina Panthers",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 132.0,
+      "rank": 6
+    },
+    {
+      "player": "Nelson Agholor",
+      "position": "WR",
+      "team": "Philadelphia Eagles",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 131.5,
+      "rank": 7
+    },
+    {
+      "player": "Jerick McKinnon",
+      "position": "RB",
+      "team": "Minnesota Vikings",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 127.1,
+      "rank": 8
+    },
+    {
+      "player": "Javorius Allen",
+      "position": "RB",
+      "team": "Baltimore Ravens",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 120.1,
+      "rank": 9
+    },
+    {
+      "player": "Orleans Darkwa",
+      "position": "RB",
+      "team": "New York Giants",
+      "pickedUpBy": null,
+      "week": null,
+      "totalPoints": 118.7,
+      "rank": 10
+    }
+  ],
+  "topPerformersData": {
+    "QB": [
+      {
+        "player": "Russell Wilson",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": null,
+        "totalPoints": 347.9,
+        "ppg": 21.7,
+        "bestGame": {
+          "week": 8,
+          "points": 35.1
+        }
+      },
+      {
+        "player": "Cam Newton",
+        "team": "Carolina Panthers",
+        "fantasyTeam": null,
+        "totalPoints": 299.5,
+        "ppg": 18.7,
+        "bestGame": {
+          "week": 10,
+          "points": 35.7
+        }
+      },
+      {
+        "player": "Tom Brady",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 295.9,
+        "ppg": 18.5,
+        "bestGame": {
+          "week": 3,
+          "points": 35.7
+        }
+      },
+      {
+        "player": "Alex Smith",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 295.2,
+        "ppg": 19.7,
+        "bestGame": {
+          "week": 13,
+          "points": 37.6
+        }
+      },
+      {
+        "player": "Carson Wentz",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": null,
+        "totalPoints": 281.7,
+        "ppg": 21.7,
+        "bestGame": {
+          "week": 7,
+          "points": 31.0
+        }
+      }
+    ],
+    "RB": [
+      {
+        "player": "Todd Gurley II",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": null,
+        "totalPoints": 319.3,
+        "ppg": 21.3,
+        "bestGame": {
+          "week": 15,
+          "points": 42.0
+        }
+      },
+      {
+        "player": "Le'Veon Bell",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 256.6,
+        "ppg": 17.1,
+        "bestGame": {
+          "week": 4,
+          "points": 30.6
+        }
+      },
+      {
+        "player": "Kareem Hunt",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 242.2,
+        "ppg": 15.1,
+        "bestGame": {
+          "week": 1,
+          "points": 40.6
+        }
+      },
+      {
+        "player": "Alvin Kamara",
+        "team": "New Orleans Saints",
+        "fantasyTeam": null,
+        "totalPoints": 233.4,
+        "ppg": 14.6,
+        "bestGame": {
+          "week": 12,
+          "points": 30.8
+        }
+      },
+      {
+        "player": "Melvin Gordon III",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": null,
+        "totalPoints": 230.1,
+        "ppg": 14.4,
+        "bestGame": {
+          "week": 5,
+          "points": 28.3
+        }
+      }
+    ],
+    "WR": [
+      {
+        "player": "DeAndre Hopkins",
+        "team": "Houston Texans",
+        "fantasyTeam": null,
+        "totalPoints": 213.8,
+        "ppg": 14.3,
+        "bestGame": {
+          "week": 8,
+          "points": 28.4
+        }
+      },
+      {
+        "player": "Antonio Brown",
+        "team": "Pittsburgh Steelers",
+        "fantasyTeam": null,
+        "totalPoints": 209.3,
+        "ppg": 15.0,
+        "bestGame": {
+          "week": 11,
+          "points": 32.4
+        }
+      },
+      {
+        "player": "Keenan Allen",
+        "team": "Los Angeles Chargers",
+        "fantasyTeam": null,
+        "totalPoints": 182.2,
+        "ppg": 11.4,
+        "bestGame": {
+          "week": 11,
+          "points": 28.2
+        }
+      },
+      {
+        "player": "Tyreek Hill",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 164.2,
+        "ppg": 10.9,
+        "bestGame": {
+          "week": 13,
+          "points": 30.5
+        }
+      },
+      {
+        "player": "Marvin Jones Jr.",
+        "team": "Detroit Lions",
+        "fantasyTeam": null,
+        "totalPoints": 164.1,
+        "ppg": 10.3,
+        "bestGame": {
+          "week": 12,
+          "points": 22.9
+        }
+      }
+    ],
+    "TE": [
+      {
+        "player": "Rob Gronkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 158.4,
+        "ppg": 11.3,
+        "bestGame": {
+          "week": 6,
+          "points": 20.3
+        }
+      },
+      {
+        "player": "Travis Kelce",
+        "team": "Kansas City Chiefs",
+        "fantasyTeam": null,
+        "totalPoints": 150.5,
+        "ppg": 10.0,
+        "bestGame": {
+          "week": 13,
+          "points": 21.4
+        }
+      },
+      {
+        "player": "Zach Ertz",
+        "team": "Philadelphia Eagles",
+        "fantasyTeam": null,
+        "totalPoints": 128.4,
+        "ppg": 9.2,
+        "bestGame": {
+          "week": 12,
+          "points": 16.3
+        }
+      },
+      {
+        "player": "Jimmy Graham",
+        "team": "Seattle Seahawks",
+        "fantasyTeam": null,
+        "totalPoints": 114.0,
+        "ppg": 7.1,
+        "bestGame": {
+          "week": 8,
+          "points": 15.9
+        }
+      },
+      {
+        "player": "Evan Engram",
+        "team": "New York Giants",
+        "fantasyTeam": null,
+        "totalPoints": 109.6,
+        "ppg": 7.3,
+        "bestGame": {
+          "week": 13,
+          "points": 15.9
+        }
+      }
+    ],
+    "K": [
+      {
+        "player": "Greg Zuerlein",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": null,
+        "totalPoints": 170.0,
+        "ppg": 12.1,
+        "bestGame": {
+          "week": 4,
+          "points": 23.0
+        }
+      },
+      {
+        "player": "Stephen Gostkowski",
+        "team": "New England Patriots",
+        "fantasyTeam": null,
+        "totalPoints": 164.0,
+        "ppg": 10.2,
+        "bestGame": {
+          "week": 11,
+          "points": 19.0
+        }
+      },
+      {
+        "player": "Robbie Gould",
+        "team": "San Francisco 49ers",
+        "fantasyTeam": null,
+        "totalPoints": 153.0,
+        "ppg": 9.6,
+        "bestGame": {
+          "week": 15,
+          "points": 21.0
+        }
+      }
+    ],
+    "DST": [
+      {
+        "player": "Jaguars D/ST",
+        "team": "Jacksonville Jaguars",
+        "fantasyTeam": null,
+        "totalPoints": 203.0,
+        "ppg": 12.7,
+        "bestGame": {
+          "week": 1,
+          "points": 28.0
+        }
+      },
+      {
+        "player": "Ravens D/ST",
+        "team": "Baltimore Ravens",
+        "fantasyTeam": null,
+        "totalPoints": 185.0,
+        "ppg": 11.6,
+        "bestGame": {
+          "week": 8,
+          "points": 29.0
+        }
+      },
+      {
+        "player": "Rams D/ST",
+        "team": "Los Angeles Rams",
+        "fantasyTeam": null,
+        "totalPoints": 164.0,
+        "ppg": 10.2,
+        "bestGame": {
+          "week": 1,
+          "points": 28.0
+        }
+      }
+    ]
+  },
+  "bestOverallGamesData": [
+    {
+      "rank": 1,
+      "player": "Todd Gurley II",
+      "position": "RB",
+      "team": "Los Angeles Rams",
+      "fantasyTeam": null,
+      "week": 15,
+      "points": 42.0
+    },
+    {
+      "rank": 2,
+      "player": "Kareem Hunt",
+      "position": "RB",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": null,
+      "week": 1,
+      "points": 40.6
+    },
+    {
+      "rank": 3,
+      "player": "Ezekiel Elliott",
+      "position": "RB",
+      "team": "Dallas Cowboys",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 39.9
+    },
+    {
+      "rank": 4,
+      "player": "Julio Jones",
+      "position": "WR",
+      "team": "Atlanta Falcons",
+      "fantasyTeam": null,
+      "week": 12,
+      "points": 38.8
+    },
+    {
+      "rank": 5,
+      "player": "Alex Smith",
+      "position": "QB",
+      "team": "Kansas City Chiefs",
+      "fantasyTeam": null,
+      "week": 13,
+      "points": 37.6
+    },
+    {
+      "rank": 6,
+      "player": "Cam Newton",
+      "position": "QB",
+      "team": "Carolina Panthers",
+      "fantasyTeam": null,
+      "week": 10,
+      "points": 35.7
+    },
+    {
+      "rank": 7,
+      "player": "Tom Brady",
+      "position": "QB",
+      "team": "New England Patriots",
+      "fantasyTeam": null,
+      "week": 3,
+      "points": 35.7
+    },
+    {
+      "rank": 8,
+      "player": "Deshaun Watson",
+      "position": "QB",
+      "team": "Houston Texans",
+      "fantasyTeam": null,
+      "week": 5,
+      "points": 35.5
+    },
+    {
+      "rank": 9,
+      "player": "Russell Wilson",
+      "position": "QB",
+      "team": "Seattle Seahawks",
+      "fantasyTeam": null,
+      "week": 8,
+      "points": 35.1
+    },
+    {
+      "rank": 10,
+      "player": "Amari Cooper",
+      "position": "WR",
+      "team": "Las Vegas Raiders",
+      "fantasyTeam": null,
+      "week": 7,
+      "points": 33.0
+    }
+  ]
+}

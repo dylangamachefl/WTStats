@@ -1,0 +1,64 @@
+
+{
+  "gm1Id": "1",
+  "gm1Name": "Jack",
+  "gm2Id": "2",
+  "gm2Name": "Josh",
+  "overallRecord": {
+    "gm1Wins": 7,
+    "gm2Wins": 9,
+    "ties": 1
+  },
+  "pointsRecord": {
+    "gm1TotalPoints": 2205.7,
+    "gm2TotalPoints": 2310.3
+  },
+  "matchups": [
+    {
+      "seasonYear": 2023,
+      "week": 3,
+      "gm1Score": 125.5,
+      "gm2Score": 115.0,
+      "winnerId": "1"
+    },
+    {
+      "seasonYear": 2023,
+      "week": 10,
+      "gm1Score": 100.2,
+      "gm2Score": 130.8,
+      "winnerId": "2"
+    },
+    {
+      "seasonYear": 2022,
+      "week": 7,
+      "gm1Score": 99.0,
+      "gm2Score": 99.0,
+      "winnerId": null
+    },
+    {
+      "seasonYear": 2022,
+      "week": "Playoffs Semifinals",
+      "gm1Score": 145.0,
+      "gm2Score": 135.5,
+      "winnerId": "1"
+    },
+    {
+      "seasonYear": 2021,
+      "week": 1,
+      "gm1Score": 110.0,
+      "gm2Score": 112.0,
+      "winnerId": "2"
+    }
+  ],
+  "playoffMeetings": [
+    {
+      "seasonYear": 2022,
+      "round": "Semifinals",
+      "gm1Name": "Jack",
+      "gm2Name": "Josh",
+      "gm1Score": 145.0,
+      "gm2Score": 135.5,
+      "winnerId": "1"
+    }
+  ]
+}

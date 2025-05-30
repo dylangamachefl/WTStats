@@ -1,0 +1,250 @@
+{
+  "gmInfo": {
+    "id": 13,
+    "name": "Dan",
+    "slug": "dan",
+    "yearsActive": "2023-2024",
+    "championshipYears": []
+  },
+  "careerStats": {
+    "wins": 20,
+    "losses": 6,
+    "ties": 0,
+    "winPct": 0.769,
+    "totalPointsFor": 2900.56,
+    "totalPointsAgainst": 2472.58,
+    "avgPointsPerGame": 111.56,
+    "playoffAppearances": 2,
+    "totalSeasons": 2,
+    "playoffWins": 0,
+    "playoffLosses": 2
+  },
+  "careerExtremes": {
+    "highs": {
+      "mostPointsGame": {
+        "value": 162.12,
+        "season": 2023,
+        "week": "5"
+      },
+      "biggestWinMargin": {
+        "value": 61.1,
+        "season": 2024,
+        "week": "8",
+        "opponentName": "Jack"
+      },
+      "bestSeasonRecord": {
+        "wins": 10,
+        "losses": 3,
+        "season": 2023,
+        "isChampion": false
+      }
+    },
+    "lows": {
+      "fewestPointsGame": {
+        "value": 84.72,
+        "season": 2023,
+        "week": "2"
+      },
+      "worstLossMargin": {
+        "value": 52.18,
+        "season": 2024,
+        "week": "5",
+        "opponentName": "Sean"
+      },
+      "worstSeasonRecord": {
+        "wins": 10,
+        "losses": 3,
+        "season": 2023,
+        "isChampion": false
+      }
+    }
+  },
+  "seasonProgression": [
+    {
+      "year": 2023,
+      "finalStanding": 4,
+      "pointsForRank": 3,
+      "madePlayoffs": true,
+      "isChampion": false
+    },
+    {
+      "year": 2024,
+      "finalStanding": 3,
+      "pointsForRank": 3,
+      "madePlayoffs": true,
+      "isChampion": false
+    }
+  ],
+  "positionStrength": [
+    {
+      "position": "QB",
+      "value": 3.7
+    },
+    {
+      "position": "RB",
+      "value": 4.3
+    },
+    {
+      "position": "WR",
+      "value": 16.7
+    },
+    {
+      "position": "TE",
+      "value": 13.7
+    },
+    {
+      "position": "FLEX",
+      "value": 2.9
+    },
+    {
+      "position": "K",
+      "value": 12.3
+    },
+    {
+      "position": "DST",
+      "value": 0.9
+    }
+  ],
+  "franchisePlayers": [
+    {
+      "playerId": 17959,
+      "name": "Derrick Henry",
+      "position": "RB",
+      "seasonsWithGm": [
+        2024
+      ],
+      "totalPointsForGm": 236.1,
+      "gamesStartedForGm": 12
+    },
+    {
+      "playerId": 20824,
+      "name": "Josh Jacobs",
+      "position": "RB",
+      "seasonsWithGm": [
+        2023
+      ],
+      "totalPointsForGm": 157.6,
+      "gamesStartedForGm": 12
+    },
+    {
+      "playerId": 21831,
+      "name": "Jalen Hurts",
+      "position": "QB",
+      "seasonsWithGm": [
+        2023
+      ],
+      "totalPointsForGm": 262.88,
+      "gamesStartedForGm": 11
+    },
+    {
+      "playerId": 18082,
+      "name": "Tyreek Hill",
+      "position": "WR",
+      "seasonsWithGm": [
+        2023
+      ],
+      "totalPointsForGm": 237.3,
+      "gamesStartedForGm": 11
+    },
+    {
+      "playerId": 22508,
+      "name": "Kyle Pitts",
+      "position": "TE",
+      "seasonsWithGm": [
+        2024
+      ],
+      "totalPointsForGm": 84.9,
+      "gamesStartedForGm": 11
+    }
+  ],
+  "rivalryPerformance": [
+    {
+      "opponentId": 7,
+      "opponentName": "Will",
+      "wins": 4,
+      "losses": 0,
+      "avgPointsFor": 110.28,
+      "avgPointsAgainst": 82.09
+    },
+    {
+      "opponentId": 3,
+      "opponentName": "Jake",
+      "wins": 2,
+      "losses": 2,
+      "avgPointsFor": 158.26,
+      "avgPointsAgainst": 178.69
+    },
+    {
+      "opponentId": 12,
+      "opponentName": "Dylan",
+      "wins": 1,
+      "losses": 3,
+      "avgPointsFor": 120.29,
+      "avgPointsAgainst": 143.63
+    },
+    {
+      "opponentId": 8,
+      "opponentName": "Zach",
+      "wins": 3,
+      "losses": 0,
+      "avgPointsFor": 117.28,
+      "avgPointsAgainst": 89.65
+    },
+    {
+      "opponentId": 5,
+      "opponentName": "Sean",
+      "wins": 2,
+      "losses": 1,
+      "avgPointsFor": 183.69,
+      "avgPointsAgainst": 163.58
+    },
+    {
+      "opponentId": 6,
+      "opponentName": "Nick",
+      "wins": 2,
+      "losses": 0,
+      "avgPointsFor": 116.3,
+      "avgPointsAgainst": 99.59
+    },
+    {
+      "opponentId": 1,
+      "opponentName": "Jack",
+      "wins": 2,
+      "losses": 0,
+      "avgPointsFor": 125.3,
+      "avgPointsAgainst": 71.23
+    },
+    {
+      "opponentId": 11,
+      "opponentName": "Chris",
+      "wins": 2,
+      "losses": 0,
+      "avgPointsFor": 96.88,
+      "avgPointsAgainst": 92.33
+    },
+    {
+      "opponentId": 14,
+      "opponentName": "Fitz",
+      "wins": 1,
+      "losses": 1,
+      "avgPointsFor": 105.15,
+      "avgPointsAgainst": 92.44
+    },
+    {
+      "opponentId": 2,
+      "opponentName": "Josh",
+      "wins": 1,
+      "losses": 1,
+      "avgPointsFor": 132.37,
+      "avgPointsAgainst": 112.77
+    },
+    {
+      "opponentId": 4,
+      "opponentName": "Mark",
+      "wins": 1,
+      "losses": 1,
+      "avgPointsFor": 97.04,
+      "avgPointsAgainst": 108.16
+    }
+  ]
+}
