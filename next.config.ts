@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Required for next export with next/image
   },
-  assetPrefix: isProd ? '' : '', // Note the trailing slash for assetPrefix
+  assetPrefix: isProd ? '/WTStats/' : '', // Note the trailing slash for assetPrefix
 };
 
 export default nextConfig;
