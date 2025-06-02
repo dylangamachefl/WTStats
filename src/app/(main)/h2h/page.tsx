@@ -134,7 +134,7 @@ export default function H2HPage() {
       const numGm1Id = parseInt(gm1Id);
       const numGm2Id = parseInt(gm2Id);
       const ids = [numGm1Id, numGm2Id].sort((a, b) => a - b);
-      const filePath = `${basePath}/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
+      const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
       console.log(`[H2HPage] Fetching ${filePath}`);
 
       const fetchData = async () => {

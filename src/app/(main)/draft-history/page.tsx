@@ -680,7 +680,7 @@ const SeasonDraftDetail = () => {
         setTopSteals(null);
         setTopBusts(null);
         try {
-          const filePath = `${basePath}/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
+          const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
           console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
           const response = await fetch(filePath);
 
@@ -1097,7 +1097,7 @@ const GMDraftHistory = () => {
           if (!gmInfo) {
             throw new Error("Selected GM not found in mock data.");
           }
-          const filePath = `${basePath}/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
+          const filePath = `/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
           console.log(`[GMDraftHistory] Fetching ${filePath}`);
           const response = await fetch(filePath);
           if (!response.ok) {
