@@ -3,6 +3,7 @@ import type {NextConfig} from 'next';
 
 const isProd = process.env.NODE_ENV === 'production';
 const repoName = 'WTStats';
+const basePath = `/${repoName}`; // Hardcoded
 
 const nextConfig: NextConfig = {
   output: 'export', // Enable static HTML export
@@ -12,7 +13,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  basePath: `/${repoName}`,
+  basePath: basePath,
   images: {
     remotePatterns: [
       {
@@ -66,7 +67,10 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Required for next export with next/image
   },
-  assetPrefix: `/${repoName}/`, // Note the trailing slash for assetPrefix
+  assetPrefix: `${basePath}/`, 
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath, // Expose it to client-side// Note the trailing slash for assetPrefix
+  }
 };
 
 export default nextConfig;

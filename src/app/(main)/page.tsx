@@ -61,7 +61,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
-
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''; // Fallback to empty for safety
 // Mock data for SeasonDetail and GMCareer tabs (as types)
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
 
@@ -733,7 +733,7 @@ const SeasonDetail = () => {
       setLoading(true);
       setError(null);
       setSeasonData(null); 
-      const seasonFilePath = `/data/league_data/seasons/${selectedSeason}.json`;
+      const seasonFilePath = `${basePath}/data/league_data/seasons/${selectedSeason}.json`;
       console.log(`[SeasonDetail] Attempting to fetch data for season: ${selectedSeason} from ${seasonFilePath}`);
       fetch(seasonFilePath)
         .then(async res => {
@@ -1503,7 +1503,7 @@ const GMCareer = () => {
 
       const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
       const gmSlug = gmInfoFromMock?.name.toLowerCase().replace(/\s+/g, '') || selectedGmId; 
-      const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
+      const gmFilePath = `${basePath}/data/league_data/${gmSlug}/${gmSlug}.json`;
       
       console.log(`[GMCareer] Attempting to fetch data for GM: ${selectedGmId} (slug: ${gmSlug}) from ${gmFilePath}`);
       fetch(gmFilePath)
@@ -1554,7 +1554,7 @@ const GMCareer = () => {
       setGmIndividualSeasonData(null); 
       setActiveGmSeasonTab("season-summary"); 
 
-      const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
+      const seasonDetailFilePath = `${basePath}/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
       console.log(`[GMCareer-IndividualSeason] Attempting to fetch: ${seasonDetailFilePath}`);
       fetch(seasonDetailFilePath)
@@ -2516,7 +2516,7 @@ export default function LeagueHistoryPage() {
     if (activeMainTab === 'all-seasons' && !leagueData) { 
         setLoadingLeagueData(true);
         console.log("[LeagueHistoryPage] Attempting to fetch league-data.json");
-        fetch('/data/league_data/league-data.json')
+        fetch('WTStats/data/league_data/league-data.json')
           .then(async res => {
             console.log("[LeagueHistoryPage] Fetch response status for league-data.json:", res.status, res.statusText);
             if (!res.ok) {

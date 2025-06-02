@@ -17,7 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
 
-
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 // Mock Data for Season Dropdown in SeasonDraftDetail
 const mockSeasons: Season[] = [
   { id: "2024", year: 2024 },{ id: "2023", year: 2023 }, { id: "2022", year: 2022 }, { id: "2021", year: 2021 }, { id: "2020", year: 2020 }, { id: "2019", year: 2019 }, { id: "2018", year: 2018 }, { id: "2017", year: 2017 }, { id: "2016", year: 2016 }, { id: "2015", year: 2015 }, { id: "2014", year: 2014 }, { id: "2013", year: 2013 }, { id: "2012", year: 2012 }, { id: "2011", year: 2011 }, { id: "2009", year: 2009 }
@@ -148,7 +148,7 @@ const DraftOverview = () => {
       setLoading(true);
       setError(null);
       try {
-        const filePath = '/data/draft_data/gm_season_performance_grid.json';
+        const filePath = '${basePath}/data/draft_data/gm_season_performance_grid.json';
         console.log(`[DraftOverview] Fetching ${filePath}`);
         const response = await fetch(filePath);
         if (!response.ok) {
@@ -680,7 +680,7 @@ const SeasonDraftDetail = () => {
         setTopSteals(null);
         setTopBusts(null);
         try {
-          const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
+          const filePath = `${basePath}/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
           console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
           const response = await fetch(filePath);
 
@@ -1097,7 +1097,7 @@ const GMDraftHistory = () => {
           if (!gmInfo) {
             throw new Error("Selected GM not found in mock data.");
           }
-          const filePath = `/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
+          const filePath = `${basePath}/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
           console.log(`[GMDraftHistory] Fetching ${filePath}`);
           const response = await fetch(filePath);
           if (!response.ok) {
