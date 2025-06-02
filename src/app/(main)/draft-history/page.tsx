@@ -148,7 +148,7 @@ const DraftOverview = () => {
       setLoading(true);
       setError(null);
       try {
-        const filePath = '/data/draft_data/gm_season_performance_grid.json';
+        const filePath = '/WTStats/data/draft_data/gm_season_performance_grid.json';
         console.log(`[DraftOverview] Fetching ${filePath}`);
         const response = await fetch(filePath);
         if (!response.ok) {

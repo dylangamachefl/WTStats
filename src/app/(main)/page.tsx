@@ -2516,7 +2516,7 @@ export default function LeagueHistoryPage() {
     if (activeMainTab === 'all-seasons' && !leagueData) { 
         setLoadingLeagueData(true);
         console.log("[LeagueHistoryPage] Attempting to fetch league-data.json");
-        fetch('/data/league_data/league-data.json')
+        fetch('/WTStats/data/league_data/league-data.json')
           .then(async res => {
             console.log("[LeagueHistoryPage] Fetch response status for league-data.json:", res.status, res.statusText);
             if (!res.ok) {
