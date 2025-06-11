@@ -121,14 +121,14 @@ body {
 
   background-image:
     linear-gradient(135deg,
-      hsla(207, 70%, 57%, 0.6),  /* Primary Blue, slightly transparent */
-      hsla(0, 0%, 100%, 0.4),    /* White, quite transparent */
-      hsla(207, 75%, 70%, 0.5),  /* Lighter Primary Blue */
+      hsla(207, 70%, 65%, 0.5),  /* Lighter Primary Blue */
+      hsla(0, 0%, 100%, 0.4),    /* White, transparent */
+      hsla(207, 70%, 57%, 0.55), /* Primary Blue */
       hsla(0, 0%, 100%, 0.5)     /* White, slightly more opaque */
     ),
     linear-gradient(45deg,
       hsla(0, 0%, 100%, 0.55),   /* White */
-      hsla(207, 65%, 50%, 0.5),  /* Darker Primary Blue */
+      hsla(207, 60%, 50%, 0.45), /* Darker Primary Blue */
       hsla(207, 80%, 75%, 0.6)   /* Very Light Primary Blue */
     );
   background-size: 150% 150%, 130% 130%;
