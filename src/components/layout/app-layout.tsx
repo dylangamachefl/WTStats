@@ -39,7 +39,7 @@ const navItems: NavItemConfig[] = [
     href: "/",
     label: "League History",
     icon: <Trophy />,
-    matchSegments: 1,
+    matchSegments: 1, 
     subItems: [
       { href: "/?section=all-seasons", label: "All Seasons Overview", queryParamValue: "all-seasons" },
       { href: "/?section=season-detail", label: "Season Detail", queryParamValue: "season-detail" },
@@ -50,7 +50,7 @@ const navItems: NavItemConfig[] = [
     href: "/draft-history",
     label: "Draft History",
     icon: <ListChecks />,
-    matchSegments: 2, // Match /draft-history specifically
+    matchSegments: 2, 
     subItems: [
       { href: "/draft-history?section=overview", label: "Overview", queryParamValue: "overview" },
       { href: "/draft-history?section=season-view", label: "Season View", queryParamValue: "season-view" },
@@ -110,7 +110,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       }
       return activeMainItem.label; // Fallback to main item label
     }
-    return "WTStats"; // Default title
+    return "Gridiron Archive";
   };
 
 
@@ -120,8 +120,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SidebarHeader className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-                {/* Image component removed */}
-                <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">WTStats</span>
+                <Image src="https://placehold.co/40x40.png" alt="Gridiron Archive Logo" width={32} height={32} className="rounded-sm" data-ai-hint="football logo"/>
+                <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">Gridiron Archive</span>
              </Link>
           </div>
         </SidebarHeader>
@@ -177,22 +177,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
            </div>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset className="flex flex-col"> {}
- <React.Suspense fallback={null}>
- <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
- <SidebarTrigger className="md:hidden" />
-
- <div>
- {/* Page title removed from here */}
- </div>
- </header>
- </React.Suspense>
-
- <React.Suspense fallback={<div>Loading...</div>}>
- <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
- {children}
- </main>
- </React.Suspense>
+      <SidebarInset className="flex flex-col overflow-x-hidden"> {/* Added overflow-x-hidden here */}
+        <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <SidebarTrigger className="md:hidden" />
+          {/* Removed the h1 page title */}
+          <div>
+            {/* User Avatar or other header items can go here, ensure it doesn't push layout if empty */}
+          </div>
+        </header>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
