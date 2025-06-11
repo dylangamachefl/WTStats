@@ -115,7 +115,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
                 
-                <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">WTStats</span>
+                <span className="text-2xl font-bold text-sidebar-primary group-data-[collapsible=icon]:hidden">WTStats</span>
              </Link>
           </div>
         </SidebarHeader>
