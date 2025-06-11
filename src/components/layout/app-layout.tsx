@@ -16,8 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ListChecks, Users, FileText, Settings, ShieldQuestion, Trophy, BarChart3 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ListChecks, Users, FileText, Trophy } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 
@@ -114,8 +113,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SidebarHeader className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-                <Image src="/images/wtstats-logo.png" alt="WTStats Logo" width={100} height={32} className="group-data-[collapsible=icon]:hidden" />
-                <Image src="/images/wtstats-logo.png" alt="WTStats Logo" width={32} height={32} className="hidden group-data-[collapsible=icon]:block" />
+                <Image 
+                  src="/images/wtstats-logo.png" 
+                  alt="WTStats App Logo" 
+                  width={100} 
+                  height={32} 
+                  className="group-data-[collapsible=icon]:hidden"
+                  priority 
+                />
+                <Image 
+                  src="/images/wtstats-logo.png" 
+                  alt="WTStats App Logo Small" 
+                  width={32} 
+                  height={32} 
+                  className="hidden group-data-[collapsible=icon]:block"
+                  priority
+                />
              </Link>
           </div>
         </SidebarHeader>
