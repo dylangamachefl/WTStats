@@ -114,7 +114,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SidebarHeader className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-                <Image src="https://placehold.co/40x40.png" alt="WTStats Logo" width={32} height={32} className="rounded-sm" data-ai-hint="football logo"/>
+                
                 <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">WTStats</span>
              </Link>
           </div>
@@ -158,16 +158,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className="p-4 border-t border-sidebar-border">
-           <div className="flex flex-col gap-2 group-data-[collapsible=icon]:items-center">
-             <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto">
-                <Settings size={18} />
-                <span className="ml-2 group-data-[collapsible=icon]:hidden">Settings</span>
-             </Button>
-             <Button variant="ghost" className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto">
-                <ShieldQuestion size={18} />
-                <span className="ml-2 group-data-[collapsible=icon]:hidden">Help</span>
-             </Button>
-           </div>
+           
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className="flex flex-col overflow-x-hidden"> {}
