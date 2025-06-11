@@ -121,21 +121,20 @@ body {
 
   background-image:
     linear-gradient(135deg,
-      hsla(207, 70%, 60%, 0.65), /* Theme-based Blue */
-      hsla(145, 44%, 55%, 0.55), /* Theme-based Green */
-      hsla(0, 0%, 100%, 0.45),  /* White Accent */
-      hsla(207, 65%, 55%, 0.6),  /* Another Blue variant */
-      hsla(145, 40%, 50%, 0.5)   /* Another Green variant */
+      hsla(207, 70%, 57%, 0.6),  /* Primary Blue, slightly transparent */
+      hsla(0, 0%, 100%, 0.4),    /* White, quite transparent */
+      hsla(207, 75%, 70%, 0.5),  /* Lighter Primary Blue */
+      hsla(0, 0%, 100%, 0.5)     /* White, slightly more opaque */
     ),
     linear-gradient(45deg,
-      hsla(0, 0%, 100%, 0.5),   /* White Accent */
-      hsla(207, 75%, 65%, 0.65), /* Lighter Theme Blue */
-      hsla(145, 50%, 60%, 0.55)  /* Lighter Theme Green */
+      hsla(0, 0%, 100%, 0.55),   /* White */
+      hsla(207, 65%, 50%, 0.5),  /* Darker Primary Blue */
+      hsla(207, 80%, 75%, 0.6)   /* Very Light Primary Blue */
     );
   background-size: 150% 150%, 130% 130%;
   background-position: 0% 0%;
 
-  opacity: 1; /* Make it fully opaque to act as the background */
+  opacity: 1; /* Fully opaque as it's the background */
 
   animation: iridescent-shimmer-blue-gold 12s ease-in-out infinite alternate;
   pointer-events: none; /* Allows interaction with card content */
