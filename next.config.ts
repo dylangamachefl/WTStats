@@ -67,9 +67,9 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // Required for next export with next/image
   },
-  assetPrefix: `${basePath}/`, 
+  assetPrefix: basePath, 
   env: {
-    NEXT_PUBLIC_BASE_PATH: basePath, // Expose it to client-side// Note the trailing slash for assetPrefix
+    NEXT_PUBLIC_BASE_PATH: basePath, // Expose it to client-side
   }
 };
 
