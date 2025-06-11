@@ -114,8 +114,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <SidebarHeader className="p-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-                
-                <span className="text-2xl font-bold text-sidebar-primary group-data-[collapsible=icon]:hidden">WTStats</span>
+                <Image src="/images/wtstats-logo.png" alt="WTStats Logo" width={100} height={32} className="group-data-[collapsible=icon]:hidden" />
+                <Image src="/images/wtstats-logo.png" alt="WTStats Logo" width={32} height={32} className="hidden group-data-[collapsible=icon]:block" />
              </Link>
           </div>
         </SidebarHeader>
