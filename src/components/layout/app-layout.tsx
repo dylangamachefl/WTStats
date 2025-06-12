@@ -157,7 +157,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                             variant="ghost"
                             size="sm"
                             isActive={isActive(item.href, item.matchSegments, true, subItem.queryParamValue)}
-                            className="justify-start w-full text-sidebar-foreground/80 hover:text-sidebar-foreground"
+                            className="justify-start w-full text-sidebar-foreground/80 hover:text-sidebar-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-primary data-[active=true]:font-medium"
                           >
                             <span className="ml-[26px]">{subItem.label}</span>
                           </SidebarMenuButton>
