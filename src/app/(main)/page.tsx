@@ -47,11 +47,11 @@ import type {
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils";
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils.tsx";
 import {
   ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, BarChart as RechartsBarChartImport, Bar, LineChart as RechartsLineChartImport, LabelList, ScatterChart, Scatter, ZAxis
 } from 'recharts';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChart as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch, Flame, Bomb, Scaling, ShieldCheck, ShieldX, TrendingDown } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChartIcon as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch, Flame, Bomb, Scaling, ShieldCheck, ShieldX, TrendingDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -390,29 +390,6 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       </p>
                     </div>
 
-                    <div className="flex flex-col items-center text-center pt-3 relative">
-                      <Badge
-                        variant="default"
-                        className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
-                      >
-                        {champion.year}
-                      </Badge>
-                      <Avatar className="h-20 w-20 border-2 border-primary mt-1 mb-2 shadow-md">
-                        <AvatarImage
-                          src={champion.imgUrl || undefined}
-                          alt={champion.teamName ? `${champion.teamName} logo` : 'Champion logo'}
-                          data-ai-hint="team logo"
-                        />
-                        <AvatarFallback className="text-3xl bg-muted text-muted-foreground">
-                          {champion.championName ? champion.championName.charAt(0).toUpperCase() : '?'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <h3 className="text-xl font-bold text-foreground">{champion.championName}</h3>
-                      <p className="text-sm text-muted-foreground max-w-full truncate px-2">
-                        {champion.teamName || "Team Name N/A"}
-                      </p>
-                    </div>
-
                     <div className="grid grid-cols-3 gap-2 text-center border-t border-b py-3">
                       <div>
                         <Zap size={18} className="mx-auto mb-0.5 text-primary" />
@@ -629,7 +606,20 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
-                  <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
+                  <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">
+                            Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableHead>
                   </TableRow>
               </TableHeader>
               <TableBody>
