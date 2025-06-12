@@ -60,6 +60,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
@@ -328,9 +329,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
             <Card className="overflow-hidden">
-                <CardHeader>
+                 <CardHeader>
                   <CardTitle>GM Playoff Performance</CardTitle>
-                  <CardDescription className="text-xs">Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</CardDescription>
+                  <CardDescription className="text-xs mt-1">Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</CardDescription>
                 </CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
             </Card>
@@ -1997,7 +1998,7 @@ const GMCareer = () => {
                 </CardContent>
               </Card>
             )}
-             <div className="grid md:grid-cols-2 gap-6 mt-8">
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
                 {gmData.careerExtremes?.highs && (
                     <Card>
                         <CardHeader><CardTitle className="text-xl flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-green-500 dark:text-green-400"/>Career Highs</CardTitle></CardHeader>
@@ -2133,7 +2134,7 @@ const GMCareer = () => {
                         <TabsTrigger value="season-summary"><ClipboardList className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
                         <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
                         <TabsTrigger value="player-performance"><TrendingUp className="mr-1 h-4 w-4 hidden sm:inline-block" />Player Performance</TabsTrigger>
-                        <TabsTrigger value="positional-advantage"><PieChart as PieChartIconLucide className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
+                        <TabsTrigger value="positional-advantage"><PieChartIconLucide className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
                         <TabsTrigger value="lineup-optimization"><Shuffle className="mr-1 h-4 w-4 hidden sm:inline-block" />Lineup Optimization</TabsTrigger>
                         <TabsTrigger value="streaming-success"><Waves className="mr-1 h-4 w-4 hidden sm:inline-block" />Streaming Success</TabsTrigger>
                     </TabsList>
@@ -2149,7 +2150,7 @@ const GMCareer = () => {
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardTitle className="flex items-center text-lg">
-                                    <PieChart as PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
+                                    <PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
                                     Position Contribution
                                 </CardTitle>
                                 <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
@@ -2474,7 +2475,7 @@ const GMCareer = () => {
                                                 <TableBody>
                                                     {gmIndividualSeasonData.streamingSuccess.streamingSummary.map(item => (
                                                         <TableRow key={`streaming-summary-${item.position}`}>
-                                                            <TableCell className="font-medium">{item.position}</TableCell>
+                                                            <TableCell className="font-medium">{getPositionName(item.position)}</TableCell>
                                                             <TableCell className="text-center">{item.uniqueStarters ?? '-'}</TableCell>
                                                             <TableCell className="text-center">{item.streamedStartsCount ?? '-'}</TableCell>
                                                              <TableCell className="text-right">{item.avgPtsGm?.toFixed(1) ?? '-'}</TableCell>
@@ -2663,3 +2664,4 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
+
