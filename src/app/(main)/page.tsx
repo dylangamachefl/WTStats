@@ -47,7 +47,7 @@ import type {
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils";
 import {
   ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, BarChart as RechartsBarChartImport, Bar, LineChart as RechartsLineChartImport, LabelList, ScatterChart, Scatter, ZAxis
 } from 'recharts';
@@ -145,16 +145,16 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; textClass: string, borderClass: string } => {
     let cellClasses = 'font-semibold';
-    let textClass = 'text-neutral-800'; 
+    let textClass = 'text-neutral-800 dark:text-neutral-200'; 
     let borderClass = '';
 
     if (rank === null || rank === undefined || maxRankInYear <= 0) {
-        return { cellClasses: 'bg-muted/30', textClass: 'text-muted-foreground', borderClass: '' };
+        return { cellClasses: 'bg-muted/30 dark:bg-muted/50', textClass: 'text-muted-foreground', borderClass: '' };
     }
 
     if (rank === 1) {
-        cellClasses = 'bg-yellow-400'; 
-        textClass = 'text-neutral-800 font-semibold';
+        cellClasses = 'bg-yellow-400 dark:bg-yellow-600'; 
+        textClass = 'text-neutral-800 dark:text-yellow-50 font-semibold';
         return { cellClasses, textClass, borderClass };
     }
 
@@ -164,24 +164,24 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     const numRanksToScale = Math.max(1, maxRankInYear - 2); 
     const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5;
 
-    const NEUTRAL_BAND_START_PERCENT = 0.425; // e.g. 42.5%
-    const NEUTRAL_BAND_END_PERCENT = 0.575;   // e.g. 57.5%
+    const NEUTRAL_BAND_START_PERCENT = 0.425; 
+    const NEUTRAL_BAND_END_PERCENT = 0.575;   
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        cellClasses = 'bg-muted/30'; 
+        cellClasses = 'bg-muted/30 dark:bg-muted/50'; 
         textClass = 'text-muted-foreground font-semibold';
     } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
         const intensity = Math.min(1, (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT);
-        if (intensity > 0.66) cellClasses = 'bg-green-200'; 
-        else if (intensity > 0.33) cellClasses = 'bg-green-100'; 
-        else cellClasses = 'bg-green-50'; 
-        textClass = 'text-neutral-800 font-semibold';
+        if (intensity > 0.66) cellClasses = 'bg-green-200 dark:bg-green-700/50'; 
+        else if (intensity > 0.33) cellClasses = 'bg-green-100 dark:bg-green-600/40'; 
+        else cellClasses = 'bg-green-50 dark:bg-green-500/30'; 
+        textClass = 'text-neutral-800 dark:text-green-200 font-semibold';
     } else { 
         const intensity = Math.min(1, (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT));
-        if (intensity > 0.66) cellClasses = 'bg-red-200'; 
-        else if (intensity > 0.33) cellClasses = 'bg-red-100'; 
-        else cellClasses = 'bg-red-50';
-        textClass = 'text-neutral-800 font-semibold';
+        if (intensity > 0.66) cellClasses = 'bg-red-200 dark:bg-red-700/50'; 
+        else if (intensity > 0.33) cellClasses = 'bg-red-100 dark:bg-red-600/40'; 
+        else cellClasses = 'bg-red-50 dark:bg-red-500/30';
+        textClass = 'text-neutral-800 dark:text-red-200 font-semibold';
     }
     return { cellClasses, textClass, borderClass };
   };
@@ -225,7 +225,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         else if (typeof valA === 'number' && typeof valB === 'number') {
           comparison = valA - valB;
         } else if (typeof valA === 'string' && typeof valB === 'string') {
-          if (config.key === 'winPct' || config.key === 'playoffRate' || (config.key as string) === 'qualification_rate') {
+          if (config.key === 'winPct' || config.key === 'playoffRate' || (config.key as string) === 'qualification_rate' || (config.key as string) === 'playoff_performance_pct') {
             const numA = parseFloat(String(valA).replace('%', ''));
             const numB = parseFloat(String(valB).replace('%', ''));
             if (!isNaN(numA) && !isNaN(numB)) {
@@ -272,9 +272,16 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const sortedGmPlayoffPerformance = useMemo(() => {
     if (!leagueData?.gmPlayoffPerformance || !Array.isArray(leagueData.gmPlayoffPerformance)) return [];
-    return sortData([...leagueData.gmPlayoffPerformance], playoffPerfSortConfig);
+    
+    const dataWithFormattedPct = leagueData.gmPlayoffPerformance.map(item => ({
+      ...item,
+      playoff_performance_pct_display: item.playoff_performance_pct != null ? `${item.playoff_performance_pct.toFixed(1)}%` : 'N/A'
+    }));
+    return sortData([...dataWithFormattedPct], playoffPerfSortConfig as SortConfig<typeof dataWithFormattedPct[0]>);
+
   }, [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
-  const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig, setPlayoffPerfSortConfig);
+  const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig as SortConfig<any>, setPlayoffPerfSortConfig as React.Dispatch<React.SetStateAction<SortConfig<any>>>);
+
 
   const sortedFinalStandingsHeatmap = useMemo(() => {
     if (!leagueData?.finalStandingsHeatmap || !Array.isArray(leagueData.finalStandingsHeatmap)) return [];
@@ -321,7 +328,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
         </Card>
         <div className="grid md:grid-cols-2 gap-6">
             <Card className="overflow-hidden">
-                <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
+                <CardHeader>
+                  <CardTitle>GM Playoff Performance</CardTitle>
+                  <CardDescription className="text-xs">Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</CardDescription>
+                </CardHeader>
                 <CardContent className="overflow-x-auto"><Skeleton className="h-64" /></CardContent>
             </Card>
             <Card className="overflow-hidden">
@@ -379,6 +389,29 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       </p>
                     </div>
 
+                    <div className="flex flex-col items-center text-center pt-3 relative">
+                      <Badge
+                        variant="default"
+                        className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 bg-accent text-accent-foreground px-2 py-0.5 text-xs rounded-full shadow-sm z-10"
+                      >
+                        {champion.year}
+                      </Badge>
+                      <Avatar className="h-20 w-20 border-2 border-primary mt-1 mb-2 shadow-md">
+                        <AvatarImage
+                          src={champion.imgUrl || undefined}
+                          alt={champion.teamName ? `${champion.teamName} logo` : 'Champion logo'}
+                          data-ai-hint="team logo"
+                        />
+                        <AvatarFallback className="text-3xl bg-muted text-muted-foreground">
+                          {champion.championName ? champion.championName.charAt(0).toUpperCase() : '?'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <h3 className="text-xl font-bold text-foreground">{champion.championName}</h3>
+                      <p className="text-sm text-muted-foreground max-w-full truncate px-2">
+                        {champion.teamName || "Team Name N/A"}
+                      </p>
+                    </div>
+
                     <div className="grid grid-cols-3 gap-2 text-center border-t border-b py-3">
                       <div>
                         <Zap size={18} className="mx-auto mb-0.5 text-primary" />
@@ -402,8 +435,8 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         <h4 className="text-sm font-medium text-foreground">Key Players</h4>
                         <div className="flex flex-col gap-1.5">
                           {champion.parsedRoster.slice(0, 4).map((player, idx) => (
-                            <div key={idx} className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-md text-xs">
-                              <UserRound size={14} className="text-muted-foreground" />
+                            <div key={idx} className="flex items-center gap-2 bg-background p-2 rounded-lg text-sm border shadow-sm">
+                              <UserRound size={16} className="text-muted-foreground" />
                               <span className="text-foreground truncate" title={player}>{player}</span>
                             </div>
                           ))}
@@ -579,7 +612,10 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
     <div className="grid md:grid-cols-2 gap-6">
       <Card className="overflow-hidden">
-          <CardHeader><CardTitle>GM Playoff Performance</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>GM Playoff Performance</CardTitle>
+            <CardDescription className="text-xs mt-1">Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</CardDescription>
+          </CardHeader>
           <CardContent className="overflow-x-auto">
               <Table>
               <TableHeader>
@@ -596,7 +632,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   </TableRow>
               </TableHeader>
               <TableBody>
-                  {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: GMPlayoffPerformanceStat) => (
+                  {Array.isArray(sortedGmPlayoffPerformance) && sortedGmPlayoffPerformance.map((gmPerf: any) => (
                   <TableRow key={gmPerf.gm_name}>
                       <TableCell className="font-medium px-2 py-2 text-sm text-left">{gmPerf.gm_name}</TableCell>
                       <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.total_matchups}</TableCell>
@@ -606,7 +642,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                       <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.semifinal_matchups}</TableCell>
                       <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.championship_matchups}</TableCell>
                       <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                      <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.playoff_performance_pct?.toFixed(1) ?? 'N/A'}%</TableCell>
+                      <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.playoff_performance_pct_display}</TableCell>
                   </TableRow>
                   ))}
               </TableBody>
@@ -633,58 +669,22 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
   );
 };
 
-// Helper function to define badge class based on position
-const getPositionBadgeClass = (position?: string): string => {
-  if (!position) return "bg-muted text-muted-foreground"; 
-  switch (position?.toUpperCase()) {
-    case 'QB':
-      return 'bg-red-100 text-red-700'; 
-    case 'RB':
-      return 'bg-blue-100 text-blue-700';
-    case 'WR':
-      return 'bg-green-100 text-green-700';
-    case 'TE':
-      return 'bg-yellow-100 text-yellow-700'; 
-    case 'K':
-      return 'bg-purple-100 text-purple-700';
-    case 'DST':
-    case 'DEF':
-      return 'bg-indigo-100 text-indigo-700';
-    default:
-      return "bg-muted text-muted-foreground";
-  }
-};
-
-const getPositionName = (positionKey: string): string => {
-    const names: { [key: string]: string } = {
-      QB: "Quarterbacks",
-      RB: "Running Backs",
-      WR: "Wide Receivers",
-      TE: "Tight Ends",
-      K: "Kickers",
-      DST: "Defense/ST",
-      DEF: "Defense/ST",
-      FLEX: "Flex Players"
-    };
-    return names[positionKey.toUpperCase()] || positionKey;
-  };
-
 
 const getRatingBadgeClass = (rating?: string): string => {
-  if (!rating) return "bg-gray-200 text-gray-800";
+  if (!rating) return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
   switch (rating.toLowerCase()) {
     case 'very hard':
-      return 'bg-red-600 text-red-50';
+      return 'bg-red-600 text-red-50 dark:bg-red-800 dark:text-red-100';
     case 'hard':
-      return 'bg-orange-500 text-orange-50';
+      return 'bg-orange-500 text-orange-50 dark:bg-orange-700 dark:text-orange-100';
     case 'above avg':
-      return 'bg-yellow-400 text-yellow-800';
+      return 'bg-yellow-400 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100';
     case 'below avg':
-      return 'bg-lime-400 text-lime-800';
+      return 'bg-lime-400 text-lime-800 dark:bg-lime-600 dark:text-lime-100';
     case 'easy':
-      return 'bg-green-500 text-green-50';
+      return 'bg-green-500 text-green-50 dark:bg-green-700 dark:text-green-100';
     default: 
-      return 'bg-gray-200 text-gray-800';
+      return 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
   }
 };
 
@@ -773,13 +773,13 @@ const SeasonDetail = () => {
   }, [selectedSeason]);
 
   const getScoreCellClass = (score?: number | null): string => {
-    if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground';
-    if (score >= 140) return 'bg-green-200 text-green-800';
-    if (score >= 125) return 'bg-green-100 text-green-700';
-    if (score >= 110) return 'bg-lime-100 text-lime-700';
-    if (score >= 100) return 'bg-yellow-100 text-yellow-700';
-    if (score >= 90) return 'bg-orange-100 text-orange-700';
-    return 'bg-red-100 text-red-700';
+    if (score === undefined || score === null) return 'bg-muted/30 text-muted-foreground dark:bg-muted/50';
+    if (score >= 140) return 'bg-green-200 text-green-800 dark:bg-green-700/50 dark:text-green-200';
+    if (score >= 125) return 'bg-green-100 text-green-700 dark:bg-green-600/40 dark:text-green-300';
+    if (score >= 110) return 'bg-lime-100 text-lime-700 dark:bg-lime-600/40 dark:text-lime-300';
+    if (score >= 100) return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-600/40 dark:text-yellow-300';
+    if (score >= 90) return 'bg-orange-100 text-orange-700 dark:bg-orange-600/40 dark:text-orange-300';
+    return 'bg-red-100 text-red-700 dark:bg-red-600/40 dark:text-red-300';
   };
   
   const averageScores = useMemo(() => {
@@ -805,18 +805,18 @@ const SeasonDetail = () => {
   }, [seasonData?.weeklyScoresData]);
 
   const weeklyScoreLegendItems = [
-    { label: '140+ pts', className: 'bg-green-200 text-green-800' },
-    { label: '125-139 pts', className: 'bg-green-100 text-green-700' },
-    { label: '110-124 pts', className: 'bg-lime-100 text-lime-700' },
-    { label: '100-109 pts', className: 'bg-yellow-100 text-yellow-700' },
-    { label: '90-99 pts', className: 'bg-orange-100 text-orange-700' },
-    { label: '<90 pts', className: 'bg-red-100 text-red-700' },
+    { label: '140+ pts', className: 'bg-green-200 text-green-800 dark:bg-green-700/50 dark:text-green-200' },
+    { label: '125-139 pts', className: 'bg-green-100 text-green-700 dark:bg-green-600/40 dark:text-green-300' },
+    { label: '110-124 pts', className: 'bg-lime-100 text-lime-700 dark:bg-lime-600/40 dark:text-lime-300' },
+    { label: '100-109 pts', className: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-600/40 dark:text-yellow-300' },
+    { label: '90-99 pts', className: 'bg-orange-100 text-orange-700 dark:bg-orange-600/40 dark:text-orange-300' },
+    { label: '<90 pts', className: 'bg-red-100 text-red-700 dark:bg-red-600/40 dark:text-red-300' },
   ];
 
   const weeklyResultLegendItems = [
-    { label: 'Win', className: 'bg-green-100 text-green-700 font-semibold', symbol: 'W' },
-    { label: 'Loss', className: 'bg-red-100 text-red-700 font-semibold', symbol: 'L' },
-    { label: 'Tie', className: 'bg-gray-100 text-gray-700 font-semibold', symbol: 'T' },
+    { label: 'Win', className: 'bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300 font-semibold', symbol: 'W' },
+    { label: 'Loss', className: 'bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300 font-semibold', symbol: 'L' },
+    { label: 'Tie', className: 'bg-gray-100 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300 font-semibold', symbol: 'T' },
   ];
 
 
@@ -1003,7 +1003,7 @@ const SeasonDetail = () => {
                                     <Table className="min-w-full table-fixed">
                                         <TableHeader>
                                             <TableRow>
-                                                <TableHead className="sticky left-0 bg-card z-10 w-1/6 min-w-[150px] text-left align-middle p-0.5">
+                                                <TableHead className="sticky left-0 bg-card dark:bg-background z-10 w-1/6 min-w-[150px] text-left align-middle p-0.5">
                                                     <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start font-semibold truncate" title="Team">TEAM</div>
                                                 </TableHead>
                                                 {seasonData.weeklyScoresData.scores.map((_, weekIndex) => (
@@ -1015,7 +1015,7 @@ const SeasonDetail = () => {
                                         <TableBody>
                                             {seasonData.weeklyScoresData.teams.map((teamName, teamIndex) => (
                                                 <TableRow key={teamName}>
-                                                    <TableCell className="sticky left-0 bg-card z-10 font-medium text-left truncate align-middle p-0.5" title={teamName}>
+                                                    <TableCell className="sticky left-0 bg-card dark:bg-background z-10 font-medium text-left truncate align-middle p-0.5" title={teamName}>
                                                         <div className="p-1.5 text-xs rounded-md w-full h-full flex items-center justify-start truncate">
                                                             {teamName}
                                                         </div>
@@ -1033,16 +1033,16 @@ const SeasonDetail = () => {
                                                         } else { 
                                                             if (result === 'W') {
                                                                 cellContent = <span className="font-semibold">W</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 font-semibold");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300 font-semibold");
                                                             } else if (result === 'L') {
                                                                 cellContent = <span className="font-semibold">L</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700 font-semibold");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300 font-semibold");
                                                             } else if (result === 'T') {
                                                                 cellContent = <span className="font-semibold">T</span>;
-                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700 font-semibold");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-gray-100 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300 font-semibold");
                                                             } else {
                                                                 cellContent = '-';
-                                                                innerDivClasses = cn(innerDivClasses, "bg-muted/30 text-muted-foreground");
+                                                                innerDivClasses = cn(innerDivClasses, "bg-muted/30 text-muted-foreground dark:bg-muted/50");
                                                             }
                                                         }
                                                         return (
@@ -1071,7 +1071,7 @@ const SeasonDetail = () => {
                                         )) :
                                         weeklyResultLegendItems.map(item => (
                                             <div key={item.label} className="flex items-center gap-1.5">
-                                                <span className={cn("h-3 w-5 rounded-sm flex items-center justify-center font-semibold text-xs", item.className)}>
+                                                <span className={cn("h-3 w-5 rounded-sm flex items-center justify-center font-semibold text-xs", item.className.split(' ').filter(cls => !cls.startsWith('dark:')))}>
                                                     {item.symbol}
                                                 </span>
                                                 <span>{item.label}</span>
@@ -1116,7 +1116,7 @@ const SeasonDetail = () => {
                                           <TableCell className="text-left">{sos.owner}</TableCell>
                                           <TableCell className="text-right">{sos.actualOpponentsPpg?.toFixed(1) ?? 'N/A'}</TableCell>
                                           <TableCell className="text-right">{sos.leagueAvgPpg?.toFixed(1) ?? 'N/A'}</TableCell>
-                                          <TableCell className={cn("text-right font-semibold", sos.differential != null && sos.differential > 0 ? 'text-red-600' : 'text-green-600')}>
+                                          <TableCell className={cn("text-right font-semibold", sos.differential != null && sos.differential > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400')}>
                                               {sos.differential != null && sos.differential > 0 ? '+' : ''}{sos.differential?.toFixed(1) ?? 'N/A'}
                                           </TableCell>
                                           <TableCell className="text-center">
@@ -1217,7 +1217,7 @@ const SeasonDetail = () => {
                                                           teamDisplay = `(${player.fantasyTeam || 'Unmanaged'})`;
                                                       }
                                                       return (
-                                                        <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0">
+                                                        <div key={`${position}-${idx}-${player.player}`} className="flex justify-between items-center py-1.5 border-b last:border-b-0 dark:border-border/50">
                                                             <div className="flex items-center gap-1.5">
                                                                 <span className="mr-1.5 font-medium">{idx + 1}.</span>
                                                                 <span>{player.player} {teamDisplay}</span>
@@ -1304,18 +1304,6 @@ const SeasonDetail = () => {
   );
 };
 
-const CHART_COLORS: { [key: string]: string } = {
-  QB: 'hsl(260, 70%, 65%)', 
-  RB: 'hsl(var(--primary))', 
-  WR: 'hsl(180, 70%, 50%)', 
-  TE: 'hsl(var(--chart-2))', 
-  FLEX: 'hsl(100, 50%, 60%)', 
-  K: 'hsl(50, 95%, 60%)', 
-  DST: 'hsl(25, 80%, 60%)', 
-  DEF: 'hsl(25, 80%, 60%)', 
-  DEFAULT: 'hsl(var(--muted))'
-};
-
 const GM_CHART_COLORS = {
   GM_STARTED_PTS: 'hsl(var(--primary))', 
   LEAGUE_AVG_PTS: 'hsl(var(--chart-2))',  
@@ -1324,9 +1312,10 @@ const GM_CHART_COLORS = {
 const CustomPieTooltip = ({ active, payload }: any ) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload as { positionName: string; percentage: number; actualPoints: number; }; 
+    const color = CHART_COLORS[data.positionName?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT;
     return (
       <div className="p-2 bg-background border rounded-md shadow-md">
-        <p className="text-sm" style={{ color: CHART_COLORS[data.positionName?.toUpperCase() || 'DEFAULT'] || CHART_COLORS.DEFAULT }}>
+        <p className="text-sm" style={{ color }}>
           {`${data.positionName} ${data.percentage.toFixed(1)}% : ${data.actualPoints.toFixed(1)}`}
         </p>
       </div>
@@ -1354,26 +1343,26 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                 </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Record</span>
                     <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties && performance.ties > 0 ? `-${performance.ties}` : ''}</span>
                     <span className="text-xs text-muted-foreground">{winRate.toFixed(1)}% Win Rate</span>
                 </div>
-                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Avg PPG</span>
                     <span className="text-2xl font-bold">{performance.avgPointsPerGame?.toFixed(1)}</span>
                     <span className="text-xs text-muted-foreground">Total: {performance.pointsFor?.toFixed(0)}</span>
                 </div>
-                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Reg. Season Finish</span>
                     <span className="text-2xl font-bold">#{performance.regularSeasonFinish}</span>
                 </div>
-                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Final Standing</span>
                     <span className="text-2xl font-bold">#{performance.finalStanding}</span>
                     {performance.finalStanding === 1 && <Badge className="mt-1 bg-primary text-primary-foreground">Champion</Badge>}
                 </div>
-                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50">
+                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Strength of Schedule</span>
                     <span className={cn("text-2xl font-bold", sosDifferentialColor)}>
                         {performance.sosDifferential != null && performance.sosDifferential >= 0 ? '+' : ''}{performance.sosDifferential?.toFixed(1) ?? 'N/A'}
@@ -1416,9 +1405,9 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
                   <Badge 
                     className={cn(
                         "font-semibold",
-                        game.result === 'W' && "bg-green-100 text-green-700",
-                        game.result === 'L' && "bg-red-100 text-red-700",
-                        game.result === 'T' && "bg-gray-100 text-gray-700"
+                        game.result === 'W' && "bg-green-100 text-green-700 dark:bg-green-800/30 dark:text-green-300",
+                        game.result === 'L' && "bg-red-100 text-red-700 dark:bg-red-800/30 dark:text-red-300",
+                        game.result === 'T' && "bg-gray-100 text-gray-700 dark:bg-gray-700/30 dark:text-gray-300"
                     )}
                   >
                     {game.result}
@@ -1451,9 +1440,52 @@ const GameByGameTable = ({ games, gmName }: { games: GMGameByGame[]; gmName?: st
     </Card>
 );
 
-const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
+type RosterSortConfig = SortConfig<GMRosterPlayer>;
+
+const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => {
+  const [sortConfig, setSortConfig] = useState<RosterSortConfig>({ key: 'totalPoints', direction: 'desc' });
+
+  const requestSort = (key: keyof GMRosterPlayer) => {
+    let direction: SortDirection = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIconForRoster = (columnKey: keyof GMRosterPlayer) => {
+    if (sortConfig.key === columnKey) {
+      return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
+    }
+    return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
+  };
+
+  const sortedPlayers = useMemo(() => {
+    if (!Array.isArray(players)) return [];
+    let sortableItems = [...players];
+    if (sortConfig.key) {
+      sortableItems.sort((a, b) => {
+        const valA = a[sortConfig.key as keyof GMRosterPlayer];
+        const valB = b[sortConfig.key as keyof GMRosterPlayer];
+        let comparison = 0;
+
+        if (valA === null || valA === undefined) comparison = 1;
+        else if (valB === null || valB === undefined) comparison = -1;
+        else if (typeof valA === 'number' && typeof valB === 'number') {
+          comparison = valA - valB;
+        } else {
+          comparison = String(valA).localeCompare(String(valB));
+        }
+        return sortConfig.direction === 'asc' ? comparison : -comparison;
+      });
+    }
+    return sortableItems;
+  }, [players, sortConfig]);
+
+
+  return (
     <Card className="mt-6">
-      <CardHeader><CardTitle className="flex items-center text-lg"><Users className="mr-2 h-5 w-5 text-primary"/>Roster & Player Performance</CardTitle></CardHeader>
+      <CardHeader><CardTitle className="flex items-center text-lg"><Users className="mr-2 h-5 w-5 text-primary"/>Roster &amp; Player Performance</CardTitle></CardHeader>
       <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -1461,12 +1493,20 @@ const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
               <TableHead>Player</TableHead>
               <TableHead className="text-center">Position</TableHead>
               <TableHead className="text-center">Finish</TableHead>
-              <TableHead className="text-center">Games Started</TableHead>
-              <TableHead className="text-right">Total Points</TableHead>
+              <TableHead className="text-center">
+                <Button variant="ghost" size="sm" onClick={() => requestSort('gamesStarted')} className="px-1 group text-xs justify-center w-full">
+                    Games Started {getSortIconForRoster('gamesStarted')}
+                </Button>
+              </TableHead>
+              <TableHead className="text-right">
+                <Button variant="ghost" size="sm" onClick={() => requestSort('totalPoints')} className="px-1 group text-xs justify-end w-full">
+                    Total Points {getSortIconForRoster('totalPoints')}
+                </Button>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array.isArray(players) && players.map((player) => (
+            {sortedPlayers.map((player) => (
               <TableRow key={player.id}>
                 <TableCell>{player.name}</TableCell>
                 <TableCell className="text-center"><Badge variant="outline" className={getPositionBadgeClass(player.position)}>{player.position}</Badge></TableCell>
@@ -1479,7 +1519,97 @@ const RosterPlayersTable = ({ players }: { players: GMRosterPlayer[] }) => (
         </Table>
       </CardContent>
     </Card>
-);
+  );
+};
+
+type PlayerPerfSortConfig = SortConfig<GMPlayerSummaryPerformanceEntry>;
+
+const PlayerPerformanceDetailsTable = ({ players }: { players: GMPlayerSummaryPerformanceEntry[] }) => {
+  const [sortConfig, setSortConfig] = useState<PlayerPerfSortConfig>({ key: 'avgDifference', direction: 'desc' });
+
+  const requestSort = (key: keyof GMPlayerSummaryPerformanceEntry) => {
+    let direction: SortDirection = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIconForPlayerPerf = (columnKey: keyof GMPlayerSummaryPerformanceEntry) => {
+    if (sortConfig.key === columnKey) {
+      return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />;
+    }
+    return <ArrowUpDown className="ml-1 h-3 w-3 shrink-0 opacity-0 group-hover:opacity-50 transition-opacity" />;
+  };
+  
+  const sortedPlayerPerfData = useMemo(() => {
+    if (!Array.isArray(players)) return [];
+    let sortableItems = [...players];
+    if (sortConfig.key) {
+        sortableItems.sort((a,b) => {
+            const valA = a[sortConfig.key!];
+            const valB = b[sortConfig.key!];
+            let comparison = 0;
+            if (valA === null || valA === undefined) comparison = 1;
+            else if (valB === null || valB === undefined) comparison = -1;
+            else if (typeof valA === 'number' && typeof valB === 'number') {
+              comparison = valA - valB;
+            } else {
+              comparison = String(valA).localeCompare(String(valB));
+            }
+            return sortConfig.direction === 'asc' ? comparison : -comparison;
+        });
+    }
+    return sortableItems;
+  }, [players, sortConfig]);
+
+  return (
+     <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center text-lg">
+                <Users className="mr-2 h-5 w-5 text-primary" /> Player Performance Details
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-x-auto">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead><Button variant="ghost" size="sm" onClick={() => requestSort('name')} className="px-1 group text-xs justify-start">Player {getSortIconForPlayerPerf('name')}</Button></TableHead>
+                        <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('position')} className="px-1 group text-xs justify-center w-full">POS {getSortIconForPlayerPerf('position')}</Button></TableHead>
+                        <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('avgActual')} className="px-1 group text-xs justify-end w-full">Avg Actual {getSortIconForPlayerPerf('avgActual')}</Button></TableHead>
+                        <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('avgProjected')} className="px-1 group text-xs justify-end w-full">Avg Proj {getSortIconForPlayerPerf('avgProjected')}</Button></TableHead>
+                        <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('avgDifference')} className="px-1 group text-xs justify-end w-full">Avg Diff {getSortIconForPlayerPerf('avgDifference')}</Button></TableHead>
+                        <TableHead className="text-right"><Button variant="ghost" size="sm" onClick={() => requestSort('percentBeatProjection')} className="px-1 group text-xs justify-end w-full">% Beat Proj {getSortIconForPlayerPerf('percentBeatProjection')}</Button></TableHead>
+                        <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('boomWeeks')} className="px-1 group text-xs justify-center w-full">Boom {getSortIconForPlayerPerf('boomWeeks')}</Button></TableHead>
+                        <TableHead className="text-center"><Button variant="ghost" size="sm" onClick={() => requestSort('bustWeeks')} className="px-1 group text-xs justify-center w-full">Bust {getSortIconForPlayerPerf('bustWeeks')}</Button></TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {sortedPlayerPerfData.map((player) => (
+                        <TableRow key={player.playerId}>
+                            <TableCell>{player.name}</TableCell>
+                            <TableCell className="text-center">
+                                <Badge variant="outline" className={cn("text-xs", getPositionBadgeClass(player.position))}>
+                                    {player.position}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">{player.avgActual?.toFixed(1) ?? 'N/A'}</TableCell>
+                            <TableCell className="text-right">{player.avgProjected?.toFixed(1) ?? 'N/A'}</TableCell>
+                            <TableCell className={cn("text-right font-semibold", typeof player.avgDifference === 'number' && player.avgDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                                {typeof player.avgDifference === 'number' && player.avgDifference >= 0 ? '+' : ''}{player.avgDifference?.toFixed(1) ?? 'N/A'}
+                            </TableCell>
+                            <TableCell className="text-right">{player.percentBeatProjection?.toFixed(1) ?? 'N/A'}%</TableCell>
+                            <TableCell className="text-center text-green-600 dark:text-green-400 font-semibold">{player.boomWeeks ?? 'N/A'}</TableCell>
+                            <TableCell className="text-center text-red-600 dark:text-red-400 font-semibold">{player.bustWeeks ?? 'N/A'}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </CardContent>
+    </Card>
+  );
+};
+
 
 const GMCareer = () => {
   const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGmsForTabs[0]?.id);
@@ -1790,8 +1920,8 @@ const GMCareer = () => {
                     </CardDescription>
                     {gmData.gmInfo.championshipYears && gmData.gmInfo.championshipYears.length > 0 && (
                     <div className="mt-2">
-                        <Badge variant="outline" className="bg-yellow-100 text-yellow-700 border-yellow-300">
-                            <Trophy className="mr-1.5 h-4 w-4 text-yellow-600" />
+                        <Badge variant="outline" className="bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-700/30 dark:text-yellow-300 dark:border-yellow-500">
+                            <Trophy className="mr-1.5 h-4 w-4 text-yellow-600 dark:text-yellow-400" />
                             Champions: {gmData.gmInfo.championshipYears.join(', ')}
                         </Badge>
                     </div>
@@ -1867,31 +1997,30 @@ const GMCareer = () => {
                 </CardContent>
               </Card>
             )}
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
-                {gmData.careerExtremes && (
-                <Card>
-                    <CardHeader><CardTitle className="text-xl">Career Highs &amp; Lows</CardTitle></CardHeader>
-                    <CardContent className="grid md:grid-cols-2 gap-6 text-sm">
-                    <div>
-                        <h4 className="font-semibold text-lg mb-2 text-green-600 dark:text-green-400">Highs</h4>
-                        <ul className="space-y-1.5">
-                        <li><strong>Most Points (Game):</strong> {gmData.careerExtremes.highs.mostPointsGame.value.toFixed(1)} ({gmData.careerExtremes.highs.mostPointsGame.season} Wk {gmData.careerExtremes.highs.mostPointsGame.week})</li>
-                        <li><strong>Biggest Win Margin:</strong> +{gmData.careerExtremes.highs.biggestWinMargin.value.toFixed(1)} (vs {gmData.careerExtremes.highs.biggestWinMargin.opponentName}, {gmData.careerExtremes.highs.biggestWinMargin.season} Wk {gmData.careerExtremes.highs.biggestWinMargin.week})</li>
-                        <li><strong>Best Season Record:</strong> {gmData.careerExtremes.highs.bestSeasonRecord.wins}-{gmData.careerExtremes.highs.bestSeasonRecord.losses} ({gmData.careerExtremes.highs.bestSeasonRecord.season}) {gmData.careerExtremes.highs.bestSeasonRecord.isChampion ? <Trophy className="inline h-4 w-4 text-yellow-500" /> : ""}</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-lg mb-2 text-red-600 dark:text-red-400">Lows</h4>
-                        <ul className="space-y-1.5">
-                        <li><strong>Fewest Points (Game):</strong> {gmData.careerExtremes.lows.fewestPointsGame.value.toFixed(1)} ({gmData.careerExtremes.lows.fewestPointsGame.season} Wk {gmData.careerExtremes.lows.fewestPointsGame.week})</li>
-                        <li><strong>Worst Loss Margin:</strong> -{Math.abs(gmData.careerExtremes.lows.worstLossMargin.value).toFixed(1)} (vs {gmData.careerExtremes.lows.worstLossMargin.opponentName}, {gmData.careerExtremes.lows.worstLossMargin.season} Wk {gmData.careerExtremes.lows.worstLossMargin.week})</li>
-                        <li><strong>Worst Season Record:</strong> {gmData.careerExtremes.lows.worstSeasonRecord.wins}-{gmData.careerExtremes.lows.worstSeasonRecord.losses} ({gmData.careerExtremes.lows.worstSeasonRecord.season})</li>
-                        </ul>
-                    </div>
-                    </CardContent>
-                </Card>
+             <div className="grid md:grid-cols-2 gap-6 mt-8">
+                {gmData.careerExtremes?.highs && (
+                    <Card>
+                        <CardHeader><CardTitle className="text-xl flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-green-500 dark:text-green-400"/>Career Highs</CardTitle></CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                            <p><strong>Most Points (Game):</strong> {gmData.careerExtremes.highs.mostPointsGame.value.toFixed(1)} ({gmData.careerExtremes.highs.mostPointsGame.season} Wk {gmData.careerExtremes.highs.mostPointsGame.week})</p>
+                            <p><strong>Biggest Win Margin:</strong> +{gmData.careerExtremes.highs.biggestWinMargin.value.toFixed(1)} (vs {gmData.careerExtremes.highs.biggestWinMargin.opponentName}, {gmData.careerExtremes.highs.biggestWinMargin.season} Wk {gmData.careerExtremes.highs.biggestWinMargin.week})</p>
+                            <p><strong>Best Season Record:</strong> {gmData.careerExtremes.highs.bestSeasonRecord.wins}-{gmData.careerExtremes.highs.bestSeasonRecord.losses} ({gmData.careerExtremes.highs.bestSeasonRecord.season}) {gmData.careerExtremes.highs.bestSeasonRecord.isChampion ? <Trophy className="inline h-4 w-4 text-yellow-500 dark:text-yellow-400" /> : ""}</p>
+                        </CardContent>
+                    </Card>
                 )}
-                
+                {gmData.careerExtremes?.lows && (
+                    <Card>
+                        <CardHeader><CardTitle className="text-xl flex items-center"><TrendingDown className="mr-2 h-5 w-5 text-red-500 dark:text-red-400"/>Career Lows</CardTitle></CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                            <p><strong>Fewest Points (Game):</strong> {gmData.careerExtremes.lows.fewestPointsGame.value.toFixed(1)} ({gmData.careerExtremes.lows.fewestPointsGame.season} Wk {gmData.careerExtremes.lows.fewestPointsGame.week})</p>
+                            <p><strong>Worst Loss Margin:</strong> -{Math.abs(gmData.careerExtremes.lows.worstLossMargin.value).toFixed(1)} (vs {gmData.careerExtremes.lows.worstLossMargin.opponentName}, {gmData.careerExtremes.lows.worstLossMargin.season} Wk {gmData.careerExtremes.lows.worstLossMargin.week})</p>
+                            <p><strong>Worst Season Record:</strong> {gmData.careerExtremes.lows.worstSeasonRecord.wins}-{gmData.careerExtremes.lows.worstSeasonRecord.losses} ({gmData.careerExtremes.lows.worstSeasonRecord.season})</p>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
                 {gmData.positionStrength && Array.isArray(gmData.positionStrength) && gmData.positionStrength.length > 0 && (
                 <Card>
                     <CardHeader><CardTitle className="text-xl">Positional Strength vs League Avg.</CardTitle></CardHeader>
@@ -1916,8 +2045,7 @@ const GMCareer = () => {
                     </CardContent>
                 </Card>
                 )}
-            </div>
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
+           
                 {gmData.franchisePlayers && Array.isArray(gmData.franchisePlayers) && gmData.franchisePlayers.length > 0 && (
                 <Card>
                     <CardHeader><CardTitle className="text-xl">Franchise Players</CardTitle></CardHeader>
@@ -2005,7 +2133,7 @@ const GMCareer = () => {
                         <TabsTrigger value="season-summary"><ClipboardList className="mr-1 h-4 w-4 hidden sm:inline-block" />Season Summary</TabsTrigger>
                         <TabsTrigger value="roster-breakdown"><UsersRound className="mr-1 h-4 w-4 hidden sm:inline-block" />Roster Breakdown</TabsTrigger>
                         <TabsTrigger value="player-performance"><TrendingUp className="mr-1 h-4 w-4 hidden sm:inline-block" />Player Performance</TabsTrigger>
-                        <TabsTrigger value="positional-advantage"><PieChartIconLucide className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
+                        <TabsTrigger value="positional-advantage"><PieChart as PieChartIconLucide className="mr-1 h-4 w-4 hidden sm:inline-block" />Positional Advantage</TabsTrigger>
                         <TabsTrigger value="lineup-optimization"><Shuffle className="mr-1 h-4 w-4 hidden sm:inline-block" />Lineup Optimization</TabsTrigger>
                         <TabsTrigger value="streaming-success"><Waves className="mr-1 h-4 w-4 hidden sm:inline-block" />Streaming Success</TabsTrigger>
                     </TabsList>
@@ -2021,7 +2149,7 @@ const GMCareer = () => {
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardTitle className="flex items-center text-lg">
-                                    <PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
+                                    <PieChart as PieChartIconLucide className="mr-2 h-5 w-5 text-primary" />
                                     Position Contribution
                                 </CardTitle>
                                 <CardDescription className="text-xs">(Based on Started Players)</CardDescription>
@@ -2136,49 +2264,7 @@ const GMCareer = () => {
                                 </Card>
 
                                 {gmIndividualSeasonData.playerPerformance.playerSummaryPerformance && Array.isArray(gmIndividualSeasonData.playerPerformance.playerSummaryPerformance) && gmIndividualSeasonData.playerPerformance.playerSummaryPerformance.length > 0 && (
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center text-lg">
-                                                <Users className="mr-2 h-5 w-5 text-primary" /> Player Performance Details
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="overflow-x-auto">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Player</TableHead>
-                                                        <TableHead className="text-center">POS</TableHead>
-                                                        <TableHead className="text-right">Avg Actual</TableHead>
-                                                        <TableHead className="text-right">Avg Proj</TableHead>
-                                                        <TableHead className="text-right">Avg Diff</TableHead>
-                                                        <TableHead className="text-right">% Beat Proj</TableHead>
-                                                        <TableHead className="text-center">Boom</TableHead>
-                                                        <TableHead className="text-center">Bust</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {gmIndividualSeasonData.playerPerformance.playerSummaryPerformance.map((player) => (
-                                                        <TableRow key={player.playerId}>
-                                                            <TableCell>{player.name}</TableCell>
-                                                            <TableCell className="text-center">
-                                                                <Badge variant="outline" className={cn("text-xs", getPositionBadgeClass(player.position))}>
-                                                                    {player.position}
-                                                                </Badge>
-                                                            </TableCell>
-                                                            <TableCell className="text-right">{player.avgActual?.toFixed(1) ?? 'N/A'}</TableCell>
-                                                            <TableCell className="text-right">{player.avgProjected?.toFixed(1) ?? 'N/A'}</TableCell>
-                                                            <TableCell className={cn("text-right font-semibold", typeof player.avgDifference === 'number' && player.avgDifference >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                                                                {typeof player.avgDifference === 'number' && player.avgDifference >= 0 ? '+' : ''}{player.avgDifference?.toFixed(1) ?? 'N/A'}
-                                                            </TableCell>
-                                                            <TableCell className="text-right">{player.percentBeatProjection?.toFixed(1) ?? 'N/A'}%</TableCell>
-                                                            <TableCell className="text-center text-green-600 dark:text-green-400 font-semibold">{player.boomWeeks ?? 'N/A'}</TableCell>
-                                                            <TableCell className="text-center text-red-600 dark:text-red-400 font-semibold">{player.bustWeeks ?? 'N/A'}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </CardContent>
-                                    </Card>
+                                  <PlayerPerformanceDetailsTable players={gmIndividualSeasonData.playerPerformance.playerSummaryPerformance} />
                                 )}
                             </div>
                         ) : <p className="text-muted-foreground text-center py-4">Player performance data not available for this season.</p>}
@@ -2215,7 +2301,7 @@ const GMCareer = () => {
                                                     {(gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.find(item => item.week === "Total")) && (() => {
                                                         const totalRow = gmIndividualSeasonData.positionalAdvantage.weeklyPositionalAdvantage.find(item => item.week === "Total")!;
                                                         return (
-                                                            <TableRow className="font-semibold bg-muted/50">
+                                                            <TableRow className="font-semibold bg-muted/50 dark:bg-muted/30">
                                                                 <TableCell className="text-center">Total</TableCell>
                                                                 {(['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST', 'total_diff'] as const).map(posKey => {
                                                                     const value = totalRow[posKey];
@@ -2240,12 +2326,12 @@ const GMCareer = () => {
                                         <CardHeader><CardTitle className="flex items-center text-lg"><LineChartIconRecharts className="mr-2 h-5 w-5 text-primary"/>Cumulative Weekly Positional Advantage Trend</CardTitle></CardHeader>
                                         <CardContent className="h-[400px] pt-6">
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <RechartsLineChartImport data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                                                <RechartsLineChartImport data={cumulativePositionalAdvantageChartData} margin={{ top: 5, right: 20, left: -10, bottom: 40 }}>
                                                     <CartesianGrid strokeDasharray="3 3" />
                                                     <XAxis dataKey="week" label={{ value: "Week", position: "insideBottom", dy: 15 }} />
                                                     <YAxis label={{ value: 'Cumulative Advantage', angle: -90, position: 'insideLeft' }} />
                                                     <RechartsTooltip />
-                                                    <RechartsLegend verticalAlign="bottom" />
+                                                    <RechartsLegend verticalAlign="bottom" wrapperStyle={{paddingTop: '20px'}}/>
                                                     {Object.keys(CHART_COLORS).filter(pos => pos !== 'DEFAULT' && cumulativePositionalAdvantageChartData[0] && cumulativePositionalAdvantageChartData[0].hasOwnProperty(pos.toUpperCase())).map(posKey => (
                                                         <Line 
                                                             key={posKey}
@@ -2304,7 +2390,10 @@ const GMCareer = () => {
                                 </Card>
                                 {gmIndividualSeasonData.lineupOptimization.feelingItSummary && (
                                     <Card className="mt-6">
-                                        <CardHeader><CardTitle className="flex items-center text-lg"><Sparkles className="mr-2 h-5 w-5 text-primary"/>'Feeling It' Summary</CardTitle></CardHeader>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center text-lg"><Sparkles className="mr-2 h-5 w-5 text-primary"/>'Feeling It' Summary</CardTitle>
+                                            <CardDescription className="text-xs mt-1">A "Feeling It" Start is when a player is started with a lower projected point total than a player of the same eligibility on the manager's bench.</CardDescription>
+                                        </CardHeader>
                                         <CardContent>
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
                                                 <div><p className="text-xs text-muted-foreground">Total Starts</p><p className="text-xl font-semibold">{gmIndividualSeasonData.lineupOptimization.feelingItSummary.totalStarts ?? '-'}</p></div>
@@ -2374,7 +2463,6 @@ const GMCareer = () => {
                                                 <TableHeader>
                                                     <TableRow>
                                                         <TableHead>Position</TableHead>
-                                                        <TableHead>Status</TableHead>
                                                         <TableHead className="text-center">Unique Starters</TableHead>
                                                         <TableHead className="text-center">Streamed Starts</TableHead>
                                                         <TableHead className="text-right">Avg Pts/Gm</TableHead>
@@ -2387,7 +2475,6 @@ const GMCareer = () => {
                                                     {gmIndividualSeasonData.streamingSuccess.streamingSummary.map(item => (
                                                         <TableRow key={`streaming-summary-${item.position}`}>
                                                             <TableCell className="font-medium">{item.position}</TableCell>
-                                                            <TableCell>{item.status?.replace(/_/g, ' ')}</TableCell>
                                                             <TableCell className="text-center">{item.uniqueStarters ?? '-'}</TableCell>
                                                             <TableCell className="text-center">{item.streamedStartsCount ?? '-'}</TableCell>
                                                              <TableCell className="text-right">{item.avgPtsGm?.toFixed(1) ?? '-'}</TableCell>
