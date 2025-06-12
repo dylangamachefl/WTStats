@@ -116,16 +116,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 <Image 
                   src="/images/wtstats-logo.png" 
                   alt="WTStats App Logo" 
-                  width={100} 
-                  height={32} 
+                  width={120} 
+                  height={38} 
                   className="group-data-[collapsible=icon]:hidden"
                   priority 
                 />
                 <Image 
                   src="/images/wtstats-logo.png" 
                   alt="WTStats App Logo Small" 
-                  width={32} 
-                  height={32} 
+                  width={36} 
+                  height={36} 
                   className="hidden group-data-[collapsible=icon]:block"
                   priority
                 />
