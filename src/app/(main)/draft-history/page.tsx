@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics, GMDraftHistoryCareerSummary, GMDraftHistoryRoundEfficiencyEntry } from '@/lib/types';
 import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucideIcon, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy, Crown, PackageSearch } from 'lucide-react';
-import { cn, getPositionBadgeClass, getPositionIcon, getPositionName } from "@/lib/utils.tsx";
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
@@ -798,6 +798,7 @@ const SeasonDraftDetail = () => {
                     }
                     const targetOverallPick = (roundNum - 1) * numGms + targetPickInRound;
                     const pick = draftBoardPicks[targetOverallPick];
+                    let cellContent;
 
                     let cellClasses = `p-1.5 border text-xs align-middle h-[60px] rounded-sm`;
                     if (gmIndex === gmNamesForColumns.length - 1 && roundNum === maxRound) {
@@ -1387,3 +1388,4 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
+
