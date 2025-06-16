@@ -2473,44 +2473,15 @@ const GMCareer = () => {
                                     </CardContent>
                                 </Card>
 
-                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {['QB', 'TE'].map(pos => {
+                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {['QB', 'TE', 'K', 'DST'].map(pos => {
                                         const weeklyData = gmIndividualSeasonData.streamingSuccess?.streamingWeeklyPerformance?.[pos];
+                                        let cardTitle = `${getPositionName(pos)} Performance`;
+                                        if (pos === 'DST') cardTitle = "DST Performance"; //Keep DST short
+
                                         return Array.isArray(weeklyData) && weeklyData.length > 0 && (
                                             <Card key={`streaming-weekly-${pos}`}>
-                                                <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(pos)} Streaming Performance</CardTitle></CardHeader>
-                                                <CardContent className="overflow-x-auto">
-                                                    <Table>
-                                                        <TableHeader>
-                                                            <TableRow>
-                                                                <TableHead className="text-center">WK</TableHead>
-                                                                <TableHead>Player Started</TableHead>
-                                                                <TableHead className="text-right">GM Pts</TableHead>
-                                                                <TableHead className="text-right">League Avg Pts</TableHead>
-                                                            </TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {weeklyData.map((item, index) => (
-                                                                <TableRow key={`streaming-wk-detail-${pos}-${index}`}>
-                                                                    <TableCell className="text-center">{item.week}</TableCell>
-                                                                    <TableCell>{item.playerName}</TableCell>
-                                                                    <TableCell className="text-right">{item.gmStarterPts?.toFixed(1) ?? '-'}</TableCell>
-                                                                    <TableCell className="text-right">{item.leagueAvgPts?.toFixed(1) ?? '-'}</TableCell>
-                                                                </TableRow>
-                                                            ))}
-                                                        </TableBody>
-                                                    </Table>
-                                                </CardContent>
-                                            </Card>
-                                        )
-                                    })}
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                     {['K', 'DST'].map(pos => {
-                                        const weeklyData = gmIndividualSeasonData.streamingSuccess?.streamingWeeklyPerformance?.[pos];
-                                        return Array.isArray(weeklyData) && weeklyData.length > 0 && (
-                                            <Card key={`streaming-weekly-${pos}`}>
-                                                <CardHeader><CardTitle className="flex items-center text-lg">{getPositionName(pos)} Streaming Performance</CardTitle></CardHeader>
+                                                <CardHeader><CardTitle className="flex items-center text-lg">{cardTitle}</CardTitle></CardHeader>
                                                 <CardContent className="overflow-x-auto">
                                                     <Table>
                                                         <TableHeader>
