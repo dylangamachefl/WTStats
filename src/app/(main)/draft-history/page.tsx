@@ -9,8 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFoo
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Season, GM, GMDraftSeasonPerformance, DraftPickDetail, SeasonDraftDetailJson, TeamDraftPerformanceEntry, GMDraftHistoryDetailData, GMDraftPositionalProfileEntry, DraftOverviewData, GMAverageMetrics, SeasonAverageMetrics, GMDraftHistoryCareerSummary, GMDraftHistoryRoundEfficiencyEntry } from '@/lib/types';
-import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucide, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy, Crown, PackageSearch } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { BarChart as BarChartLucide, ArrowUpDown, Info, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, ArrowUpCircle, ArrowDownCircle, UserCircle2, BarChart2, PieChart as PieChartLucideIcon, ListChecks, TrendingUp, TrendingDown, Shield, Target, Users as UsersIcon, PersonStanding, Replace, GripVertical, BarChartHorizontal, MoreHorizontal, ShieldAlert, Trophy, Crown, PackageSearch } from 'lucide-react';
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName } from "@/lib/utils.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
@@ -31,13 +31,13 @@ const mockGms: GM[] = [
 
 type SortDirection = 'asc' | 'desc';
 interface HeatmapSortConfig {
-  key: 'gm_name' | null; 
+  key: 'gm_name' | null;
   direction: SortDirection;
 }
 
 interface TransformedHeatmapData {
   [gmName: string]: {
-    [seasonYear: string]: GMDraftSeasonPerformance | undefined; 
+    [seasonYear: string]: GMDraftSeasonPerformance | undefined;
   };
 }
 
@@ -52,49 +52,29 @@ interface MetricConfig {
 }
 
 const metricConfigs: Record<HeatmapMetricKey, MetricConfig> = {
-  avg_pvdre: { 
-    label: 'POE', 
-    key: 'avg_pvdre', 
-    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
+  avg_pvdre: {
+    label: 'POE',
+    key: 'avg_pvdre',
+    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'),
     tooltipLabel: 'POE (Points Over Expected)',
     description: 'Points Over Expected (POE) shows average points scored by drafted players over a baseline expectation. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
-  pvdre_hit_rate: { 
-    label: 'Hit Rate %', 
-    key: 'pvdre_hit_rate', 
-    format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'), 
+  pvdre_hit_rate: {
+    label: 'Hit Rate %',
+    key: 'pvdre_hit_rate',
+    format: (val) => (typeof val === 'number' ? (val * 100).toFixed(1) + '%' : '-'),
     tooltipLabel: 'Hit Rate %',
     description: 'Hit Rate % indicates the percentage of draft picks that met or exceeded expected performance. Colors relative to average (green=above, red=below, neutral=mid-range).'
   },
-  avg_value_vs_adp: { 
-    label: 'Value vs ADP', 
-    key: 'avg_value_vs_adp', 
-    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'), 
+  avg_value_vs_adp: {
+    label: 'Value vs ADP',
+    key: 'avg_value_vs_adp',
+    format: (val) => (typeof val === 'number' ? val.toFixed(1) : '-'),
     tooltipLabel: 'Avg Value vs ADP',
     description: 'Average Value vs ADP measures draft value relative to Average Draft Position. Green for positive (steal), red for negative (reach).'
   },
 };
 
-const getPositionBadgeClass = (position?: string): string => {
-  if (!position) return "bg-muted text-muted-foreground"; 
-  switch (position?.toUpperCase()) {
-    case 'QB':
-      return 'bg-red-100 text-red-700'; 
-    case 'RB':
-      return 'bg-blue-100 text-blue-700';
-    case 'WR':
-      return 'bg-green-100 text-green-700';
-    case 'TE':
-      return 'bg-yellow-100 text-yellow-700'; 
-    case 'K':
-      return 'bg-purple-100 text-purple-700';
-    case 'DST':
-    case 'DEF':
-      return 'bg-indigo-100 text-indigo-700';
-    default:
-      return "bg-muted text-muted-foreground";
-  }
-};
 
 const DraftOverview = () => {
   const [overviewData, setOverviewData] = useState<DraftOverviewData | null>(null);
@@ -109,7 +89,7 @@ const DraftOverview = () => {
     const values = rawData
         .map(item => item[selectedMetric as keyof GMDraftSeasonPerformance] as number | undefined | null)
         .filter(val => typeof val === 'number') as number[];
-    
+
     if (values.length === 0) return { currentMin: 0, currentMax: 0 };
     return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
   }, [rawData, selectedMetric]);
@@ -122,7 +102,7 @@ const DraftOverview = () => {
     if (values.length === 0) return { minGmAvg: 0, maxGmAvg: 0 };
     return { minGmAvg: Math.min(...values), maxGmAvg: Math.max(...values) };
   }, [overviewData?.gmAverages, selectedMetric]);
-  
+
   const { minSeasonAvg, maxSeasonAvg } = useMemo(() => {
     if (!overviewData?.seasonAverages || !Array.isArray(overviewData.seasonAverages)) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
     const values = overviewData.seasonAverages
@@ -168,7 +148,7 @@ const DraftOverview = () => {
             setError("An unknown error occurred");
         }
         console.error("[DraftOverview] Error in fetchData:", err);
-        setOverviewData(null); 
+        setOverviewData(null);
         setRawData(null);
       } finally {
         setLoading(false);
@@ -179,7 +159,7 @@ const DraftOverview = () => {
 
   const { heatmapData, gmNames, seasonYears } = useMemo(() => {
     if (!rawData) return { heatmapData: {}, gmNames: [], seasonYears: [] };
-    
+
     const validRawData = rawData.filter(
       item => typeof item.gm_name === 'string' && typeof item.season_id === 'number'
     );
@@ -188,7 +168,7 @@ const DraftOverview = () => {
       if (!acc[item.gm_name]) {
         acc[item.gm_name] = {};
       }
-      acc[item.gm_name][item.season_id.toString()] = item; 
+      acc[item.gm_name][item.season_id.toString()] = item;
       return acc;
     }, {} as TransformedHeatmapData);
 
@@ -208,49 +188,49 @@ const DraftOverview = () => {
         return sortConfig.direction === 'asc' ? comparison : -comparison;
       });
     }
-    
+
     const uniqueSeasonYears = Array.from(new Set(validRawData.map(item => item.season_id.toString()))).sort((a, b) => parseInt(a) - parseInt(b));
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
   const getCellStyle = (
-    performanceData: GMDraftSeasonPerformance | undefined | null, 
+    performanceData: GMDraftSeasonPerformance | undefined | null,
     metricKey: HeatmapMetricKey,
-    metricMinValue: number, 
-    metricMaxValue: number 
+    metricMinValue: number,
+    metricMaxValue: number
   ): string => {
     const value = performanceData?.[metricKey as keyof GMDraftSeasonPerformance] as number | undefined | null;
 
-    if (value === null || value === undefined) { 
+    if (value === null || value === undefined) {
       return 'bg-muted/30 text-muted-foreground';
     }
 
     let baseClasses = "font-semibold ";
 
     if (metricKey === 'avg_value_vs_adp') {
-        const adpThreshold = 0.1; 
-        if (value > adpThreshold) { 
-            const effectiveMax = Math.max(adpThreshold * 1.1, metricMaxValue); 
+        const adpThreshold = 0.1;
+        if (value > adpThreshold) {
+            const effectiveMax = Math.max(adpThreshold * 1.1, metricMaxValue);
             const intensity = Math.min(1, Math.max(0, value / effectiveMax));
             if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
             if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
             return baseClasses + 'bg-green-100 text-green-700';
-        } else if (value < -adpThreshold) { 
-            const effectiveMin = Math.min(-adpThreshold * 1.1, metricMinValue); 
-            const intensity = Math.min(1, Math.max(0, value / effectiveMin)); 
+        } else if (value < -adpThreshold) {
+            const effectiveMin = Math.min(-adpThreshold * 1.1, metricMinValue);
+            const intensity = Math.min(1, Math.max(0, value / effectiveMin));
             if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
             if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
             return baseClasses + 'bg-red-100 text-red-700';
         } else {
             return baseClasses + 'bg-neutral-100 text-neutral-700';
         }
-    } else { 
+    } else {
         const range = metricMaxValue - metricMinValue;
         if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
 
         const normalizedValue = (value - metricMinValue) / range;
-        const neutralBandStart = 0.40; 
-        const neutralBandEnd = 0.60;   
+        const neutralBandStart = 0.40;
+        const neutralBandEnd = 0.60;
 
         if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
           return baseClasses + 'bg-neutral-100 text-neutral-700';
@@ -259,7 +239,7 @@ const DraftOverview = () => {
           if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
           if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
           return baseClasses + 'bg-red-100 text-red-700';
-        } else { 
+        } else {
           const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
            if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
            if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
@@ -389,14 +369,14 @@ const DraftOverview = () => {
                         gmAvgValueForMetric = gmAvgData[selectedMetric as keyof GMAverageMetrics] as number | undefined | null;
                       }
                        const gmAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
-                        season_id: 0, 
-                        gm_id: gmAvgData?.gm_id || 0, 
+                        season_id: 0,
+                        gm_id: gmAvgData?.gm_id || 0,
                         gm_name: gm_name,
                         avg_pvdre: gmAvgData?.avg_pvdre,
                         pvdre_hit_rate: gmAvgData?.pvdre_hit_rate,
                         avg_value_vs_adp: gmAvgData?.avg_value_vs_adp,
                       };
-                      
+
                       return (
                       <TableRow key={gm_name}>
                         <TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm whitespace-nowrap">{gm_name}</TableCell>
@@ -405,7 +385,7 @@ const DraftOverview = () => {
                           const metricValue = performanceData?.[selectedMetric as keyof GMDraftSeasonPerformance];
                           const cellClasses = getCellStyle(performanceData, selectedMetric, currentMin, currentMax);
                           const displayValue = metricConfigs[selectedMetric].format(metricValue as number | undefined | null);
-                          
+
                           return (
                             <TableCell
                               key={`${gm_name}-${year}-${selectedMetric}`}
@@ -462,9 +442,9 @@ const DraftOverview = () => {
                                     seasonAvgValueForMetric = seasonAvgData[selectedMetric as keyof SeasonAverageMetrics] as number | undefined | null;
                                 }
                                 const seasonAvgPerformanceObject: GMDraftSeasonPerformance | undefined = {
-                                  season_id: parseInt(year), 
-                                  gm_id: 0, 
-                                  gm_name: "League Average", 
+                                  season_id: parseInt(year),
+                                  gm_id: 0,
+                                  gm_name: "League Average",
                                   avg_pvdre: seasonAvgData?.avg_pvdre,
                                   pvdre_hit_rate: seasonAvgData?.pvdre_hit_rate,
                                   avg_value_vs_adp: seasonAvgData?.avg_value_vs_adp,
@@ -614,37 +594,37 @@ const DraftOverview = () => {
 
 const getPVDRECellStyle = (pvdre: number | null | undefined, minPvdre: number, maxPvdre: number): string => {
     if (pvdre === null || pvdre === undefined) return 'bg-muted/30 text-muted-foreground';
-    
+
     const baseClasses = "font-semibold ";
 
     const range = maxPvdre - minPvdre;
     if (range === 0) return baseClasses + 'bg-neutral-100 text-neutral-700';
 
     const normalizedValue = (pvdre - minPvdre) / range;
-    
-    const neutralBandStart = 0.45; 
-    const neutralBandEnd = 0.55;   
+
+    const neutralBandStart = 0.45;
+    const neutralBandEnd = 0.55;
 
     if (normalizedValue >= neutralBandStart && normalizedValue <= neutralBandEnd) {
       return baseClasses + 'bg-neutral-100 text-neutral-700';
-    } else if (normalizedValue < neutralBandStart) { 
+    } else if (normalizedValue < neutralBandStart) {
       const intensity = Math.min(1, (neutralBandStart - normalizedValue) / neutralBandStart);
-      if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800'; 
-      if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800'; 
-      return baseClasses + 'bg-red-100 text-red-700';                   
-    } else { 
-      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd)); 
-      if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800'; 
-      if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800'; 
-      return baseClasses + 'bg-green-100 text-green-700';                  
+      if (intensity > 0.66) return baseClasses + 'bg-red-300 text-red-800';
+      if (intensity > 0.33) return baseClasses + 'bg-red-200 text-red-800';
+      return baseClasses + 'bg-red-100 text-red-700';
+    } else {
+      const intensity = Math.min(1, (normalizedValue - neutralBandEnd) / (1 - neutralBandEnd));
+      if (intensity > 0.66) return baseClasses + 'bg-green-300 text-green-800';
+      if (intensity > 0.33) return baseClasses + 'bg-green-200 text-green-800';
+      return baseClasses + 'bg-green-100 text-green-700';
     }
 };
 
 const getReachStealCellStyle = (reachStealValue: number | null | undefined): string => {
     if (reachStealValue === null || reachStealValue === undefined) return 'bg-muted/30 text-muted-foreground';
-    
+
     const baseClasses = "font-semibold ";
-    const threshold = 0.1; 
+    const threshold = 0.1;
     if (reachStealValue > threshold) {
         if (reachStealValue > 10) return baseClasses + 'bg-green-300 text-green-800';
         if (reachStealValue > 5) return baseClasses + 'bg-green-200 text-green-800';
@@ -654,7 +634,7 @@ const getReachStealCellStyle = (reachStealValue: number | null | undefined): str
         if (reachStealValue < -5) return baseClasses + 'bg-red-200 text-red-800';
         return baseClasses + 'bg-red-100 text-red-700';
     } else {
-        return baseClasses + 'bg-neutral-100 text-neutral-700'; 
+        return baseClasses + 'bg-neutral-100 text-neutral-700';
     }
 };
 
@@ -675,7 +655,7 @@ const SeasonDraftDetail = () => {
       const fetchData = async () => {
         setLoading(true);
         setError(null);
-        setDraftData(null); 
+        setDraftData(null);
         setTeamDraftPerformance(null);
         setTopSteals(null);
         setTopBusts(null);
@@ -689,8 +669,8 @@ const SeasonDraftDetail = () => {
             console.error(`[SeasonDraftDetail] Fetch failed for season draft data (Status: ${response.status}):`, errorText.substring(0, 200));
             throw new Error(`Failed to fetch data for season ${selectedSeason}: ${response.status} ${response.statusText}.`);
           }
-          
-          const jsonData: SeasonDraftDetailJson = await response.json(); 
+
+          const jsonData: SeasonDraftDetailJson = await response.json();
           console.log(`[SeasonDraftDetail] Fetched raw JSON data for season ${selectedSeason}:`, jsonData);
 
            if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
@@ -722,7 +702,7 @@ const SeasonDraftDetail = () => {
   }, [selectedSeason]);
 
   const { draftBoardPicks, gmNamesForColumns, maxRound, numGms, minPVDRE, maxPVDRE } = useMemo(() => {
-    if (!draftData || !Array.isArray(draftData)) { 
+    if (!draftData || !Array.isArray(draftData)) {
       console.warn("[SeasonDraftDetail useMemo] draftData is not an array or is null. draftData:", draftData);
       return { draftBoardPicks: {}, gmNamesForColumns: [], maxRound: 0, numGms: 0, minPVDRE: 0, maxPVDRE: 0 };
     }
@@ -736,7 +716,7 @@ const SeasonDraftDetail = () => {
     sortedPicks.forEach(pick => {
       if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number' || typeof pick.pick_overall !== 'number') {
         console.warn("[SeasonDraftDetail useMemo] Invalid pick data encountered (missing gm_name, round, pick_in_round or pick_overall):", pick);
-        return; 
+        return;
       }
       picksByOverall[pick.pick_overall] = pick;
       if (pick.pvdre_points_vs_league_draft_rank_exp !== null && pick.pvdre_points_vs_league_draft_rank_exp !== undefined) {
@@ -744,14 +724,14 @@ const SeasonDraftDetail = () => {
         currentMaxPVDRE = Math.max(currentMaxPVDRE, pick.pvdre_points_vs_league_draft_rank_exp);
       }
     });
-    
+
     const gmMinOverallPick = new Map<string, number>();
     const gmNames = new Set<string>();
     let currentMaxRound = 0;
 
     sortedPicks.forEach(pick => {
       if (typeof pick.gm_name !== 'string' || typeof pick.round !== 'number' || typeof pick.pick_in_round !== 'number' || typeof pick.pick_overall !== 'number') {
-        return; 
+        return;
       }
       gmNames.add(pick.gm_name);
       if (pick.round > currentMaxRound) {
@@ -761,20 +741,20 @@ const SeasonDraftDetail = () => {
         gmMinOverallPick.set(pick.gm_name, pick.pick_overall);
       }
     });
-    
+
     const sortedGmNamesByDraftOrder = Array.from(gmNames).sort((a, b) => {
         const pickA = gmMinOverallPick.get(a) ?? Infinity;
         const pickB = gmMinOverallPick.get(b) ?? Infinity;
-        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b); 
+        if (pickA === Infinity && pickB === Infinity) return a.localeCompare(b);
         return pickA - pickB;
     });
-    
+
     const numberOfGms = sortedGmNamesByDraftOrder.length;
 
-    return { 
-        draftBoardPicks: picksByOverall, 
-        gmNamesForColumns: sortedGmNamesByDraftOrder, 
-        maxRound: currentMaxRound, 
+    return {
+        draftBoardPicks: picksByOverall,
+        gmNamesForColumns: sortedGmNamesByDraftOrder,
+        maxRound: currentMaxRound,
         numGms: numberOfGms,
         minPVDRE: currentMinPVDRE === Infinity ? 0 : currentMinPVDRE,
         maxPVDRE: currentMaxPVDRE === -Infinity ? 0 : currentMaxPVDRE
@@ -783,7 +763,7 @@ const SeasonDraftDetail = () => {
 
 
   const renderDraftBoard = () => {
-    if (loading && !draftData) { 
+    if (loading && !draftData) {
       return <Skeleton className="h-[400px] w-full" />;
     }
     if (error && !draftData) {
@@ -796,36 +776,43 @@ const SeasonDraftDetail = () => {
     return (
       <TooltipProvider>
         <div className="overflow-x-auto">
-          <Table className="min-w-full border-collapse">
+          <Table className="min-w-full border-separate border-spacing-0">
             <TableHeader>
               <TableRow>
-                <TableHead className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">Round</TableHead>
-                {gmNamesForColumns.map(gmName => (
-                  <TableHead key={gmName} className="p-1.5 border text-xs text-center font-semibold whitespace-nowrap min-w-[120px]">{gmName}</TableHead>
+                <TableHead className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold rounded-tl-sm">Round</TableHead>
+                {gmNamesForColumns.map((gmName, index) => (
+                  <TableHead key={gmName} className={cn("p-1.5 border text-xs text-center font-semibold whitespace-nowrap min-w-[120px]", index === gmNamesForColumns.length -1 && "rounded-tr-sm")}>{gmName}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => (
                 <TableRow key={roundNum}>
-                  <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold">{roundNum}</TableCell>
+                  <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold rounded-l-sm">{roundNum}</TableCell>
                   {gmNamesForColumns.map((_, gmIndex) => {
                     let targetPickInRound: number;
-                    if (roundNum % 2 !== 0) { 
+                    if (roundNum % 2 !== 0) {
                       targetPickInRound = gmIndex + 1;
-                    } else { 
+                    } else {
                       targetPickInRound = numGms - gmIndex;
                     }
                     const targetOverallPick = (roundNum - 1) * numGms + targetPickInRound;
                     const pick = draftBoardPicks[targetOverallPick];
 
-                    let cellContent;
-                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px]`; 
+                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px] rounded-sm`;
+                    if (gmIndex === gmNamesForColumns.length - 1 && roundNum === maxRound) {
+                        cellClasses = cn(cellClasses, "rounded-br-sm");
+                    } else if (gmIndex === gmNamesForColumns.length -1 ) {
+                        cellClasses = cn(cellClasses, "rounded-r-sm");
+                    } else if (roundNum === maxRound && gmIndex === 0 && !gmNamesForColumns.find(name => name === pick?.gm_name)) {
+                        // This condition might be tricky, for bottom-left rounding when sticky column is not the first GM
+                    }
+
 
                     if (!pick) {
                        return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{minWidth: '120px', height: '60px' }}></TableCell>;
                     }
-                    
+
                     let innerDivLayoutClasses = "flex items-center justify-center h-full w-full text-center";
 
                     if (analysisMode === 'none') {
@@ -848,12 +835,12 @@ const SeasonDraftDetail = () => {
                         );
                         cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
                     }
-                    
+
                     return (
-                      <TableCell 
-                        key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`} 
+                      <TableCell
+                        key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`}
                         className={cellClasses}
-                        style={{minWidth: '120px', height: '60px'}} 
+                        style={{minWidth: '120px', height: '60px'}}
                       >
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
@@ -871,8 +858,8 @@ const SeasonDraftDetail = () => {
                                 <p><span className="font-medium">Drafted Pos:</span> {pick.player_position}{pick.league_positional_draft_rank ?? ''}</p>
                                  <p>
                                   <span className="font-medium">Finished Pos:</span> {
-                                    pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined 
-                                    ? `${pick.player_position}${pick.actual_positional_finish_rank}` 
+                                    pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined
+                                    ? `${pick.player_position}${pick.actual_positional_finish_rank}`
                                     : '-'
                                   }
                                 </p>
@@ -893,7 +880,7 @@ const SeasonDraftDetail = () => {
       </TooltipProvider>
     );
   };
-  
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1052,26 +1039,6 @@ const SeasonDraftDetail = () => {
   );
 };
 
-const getPositionIcon = (position?: string): React.ReactNode => {
-  if (!position) return <MoreHorizontal size={18} className="text-muted-foreground" />;
-  switch (position.toUpperCase()) {
-    case 'QB':
-      return <UserCircle2 size={18} className="text-red-500" />;
-    case 'RB':
-      return <UsersIcon size={18} className="text-blue-500" />;
-    case 'WR':
-      return <PersonStanding size={18} className="text-green-500" />; 
-    case 'TE':
-      return <GripVertical size={18} className="text-yellow-500" />; 
-    case 'K':
-      return <Target size={18} className="text-purple-500" />;
-    case 'DST':
-    case 'DEF':
-      return <Shield size={18} className="text-indigo-500" />; 
-    default:
-      return <MoreHorizontal size={18} className="text-muted-foreground" />;
-  }
-};
 
 // Helper to format PVDRE values
 const formatPvdreValue = (value: number | null | undefined): string => {
@@ -1139,7 +1106,7 @@ const GMDraftHistory = () => {
     return gmDraftData.positional_profile.map(p => ({
       name: p.position,
       'GM Avg POE': p.gm_average_pvdre,
-      'League Avg POE': p.league_average_pvdre ?? 0, 
+      'League Avg POE': p.league_average_pvdre ?? 0,
     }));
   }, [gmDraftData?.positional_profile]);
 
@@ -1165,7 +1132,7 @@ const GMDraftHistory = () => {
       </Card>
     );
   }
-  
+
   return (
     <div className="space-y-6">
       <Card>
@@ -1197,7 +1164,7 @@ const GMDraftHistory = () => {
           )}
           {error && <p className="text-destructive text-center py-4">Error loading draft history data: {error}</p>}
           {!loading && !gmDraftData && !error && <p className="text-muted-foreground text-center py-4">No draft history data found for this GM. Ensure 'gm_GMID_draft_history.json' exists in 'public/data/draft_data/gm/'.</p>}
-          
+
           {!loading && gmDraftData && (
             <div className="space-y-6">
                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
@@ -1345,15 +1312,15 @@ const GMDraftHistory = () => {
                 {gmDraftData.positional_profile && gmDraftData.positional_profile.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {gmDraftData.positional_profile.map((profile) => {
-                        const isOutperforming = typeof profile.gm_average_pvdre === 'number' && 
-                                                typeof profile.league_average_pvdre === 'number' && 
-                                                profile.league_average_pvdre !== null && 
+                        const isOutperforming = typeof profile.gm_average_pvdre === 'number' &&
+                                                typeof profile.league_average_pvdre === 'number' &&
+                                                profile.league_average_pvdre !== null &&
                                                 profile.gm_average_pvdre > profile.league_average_pvdre;
-                        const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && 
-                                                 typeof profile.league_average_pvdre === 'number' && 
-                                                 profile.league_average_pvdre !== null && 
+                        const isUnderperforming = typeof profile.gm_average_pvdre === 'number' &&
+                                                 typeof profile.league_average_pvdre === 'number' &&
+                                                 profile.league_average_pvdre !== null &&
                                                  profile.gm_average_pvdre < profile.league_average_pvdre;
-                        
+
                         let borderColorClass = 'border-border';
                         if (isOutperforming) borderColorClass = 'border-green-500';
                         if (isUnderperforming) borderColorClass = 'border-red-500';
@@ -1398,7 +1365,7 @@ const GMDraftHistory = () => {
                 )}
                 </CardContent>
               </Card>
-              
+
             </div>
           )}
         </CardContent>
@@ -1410,7 +1377,7 @@ const GMDraftHistory = () => {
 
 export default function DraftHistoryPage() {
   const searchParams = useSearchParams();
-  const section = searchParams.get('section') || 'overview'; 
+  const section = searchParams.get('section') || 'overview';
 
   return (
     <div className="space-y-6">
@@ -1420,16 +1387,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-
-    
-
-
-
-    
-
-
-
-
-
-    
-
