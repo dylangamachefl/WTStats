@@ -47,11 +47,11 @@ import type {
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils";
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils.tsx";
 import {
   ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, Pie, Cell as RechartsCell, BarChart as RechartsBarChartImport, Bar, LineChart as RechartsLineChartImport, LabelList, ScatterChart, Scatter, ZAxis
 } from 'recharts';
-import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, PieChartIcon as PieChartIconLucide, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch, Flame, Bomb, Scaling, ShieldCheck, ShieldX, TrendingDown } from 'lucide-react';
+import { ArrowUpDown, ListChecks, Users, Trophy, BarChart3 as BarChartRechartsIcon, CalendarDays, LineChart as LineChartIconRecharts, ClipboardList, CheckCircle2, XCircle, ShieldAlert, Zap, ArrowUp, ArrowDown, UserRound, TrendingUp, User, Eye, Info, UsersRound, Shuffle, Waves, Award, Star, ArrowUpCircle, ArrowDownCircle, Target, Sparkles, Repeat, BarChartHorizontal, PersonStanding, UserCircle2, Users as UsersIcon, BarChart2, MoreHorizontal, GripVertical, Crown, PackageSearch, Flame, Bomb, Scaling, ShieldCheck, ShieldX, TrendingDown, PieChart as PieChartIconLucide } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -414,9 +414,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                         <h4 className="text-sm font-medium text-foreground">Key Players</h4>
                         <div className="flex flex-col gap-1.5">
                           {champion.parsedRoster.slice(0, 4).map((player, idx) => (
-                            <div key={idx} className="flex items-center gap-2 p-2 rounded-lg text-sm border shadow-sm">
+                            <div key={idx} className="flex items-center gap-2 p-2 rounded-lg text-sm text-foreground bg-white/40 shadow-sm">
                               <UserRound size={16} className="text-muted-foreground" />
-                              <span className="text-foreground truncate" title={player}>{player}</span>
+                              <span className="truncate" title={player}>{player}</span>
                             </div>
                           ))}
                         </div>
@@ -2478,11 +2478,10 @@ const GMCareer = () => {
                                     {['QB', 'TE', 'K', 'DST'].map(pos => {
                                         const weeklyData = gmIndividualSeasonData.streamingSuccess?.streamingWeeklyPerformance?.[pos];
                                         let cardTitle = `${getPositionName(pos)} Performance`;
-                                        if (pos === 'DST') cardTitle = "DST Performance";
-
+                                        
                                         return Array.isArray(weeklyData) && weeklyData.length > 0 && (
                                             <Card key={`streaming-weekly-${pos}`}>
-                                                <CardHeader><CardTitle className="flex items-center text-lg">{cardTitle}</CardTitle></CardHeader>
+                                                <CardHeader><CardTitle className="flex items-center text-base font-semibold">{cardTitle}</CardTitle></CardHeader>
                                                 <CardContent className="overflow-x-auto">
                                                     <Table>
                                                         <TableHeader>
