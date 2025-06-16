@@ -800,7 +800,7 @@ const SeasonDraftDetail = () => {
                     const pick = draftBoardPicks[targetOverallPick];
                     let cellContent;
 
-                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px] rounded-sm`;
+                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px] rounded-md`;
                     if (gmIndex === gmNamesForColumns.length - 1 && roundNum === maxRound) {
                         cellClasses = cn(cellClasses, "rounded-br-sm");
                     } else if (gmIndex === gmNamesForColumns.length -1 ) {

@@ -469,7 +469,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   </TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
                     <Button variant="ghost" onClick={() => requestCareerSort('championships')}  className="w-full justify-start px-0 group text-xs md:text-sm py-2">
-                      Champs {getSortIcon(careerSortConfig, 'championships')}
+                      Rings {getSortIcon(careerSortConfig, 'championships')}
                     </Button>
                   </TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
@@ -1171,7 +1171,7 @@ const SeasonDetail = () => {
                                       </TableBody>
                                   </Table>
                                   <p className="text-xs text-muted-foreground mt-4">
-                                      Top valuable pickups based on total points scored after acquisition week. Assumes standard scoring.
+                                      Top valuable pickups based on total points scored after acquisition week.
                                   </p>
                               </>
                               ) : (
