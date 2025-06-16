@@ -47,7 +47,7 @@ import type {
 } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils.tsx";
+import { cn, getPositionBadgeClass, getPositionIcon, getPositionName, CHART_COLORS } from "@/lib/utils";
 import {
   ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, Line, PieChart as RechartsPieChartComponent, Pie, Cell as RechartsCell, BarChart as RechartsBarChartImport, Bar, LineChart as RechartsLineChartImport, LabelList, ScatterChart, Scatter, ZAxis
 } from 'recharts';
@@ -607,18 +607,9 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground"><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
                   <TableHead className="px-2 py-2 text-left align-middle font-medium text-muted-foreground">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
                            <Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">
                             Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}
                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                   </TableHead>
                   </TableRow>
               </TableHeader>
@@ -975,7 +966,7 @@ const SeasonDetail = () => {
                              <RadioGroup
                                 value={weeklyScoresDisplayMode}
                                 onValueChange={(value) => setWeeklyScoresDisplayMode(value as 'scores' | 'results')}
-                                className="flex items-center space-x-2 mt-3 sm:mt-0"
+                                className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mt-3 sm:mt-0"
                             >
                                 <div className="flex items-center space-x-1">
                                     <RadioGroupItem value="scores" id="scores-mode-radio" />
@@ -1333,7 +1324,7 @@ const SeasonPerformanceCard = ({ performance, year, gmName }: { performance: GMS
                     <Award className="mr-2 h-5 w-5 text-primary" /> {year} Season Performance
                 </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 <div className="flex flex-col items-center text-center p-2 rounded-md bg-muted/50 dark:bg-muted/30">
                     <span className="text-xs uppercase text-muted-foreground font-medium">Record</span>
                     <span className="text-2xl font-bold">{performance.wins}-{performance.losses}{performance.ties && performance.ties > 0 ? `-${performance.ties}` : ''}</span>
@@ -1988,7 +1979,7 @@ const GMCareer = () => {
                 </CardContent>
               </Card>
             )}
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
+            <div className="grid md:grid-cols-3 gap-6 mt-8">
                 {gmData.careerExtremes?.highs && (
                     <Card>
                         <CardHeader><CardTitle className="text-xl flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-green-500 dark:text-green-400"/>Career Highs</CardTitle></CardHeader>
@@ -2009,10 +2000,7 @@ const GMCareer = () => {
                         </CardContent>
                     </Card>
                 )}
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
-                {gmData.positionStrength && Array.isArray(gmData.positionStrength) && gmData.positionStrength.length > 0 && (
+                 {gmData.positionStrength && Array.isArray(gmData.positionStrength) && gmData.positionStrength.length > 0 && (
                 <Card>
                     <CardHeader><CardTitle className="text-xl">Positional Strength vs League Avg.</CardTitle></CardHeader>
                     <CardContent>
@@ -2036,7 +2024,9 @@ const GMCareer = () => {
                     </CardContent>
                 </Card>
                 )}
-           
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
                 {gmData.franchisePlayers && Array.isArray(gmData.franchisePlayers) && gmData.franchisePlayers.length > 0 && (
                 <Card>
                     <CardHeader><CardTitle className="text-xl">Franchise Players</CardTitle></CardHeader>
