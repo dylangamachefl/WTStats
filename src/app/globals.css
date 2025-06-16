@@ -37,11 +37,13 @@ body {
     --input: 210 20% 92%;
     --ring: 207 70% 57%; /* Primary color for rings */
 
-    --chart-1: 207 70% 57%; /* primary */
-    --chart-2: 145 44% 51%; /* accent */
-    --chart-3: 40 88% 60%; /* orange/yellow */
-    --chart-4: 260 70% 65%; /* purple */
-    --chart-5: 340 80% 70%; /* pink */
+    --chart-1: 207 70% 57%; /* primary blue (QB) */
+    --chart-2: 145 44% 51%; /* accent green (RB) */
+    --chart-3: 40 88% 60%; /* orange/yellow (WR) */
+    --chart-4: 260 70% 65%; /* purple (TE) */
+    --chart-5: 30 90% 55%;  /* orange (Kicker) - Was pink */
+    --chart-6: 30 25% 40%; /* brown (DST/DEF) - New */
+    --chart-pink: 340 80% 70%; /* pink (FLEX) - New explicit pink */
     --radius: 0.5rem;
 
     /* Sidebar specific colors */
@@ -84,6 +86,15 @@ body {
     --border: 215 20% 30%;
     --input: 215 20% 30%;
     --ring: 207 70% 57%;
+
+    /* Chart colors in dark mode can be the same or adjusted if needed */
+    --chart-1: 207 70% 57%;
+    --chart-2: 145 44% 51%;
+    --chart-3: 40 88% 60%;
+    --chart-4: 260 70% 65%;
+    --chart-5: 30 90% 55%;
+    --chart-6: 30 25% 40%;
+    --chart-pink: 340 80% 70%;
 
     --sidebar-background: 220 15% 10%;
     --sidebar-foreground: 210 25% 94%;

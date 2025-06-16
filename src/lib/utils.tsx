@@ -20,10 +20,10 @@ export const getPositionBadgeClass = (position?: string): string => {
     case 'TE':
       return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300';
     case 'K':
-      return 'bg-purple-100 text-purple-700 dark:bg-purple-700/30 dark:text-purple-300';
+      return 'bg-orange-100 text-orange-700 dark:bg-orange-700/30 dark:text-orange-300'; // Changed to orange
     case 'DST':
     case 'DEF':
-      return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-700/30 dark:text-indigo-300';
+      return 'bg-stone-100 text-stone-700 dark:bg-stone-700/30 dark:text-stone-300'; // Changed to stone (brownish)
     default:
       return "bg-muted text-muted-foreground dark:bg-muted/70 dark:text-muted-foreground/70";
   }
@@ -41,10 +41,10 @@ export const getPositionIcon = (position?: string): ReactNode => {
     case 'TE':
       return (<GripVertical size={18} className="text-yellow-500 dark:text-yellow-400" />);
     case 'K':
-      return (<Target size={18} className="text-purple-500 dark:text-purple-400" />);
+      return (<Target size={18} className="text-orange-500 dark:text-orange-400" />); // Changed to orange
     case 'DST':
     case 'DEF':
-      return (<Shield size={18} className="text-indigo-500 dark:text-indigo-400" />);
+      return (<Shield size={18} className="text-stone-500 dark:text-stone-400" />); // Changed to stone (brownish)
     default:
       return (<MoreHorizontal size={18} className="text-muted-foreground" />);
   }
@@ -71,9 +71,9 @@ export const CHART_COLORS: { [key: string]: string } = {
   RB: 'hsl(var(--chart-2))',
   WR: 'hsl(var(--chart-3))',
   TE: 'hsl(var(--chart-4))',
-  FLEX: 'hsl(var(--chart-5))',
-  K: 'hsl(var(--destructive))',
-  DST: 'hsl(var(--muted))',
-  DEF: 'hsl(var(--muted))',
+  FLEX: 'hsl(var(--chart-pink))', // Using specific pink variable
+  K: 'hsl(var(--chart-5))',    // Now corresponds to orange
+  DST: 'hsl(var(--chart-6))',   // Corresponds to brown
+  DEF: 'hsl(var(--chart-6))',   // Corresponds to brown
   DEFAULT: 'hsl(var(--foreground))'
 };
