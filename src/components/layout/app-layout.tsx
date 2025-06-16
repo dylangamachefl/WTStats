@@ -41,9 +41,9 @@ const navItems: NavItemConfig[] = [
     icon: <Trophy />,
     matchSegments: 1,
     subItems: [
-      { href: "/?section=all-seasons", label: "All Seasons Overview", queryParamValue: "all-seasons" },
-      { href: "/?section=season-detail", label: "Season Detail", queryParamValue: "season-detail" },
-      { href: "/?section=gm-career", label: "GM Career", queryParamValue: "gm-career" },
+      { href: "/?section=all-seasons", label: "Overview", queryParamValue: "all-seasons" },
+      { href: "/?section=season-detail", label: "Season View", queryParamValue: "season-detail" },
+      { href: "/?section=gm-career", label: "GM View", queryParamValue: "gm-career" },
     ],
   },
   {
@@ -189,3 +189,4 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
+
