@@ -1,76 +1,35 @@
-
-import type {NextConfig} from 'next';
+// next.config.js
 
 const isProd = process.env.NODE_ENV === 'production';
-const repoName = 'WTStats';
-const basePath = `/${repoName}`; // Hardcoded
 
-const nextConfig: NextConfig = {
-  output: 'export', // Enable static HTML export
+// *** THIS IS THE MOST IMPORTANT LINE. IT MUST MATCH YOUR REPO NAME EXACTLY. ***
+const repoName = 'WTStats'; // Or whatever your repo is named
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Use the 'export' output mode for static hosting
+  output: 'export',
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
-  basePath: basePath,
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'g.espncdn.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.supergraphictees.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.customon.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'decollins1969.files.wordpress.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http', // some image URLs are http
-        hostname: 'heavyeditorial.files.wordpress.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http', // some image URLs are http
-        hostname: 'thejasminebrand.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http', // some image URLs are http
-        hostname: 'www.scarecrowboat.com',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-    unoptimized: true, // Required for next export with next/image
-  },
-  assetPrefix: `${basePath}/`, 
+  // Tell Next.js that all page links (e.g., /about) should be prefixed with the repo name in production
+  basePath: isProd ? `/${repoName}` : '',
+
+  // Tell Next.js that all assets (JS, CSS, images) should be prefixed with the repo name in production
+  assetPrefix: isProd ? `/${repoName}/` : '',
+
+  // Make the base path available to client-side code (our fetcher)
   env: {
-    NEXT_PUBLIC_BASE_PATH: basePath, // Expose it to client-side// Note the trailing slash for assetPrefix
-  }
+    NEXT_PUBLIC_BASE_PATH: isProd ? `/${repoName}` : '',
+  },
+
+  // Disable Next.js image optimization, which isn't compatible with static export
+  images: {
+    unoptimized: true,
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -131,17 +130,10 @@ const DraftOverview = () => {
       try {
         const filePath = '/data/draft_data/gm_season_performance_grid.json';
         console.log(`[DraftOverview] Fetching ${filePath}`);
-        const response = await fetcher(filePath);
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("[DraftOverview] Fetch failed:", response.status, errorText);
-          throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}. ${errorText.substring(0,100)}`);
-        }
-        const data: DraftOverviewData = await response.json();
+        const data: DraftOverviewData = await fetcher(filePath);
         console.log("[DraftOverview] Fetched data:", data);
         setOverviewData(data);
         setRawData(data.gmSeasonPerformanceGrid || null);
-
       } catch (err) {
         if (err instanceof Error) {
             setError(err.message);
@@ -663,15 +655,7 @@ const SeasonDraftDetail = () => {
         try {
           const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
           console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
-          const response = await fetcher(filePath);
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`[SeasonDraftDetail] Fetch failed for season draft data (Status: ${response.status}):`, errorText.substring(0, 200));
-            throw new Error(`Failed to fetch data for season ${selectedSeason}: ${response.status} ${response.statusText}.`);
-          }
-
-          const jsonData: SeasonDraftDetailJson = await response.json();
+          const jsonData: SeasonDraftDetailJson = await fetcher(filePath);
           console.log(`[SeasonDraftDetail] Fetched raw JSON data for season ${selectedSeason}:`, jsonData);
 
            if (typeof jsonData === 'object' && jsonData !== null && Array.isArray(jsonData.draft_board)) {
@@ -682,10 +666,9 @@ const SeasonDraftDetail = () => {
             console.log(`[SeasonDraftDetail] Successfully processed draft_board and other sections for season ${selectedSeason}.`);
           } else {
             console.error(`[SeasonDraftDetail] Fetched data for season ${selectedSeason} is not in the expected object format with a 'draft_board' array. Received:`, jsonData);
-            setError(`Data for season ${selectedSeason} is not in the expected format. Ensure the JSON file has a "draft_board" array and optionally "team_draft_performance_ranking", "season_highlights.top_steals_by_pvdre", "season_highlights.top_busts_by_pvdre".`);
+            setError(`Data for season ${selectedSeason} is not in the expected format.`);
             setDraftData(null);
           }
-
         } catch (err) {
           if (err instanceof Error) {
               setError(`Error loading draft data: ${err.message}`);
@@ -1068,13 +1051,7 @@ const GMDraftHistory = () => {
           }
           const filePath = `/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
           console.log(`[GMDraftHistory] Fetching ${filePath}`);
-          const response = await fetcher(filePath);
-          if (!response.ok) {
-             const errorText = await response.text();
-             console.error(`[GMDraftHistory] Fetch failed for GM ${selectedGmId} (Status: ${response.status}):`, errorText.substring(0,200));
-            throw new Error(`Failed to fetch data for GM ${gmInfo.name}: ${response.status} ${response.statusText}`);
-          }
-          const data: GMDraftHistoryDetailData = await response.json();
+          const data: GMDraftHistoryDetailData = await fetcher(filePath);
           console.log(`[GMDraftHistory] Fetched data for GM ${selectedGmId}:`, data);
           if (data.gm_name !== gmInfo.name && data.gm_id?.toString() !== selectedGmId) {
             console.warn(`[GMDraftHistory] Mismatch between selected GM (${gmInfo.name}, ID ${selectedGmId}) and fetched data (${data.gm_name}, ID ${data.gm_id}). Using fetched data.`);
@@ -1389,4 +1366,3 @@ export default function DraftHistoryPage() {
     </div>
   );
 }
-

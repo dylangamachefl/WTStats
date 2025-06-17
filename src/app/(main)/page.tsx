@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -62,7 +61,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PieChart as RechartsPieChartComponent } from 'recharts';
-import { fetcher } from '@/lib/fetcher'; 
+import { fetcher } from '@/lib/fetcher';
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
@@ -147,7 +146,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
 
   const getRankStyle = (rank: number | null | undefined, maxRankInYear: number): { cellClasses: string; textClass: string, borderClass: string } => {
     let cellClasses = 'font-semibold';
-    let textClass = 'text-neutral-800 dark:text-neutral-200'; 
+    let textClass = 'text-neutral-800 dark:text-neutral-200';
     let borderClass = '';
 
     if (rank === null || rank === undefined || maxRankInYear <= 0) {
@@ -155,33 +154,33 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
     }
 
     if (rank === 1) {
-        cellClasses = 'bg-yellow-400 dark:bg-yellow-600'; 
+        cellClasses = 'bg-yellow-400 dark:bg-yellow-600';
         textClass = 'text-neutral-800 dark:text-yellow-50 font-semibold';
         return { cellClasses, textClass, borderClass };
     }
 
     if (maxRankInYear <= 1) return { cellClasses: 'font-semibold', textClass: 'text-foreground', borderClass: '' };
 
-    const rankPositionInScale = rank - 2; 
-    const numRanksToScale = Math.max(1, maxRankInYear - 2); 
+    const rankPositionInScale = rank - 2;
+    const numRanksToScale = Math.max(1, maxRankInYear - 2);
     const normalizedRank = numRanksToScale > 0 ? rankPositionInScale / numRanksToScale : 0.5;
 
-    const NEUTRAL_BAND_START_PERCENT = 0.425; 
-    const NEUTRAL_BAND_END_PERCENT = 0.575;   
+    const NEUTRAL_BAND_START_PERCENT = 0.425;
+    const NEUTRAL_BAND_END_PERCENT = 0.575;
 
     if (normalizedRank >= NEUTRAL_BAND_START_PERCENT && normalizedRank <= NEUTRAL_BAND_END_PERCENT) {
-        cellClasses = 'bg-muted/30 dark:bg-muted/50'; 
+        cellClasses = 'bg-muted/30 dark:bg-muted/50';
         textClass = 'text-muted-foreground font-semibold';
-    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) { 
+    } else if (normalizedRank < NEUTRAL_BAND_START_PERCENT) {
         const intensity = Math.min(1, (NEUTRAL_BAND_START_PERCENT - normalizedRank) / NEUTRAL_BAND_START_PERCENT);
-        if (intensity > 0.66) cellClasses = 'bg-green-200 dark:bg-green-700/50'; 
-        else if (intensity > 0.33) cellClasses = 'bg-green-100 dark:bg-green-600/40'; 
-        else cellClasses = 'bg-green-50 dark:bg-green-500/30'; 
+        if (intensity > 0.66) cellClasses = 'bg-green-200 dark:bg-green-700/50';
+        else if (intensity > 0.33) cellClasses = 'bg-green-100 dark:bg-green-600/40';
+        else cellClasses = 'bg-green-50 dark:bg-green-500/30';
         textClass = 'text-neutral-800 dark:text-green-200 font-semibold';
-    } else { 
+    } else {
         const intensity = Math.min(1, (normalizedRank - NEUTRAL_BAND_END_PERCENT) / (1 - NEUTRAL_BAND_END_PERCENT));
-        if (intensity > 0.66) cellClasses = 'bg-red-200 dark:bg-red-700/50'; 
-        else if (intensity > 0.33) cellClasses = 'bg-red-100 dark:bg-red-600/40'; 
+        if (intensity > 0.66) cellClasses = 'bg-red-200 dark:bg-red-700/50';
+        else if (intensity > 0.33) cellClasses = 'bg-red-100 dark:bg-red-600/40';
         else cellClasses = 'bg-red-50 dark:bg-red-500/30';
         textClass = 'text-neutral-800 dark:text-red-200 font-semibold';
     }
@@ -237,7 +236,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
             }
           } else if (config.key === 'value' && typeof valA === 'string' && /^-?\d+(\.\d+)?$/.test(String(valA)) && typeof valB === 'string' && /^-?\d+(\.\d+)?$/.test(String(valB))) {
               const numA = parseFloat(valA);
-              const numB = parseFloat(String(valB)); 
+              const numB = parseFloat(String(valB));
               if (!isNaN(numA) && !isNaN(numB)) {
                   comparison = numA - numB;
               } else {
@@ -711,43 +710,34 @@ const SeasonDetail = () => {
   const [activeSubTab, setActiveSubTab] = useState<string>("overview");
 
 
- useEffect(() => {
+  useEffect(() => {
     if (selectedSeason) {
-      setLoading(true);
-      setError(null);
-      setSeasonData(null); 
-      const seasonFilePath = `/data/league_data/seasons/${selectedSeason}.json`;
-      console.log(`[SeasonDetail] Attempting to fetch data for season: ${selectedSeason} from ${seasonFilePath}`);
-      fetcher(seasonFilePath)
-        .then(async res => {
-          console.log(`[SeasonDetail] Fetch response status for ${selectedSeason}: ${res.status} ${res.statusText}`);
-          if (!res.ok) {
-            let errorBody = "No additional error body from server.";
-            try {
-                errorBody = await res.text();
-            } catch (e) { console.error("Error parsing error response body:", e); }
-            const shortErrorBody = errorBody.substring(0,200);
-            console.error(`[SeasonDetail] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
-            throw new Error(`Failed to fetch ${seasonFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${shortErrorBody}...`);
-          }
-          const jsonData: SeasonDetailData = await res.json(); 
+      const fetchSeasonData = async () => {
+        setLoading(true);
+        setError(null);
+        setSeasonData(null);
+        const seasonFilePath = `/data/league_data/seasons/${selectedSeason}.json`;
+        console.log(`[SeasonDetail] Attempting to fetch data for season: ${selectedSeason} from ${seasonFilePath}`);
+        
+        try {
+          const jsonData: SeasonDetailData = await fetcher(seasonFilePath);
           console.log(`[SeasonDetail] Successfully fetched and parsed data for ${selectedSeason}:`, jsonData);
-          
+
           if (!jsonData || typeof jsonData !== 'object' || !jsonData.seasonData || !jsonData.standingsData) {
             console.error("[SeasonDetail] Fetched data is missing crucial fields (e.g. seasonData or standingsData) or is not an object. Full data:", jsonData);
-            setSeasonData(null); 
-            throw new Error(`Fetched data for ${selectedSeason} is incomplete or not in the expected object format. Essential fields like 'seasonData' or 'standingsData' are missing.`);
+            throw new Error(`Fetched data for ${selectedSeason} is incomplete or not in the expected object format.`);
           }
           setSeasonData(jsonData);
-        })
-        .catch(err => {
+        } catch (err) {
           console.error(`[SeasonDetail] Failed to load or process season data for ${selectedSeason}:`, err);
-          setError(`Failed to load data for ${selectedSeason}. Details: ${err.message}. Check browser console and ensure '${selectedSeason}.json' exists at '${seasonFilePath}' and is correctly formatted according to the SeasonDetailData interface in types.ts.`);
+          setError(err instanceof Error ? err.message : `An unknown error occurred while fetching data for ${selectedSeason}.`);
           setSeasonData(null);
-        })
-        .finally(() => {
+        } finally {
           setLoading(false);
-        });
+        }
+      };
+
+      fetchSeasonData();
     } else {
       setSeasonData(null);
       setLoading(false);
@@ -1608,50 +1598,43 @@ const GMCareer = () => {
   
   useEffect(() => {
     if (selectedGmId) {
-      setLoading(true);
-      setError(null);
-      setGmData(null);
-      setGmIndividualSeasonData(null); 
-      setErrorGmIndividualSeason(null);
+      const fetchGmData = async () => {
+        setLoading(true);
+        setError(null);
+        setGmData(null);
+        setGmIndividualSeasonData(null);
+        setErrorGmIndividualSeason(null);
 
-      const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
-      const gmSlug = gmInfoFromMock?.name.toLowerCase().replace(/\s+/g, '') || selectedGmId; 
-      const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
-      
-      console.log(`[GMCareer] Attempting to fetch data for GM: ${selectedGmId} (slug: ${gmSlug}) from ${gmFilePath}`);
-      fetcher(gmFilePath)
-        .then(async res => {
-          console.log(`[GMCareer] Fetch response status for ${gmSlug}: ${res.status} ${res.statusText}`);
-          if (!res.ok) {
-            let errorBody = "No additional error body from server.";
-            try { errorBody = await res.text(); } catch (e) { console.error("Error parsing error response body:", e); }
-            const shortErrorBody = errorBody.substring(0,200);
-            console.error(`[GMCareer] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
-            throw new Error(`Failed to fetch ${gmFilePath}. Status: ${res.status} ${res.statusText}. Server response: ${shortErrorBody}...`);
-          }
-          const data: GMCareerData = await res.json();
+        const gmInfoFromMock = mockGmsForTabs.find(g => g.id === selectedGmId);
+        const gmSlug = gmInfoFromMock?.name.toLowerCase().replace(/\s+/g, '') || selectedGmId;
+        const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
+        
+        console.log(`[GMCareer] Attempting to fetch data for GM: ${selectedGmId} (slug: ${gmSlug}) from ${gmFilePath}`);
+        
+        try {
+          const data: GMCareerData = await fetcher(gmFilePath);
           console.log(`[GMCareer] Successfully fetched and parsed data for ${gmSlug}:`, data);
           
           if (!data || !data.gmInfo || !data.careerStats || !data.seasonProgression) {
             console.error("[GMCareer] Fetched data is missing crucial fields (gmInfo, careerStats, or seasonProgression). Full data:", data);
-            setGmData(null);
             throw new Error(`Fetched data for ${gmSlug} is incomplete.`);
           }
+          
           setGmData(data);
-           if (selectedViewOption !== "all-seasons" && data.gmInfo && data.gmInfo.id && data.gmInfo.slug) {
-             fetchIndividualSeasonData(data.gmInfo.slug, data.gmInfo.id, selectedViewOption);
-           } else if (selectedViewOption === "all-seasons") {
-             setGmIndividualSeasonData(null); 
-           }
-        })
-        .catch(err => {
+          
+          if (selectedViewOption !== "all-seasons" && data.gmInfo?.slug && data.gmInfo?.id) {
+            fetchIndividualSeasonData(data.gmInfo.slug, data.gmInfo.id, selectedViewOption);
+          }
+        } catch (err) {
           console.error(`[GMCareer] Failed to load or process GM data for ${gmSlug} from ${gmFilePath}:`, err);
-          setError(`Failed to load data for GM '${mockGmsForTabs.find(g => g.id === selectedGmId)?.name || gmSlug}'. Details: ${err.message}. Check console and ensure '${gmFilePath}' exists and is correctly formatted.`);
-          setGmData(null); 
-        })
-        .finally(() => {
+          setError(err instanceof Error ? err.message : `An unknown error occurred while fetching data for ${gmSlug}.`);
+          setGmData(null);
+        } finally {
           setLoading(false);
-        });
+        }
+      };
+
+      fetchGmData();
     } else {
         setGmData(null);
         setLoading(false);
@@ -1661,7 +1644,7 @@ const GMCareer = () => {
   }, [selectedGmId]); 
 
 
-  const fetchIndividualSeasonData = (gmSlug: string, gmNumericId: number, year: string) => {
+  const fetchIndividualSeasonData = async (gmSlug: string, gmNumericId: number, year: string) => {
       setLoadingGmIndividualSeason(true);
       setErrorGmIndividualSeason(null);
       setGmIndividualSeasonData(null); 
@@ -1670,40 +1653,31 @@ const GMCareer = () => {
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
       console.log(`[GMCareer-IndividualSeason] Attempting to fetch: ${seasonDetailFilePath}`);
-      fetcher(seasonDetailFilePath)
-        .then(async res => {
-          console.log(`[GMCareer-IndividualSeason] Fetch response for ${seasonDetailFilePath}: ${res.status} ${res.statusText}`);
-          if (!res.ok) {
-            let errorBody = "No additional error body from server.";
-            try { errorBody = await res.text(); } catch (e) { console.error("Error parsing error response body:", e); }
-            const shortErrorBody = errorBody.substring(0,200);
-            console.error(`[GMCareer-IndividualSeason] HTTP error! Status: ${res.status}. Body: ${shortErrorBody}`);
-            throw new Error(`Failed to fetch ${seasonDetailFilePath}. Status: ${res.status} ${res.statusText}. Server: ${shortErrorBody}...`);
-          }
-          const data: GMIndividualSeasonDetailData = await res.json();
-          console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
-          if (!data || !data.seasonSummary || !data.rosterBreakdown) { 
-              console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
-              throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
-          }
-          setGmIndividualSeasonData(data);
-        })
-        .catch(err => {
-          console.error(`[GMCareer-IndividualSeason] Failed to load or process GM season data:`, err);
-          setErrorGmIndividualSeason(`Failed to load season details for ${year}. Details: ${err.message}. Ensure '${seasonDetailFilePath}' exists and is correctly formatted.`);
-          setGmIndividualSeasonData(null);
-        })
-        .finally(() => {
-          setLoadingGmIndividualSeason(false);
-        });
+      
+      try {
+        const data: GMIndividualSeasonDetailData = await fetcher(seasonDetailFilePath);
+        console.log(`[GMCareer-IndividualSeason] Successfully fetched and parsed data for ${seasonDetailFilePath}:`, data);
+        
+        if (!data || !data.seasonSummary || !data.rosterBreakdown) { 
+            console.error("[GMCareer-IndividualSeason] Fetched GM individual season data is missing crucial fields. Full data:", data);
+            throw new Error(`Fetched GM season data for ${gmSlug} ${year} is incomplete.`);
+        }
+        setGmIndividualSeasonData(data);
+      } catch (err) {
+        console.error(`[GMCareer-IndividualSeason] Failed to load or process GM season data:`, err);
+        setErrorGmIndividualSeason(err instanceof Error ? err.message : `An unknown error occurred fetching data for ${year}.`);
+        setGmIndividualSeasonData(null);
+      } finally {
+        setLoadingGmIndividualSeason(false);
+      }
   };
 
 
   useEffect(() => {
-    if (selectedViewOption !== "all-seasons" && gmData && gmData.gmInfo && gmData.gmInfo.id && gmData.gmInfo.slug) {
+    if (selectedViewOption !== "all-seasons" && gmData?.gmInfo?.slug && gmData?.gmInfo?.id) {
       fetchIndividualSeasonData(gmData.gmInfo.slug, gmData.gmInfo.id, selectedViewOption);
     } else if (selectedViewOption === "all-seasons") {
-        setGmIndividualSeasonData(null); 
+        setGmIndividualSeasonData(null);
     }
   }, [selectedViewOption, gmData]);
 
@@ -2552,56 +2526,43 @@ export default function LeagueHistoryPage() {
 
 
   useEffect(() => {
-    if (activeMainTab === 'all-seasons' && !leagueData) { 
+    if (activeMainTab === 'all-seasons' && !leagueData) {
+      const fetchLeagueData = async () => {
         setLoadingLeagueData(true);
         console.log("[LeagueHistoryPage] Attempting to fetch league-data.json");
-        fetcher('/data/league_data/league-data.json')
-          .then(async res => {
-            console.log("[LeagueHistoryPage] Fetch response status for league-data.json:", res.status, res.statusText);
-            if (!res.ok) {
-              let errorBody = "Failed to parse error response body";
-              try {
-                  errorBody = await res.text();
-              } catch(e) { console.error("Error parsing error response body:", e); }
-              const shortErrorBody = errorBody.substring(0,200);
-              console.error("Failed to fetch league-data.json, status:", res.status, "Body:", shortErrorBody);
-              setLeagueData(null);
-              throw new Error(`HTTP error! status: ${res.status}. Body: ${shortErrorBody}`);
-            }
-            return res.json();
-          })
-          .then((data: any) => {
-            console.log("[LeagueHistoryPage] Successfully fetched and parsed league-data.json:", data);
-            const mappedCareerLeaderboard = (Array.isArray(data.careerLeaderboard) ? data.careerLeaderboard : []).map((stat: any) => ({
-              ...stat,
-              pointsFor: stat.pointsFor ?? stat.points ?? 0, 
-              pointsAgainst: stat.pointsAgainst ?? 0,
-            }));
-
-            const processedData: LeagueData = {
-              championshipTimeline: Array.isArray(data.championshipTimeline) ? data.championshipTimeline : [],
-              careerLeaderboard: mappedCareerLeaderboard,
-              leagueRecords: Array.isArray(data.leagueRecords) ? data.leagueRecords : [],
-              finalStandingsHeatmap: Array.isArray(data.finalStandingsHeatmap) ? data.finalStandingsHeatmap : [],
-              playoffQualificationRate: Array.isArray(data.playoffQualificationRate) ? data.playoffQualificationRate : [],
-              gmPlayoffPerformance: Array.isArray(data.gmPlayoffPerformance) ? data.gmPlayoffPerformance : [],
-            };
-            setLeagueData(processedData);
-          })
-          .catch(error => {
-            console.error("Failed to load or process league-data.json:", error);
-            setLeagueData(null); 
-          })
-          .finally(() => {
-            setLoadingLeagueData(false);
-          });
-    } else if (activeMainTab !== 'all-seasons' && leagueData) {
         
-    } else if (activeMainTab !== 'all-seasons' && !leagueData) {
+        try {
+          const data: LeagueData = await fetcher('/data/league_data/league-data.json');
+          console.log("[LeagueHistoryPage] Successfully fetched and parsed league-data.json:", data);
+          
+          const mappedCareerLeaderboard = (Array.isArray(data.careerLeaderboard) ? data.careerLeaderboard : []).map((stat: any) => ({
+            ...stat,
+            pointsFor: stat.pointsFor ?? stat.points ?? 0,
+            pointsAgainst: stat.pointsAgainst ?? 0,
+          }));
+
+          const processedData: LeagueData = {
+            championshipTimeline: Array.isArray(data.championshipTimeline) ? data.championshipTimeline : [],
+            careerLeaderboard: mappedCareerLeaderboard,
+            leagueRecords: Array.isArray(data.leagueRecords) ? data.leagueRecords : [],
+            finalStandingsHeatmap: Array.isArray(data.finalStandingsHeatmap) ? data.finalStandingsHeatmap : [],
+            playoffQualificationRate: Array.isArray(data.playoffQualificationRate) ? data.playoffQualificationRate : [],
+            gmPlayoffPerformance: Array.isArray(data.gmPlayoffPerformance) ? data.gmPlayoffPerformance : [],
+          };
+          setLeagueData(processedData);
+        } catch (error) {
+          console.error("Failed to load or process league-data.json:", error);
+          setLeagueData(null);
+        } finally {
+          setLoadingLeagueData(false);
+        }
+      };
+
+      fetchLeagueData();
+    } else if (activeMainTab !== 'all-seasons') {
       setLoadingLeagueData(false);
     }
-
-  }, [activeMainTab, leagueData]); 
+  }, [activeMainTab, leagueData]);
 
   if (activeMainTab === 'all-seasons') {
     return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
@@ -2615,4 +2576,3 @@ export default function LeagueHistoryPage() {
 
   return <AllSeasonsOverview leagueData={leagueData} loading={loadingLeagueData} />;
 }
-

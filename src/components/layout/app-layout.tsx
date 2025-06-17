@@ -20,6 +20,7 @@ import { ListChecks, Users, FileText, Trophy } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import { Suspense } from "react";
+import logo from '../../../public/images/wtstats-logo.png';
 
 function LayoutFallback() {
   return (
@@ -124,7 +125,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-2">
              <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
                 <Image 
-                  src="/images/wtstats-logo.png" 
+                  src={logo} 
                   alt="WTStats App Logo" 
                   width={140} 
                   height={44} 
@@ -132,7 +133,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   priority 
                 />
                 <Image 
-                  src="/images/wtstats-logo.png" 
+                  src={logo} 
                   alt="WTStats App Logo Small" 
                   width={40} 
                   height={40} 

@@ -138,75 +138,78 @@ export default function H2HPage() {
       const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
       console.log(`[H2HPage] Fetching ${filePath}`);
 
+      //
+// >>> REPLACE THE ENTIRE fetchData FUNCTION WITH THIS <<<
+//
       const fetchData = async () => {
         try {
-          const response = await fetcher(filePath);
-          if (response.status === 404) {
-            console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
-            setError(null);
-            setComparisonData(null);
-          } else if (!response.ok) {
-            const errorText = await response.text();
-            console.error("[H2HPage] Fetch failed:", response.status, errorText);
-            throw new Error(`Failed to fetch H2H data: ${response.status} ${response.statusText}. File: ${filePath}.`);
-          } else {
-            const data: H2HRivalryData = await response.json();
-            console.log("[H2HPage] Fetched H2H data:", data);
+          const data: H2HRivalryData = await fetcher(filePath);
+          console.log("[H2HPage] Fetched H2H data:", data);
 
-            if (data.owner1_info.owner_id.toString() === gm1Id) {
-              setComparisonData(data);
-              setDisplayedGm1Name(data.owner1_info.owner_name);
-              setDisplayedGm2Name(data.owner2_info.owner_name);
-            } else if (data.owner2_info.owner_id.toString() === gm1Id) {
-              setDisplayedGm1Name(data.owner2_info.owner_name);
-              setDisplayedGm2Name(data.owner1_info.owner_name);
-              setComparisonData({
-                owner1_info: data.owner2_info,
-                owner2_info: data.owner1_info,
-                rivalry_summary: {
-                  ...data.rivalry_summary,
-                  owner1_wins: data.rivalry_summary.owner2_wins,
-                  owner2_wins: data.rivalry_summary.owner1_wins,
-                  owner1_total_points_scored_in_h2h: data.rivalry_summary.owner2_total_points_scored_in_h2h,
-                  owner2_total_points_scored_in_h2h: data.rivalry_summary.owner1_total_points_scored_in_h2h,
-                  owner1_average_score_in_h2h: data.rivalry_summary.owner2_average_score_in_h2h,
-                  owner2_average_score_in_h2h: data.rivalry_summary.owner1_average_score_in_h2h,
-                  average_margin_of_victory_owner1: data.rivalry_summary.average_margin_of_victory_owner2,
-                  average_margin_of_victory_owner2: data.rivalry_summary.average_margin_of_victory_owner1,
-                },
-                matchup_timeline: data.matchup_timeline.map(m => ({
-                  ...m,
-                  owner1_score: m.owner2_score,
-                  owner2_score: m.owner1_score,
-                  owner1_team_name: m.owner2_team_name,
-                  owner2_team_name: m.owner1_team_name,
-                })),
-                playoff_meetings: {
-                  ...data.playoff_meetings,
-                  owner1_playoff_wins: data.playoff_meetings.owner2_playoff_wins,
-                  owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
-                  matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
-                      ...pm,
-                      owner1_score: pm.owner2_score,
-                      owner2_score: pm.owner1_score,
-                  }))
-                }
-              });
-            } else {
-              console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
-              setComparisonData(data);
-              setDisplayedGm1Name(data.owner1_info.owner_name);
-              setDisplayedGm2Name(data.owner2_info.owner_name);
-            }
+          // Case 1: The data is already in the correct order (GM1 is owner1)
+          if (data.owner1_info.owner_id.toString() === gm1Id) {
+            setComparisonData(data);
+            setDisplayedGm1Name(data.owner1_info.owner_name);
+            setDisplayedGm2Name(data.owner2_info.owner_name);
+          } 
+          // Case 2: The data is in the reverse order (GM1 is owner2), so we must swap everything.
+          else if (data.owner2_info.owner_id.toString() === gm1Id) {
+            setDisplayedGm1Name(data.owner2_info.owner_name);
+            setDisplayedGm2Name(data.owner1_info.owner_name);
+
+            // **THIS IS THE CORRECTED PART**
+            // We now build the *complete* swapped object before setting the state.
+            const swappedData: H2HRivalryData = {
+              owner1_info: data.owner2_info,
+              owner2_info: data.owner1_info,
+              rivalry_summary: {
+                ...data.rivalry_summary,
+                owner1_wins: data.rivalry_summary.owner2_wins,
+                owner2_wins: data.rivalry_summary.owner1_wins,
+                owner1_total_points_scored_in_h2h: data.rivalry_summary.owner2_total_points_scored_in_h2h,
+                owner2_total_points_scored_in_h2h: data.rivalry_summary.owner1_total_points_scored_in_h2h,
+                owner1_average_score_in_h2h: data.rivalry_summary.owner2_average_score_in_h2h,
+                owner2_average_score_in_h2h: data.rivalry_summary.owner1_average_score_in_h2h,
+                average_margin_of_victory_owner1: data.rivalry_summary.average_margin_of_victory_owner2,
+                average_margin_of_victory_owner2: data.rivalry_summary.average_margin_of_victory_owner1,
+              },
+              matchup_timeline: data.matchup_timeline.map(m => ({
+                ...m,
+                owner1_score: m.owner2_score,
+                owner2_score: m.owner1_score,
+                owner1_team_name: m.owner2_team_name,
+                owner2_team_name: m.owner1_team_name,
+              })),
+              playoff_meetings: {
+                ...data.playoff_meetings,
+                owner1_playoff_wins: data.playoff_meetings.owner2_playoff_wins,
+                owner2_playoff_wins: data.playoff_meetings.owner1_playoff_wins,
+                matchups_details: data.playoff_meetings.matchups_details.map(pm => ({
+                    ...pm,
+                    owner1_score: pm.owner2_score,
+                    owner2_score: pm.owner1_score,
+                }))
+              }
+            };
+            setComparisonData(swappedData);
+          } 
+          // Case 3: Fallback if IDs don't match (your original logic)
+          else {
+            console.warn("[H2HPage] Fetched data owner IDs do not match selected GM IDs directly. Displaying as is.");
+            setComparisonData(data);
+            setDisplayedGm1Name(data.owner1_info.owner_name);
+            setDisplayedGm2Name(data.owner2_info.owner_name);
           }
         } catch (err) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError("An unknown error occurred while fetching H2H data.");
-          }
           console.error("[H2HPage] Error in fetchData:", err);
-          setComparisonData(null);
+          if (err instanceof Error && err.message.includes("Status: 404")) {
+            console.warn(`[H2HPage] Data file not found for this matchup. Assuming no H2H history.`);
+            setError(null);
+            setComparisonData(null);
+          } else {
+            setError(err instanceof Error ? err.message : "An unknown error occurred.");
+            setComparisonData(null);
+          }
         } finally {
           setLoading(false);
         }
