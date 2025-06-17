@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { FileText } from "lucide-react";
 import type { ReactNode } from "react";
 import { Suspense } from "react";
+import { fetcher } from '@/lib/fetcher'; 
 
 // Wrapper client component
 function DeepDivesContentWrapper({ children }: { children: ReactNode }) {

@@ -12,8 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Separator } from '@/components/ui/separator';
+import { fetcher } from '@/lib/fetcher'; 
 
-const router = useRouter();
 // Using the same mockGms as draft-history for consistency in IDs
 const mockGms: GM[] = [
   { id: "1", name: "Jack" }, { id: "2", name: "Josh" }, { id: "3", name: "Jake" }, { id: "4", name: "Mark" }, { id: "5", name: "Sean" }, { id: "6", name: "Nick" }, { id: "7", name: "Will" }, { id: "8", name: "Zach" }, { id: "9", name: "Lac" }, { id: "11", name: "Chris" }, { id: "12", name: "Dylan" }, { id: "13", name: "Dan" }, { id: "14", name: "Fitz" }
@@ -135,12 +135,12 @@ export default function H2HPage() {
       const numGm1Id = parseInt(gm1Id);
       const numGm2Id = parseInt(gm2Id);
       const ids = [numGm1Id, numGm2Id].sort((a, b) => a - b);
-      const filePath = `${router.basePath}/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
+      const filePath = `/data/h2h/comparison_${ids[0]}_vs_${ids[1]}.json`;
       console.log(`[H2HPage] Fetching ${filePath}`);
 
       const fetchData = async () => {
         try {
-          const response = await fetch(filePath);
+          const response = await fetcher(filePath);
           if (response.status === 404) {
             console.warn(`[H2HPage] Data file not found (404): ${filePath}. Assuming no H2H history.`);
             setError(null);

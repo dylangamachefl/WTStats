@@ -62,7 +62,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PieChart as RechartsPieChartComponent } from 'recharts';
-
+import { fetcher } from '@/lib/fetcher'; 
 
 // Mock data for SeasonDetail and GMCareer tabs (as types)
 import type { Season as SeasonType_Mock, GM as GM_Mock } from '@/lib/types';
@@ -718,7 +718,7 @@ const SeasonDetail = () => {
       setSeasonData(null); 
       const seasonFilePath = `/data/league_data/seasons/${selectedSeason}.json`;
       console.log(`[SeasonDetail] Attempting to fetch data for season: ${selectedSeason} from ${seasonFilePath}`);
-      fetch(seasonFilePath)
+      fetcher(seasonFilePath)
         .then(async res => {
           console.log(`[SeasonDetail] Fetch response status for ${selectedSeason}: ${res.status} ${res.statusText}`);
           if (!res.ok) {
@@ -1619,7 +1619,7 @@ const GMCareer = () => {
       const gmFilePath = `/data/league_data/${gmSlug}/${gmSlug}.json`;
       
       console.log(`[GMCareer] Attempting to fetch data for GM: ${selectedGmId} (slug: ${gmSlug}) from ${gmFilePath}`);
-      fetch(gmFilePath)
+      fetcher(gmFilePath)
         .then(async res => {
           console.log(`[GMCareer] Fetch response status for ${gmSlug}: ${res.status} ${res.statusText}`);
           if (!res.ok) {
@@ -1670,7 +1670,7 @@ const GMCareer = () => {
       const seasonDetailFilePath = `/data/league_data/${gmSlug}/gm_career_${gmNumericId}_${year}.json`;
 
       console.log(`[GMCareer-IndividualSeason] Attempting to fetch: ${seasonDetailFilePath}`);
-      fetch(seasonDetailFilePath)
+      fetcher(seasonDetailFilePath)
         .then(async res => {
           console.log(`[GMCareer-IndividualSeason] Fetch response for ${seasonDetailFilePath}: ${res.status} ${res.statusText}`);
           if (!res.ok) {
@@ -2555,7 +2555,7 @@ export default function LeagueHistoryPage() {
     if (activeMainTab === 'all-seasons' && !leagueData) { 
         setLoadingLeagueData(true);
         console.log("[LeagueHistoryPage] Attempting to fetch league-data.json");
-        fetch('/data/league_data/league-data.json')
+        fetcher('/data/league_data/league-data.json')
           .then(async res => {
             console.log("[LeagueHistoryPage] Fetch response status for league-data.json:", res.status, res.statusText);
             if (!res.ok) {

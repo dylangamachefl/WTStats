@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
+import { fetcher } from '@/lib/fetcher'; 
 
 
 // Mock Data for Season Dropdown in SeasonDraftDetail
@@ -130,7 +131,7 @@ const DraftOverview = () => {
       try {
         const filePath = '/data/draft_data/gm_season_performance_grid.json';
         console.log(`[DraftOverview] Fetching ${filePath}`);
-        const response = await fetch(filePath);
+        const response = await fetcher(filePath);
         if (!response.ok) {
           const errorText = await response.text();
           console.error("[DraftOverview] Fetch failed:", response.status, errorText);
@@ -662,7 +663,7 @@ const SeasonDraftDetail = () => {
         try {
           const filePath = `/data/draft_data/seasons/season_${selectedSeason}_draft_detail.json`;
           console.log(`[SeasonDraftDetail] Fetching ${filePath}`);
-          const response = await fetch(filePath);
+          const response = await fetcher(filePath);
 
           if (!response.ok) {
             const errorText = await response.text();
@@ -1067,7 +1068,7 @@ const GMDraftHistory = () => {
           }
           const filePath = `/data/draft_data/gm/gm_${selectedGmId}_draft_history.json`;
           console.log(`[GMDraftHistory] Fetching ${filePath}`);
-          const response = await fetch(filePath);
+          const response = await fetcher(filePath);
           if (!response.ok) {
              const errorText = await response.text();
              console.error(`[GMDraftHistory] Fetch failed for GM ${selectedGmId} (Status: ${response.status}):`, errorText.substring(0,200));
