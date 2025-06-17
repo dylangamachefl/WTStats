@@ -21,6 +21,14 @@ import Image from "next/image";
 import * as React from "react";
 import { Suspense } from "react";
 
+function LayoutFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <p>Loading application layout...</p>
+    </div>
+  );
+}
+
 interface NavSubItem {
   href: string;
   label: string;
@@ -109,6 +117,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
 
   return (
+    <Suspense fallback={<LayoutFallback />}>
     <SidebarProvider defaultOpen>
       <Sidebar collapsible="icon" className="border-r">
         <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -176,17 +185,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset className="flex flex-col overflow-x-hidden"> {}
-        <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        {/* Header does not seem to use searchParams directly, keeping it outside the suspense boundary */}
+        {/* <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <SidebarTrigger className="md:hidden" />
           
           <div>
             
           </div>
         </header>
+         */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           {children}
         </main>
       </SidebarInset>
     </SidebarProvider>
+    </Suspense>
   );
 }
