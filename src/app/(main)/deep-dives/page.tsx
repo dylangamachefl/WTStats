@@ -1,9 +1,18 @@
 
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileText } from "lucide-react";
+import type { ReactNode } from "react";
+
+// Wrapper client component
+function DeepDivesContentWrapper({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+}
 
 export default function DeepDivesPage() {
   return (
+    <DeepDivesContentWrapper>
     <div className="space-y-6">
       <Card>
         <CardHeader>
@@ -22,5 +31,6 @@ export default function DeepDivesPage() {
         </CardContent>
       </Card>
     </div>
+    </DeepDivesContentWrapper>
   );
 }

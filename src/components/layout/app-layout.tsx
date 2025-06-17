@@ -19,6 +19,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { ListChecks, Users, FileText, Trophy } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
+import { Suspense } from "react";
 
 interface NavSubItem {
   href: string;
@@ -189,4 +190,3 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
-
