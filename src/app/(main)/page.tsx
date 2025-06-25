@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -641,7 +642,7 @@ const AllSeasonsOverview = ({ leagueData, loading }: { leagueData: LeagueData | 
               <YAxis tickFormatter={(value) => `${(value * 100).toFixed(0)}%`} />
               <RechartsTooltip formatter={(value: number) => `${(value * 100).toFixed(1)}%`} />
               <RechartsLegend />
-              <Bar dataKey="qualification_rate" fill="hsl(var(--chart-1))" name="Playoff Rate" />
+              <Bar dataKey="qualification_rate" fill="hsl(var(--primary))" name="Playoff Rate" />
             </RechartsBarChartImport>
           </ResponsiveContainer>
         </CardContent>
