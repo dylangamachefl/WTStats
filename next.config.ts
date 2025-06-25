@@ -1,5 +1,18 @@
 // next.config.js
 
+import nextMDX from '@next/mdx';
+
+const withMDX = nextMDX({
+  extension: /\.mdx?$/,
+  options: {
+    // Optionally add remark and rehype plugins
+    remarkPlugins: [],
+    rehypePlugins: [],
+    // If you use a custom MDX provider, pass it here.
+    // mdxProvider: '@/components/mdx-provider'
+  },
+});
+
 const isProd = process.env.NODE_ENV === 'production';
 
 // *** THIS IS THE MOST IMPORTANT LINE. IT MUST MATCH YOUR REPO NAME EXACTLY. ***
@@ -32,4 +45,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withMDX(nextConfig);

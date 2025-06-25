@@ -1,48 +1,51 @@
-
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileText } from "lucide-react";
-import type { ReactNode } from "react";
-import { Suspense } from "react";
-import { fetcher } from '@/lib/fetcher'; 
+import Link from 'next/link';
+import { getAllDeepDives } from '@/lib/deep-dives';
 
-// Wrapper client component
-function DeepDivesContentWrapper({ children }: { children: ReactNode }) {
-  return <>{children}</>;
-}
-
-export default function DeepDivesPage() {
-  // Simple fallback for the suspense boundary
-  const LoadingFallback = () => (
-    <div className="text-center py-12">
-      <p>Loading Deep Dives...</p>
-    </div>
-  );
+export default async function DeepDivesPage() {
+  const deepDives = getAllDeepDives();
 
   return (
-    // Wrap the main content with Suspense
-    <DeepDivesContentWrapper> {/* This wrapper is already a client component */}
-      <Suspense fallback={<LoadingFallback />}>
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><FileText /> Deep Dives</CardTitle>
-              <CardDescription>In-depth articles and analyses of league trends, strategies, and memorable moments.</CardDescription>
-            </CardHeader>
-            <CardContent>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><FileText /> Deep Dives</CardTitle>
+          <CardDescription>In-depth articles and analyses of league trends, strategies, and memorable moments.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {
+            deepDives.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {deepDives.map((deepDive) => (
+                  <Link href={`/deep-dives/${deepDive.slug}`} key={deepDive.slug} className="block">
+                    <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+                      <CardHeader>
+                        <CardTitle>{deepDive.frontmatter.title}</CardTitle>
+                        <CardDescription>
+                          {new Date(deepDive.frontmatter.date).toLocaleDateString()} by {deepDive.frontmatter.author}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p>{deepDive.frontmatter.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
               <div className="text-center py-12">
                 <FileText className="mx-auto h-24 w-24 text-muted-foreground mb-4" />
-                <h2 className="text-2xl font-semibold mb-2">Coming Soon!</h2>
+                <h2 className="text-2xl font-semibold mb-2">No Deep Dives Yet!</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
                   This section will feature detailed articles and statistical explorations.
-                  Future content will be rendered from Markdown. For now, enjoy the rest of the platform!
+                  Check back soon for new content.
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </Suspense>
-    </DeepDivesContentWrapper>
+            )
+          }
+        </CardContent>
+      </Card>
+    </div>
   );
 }
