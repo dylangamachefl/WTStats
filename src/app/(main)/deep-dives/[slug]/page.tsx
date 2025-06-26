@@ -3,6 +3,9 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import NextImage from 'next/image';
 import { getDeepDiveBySlug, getDeepDiveSlugs } from '@/lib/deep-dives';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export async function generateStaticParams() {
   const slugs = getDeepDiveSlugs();
@@ -31,6 +34,14 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
 
   return (
     <div className="container mx-auto py-8">
+      <div className="mb-6">
+        <Button asChild variant="outline">
+          <Link href="/deep-dives">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Deep Dives
+          </Link>
+        </Button>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle className="text-4xl font-bold mb-2">{frontmatter.title}</CardTitle>
