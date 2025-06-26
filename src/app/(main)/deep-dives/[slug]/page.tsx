@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { getDeepDiveBySlug, getDeepDiveSlugs } from '@/lib/deep-dives';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -25,6 +25,10 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
 
   const { frontmatter, content } = deepDive;
 
+  const components = {
+    Image: (props: any) => <NextImage {...props} />,
+  }
+
   return (
     <div className="container mx-auto py-8">
       <Card>
@@ -35,7 +39,7 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
           </p>
         </CardHeader>
         <CardContent className="prose dark:prose-invert max-w-none">
-          <MDXRemote source={content} components={{ Image }} />
+          <MDXRemote source={content} components={components} />
         </CardContent>
       </Card>
     </div>
