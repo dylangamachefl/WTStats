@@ -1,9 +1,16 @@
 // next.config.js
-
 const isProd = process.env.NODE_ENV === 'production';
-
-// *** THIS IS THE MOST IMPORTANT LINE. IT MUST MATCH YOUR REPO NAME EXACTLY. ***
 const repoName = 'WTStats'; // Or whatever your repo is named
+
+// Import @next/mdx
+const createMDX = require('@next/mdx')({ // Renamed variable for clarity
+  extension: /\.mdx?$/, // Process .md and .mdx files
+  options: {
+    remarkPlugins: [], // Add any remark plugins here, e.g., require('remark-gfm') for tables
+    rehypePlugins: [], // Add any rehype plugins here
+    // If you use an MDXProvider, you might need: providerImportSource: "@mdx-js/react",
+  },
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -26,10 +33,17 @@ const nextConfig = {
     NEXT_PUBLIC_BASE_PATH: isProd ? `/${repoName}` : '',
   },
 
-  // Disable Next.js image optimization, which isn't compatible with static export
+  // Disable Next.js image optimization, which isn't compatible with static export if `output: 'export'`
+  // and you are not using a custom loader.
   images: {
     unoptimized: true,
   },
+
+  // *** ADD THIS LINE ***
+  // Tell Next.js to recognize .mdx and .md files as pages/components
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  transpilePackages: ['next-mdx-remote'],
 };
 
-module.exports = nextConfig;
+// *** WRAP YOUR CONFIG WITH THE MDX HOF ***
+module.exports = createMDX(nextConfig); // Use the createMDX Higher Order Function
