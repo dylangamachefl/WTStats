@@ -1,0 +1,11 @@
+[
+    {"Position":"QB","player_name":"Lamar Jackson","season_id":2024,"total_fantasy_points":430.4,"owner_name":"Sean"},
+    {"Position":"RB","player_name":"Christian McCaffrey","season_id":2019,"total_fantasy_points":355.2,"owner_name":"Jack"},
+    {"Position":"RB","player_name":"Chris Johnson","season_id":2009,"total_fantasy_points":342.9,"owner_name":"Chris"},
+    {"Position":"WR","player_name":"Cooper Kupp","season_id":2021,"total_fantasy_points":294.5,"owner_name":"Chris"},
+    {"Position":"WR","player_name":"Ja'Marr Chase","season_id":2024,"total_fantasy_points":276,"owner_name":"Josh"},
+    {"Position":"TE","player_name":"Rob Gronkowski","season_id":2011,"total_fantasy_points":240.9,"owner_name":"Lac"},
+    {"Position":"FLEX (RB/WR)","player_name":"Jonathan Taylor","season_id":2021,"total_fantasy_points":333.1,"owner_name":"Dylan"},
+    {"Position":"K","player_name":"David Akers","season_id":2011,"total_fantasy_points":184.6,"owner_name":"Waiver Wire/Trade"},
+    {"Position":"DST","player_name":"Patriots D/ST","season_id":2019,"total_fantasy_points":224,"owner_name":"Josh"}
+  ]

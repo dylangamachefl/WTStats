@@ -1,105 +1,92 @@
 ---
-title: "Shifting Tides: How Our League's Draft Values Have Evolved (Rounds 1-5)"
-date: "2025-04-02"
-author: "The League Algorithmist"
+title: "How Our League's Draft Values Have Evolved (Rounds 1-5)"
+date: "2025-06-26"
+author: "Dylan"
 description: "An analysis of positional drafting trends in the first five rounds from 2009 to 2024."
 slug: "dd2-positional-value-evolution" 
 chartImageBasePath: "/images/deep-dives/dd2-positional-value-evolution/"
 ---
+**Key Takeaways**
+<Callout type="info">
+  *   **The QB Quandary:** While the *first* QB off the board has seen some wild swings, the overall *number* of QBs taken early remains low, though trending up.
+  *   **RB Reign (Mostly):** RBs have consistently dominated early rounds, but 2024 showed a significant dip in favor of WRs.
+  *   **WR Ascendancy is Real:** Wide Receivers have seen a clear upward trend, becoming the most drafted position in the first five rounds in 2024.
+  *   **TEs - A Sprinkling of Scarcity:** Tight Ends remain a small, situational fraction of early-round picks.
+</Callout>
 
-import { Image } from 'next/image';
+## Introduction: Why Are We Looking At This?
 
-<section style={{ marginBottom: '2.5rem' }}>
-  <h2>TL;DR / Key Takeaways</h2>
-  <ul>
-    <li><strong>The QB Quandary:</strong> While the <em>first</em> QB off the board has seen some wild swings in draft position, the overall <em>number</em> of QBs taken in the first five rounds remains relatively low, though 2024 saw a notable uptick.</li>
-    <li><strong>RB Reign (Mostly):</strong> Running Backs consistently dominate the early rounds, often comprising over 40% of picks in the first five rounds. However, 2024 showed a significant dip in early RB selections.</li>
-    <li><strong>WR Ascendancy is Real:</strong> Wide Receivers have seen a clear upward trend in early-round investment, culminating in 2024 where they became the most drafted position in the first five rounds.</li>
-    <li><strong>TEs - A Sprinkling of Scarcity:</strong> Tight Ends remain a small fraction of early-round picks, with a slight increase in recent years, particularly when an elite talent is perceived.</li>
-  </ul>
-</section>
+Every season starts with the draft—the single most important day on our league's calendar. It's where strategies are tested, gambles are made, and the foundations of a championship roster are laid. But as the NFL changes, do we change with it? This analysis explores the evolution of our league's drafting philosophy. By examining a decade and a half of data, we can see exactly how our collective valuation of QBs, RBs, WRs, and TEs has shifted.
 
-<section style={{ marginBottom: '2.5rem' }}>
-  <h2>Introduction: Why Are We Looking At This?</h2>
-  <p>The annual fantasy draft is the bedrock of our league. Fortunes are made, rivalries are forged, and often, the seeds of championship rosters are sown in those crucial early rounds. But do our collective drafting habits stay the same year after year? Or do we, as a league, adapt, evolve, and perhaps even chase (or set!) new strategic trends?</p>
-  <p>This deep dive peers into our league's drafting history, specifically focusing on the first five rounds. We're looking at how the perceived value of Quarterbacks (QB), Running Backs (RB), Wide Receivers (WR), and Tight Ends (TE) has shifted over time. Are we getting smarter, more aggressive, or just different? Let's find out!</p>
-</section>
+## The Approach: How We Crunched the Numbers
 
-<section style={{ marginBottom: '2.5rem' }}>
-  <h2>The Approach: How We Crunched the Numbers</h2>
-  <p>We dug into our league's historical draft data (<code>WTDraft</code> table) from 2009 to 2024. Our analysis focused on two main areas:</p>
-  <ol>
-    <li><strong>The "First Off The Board":</strong> When (by overall pick number) was the very first player at each core position (QB, RB, WR, TE) selected each season?</li>
-    <li><strong>Early Round Composition:</strong> What was the numerical count and percentage breakdown of QBs, RBs, WRs, and TEs selected within the first five rounds of each draft?</li>
-  </ol>
-  <p>This gives us a picture of both the urgency to grab top-tier talent at each position and the overall strategic allocation of precious early-round draft capital.</p>
-</section>
+To understand these trends, we focused on the most impactful part of the draft: **the first five rounds**. We analyzed every pick from 2009 to 2024 to find patterns in two main areas:
+<br />
+*   **Urgency for Elite Talent:** By tracking the overall pick number of the *first* player taken at each position, we can see when the "run" on top-tier talent typically begins.
+*   **Strategic Investment:** By counting the *total number* of players taken from each position in these early rounds, we get a clear picture of our league's strategic priorities year after year.
+<SectionBreak />
 
-<section style={{ marginBottom: '2.5rem' }}>
-  <h2>Finding #1: The "First Off The Board" - Chasing Elite Talent</h2>
-  <p>When the top talent at a position starts flying off the draft board, it often signals a shift in perceived value or scarcity. Let's see how this has played out for QBs, RBs, WRs, and TEs.</p>
-  <div style={{ margin: '2rem 0' }}>
-    <Image
-      src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_first_pos_trend.png"
-      alt="Line chart showing the overall draft pick of the first player drafted by position from 2009 to 2024. The Y-axis is inverted, so a lower line means an earlier pick."
-      width={800}
-      height={550} 
-      layout="responsive"
-      priority
-    />
-  </div>
-  <em>Chart 1: The overall draft pick number when the first QB, RB, WR, and TE were selected each season. A lower number on the Y-axis means an earlier pick.</em>
-  <h3 style={{ marginTop: '2rem' }}>Key Observations from Chart 1</h3>
-  <ul>
-    <li><strong>Running Backs - The Consistent Kings:</strong> Unsurprisingly, the first Running Back has almost invariably been a top-3 pick, frequently going #1 overall. This underscores the long-held belief in the importance of an elite RB anchor. 2023 was a slight anomaly with the first RB at pick #3.</li>
-    <li><strong>Quarterbacks - A Rollercoaster Ride:</strong> The draft spot for the QB1 has been the most volatile. We've seen years like 2011 and 2012 where the first QB went as early as pick #2 or #3, and others like 2016, 2018, 2022, and 2024 where they lasted well into the 30s. This suggests our league's approach to QB1 varies wildly year-to-year.</li>
-    <li><strong>Wide Receivers - Early and Earlier:</strong> The first WR off the board has trended towards being an earlier pick over time. While often a top-10 pick, 2023 and 2024 saw the WR1 go #1 and #2 overall respectively.</li>
-    <li><strong>Tight Ends - Scarcity Drives Spikes:</strong> The TE1 draft position also shows considerable variance. Years with a clear "generational" talent (e.g., TE1 at pick #5 in 2023) see them go very early.</li>
-  </ul>
-</section>
+## Finding #1: The "First Off The Board" - Chasing Elite Talent
 
-<section style={{ marginBottom: '2.5rem' }}>
-  <h2>Finding #2: Shaping the Core - Positional Breakdown in Rounds 1-5</h2>
-  <p>The first five rounds are where teams typically build the core of their roster. How has our league allocated these crucial picks across the positions?</p>
-  <div style={{ margin: '2rem 0' }}>
-    <Image
-      src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_early_rounds_dist_count_r1-5.png"
-      alt="Bar chart showing the raw count of QB, RB, WR, and TE picks in the first 5 rounds from 2009 to 2024."
-      width={900}
-      height={600}
-      layout="responsive"
-    />
-  </div>
-  <em>Chart 2: The raw count of QBs, RBs, WRs, and TEs selected in the first five rounds of each draft.</em>
-  <div style={{ margin: '2rem 0' }}>
-    <Image
-      src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_early_rounds_dist_pct_r1-5.png"
-      alt="Stacked bar chart showing the percentage breakdown of QB, RB, WR, and TE picks in the first 5 rounds from 2009 to 2024."
-      width={900}
-      height={600}
-      layout="responsive"
-    />
-  </div>
-  <em>Chart 3: The percentage breakdown of QBs, RBs, WRs, and TEs selected (out of all QB/RB/WR/TE picks) within the first five rounds each season.</em>
-  <h3 style={{ marginTop: '2rem' }}>Key Observations from Charts 2 & 3</h3>
-  <ul>
-    <li><strong>Running Backs - The Longstanding Majority:</strong> For most of the league's history, RBs have been the most heavily drafted position in the first five rounds, often accounting for 40-45% of these early picks. However, 2024 saw a dramatic shift, with RBs accounting for only ~32% of early picks.</li>
-    <li><strong>Wide Receivers - The Steady Climb to the Top:</strong> The investment in WRs in the first five rounds has shown a clear upward trajectory, culminating in 2024 where they constituted a commanding 48% of early-round selections.</li>
-    <li><strong>Quarterbacks - A Modest but Growing Presence:</strong> While the QB1 might go early, the overall number of QBs taken in the first five rounds remained relatively low (2-7 QBs, or 4-14%) for many years. 2023 and 2024, however, saw a notable increase.</li>
-    <li><strong>Tight Ends - Consistent Scarcity:</strong> Tight ends consistently represent the smallest portion of picks in the first five rounds, typically 2-5 TEs (4-10%).</li>
-  </ul>
-</section>
+When the top talent at a position flies off the draft board, it often signals a shift in perceived value or scarcity. Here's how that has played out in our league.
 
-<hr style={{ margin: '3rem 0' }} />
+<Image
+  src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_first_pos_trend.png"
+  alt="Line chart showing the overall draft pick of the first player drafted by position from 2009 to 2024. The Y-axis is inverted, so a lower line means an earlier pick."
+  width={800}
+  height={550} 
+  layout="responsive"
+  priority
+  caption="Chart 1: The overall draft pick number when the first QB, RB, WR, and TE were selected each season. A lower number on the Y-axis means an earlier pick."
+/>
 
-<section>
-  <h2>Conclusion & What This Means For You (And Your Next Draft!)</h2>
-  <p>Our league's drafting tendencies are clearly not set in stone. We adapt, we react, and we evolve.</p>
-  <ul>
-    <li><strong>The WR Revolution is Here:</strong> If you're waiting on WRs, you might be missing the boat. The league is prioritizing them earlier and more heavily than ever before.</li>
-    <li><strong>QB Value is Subjective (and Volatile):</strong> While more QBs are creeping into the first five rounds recently, the timing of the <em>first</em> QB is still a wild card.</li>
-    <li><strong>RB Scarcity Still Matters, But...:</strong> The 2024 data showing a dip in early RB investment is intriguing. Is this a one-off, or the start of a new trend?</li>
-    <li><strong>Adapt or Be Left Behind:</strong> Being aware of these historical patterns can inform your strategy, but always be ready to adapt to the specific dynamics of the draft room!</li>
-  </ul>
-  <p style={{ marginTop: '1.5rem' }}>What are your big takeaways from this data? Did any of these trends surprise you? Let the debate begin!</p>
-</section>
+### Key Observations from Chart 1
+*   **Running Backs - The Consistent Kings:** Unsurprisingly, the first RB has almost invariably been a top-3 pick, frequently going #1 overall. This underscores the long-held belief in the importance of an elite RB anchor.
+*   **Quarterbacks - A Rollercoaster Ride:** The draft spot for the QB1 has been the most volatile, ranging from a top-3 pick to lasting well into the 30s, suggesting our league's approach to the position varies wildly year-to-year.
+*   **Wide Receivers - Early and Earlier:** The first WR off the board has trended towards being an earlier pick, with recent seasons seeing the WR1 go #1 or #2 overall.
+*   **Tight Ends - Scarcity Drives Spikes:** The TE1 draft position also shows considerable variance. Years with a clear "generational" talent see them go very early.
+
+<SectionBreak />
+
+## Finding #2: Shaping the Core - Positional Breakdown in Rounds 1-5
+
+The first five rounds are where teams build their foundation. How has our league allocated these crucial picks across the positions?
+
+<Image
+  src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_early_rounds_dist_count_r1-5.png"
+  alt="Bar chart showing the raw count of QB, RB, WR, and TE picks in the first 5 rounds from 2009 to 2024."
+  width={900}
+  height={600}
+  layout="responsive"
+  caption="Chart 2: The raw count of QBs, RBs, WRs, and TEs selected in the first five rounds of each draft."
+/>
+
+<Image
+  src="/images/deep-dives/dd2-positional-value-evolution/chart_dd2_early_rounds_dist_pct_r1-5.png"
+  alt="Stacked bar chart showing the percentage breakdown of QB, RB, WR, and TE picks in the first 5 rounds from 2009 to 2024."
+  width={900}
+  height={600}
+  layout="responsive"
+  caption="Chart 3: The percentage breakdown of QBs, RBs, WRs, and TEs selected (out of all QB/RB/WR/TE picks) within the first five rounds each season."
+/>
+
+### Key Observations from Charts 2 & 3
+*   **Running Backs - The Longstanding Majority:** For most of our history, RBs have made up 40-45% of early picks. However, 2024 saw a dramatic shift, with RBs accounting for only ~32%.
+*   **Wide Receivers - The Steady Climb to the Top:** The investment in WRs has trended upwards, culminating in 2024 where they constituted a commanding 48% of early-round selections.
+*   **Quarterbacks - A Modest but Growing Presence:** The total number of QBs taken in the first five rounds has remained relatively low but saw a notable increase in 2023 and 2024.
+*   **Tight Ends - Consistent Scarcity:** TEs consistently represent the smallest portion of picks in the first five rounds.
+
+<SectionBreak />
+
+## Conclusion & What This Means For You
+
+Our league's drafting tendencies are clearly not set in stone. We adapt, react, and evolve.
+
+<Callout type="conclusion">
+  *   **The WR Revolution is Here:** If you're waiting on WRs, you might be missing the boat.
+  *   **QB Value is Subjective:** While more QBs are creeping into the early rounds, the timing of the *first* QB is still a wild card.
+  *   **RB Scarcity Still Matters, But...:** The 2024 data showing a dip in early RB investment is intriguing. Is this a one-off or the start of a new trend?
+  *   **Adapt or Be Left Behind:** Being aware of these historical patterns can inform your strategy, but always be ready to adapt to the draft room dynamics!
+</Callout>
+
+<p className="mt-6 text-center font-semibold">What are your big takeaways from this data? Did any of these trends surprise you? Let the debate begin!</p>
