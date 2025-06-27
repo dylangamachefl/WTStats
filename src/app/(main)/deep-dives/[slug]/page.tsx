@@ -1,7 +1,8 @@
 // src/app/(main)/deep-dives/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import NextImage, { ImageProps as NextImagePropsTypeOnly } from 'next/image';
+// 1. RENAME IMPORT FOR CLARITY
+import Image, { ImageProps as NextImagePropsTypeOnly } from 'next/image';
 import { getDeepDiveBySlug, getDeepDiveSlugs } from '@/lib/deep-dives';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
@@ -10,11 +11,8 @@ import { ArrowLeft, Trophy, Shield, Goal, Star } from "lucide-react";
 import { Metadata } from 'next';
 
 // --- DATA IMPORT & TYPE DEFINITION ---
-// Import the JSON data. Next.js will handle this.
 import allDecadeTeamData from '@/data/deep-dives/data_all_decade_team.json';
 
-// Define the type for a single player in the All-Decade team roster.
-// You could also move this to a separate types file (e.g., src/types/deep-dives.ts) and import it.
 interface AllDecadeTeamPlayer {
   Position: string;
   player_name: string;
@@ -23,9 +21,7 @@ interface AllDecadeTeamPlayer {
   owner_name: string;
 }
 
-
 // --- HELPER COMPONENTS ---
-
 const positionIcons: { [key: string]: React.ReactNode } = {
   QB: <Star className="h-5 w-5 text-yellow-500" />,
   RB: <Trophy className="h-5 w-5 text-orange-500" />,
@@ -36,7 +32,6 @@ const positionIcons: { [key: string]: React.ReactNode } = {
   DST: <Shield className="h-5 w-5 text-indigo-500" />,
 };
 
-// The custom component to render the roster. Now it uses the specific type.
 const AllDecadeTeamRoster = ({ data }: { data: AllDecadeTeamPlayer[] }) => {
   return (
     <div className="my-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 not-prose">
@@ -45,7 +40,7 @@ const AllDecadeTeamRoster = ({ data }: { data: AllDecadeTeamPlayer[] }) => {
           <div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-bold text-primary flex items-center gap-2">
-                {positionIcons[player.Position] || <Star />} {/* Note: player.Position, not player_position */}
+                {positionIcons[player.Position] || <Star />}
                 {player.Position}
               </span>
               <span className="text-xs px-2 py-1 bg-secondary rounded-full font-semibold">{player.season_id}</span>
@@ -80,7 +75,6 @@ interface DeepDiveArticlePageProps {
 }
 
 export async function generateMetadata({ params }: DeepDiveArticlePageProps): Promise<Metadata> {
-  // ... (this function remains the same)
   const { slug } = params;
   const deepDive = await getDeepDiveBySlug(slug);
   if (!deepDive || !deepDive.frontmatter) {
@@ -106,21 +100,22 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
   const { frontmatter, content } = deepDiveData;
 
   const components = {
-    // Enhanced Image component (same as before)
+    // 2. ADD THE IMAGE COMPONENT TO THE LIST
+    // This allows you to use <Image ... /> inside your .mdx files
     Image: (props: Omit<NextImagePropsTypeOnly, 'alt'> & { src: string; alt?: string; caption?: string }) => {
       const { src, alt, caption, width, height, ...rest } = props;
+      // This logic to handle relative paths is good, keep it.
       const imageSrc = typeof src === 'string' && !src.startsWith('/')
           ? `/images/deep-dives/${slug}/${src}`
           : src;
       return (
         <figure>
-          <NextImage
+          <Image
             {...rest}
             src={imageSrc as string}
             alt={alt || ""}
             width={typeof width === 'string' ? parseInt(width) : width || 700}
             height={typeof height === 'string' ? parseInt(height) : height || 450}
-            unoptimized={true}
             className="rounded-lg shadow-md"
           />
           {caption && (
@@ -132,7 +127,6 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
       );
     },
     Callout: ({ children, type = 'info' }: { children: React.ReactNode, type?: 'info' | 'warning' | 'conclusion' }) => {
-      // ... (same as before)
       const baseClasses = "my-6 p-4 border-l-4 rounded-r-lg not-prose";
       const typeClasses = {
         info: "bg-blue-50 border-blue-500 text-blue-800 dark:bg-blue-900/30 dark:border-blue-400 dark:text-blue-200",
@@ -146,7 +140,6 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
     h2: (props: any) => <h2 className="text-3xl font-bold mt-12 mb-4 border-b pb-2" {...props} />,
     h3: (props: any) => <h3 className="text-2xl font-semibold mt-8 mb-3" {...props} />,
 
-    // Add the new AllDecadeTeamRoster component here
     AllDecadeTeamRoster: () => <AllDecadeTeamRoster data={allDecadeTeamData} />,
   };
 
