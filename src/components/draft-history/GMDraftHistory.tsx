@@ -41,8 +41,10 @@ const PicksTable = ({ picks, title, icon }: { picks: DraftPickDetail[], title: s
                         <TableRow>
                             <TableHead>Player (Team)</TableHead>
                             <TableHead className="text-center">Season</TableHead>
-                            <TableHead className="text-center">Pick</TableHead>
-                            <TableHead className="text-center">Drafted</TableHead>
+                            <TableHead className="text-center">Pick (Overall)</TableHead>
+                            <TableHead className="text-center">Drafted (Pos)</TableHead>
+                            <TableHead className="text-center">Finished (Pos)</TableHead>
+                            <TableHead className="text-right">POE</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -58,6 +60,14 @@ const PicksTable = ({ picks, title, icon }: { picks: DraftPickDetail[], title: s
                                     <Badge variant="outline" className={cn(getPositionBadgeClass(p.player_position))}>
                                         {formatPositionalRank(p.player_position, p.league_positional_draft_rank)}
                                     </Badge>
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    <Badge variant="outline" className={cn(getPositionBadgeClass(p.player_position))}>
+                                        {formatPositionalRank(p.player_position, p.actual_positional_finish_rank)}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className={cn("text-right font-semibold", (p.pvdre_points_vs_league_draft_rank_exp ?? 0) >= 0 ? 'text-green-600' : 'text-red-600')}>
+                                    {p.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}
                                 </TableCell>
                             </TableRow>
                         ))}
