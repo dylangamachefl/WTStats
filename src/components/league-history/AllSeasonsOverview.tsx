@@ -39,7 +39,6 @@ const getRecordIcon = (category: string): React.ReactNode => {
 
 // --- Enriched Type for Playoff Performance ---
 type EnrichedGMPlayoffPerformanceStat = GMPlayoffPerformanceStat & {
-    championship_wins: number;
     playoff_performance_pct_display: string;
 };
 
@@ -202,21 +201,15 @@ export default function AllSeasonsOverview() {
   const requestCareerSort = createSortHandler(careerSortConfig, setCareerSortConfig);
   
   const sortedGmPlayoffPerformance = useMemo(() => {
-    if (!leagueData?.gmPlayoffPerformance || !leagueData?.careerLeaderboard) return [];
-
-    const championshipWinsMap = new Map<string, number>();
-    leagueData.careerLeaderboard.forEach(stat => {
-        championshipWinsMap.set(stat.name, stat.championships);
-    });
-
-    const dataWithWinsAndPct: EnrichedGMPlayoffPerformanceStat[] = leagueData.gmPlayoffPerformance.map(item => ({
+    if (!leagueData?.gmPlayoffPerformance) return [];
+    
+    const dataWithPct: EnrichedGMPlayoffPerformanceStat[] = leagueData.gmPlayoffPerformance.map(item => ({
         ...item,
-        championship_wins: championshipWinsMap.get(item.gm_name) || 0,
         playoff_performance_pct_display: item.playoff_performance_pct != null ? `${item.playoff_performance_pct.toFixed(1)}%` : 'N/A'
     }));
     
-    return sortData(dataWithWinsAndPct, playoffPerfSortConfig);
-  }, [leagueData?.gmPlayoffPerformance, leagueData?.careerLeaderboard, playoffPerfSortConfig]);
+    return sortData(dataWithPct, playoffPerfSortConfig);
+  }, [leagueData?.gmPlayoffPerformance, playoffPerfSortConfig]);
 
   const requestPlayoffPerfSort = createSortHandler(playoffPerfSortConfig, setPlayoffPerfSortConfig);
   const sortedFinalStandingsHeatmap = useMemo(() => sortData(leagueData?.finalStandingsHeatmap, heatmapSortConfig), [leagueData?.finalStandingsHeatmap, heatmapSortConfig]);
@@ -331,25 +324,29 @@ export default function AllSeasonsOverview() {
       </Card>
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="overflow-hidden">
-          <CardHeader><CardTitle>GM Playoff Performance</CardTitle><CardDescription className="text-xs mt-1">Perf % is manager's avg playoff score / avg regular season score.</CardDescription></CardHeader>
+          <CardHeader><CardTitle>GM Playoff Performance</CardTitle><CardDescription className="text-xs mt-1">Perf % is the manager's average playoff score divided by their average regular season score during playoff seasons.</CardDescription></CardHeader>
           <CardContent className="overflow-x-auto"><Table><TableHeader><TableRow>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('gm_name')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">GM {getSortIcon(playoffPerfSortConfig, 'gm_name')}</Button></TableHead>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('total_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Total Matchups {getSortIcon(playoffPerfSortConfig, 'total_matchups')}</Button></TableHead>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('wins')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Wins {getSortIcon(playoffPerfSortConfig, 'wins')}</Button></TableHead>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('losses')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Losses {getSortIcon(playoffPerfSortConfig, 'losses')}</Button></TableHead>
-                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_wins')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Rings {getSortIcon(playoffPerfSortConfig, 'championship_wins')}</Button></TableHead>
+                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('quarterfinal_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Quarterfinals {getSortIcon(playoffPerfSortConfig, 'quarterfinal_matchups')}</Button></TableHead>
+                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('semifinal_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Semifinals {getSortIcon(playoffPerfSortConfig, 'semifinal_matchups')}</Button></TableHead>
+                <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('championship_matchups')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Championships {getSortIcon(playoffPerfSortConfig, 'championship_matchups')}</Button></TableHead>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('avg_playoff_points_weekly')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Avg Pts {getSortIcon(playoffPerfSortConfig, 'avg_playoff_points_weekly')}</Button></TableHead>
                 <TableHead><Button variant="ghost" onClick={() => requestPlayoffPerfSort('playoff_performance_pct')} className="w-full justify-start px-0 group text-xs md:text-sm py-2">Perf % {getSortIcon(playoffPerfSortConfig, 'playoff_performance_pct')}</Button></TableHead>
           </TableRow></TableHeader><TableBody>
             {sortedGmPlayoffPerformance.map((gmPerf: EnrichedGMPlayoffPerformanceStat) => (
                 <TableRow key={gmPerf.gm_name}>
                     <TableCell className="font-medium px-2 py-2 text-sm text-left">{gmPerf.gm_name}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.total_matchups}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.wins}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.losses}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.championship_wins}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.playoff_performance_pct_display}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.total_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.wins}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.losses}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.quarterfinal_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.semifinal_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.championship_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.playoff_performance_pct_display}</TableCell>
                 </TableRow>
             ))}
           </TableBody></Table></CardContent>
