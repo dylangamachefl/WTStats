@@ -130,60 +130,124 @@ export default function SeasonDraftDetail() {
   }, [draftData]);
 
   const renderDraftBoard = () => {
-    if (loading) return <Skeleton className="h-[400px] w-full" />;
-    if (error) return <p className="text-destructive text-center py-4">{error}</p>;
-    if (!draftData || gmNamesForColumns.length === 0 || maxRound === 0) return <p className="text-muted-foreground text-center py-4">No draft data available for this season.</p>;
-    
+    if (loading && !draftData) {
+        return <Skeleton className="h-[400px] w-full" />;
+    }
+    if (error && !draftData) {
+        return <p className="text-destructive text-center py-4">Error loading draft data: {error}</p>;
+    }
+    if (!draftData || gmNamesForColumns.length === 0 || maxRound === 0) {
+        return <p className="text-muted-foreground text-center py-4">No draft data available for the selected season, or data is malformed. Check console for details.</p>;
+    }
+
     return (
-      <TooltipProvider>
-        <div className="overflow-x-auto">
-          <Table className="min-w-full border-separate border-spacing-0">
-            <TableHeader><TableRow><TableHead className="sticky left-0 bg-card dark:bg-background z-20 p-1.5 border text-xs text-center font-semibold rounded-tl-sm">Round</TableHead>{gmNamesForColumns.map((gmName, index) => (<TableHead key={gmName} className={cn("p-1.5 border text-xs text-center font-semibold whitespace-nowrap min-w-[120px]", index === gmNamesForColumns.length -1 && "rounded-tr-sm")}>{gmName}</TableHead>))}</TableRow></TableHeader>
-            <TableBody>{Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => (<TableRow key={roundNum}><TableCell className="sticky left-0 bg-card dark:bg-background z-20 p-1.5 border text-xs text-center font-semibold rounded-sm">{roundNum}</TableCell>{gmNamesForColumns.map((_, gmIndex) => {
-                const targetPickInRound = roundNum % 2 !== 0 ? gmIndex + 1 : numGms - gmIndex;
-                const pick = draftBoardPicks[(roundNum - 1) * numGms + targetPickInRound];
-                
-                if (!pick) return <TableCell key={`${roundNum}-${gmIndex}-empty`} className="p-1.5 border bg-muted/20" style={{minWidth: '120px', height: '60px' }} />;
-                
-                let cellContent, cellClasses = `p-1.5 border text-xs align-middle h-[60px]`;
-                if (analysisMode === 'none') {
-                    cellContent = (<>
-                      <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
-                      <p className="text-muted-foreground text-[11px]">{pick.player_position} - {pick.nfl_team_id}</p>
-                    </>);
-                    cellClasses = cn(cellClasses, getPositionBadgeClass(pick.player_position));
-                } else if (analysisMode === 'value') {
-                    cellContent = <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>;
-                    cellClasses = cn(cellClasses, getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
-                } else {
-                    cellContent = <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>;
-                    cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
-                }
-                
-                return (
-                  <TableCell key={pick.player_id || `${roundNum}-${gmIndex}`} className={cellClasses} style={{minWidth: '120px', height: '60px'}}>
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger asChild>
-                        <div className="flex flex-col items-center justify-center h-full w-full">{cellContent}</div>
-                      </TooltipTrigger>
-                      <TooltipContent className="p-2 border bg-popover text-popover-foreground shadow-lg rounded-lg max-w-xs">
-                          <p className="font-bold text-sm">{pick.player_name} ({pick.player_position} - {pick.nfl_team_id})</p>
-                          <p className="text-xs text-muted-foreground">Picked By: {pick.gm_name} (Overall: {pick.pick_overall})</p>
-                          <div className="mt-2 text-xs space-y-1">
-                              {pick.pvdre_points_vs_league_draft_rank_exp != null && <div><strong>POE:</strong> <span className={cn(pick.pvdre_points_vs_league_draft_rank_exp > 0 ? "text-green-600" : "text-red-600")}>{pick.pvdre_points_vs_league_draft_rank_exp.toFixed(1)}</span></div>}
-                              {pick.overall_reach_steal_value != null && <div><strong>Value vs ADP:</strong> <span className={cn(pick.overall_reach_steal_value > 0 ? "text-green-600" : "text-red-600")}>{pick.overall_reach_steal_value.toFixed(1)}</span></div>}
-                              {pick.actual_positional_finish_rank != null && <div><strong>Finish (Pos):</strong> {pick.actual_positional_finish_rank}</div>}
-                          </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                );
-            })}</TableRow>))}</TableBody>
-          </Table>
-        </div>
-      </TooltipProvider>
+        <TooltipProvider>
+            <div className="overflow-x-auto">
+                <Table className="min-w-full border-separate border-spacing-0">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold rounded-tl-sm">Round</TableHead>
+                            {gmNamesForColumns.map((gmName, index) => (
+                                <TableHead key={gmName} className={cn("p-1.5 border text-xs text-center font-semibold whitespace-nowrap min-w-[120px]", index === gmNamesForColumns.length - 1 && "rounded-tr-sm")}>{gmName}</TableHead>
+                            ))}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {Array.from({ length: maxRound }, (_, i) => i + 1).map(roundNum => (
+                            <TableRow key={roundNum}>
+                                <TableCell className="sticky left-0 bg-card z-20 p-1.5 border text-xs text-center font-semibold rounded-l-sm">{roundNum}</TableCell>
+                                {gmNamesForColumns.map((_, gmIndex) => {
+                                    let targetPickInRound: number;
+                                    if (roundNum % 2 !== 0) {
+                                        targetPickInRound = gmIndex + 1;
+                                    } else {
+                                        targetPickInRound = numGms - gmIndex;
+                                    }
+                                    const targetOverallPick = (roundNum - 1) * numGms + targetPickInRound;
+                                    const pick = draftBoardPicks[targetOverallPick];
+                                    let cellContent;
+
+                                    let cellClasses = `p-1.5 border text-xs align-middle h-[60px] rounded-md`;
+                                    if (gmIndex === gmNamesForColumns.length - 1 && roundNum === maxRound) {
+                                        cellClasses = cn(cellClasses, "rounded-br-sm");
+                                    } else if (gmIndex === gmNamesForColumns.length - 1) {
+                                        cellClasses = cn(cellClasses, "rounded-r-sm");
+                                    } else if (roundNum === maxRound && gmIndex === 0 && !gmNamesForColumns.find(name => name === pick?.gm_name)) {
+                                        // This condition might be tricky, for bottom-left rounding when sticky column is not the first GM
+                                    }
+
+
+                                    if (!pick) {
+                                        return <TableCell key={`${roundNum}-${gmIndex}-empty`} className={cn(cellClasses, "bg-muted/20")} style={{ minWidth: '120px', height: '60px' }}></TableCell>;
+                                    }
+
+                                    let innerDivLayoutClasses = "flex items-center justify-center h-full w-full text-center";
+
+                                    if (analysisMode === 'none') {
+                                        innerDivLayoutClasses = "flex flex-col items-center justify-center h-full w-full text-center";
+                                        cellContent = (
+                                            <>
+                                                <p className="font-semibold truncate w-full" title={pick.player_name}>{pick.player_name}</p>
+                                                <p className="text-muted-foreground truncate w-full text-xs">{pick.player_position} - {pick.nfl_team_id}</p>
+                                            </>
+                                        );
+                                        cellClasses = cn(cellClasses, getPositionBadgeClass(pick.player_position));
+                                    } else if (analysisMode === 'value') {
+                                        cellContent = (
+                                            <p className="font-semibold">{pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
+                                        );
+                                        cellClasses = cn(cellClasses, getPVDRECellStyle(pick.pvdre_points_vs_league_draft_rank_exp, minPVDRE, maxPVDRE));
+                                    } else { // analysisMode === 'reachSteal'
+                                        cellContent = (
+                                            <p className="font-semibold">{pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
+                                        );
+                                        cellClasses = cn(cellClasses, getReachStealCellStyle(pick.overall_reach_steal_value));
+                                    }
+
+                                    return (
+                                        <TableCell
+                                            key={pick.player_id || `${roundNum}-${gmIndex}-${pick.pick_overall}`}
+                                            className={cellClasses}
+                                            style={{ minWidth: '120px', height: '60px' }}
+                                        >
+                                            <Tooltip delayDuration={100}>
+                                                <TooltipTrigger asChild>
+                                                    <div className={innerDivLayoutClasses}>
+                                                        {cellContent}
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="bg-popover text-popover-foreground p-3 rounded-md shadow-lg max-w-xs w-auto">
+                                                    <div className="space-y-1.5 text-left text-xs">
+                                                        <p className="font-bold text-sm">{pick.player_name} ({pick.nfl_team_id})</p>
+                                                        <p><span className="font-medium">Picked By:</span> {pick.gm_name} ({pick.fantasy_team_name})</p>
+                                                        <p><span className="font-medium">Overall Pick:</span> {pick.pick_overall} (Round {pick.round}, Pick {pick.pick_in_round})</p>
+                                                        <p><span className="font-medium">Overall ADP:</span> {pick.overall_adp_rank?.toFixed(1) ?? 'N/A'}</p>
+                                                        <p><span className="font-medium">Reach/Steal Value:</span> {pick.overall_reach_steal_value?.toFixed(1) ?? 'N/A'}</p>
+                                                        <p><span className="font-medium">Drafted Pos:</span> {pick.player_position}{pick.league_positional_draft_rank ?? ''}</p>
+                                                        <p>
+                                                            <span className="font-medium">Finished Pos:</span> {
+                                                                pick.actual_positional_finish_rank !== null && pick.actual_positional_finish_rank !== undefined
+                                                                    ? `${pick.player_position}${pick.actual_positional_finish_rank}`
+                                                                    : '-'
+                                                            }
+                                                        </p>
+                                                        <p><span className="font-medium">Expected Points:</span> {pick.expected_points_for_league_draft_rank_smoothed?.toFixed(1) ?? 'N/A'}</p>
+                                                        <p><span className="font-medium">Actual Points:</span> {pick.actual_total_fantasy_points_season?.toFixed(1) ?? 'N/A'}</p>
+                                                        <p><span className="font-medium">POE:</span> {pick.pvdre_points_vs_league_draft_rank_exp?.toFixed(1) ?? 'N/A'}</p>
+                                                    </div>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </TooltipProvider>
     );
-  };
+};
 
   const handleAnalysisToggle = (mode: 'value' | 'reachSteal') => {
     setAnalysisMode(prev => prev === mode ? 'none' : mode);

@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { GM, GMDraftHistoryDetailData, GMDraftHistoryRoundEfficiencyEntry } from '@/lib/types';
-import { UserCircle2, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import type { GM, GMDraftHistoryDetailData, DraftPickDetail } from '@/lib/types';
+import { UserCircle2, ArrowUpCircle, ArrowDownCircle, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn, getPositionBadgeClass, getPositionIcon } from "@/lib/utils";
 import { Badge } from '@/components/ui/badge';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, Cell as RechartsCell } from 'recharts';
@@ -19,11 +19,55 @@ const mockGms: GM[] = [
   { id: "1", name: "Jack" }, { id: "2", name: "Josh" }, { id: "3", name: "Jake" }, { id: "4", name: "Mark" }, { id: "5", name: "Sean" }, { id: "6", name: "Nick" }, { id: "7", name: "Will" }, { id: "8", name: "Zach" }, { id: "9", name: "Lac" }, { id: "11", name: "Chris" }, { id: "12", name: "Dylan" }, { id: "13", name: "Dan" }, { id: "14", name: "Fitz" }
 ];
 
-// Helper to format PVDRE values
-const formatPvdreValue = (value: number | null | undefined): string => {
-  if (value == null) return 'N/A';
-  return (value >= 0 ? '+' : '') + value.toFixed(1);
+const formatPositionalRank = (position?: string, rank?: number | null) => {
+  if (!position || rank == null) return '-';
+  return `${position}${rank}`;
 };
+
+
+const PicksTable = ({ picks, title, icon }: { picks: DraftPickDetail[], title: string, icon: React.ReactNode }) => {
+    if (!picks || picks.length === 0) {
+        return <Card><CardHeader><CardTitle className="text-lg flex items-center">{icon} {title}</CardTitle></CardHeader><CardContent><p>No data.</p></CardContent></Card>;
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-lg flex items-center">{icon} {title}</CardTitle>
+            </CardHeader>
+            <CardContent className="overflow-x-auto">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Player (Team)</TableHead>
+                            <TableHead className="text-center">Season</TableHead>
+                            <TableHead className="text-center">Pick</TableHead>
+                            <TableHead className="text-center">Drafted</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {picks.slice(0, 5).map(p => (
+                            <TableRow key={p.player_id}>
+                                <TableCell>
+                                    <p className="font-medium">{p.player_name}</p>
+                                    <p className="text-xs text-muted-foreground">({p.nfl_team_id})</p>
+                                </TableCell>
+                                <TableCell className="text-center">{p.season_id}</TableCell>
+                                <TableCell className="text-center">{p.pick_overall}</TableCell>
+                                <TableCell className="text-center">
+                                    <Badge variant="outline" className={cn(getPositionBadgeClass(p.player_position))}>
+                                        {formatPositionalRank(p.player_position, p.league_positional_draft_rank)}
+                                    </Badge>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </Card>
+    );
+};
+
 
 // --- MAIN COMPONENT ---
 export default function GMDraftHistory() {
@@ -84,33 +128,58 @@ export default function GMDraftHistory() {
         <CardContent>
           {!gmDraftData ? (<p className="text-muted-foreground text-center py-4">No draft history data found for this GM.</p>) : (
             <div className="space-y-6">
-               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
-                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Total Picks</p><p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p></div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-6">
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Total Picks Made</p><p className="text-2xl font-bold">{gmDraftData.career_summary.total_picks_made}</p></div>
                     <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Total Hits</p><p className="text-2xl font-bold">{gmDraftData.career_summary.total_hits}</p></div>
                     <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Total Misses</p><p className="text-2xl font-bold">{gmDraftData.career_summary.total_misses}</p></div>
-                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Hit Rate</p><p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p></div>
-                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Total POE</p><p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p></div>
-                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Avg POE/Pick</p><p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p></div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Career Hit Rate</p><p className="text-2xl font-bold">{(gmDraftData.career_summary.career_hit_rate_percentage).toFixed(1)}%</p></div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Sum Total POE</p><p className="text-2xl font-bold">{gmDraftData.career_summary.sum_total_pvdre.toFixed(2)}</p></div>
+                    <div className="flex flex-col items-center text-center p-3 rounded-md bg-muted/50 shadow-sm"><p className="text-xs uppercase text-muted-foreground font-medium">Avg. POE / Pick</p><p className="text-2xl font-bold">{gmDraftData.career_summary.average_pvdre_per_pick.toFixed(2)}</p></div>
                 </div>
               <Card><CardHeader><CardTitle className="text-lg">Round Efficiency (Avg. POE)</CardTitle></CardHeader><CardContent className="h-[300px]"><ResponsiveContainer width="100%" height="100%">
                 <BarChart data={roundEfficiencyChartData}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" /><YAxis /><RechartsTooltip formatter={(v: number) => v.toFixed(1)}/><Bar dataKey="Avg POE">{roundEfficiencyChartData.map((e, i) => (<RechartsCell key={`cell-${i}`} fill={e['Avg POE'] >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'} />))}</Bar></BarChart>
               </ResponsiveContainer></CardContent></Card>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card><CardHeader><CardTitle className="text-lg flex items-center"><ArrowUpCircle className="text-green-500 mr-2" />Best Picks</CardTitle></CardHeader><CardContent>
-                  {gmDraftData.best_picks?.length > 0 ? <Table><TableHeader><TableRow><TableHead>Player</TableHead><TableHead className="text-center">Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow></TableHeader><TableBody>{gmDraftData.best_picks.slice(0,5).map(p => (<TableRow key={p.player_id}><TableCell>{p.player_name}</TableCell><TableCell className="text-center">{p.season_id}</TableCell><TableCell className="text-right text-green-600 font-semibold">{p.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell></TableRow>))}</TableBody></Table> : <p>No data.</p>}
-                </CardContent></Card>
-                <Card><CardHeader><CardTitle className="text-lg flex items-center"><ArrowDownCircle className="text-red-500 mr-2" />Worst Picks</CardTitle></CardHeader><CardContent>
-                  {gmDraftData.worst_picks?.length > 0 ? <Table><TableHeader><TableRow><TableHead>Player</TableHead><TableHead className="text-center">Season</TableHead><TableHead className="text-right">POE</TableHead></TableRow></TableHeader><TableBody>{gmDraftData.worst_picks.slice(0,5).map(p => (<TableRow key={p.player_id}><TableCell>{p.player_name}</TableCell><TableCell className="text-center">{p.season_id}</TableCell><TableCell className="text-right text-red-600 font-semibold">{p.pvdre_points_vs_league_draft_rank_exp?.toFixed(1)}</TableCell></TableRow>))}</TableBody></Table> : <p>No data.</p>}
-                </CardContent></Card>
+                <PicksTable picks={gmDraftData.best_picks} title="Best Picks (by POE)" icon={<ArrowUpCircle className="text-green-500 mr-2" />} />
+                <PicksTable picks={gmDraftData.worst_picks} title="Worst Picks (by POE)" icon={<ArrowDownCircle className="text-red-500 mr-2" />} />
               </div>
-              <Card><CardHeader><CardTitle className="text-lg">Positional Performance</CardTitle><CardDescription>Comparing draft value vs. league averages.</CardDescription></CardHeader><CardContent>
-                {gmDraftData.positional_profile?.length > 0 ? (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{gmDraftData.positional_profile.map((profile) => {
-                    const isOutperforming = typeof profile.gm_average_pvdre === 'number' && typeof profile.league_average_pvdre === 'number' && profile.gm_average_pvdre > profile.league_average_pvdre;
-                    const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && typeof profile.league_average_pvdre === 'number' && profile.gm_average_pvdre < profile.league_average_pvdre;
-                    const borderColor = isOutperforming ? 'border-green-500' : isUnderperforming ? 'border-red-500' : 'border-border';
-                    return (<Card key={profile.position} className={cn("shadow-md border-2", borderColor)}><CardHeader className="flex-row items-center justify-between p-4 pb-2"><div className="flex items-center gap-2"><CardTitle className="text-base font-medium">{profile.position}</CardTitle></div><p className="text-xs text-muted-foreground">Picks: {profile.picks_count}</p></CardHeader><CardContent className="p-4 pt-0 space-y-1"><div className="flex justify-between text-sm"><span className="text-muted-foreground">GM Avg POE:</span><span className={cn("font-semibold", profile.gm_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.gm_average_pvdre)}</span></div><div className="flex justify-between text-sm"><span className="text-muted-foreground">League Avg POE:</span><span className={cn("font-semibold", profile.league_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{formatPvdreValue(profile.league_average_pvdre)}</span></div></CardContent></Card>);
-                })}</div>) : (<p>No data.</p>)}
-              </CardContent></Card>
+              <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg">Positional Performance Analysis</CardTitle>
+                    <CardDescription>Comparing GM draft value vs. league averages by position.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {gmDraftData.positional_profile?.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {gmDraftData.positional_profile.map((profile) => {
+                                const isOutperforming = typeof profile.gm_average_pvdre === 'number' && typeof profile.league_average_pvdre === 'number' && profile.gm_average_pvdre > profile.league_average_pvdre;
+                                const isUnderperforming = typeof profile.gm_average_pvdre === 'number' && typeof profile.league_average_pvdre === 'number' && profile.gm_average_pvdre < profile.league_average_pvdre;
+                                const borderColor = isOutperforming ? 'border-green-500' : isUnderperforming ? 'border-red-500' : 'border-border';
+                                return (
+                                    <Card key={profile.position} className={cn("shadow-sm border-2", borderColor)}>
+                                        <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
+                                            <div className="flex items-center gap-2">
+                                                {getPositionIcon(profile.position)}
+                                                <CardTitle className="text-base font-medium">{profile.position}</CardTitle>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">Picks: {profile.picks_count}</p>
+                                        </CardHeader>
+                                        <CardContent className="p-4 pt-0 space-y-1">
+                                            <div className="flex justify-between text-sm"><span className="text-muted-foreground">GM Avg POE:</span><span className={cn("font-semibold", profile.gm_average_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{profile.gm_average_pvdre?.toFixed(1)}</span></div>
+                                            <div className="flex justify-between text-sm"><span className="text-muted-foreground">League Avg POE:</span><span className={cn("font-semibold", (profile.league_average_pvdre ?? 0) < 0 ? 'text-red-600' : 'text-green-600')}>{profile.league_average_pvdre?.toFixed(1)}</span></div>
+                                            {profile.gm_total_pvdre != null && <div className="flex justify-between text-sm"><span className="text-muted-foreground">GM Total POE:</span><span className={cn("font-semibold", profile.gm_total_pvdre < 0 ? 'text-red-600' : 'text-green-600')}>{profile.gm_total_pvdre?.toFixed(1)}</span></div>}
+                                        </CardContent>
+                                        <CardFooter className="p-4 pt-0">
+                                            {isOutperforming && <p className="text-xs text-green-600 flex items-center gap-1"><TrendingUp size={14} /> Outperforming League Avg</p>}
+                                            {isUnderperforming && <p className="text-xs text-red-600 flex items-center gap-1"><TrendingDown size={14} /> Underperforming League Avg</p>}
+                                        </CardFooter>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    ) : (<p className="text-muted-foreground text-center py-4">Positional performance data not available.</p>)}
+                </CardContent>
+              </Card>
             </div>
           )}
         </CardContent>
