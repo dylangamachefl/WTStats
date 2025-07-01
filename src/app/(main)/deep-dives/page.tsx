@@ -2,16 +2,15 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 import Link from 'next/link';
-import { getAllDeepDives } from '@/lib/deep-dives'; // Ensure this path is correct
+import { getAllDeepDives } from '@/lib/deep-dives';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Deep Dives | WTStats', // Or your actual site/league name
+  title: 'Deep Dives | WTStats',
   description: 'In-depth articles and analyses of league trends, strategies, and memorable moments.',
 };
 
 export default async function DeepDivesPage() {
-  // *** AWAIT THE ASYNC FUNCTION CALL ***
   const deepDives = await getAllDeepDives();
 
   return (
@@ -22,31 +21,35 @@ export default async function DeepDivesPage() {
           <CardDescription>In-depth articles and analyses of league trends, strategies, and memorable moments.</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Check if deepDives is defined and has length */}
           {deepDives && deepDives.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {deepDives.map((deepDive) => {
-                // Basic check for essential frontmatter properties
                 if (!deepDive || !deepDive.frontmatter || !deepDive.slug) {
                   console.warn("Skipping deep dive with missing data:", deepDive);
                   return null;
                 }
                 return (
-                  <Link href={`/deep-dives/${deepDive.slug}`} key={deepDive.slug} className="block">
-                    <Card className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col"> {/* Added flex for content */}
-                      <CardHeader>
-                        <CardTitle>{deepDive.frontmatter.title || 'Untitled Dive'}</CardTitle>
-                        {deepDive.frontmatter.date && deepDive.frontmatter.author && (
-                          <CardDescription>
-                            {new Date(deepDive.frontmatter.date).toLocaleDateString()} by {deepDive.frontmatter.author}
-                          </CardDescription>
-                        )}
-                      </CardHeader>
-                      <CardContent className="flex-grow"> {/* Allow content to grow */}
-                        <p>{deepDive.frontmatter.description || 'Read more...'}</p>
-                      </CardContent>
-                    </Card>
+                  // --- START OF THE FIX ---
+                  // 1. Add legacyBehavior to the Link
+                  <Link href={`/deep-dives/${deepDive.slug}`} key={deepDive.slug} legacyBehavior>
+                    {/* 2. Wrap the Card in an anchor tag. Add styling to remove default link underline. */}
+                    <a className="no-underline text-current block h-full">
+                      <Card className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
+                        <CardHeader>
+                          <CardTitle>{deepDive.frontmatter.title || 'Untitled Dive'}</CardTitle>
+                          {deepDive.frontmatter.date && deepDive.frontmatter.author && (
+                            <CardDescription>
+                              {new Date(deepDive.frontmatter.date).toLocaleDateString()} by {deepDive.frontmatter.author}
+                            </CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                          <p>{deepDive.frontmatter.description || 'Read more...'}</p>
+                        </CardContent>
+                      </Card>
+                    </a>
                   </Link>
+                  // --- END OF THE FIX ---
                 );
               })}
             </div>

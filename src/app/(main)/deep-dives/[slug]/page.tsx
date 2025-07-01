@@ -2,7 +2,7 @@
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 // 1. RENAME IMPORT FOR CLARITY
-import Image, { ImageProps as NextImagePropsTypeOnly } from 'next/image';
+import NextImage, { ImageProps as NextImagePropsTypeOnly } from 'next/image';
 import { getDeepDiveBySlug, getDeepDiveSlugs } from '@/lib/deep-dives';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
@@ -103,19 +103,36 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
     // 2. ADD THE IMAGE COMPONENT TO THE LIST
     // This allows you to use <Image ... /> inside your .mdx files
     Image: (props: Omit<NextImagePropsTypeOnly, 'alt'> & { src: string; alt?: string; caption?: string }) => {
-      const { src, alt, caption, width, height, ...rest } = props;
-      // This logic to handle relative paths is good, keep it.
-      const imageSrc = typeof src === 'string' && !src.startsWith('/')
-          ? `/images/deep-dives/${slug}/${src}`
-          : src;
+      const { src, alt, caption, ...rest } = props;
+
+      // Your existing logic for handling relative vs. absolute paths is good,
+      // but we need to ensure the basePath is always considered.
+      let imageSrc = src;
+      if (typeof src === 'string') {
+        if (src.startsWith('/')) {
+            // This is a root-relative path like "/images/..."
+            // It will be correctly handled by the Next.js Image component's
+            // internal logic which respects `assetPrefix`. No manual prepending is needed here.
+            imageSrc = src;
+        } else {
+            // This handles relative paths within the MDX, e.g., "./chart.png"
+            imageSrc = `/images/deep-dives/${slug}/${src}`;
+        }
+      }
+      
       return (
         <figure>
-          <Image
+          {/* 
+            The key is that we are using the REAL NextImage component.
+            As long as its 'src' prop starts with a '/', it will automatically
+            use the `assetPrefix` from your next.config.js during the build.
+          */}
+          <NextImage
             {...rest}
             src={imageSrc as string}
             alt={alt || ""}
-            width={typeof width === 'string' ? parseInt(width) : width || 700}
-            height={typeof height === 'string' ? parseInt(height) : height || 450}
+            width={typeof props.width === 'string' ? parseInt(props.width) : props.width || 800}
+            height={typeof props.height === 'string' ? parseInt(props.height) : props.height || 450}
             className="rounded-lg shadow-md"
           />
           {caption && (
