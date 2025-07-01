@@ -116,7 +116,7 @@ export default function DraftOverview() {
     return { heatmapData: transformed, gmNames: sortedGmNames, seasonYears: uniqueSeasonYears };
   }, [rawData, sortConfig]);
 
-  const getCellStyle = (performanceData: GMDraftSeasonPerformance | undefined | null, metricKey: HeatmapMetricKey, metricMinValue: number, metricMaxValue: number): string => {
+  const getCellStyle = (performanceData: Partial<GMDraftSeasonPerformance> | undefined | null, metricKey: HeatmapMetricKey, metricMinValue: number, metricMaxValue: number): string => {
     const value = performanceData?.[metricKey] as number | undefined | null;
     if (value == null) return 'bg-muted/30 text-muted-foreground';
     let baseClasses = "font-semibold ";
@@ -176,7 +176,7 @@ export default function DraftOverview() {
             <TableBody>{gmNames.map(gm_name => {
                 const gmAvgData = overviewData.gmAverages?.find(avg => avg.gm_name === gm_name);
                 const gmAvgValue = gmAvgData ? gmAvgData[selectedMetric] : undefined;
-                const gmAvgPerfObject: GMDraftSeasonPerformance = { gm_name, avg_pvdre: gmAvgData?.avg_pvdre, pvdre_hit_rate: gmAvgData?.pvdre_hit_rate, avg_value_vs_adp: gmAvgData?.avg_value_vs_adp };
+                const gmAvgPerfObject: Partial<GMDraftSeasonPerformance> = { gm_name, avg_pvdre: gmAvgData?.avg_pvdre, pvdre_hit_rate: gmAvgData?.pvdre_hit_rate, avg_value_vs_adp: gmAvgData?.avg_value_vs_adp };
                 return (<TableRow key={gm_name}><TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border whitespace-nowrap">{gm_name}</TableCell>{seasonYears.map(year => {
                     const perfData = heatmapData[gm_name]?.[year];
                     const metricValue = perfData?.[selectedMetric];
@@ -206,7 +206,7 @@ export default function DraftOverview() {
             <TableFooter><TableRow><TableCell className="font-bold sticky left-0 bg-muted/60 dark:bg-muted/40 z-10 p-2 border">Season Avg</TableCell>{seasonYears.map(year => {
                 const seasonAvgData = overviewData.seasonAverages?.find(sa => sa.season_id.toString() === year);
                 const seasonAvgValue = seasonAvgData ? seasonAvgData[selectedMetric] : undefined;
-                const seasonAvgPerfObject: GMDraftSeasonPerformance = { season_id: parseInt(year), gm_name: "League Average", avg_pvdre: seasonAvgData?.avg_pvdre, pvdre_hit_rate: seasonAvgData?.pvdre_hit_rate, avg_value_vs_adp: seasonAvgData?.avg_value_vs_adp };
+                const seasonAvgPerfObject: Partial<GMDraftSeasonPerformance> = { season_id: parseInt(year), gm_name: "League Average", avg_pvdre: seasonAvgData?.avg_pvdre, pvdre_hit_rate: seasonAvgData?.pvdre_hit_rate, avg_value_vs_adp: seasonAvgData?.avg_value_vs_adp };
                 return (<TableCell key={`season-avg-${year}`} className="p-0 border text-center font-bold bg-muted/60 dark:bg-muted/40"><Tooltip delayDuration={100}><TooltipTrigger asChild><div className={cn("p-2 h-full w-full", getCellStyle(seasonAvgPerfObject, selectedMetric, minSeasonAvg, maxSeasonAvg))}>{metricConfigs[selectedMetric].format(seasonAvgValue)}</div></TooltipTrigger><TooltipContent><p className="font-semibold">{year} Season Average</p></TooltipContent></Tooltip></TableCell>);
             })}
             <TableCell className="p-0 border text-center font-bold bg-muted/80 dark:bg-muted/50"><Tooltip delayDuration={100}><TooltipTrigger asChild><div className={cn("p-2 h-full w-full", getCellStyle({avg_pvdre: overallAverage, pvdre_hit_rate: overallAverage, avg_value_vs_adp: overallAverage} as GMDraftSeasonPerformance, selectedMetric, currentMin, currentMax))}>{metricConfigs[selectedMetric].format(overallAverage)}</div></TooltipTrigger><TooltipContent>Overall League Average</TooltipContent></Tooltip></TableCell>
