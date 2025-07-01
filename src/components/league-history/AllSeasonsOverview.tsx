@@ -339,14 +339,14 @@ export default function AllSeasonsOverview() {
             {sortedGmPlayoffPerformance.map((gmPerf: EnrichedGMPlayoffPerformanceStat) => (
                 <TableRow key={gmPerf.gm_name}>
                     <TableCell className="font-medium px-2 py-2 text-sm text-left">{gmPerf.gm_name}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.total_matchups}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.wins}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.losses}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.quarterfinal_matchups}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.semifinal_matchups}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.championship_matchups}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
-                    <TableCell className="px-2 py-2 text-sm text-center">{gmPerf.playoff_performance_pct_display}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.total_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.wins}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.losses}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.quarterfinal_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.semifinal_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.championship_matchups}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.avg_playoff_points_weekly?.toFixed(1) ?? 'N/A'}</TableCell>
+                    <TableCell className="px-2 py-2 text-sm text-left">{gmPerf.playoff_performance_pct_display}</TableCell>
                 </TableRow>
             ))}
           </TableBody></Table></CardContent>
