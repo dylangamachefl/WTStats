@@ -122,8 +122,16 @@ export default function DraftOverview() {
     let baseClasses = "font-semibold ";
     if (metricKey === 'avg_value_vs_adp') {
       const threshold = 0.1;
-      if (value > threshold) return baseClasses + 'bg-green-200 text-green-800 dark:bg-green-800/30 dark:text-green-200';
-      if (value < -threshold) return baseClasses + 'bg-red-200 text-red-800 dark:bg-red-800/30 dark:text-red-200';
+      if (value > threshold) {
+        if (value > 10) return baseClasses + 'bg-green-300 text-green-800 dark:bg-green-700/50 dark:text-green-200';
+        if (value > 3) return baseClasses + 'bg-green-200 text-green-800 dark:bg-green-800/30 dark:text-green-200';
+        return baseClasses + 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+      }
+      if (value < -threshold) {
+        if (value < -10) return baseClasses + 'bg-red-300 text-red-800 dark:bg-red-700/50 dark:text-red-200';
+        if (value < -3) return baseClasses + 'bg-red-200 text-red-800 dark:bg-red-800/30 dark:text-red-200';
+        return baseClasses + 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+      }
       return baseClasses + 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800/30 dark:text-neutral-200';
     } else {
       const range = metricMaxValue - metricMinValue;
@@ -213,7 +221,7 @@ export default function DraftOverview() {
                 <TableHeader><TableRow><TableHead>Player</TableHead><TableHead className="text-center">Season</TableHead><TableHead className="text-center">Overall Pick</TableHead><TableHead>GM</TableHead><TableHead>Drafted (Pos)</TableHead><TableHead>Finished (Pos)</TableHead><TableHead className="text-right">PVDRE</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {overviewData.allTimeDraftSteals.slice(0, 10).map((pick, index) => (<TableRow key={`steal-${index}`}>
-                    <TableCell>{pick.player_name}</TableCell>
+                    <TableCell>{pick.player_name} ({pick.nfl_team_id})</TableCell>
                     <TableCell className="text-center">{pick.season_id}</TableCell>
                     <TableCell className="text-center">{pick.pick_overall}</TableCell>
                     <TableCell>{pick.gm_name}</TableCell>
@@ -232,7 +240,7 @@ export default function DraftOverview() {
                 <TableHeader><TableRow><TableHead>Player</TableHead><TableHead className="text-center">Season</TableHead><TableHead className="text-center">Overall Pick</TableHead><TableHead>GM</TableHead><TableHead>Drafted (Pos)</TableHead><TableHead>Finished (Pos)</TableHead><TableHead className="text-right">PVDRE</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {overviewData.allTimeDraftBusts.slice(0, 10).map((pick, index) => (<TableRow key={`bust-${index}`}>
-                    <TableCell>{pick.player_name}</TableCell>
+                    <TableCell>{pick.player_name} ({pick.nfl_team_id})</TableCell>
                     <TableCell className="text-center">{pick.season_id}</TableCell>
                     <TableCell className="text-center">{pick.pick_overall}</TableCell>
                     <TableCell>{pick.gm_name}</TableCell>
