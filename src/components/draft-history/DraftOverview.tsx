@@ -73,6 +73,42 @@ export default function DraftOverview() {
     fetchData();
   }, []);
 
+  // NEW: Manually calculate GM Averages from the raw grid data.
+  // This makes the component more robust if the JSON file is missing the `gmAverages` key.
+  const gmSeasonAverages = useMemo(() => {
+    if (!rawData) return [];
+
+    const gmData: { [gmName: string]: GMDraftSeasonPerformance[] } = {};
+    rawData.forEach(item => {
+        if (!gmData[item.gm_name]) {
+            gmData[item.gm_name] = [];
+        }
+        gmData[item.gm_name].push(item);
+    });
+
+    const averages: GMAverageMetrics[] = Object.entries(gmData).map(([gmName, seasons]) => {
+        const gmId = seasons[0]?.gm_id;
+
+        const pvdreValues = seasons.map(s => s.avg_pvdre).filter(v => v != null) as number[];
+        const hitRateValues = seasons.map(s => s.pvdre_hit_rate).filter(v => v != null) as number[];
+        const adpValues = seasons.map(s => s.avg_value_vs_adp).filter(v => v != null) as number[];
+
+        const avg_pvdre = pvdreValues.length > 0 ? pvdreValues.reduce((a, b) => a + b, 0) / pvdreValues.length : null;
+        const pvdre_hit_rate = hitRateValues.length > 0 ? hitRateValues.reduce((a, b) => a + b, 0) / hitRateValues.length : null;
+        const avg_value_vs_adp = adpValues.length > 0 ? adpValues.reduce((a, b) => a + b, 0) / adpValues.length : null;
+
+        return {
+            gm_id: gmId,
+            gm_name: gmName,
+            avg_pvdre,
+            pvdre_hit_rate,
+            avg_value_vs_adp,
+        };
+    });
+
+    return averages;
+  }, [rawData]);
+
   const { currentMin, currentMax } = useMemo(() => {
     if (!rawData) return { currentMin: 0, currentMax: 0 };
     const values = rawData.map(item => item[selectedMetric] as number).filter(val => typeof val === 'number');
@@ -80,12 +116,13 @@ export default function DraftOverview() {
     return { currentMin: Math.min(...values), currentMax: Math.max(...values) };
   }, [rawData, selectedMetric]);
 
+  // UPDATED: Use the calculated gmSeasonAverages for min/max.
   const { minGmAvg, maxGmAvg } = useMemo(() => {
-    if (!overviewData?.gmAverages) return { minGmAvg: 0, maxGmAvg: 0 };
-    const values = overviewData.gmAverages.map(item => item[selectedMetric] as number).filter(val => typeof val === 'number');
+    if (!gmSeasonAverages) return { minGmAvg: 0, maxGmAvg: 0 };
+    const values = gmSeasonAverages.map(item => item[selectedMetric] as number).filter(val => typeof val === 'number');
     if (values.length === 0) return { minGmAvg: 0, maxGmAvg: 0 };
     return { minGmAvg: Math.min(...values), maxGmAvg: Math.max(...values) };
-  }, [overviewData?.gmAverages, selectedMetric]);
+  }, [gmSeasonAverages, selectedMetric]);
 
   const { minSeasonAvg, maxSeasonAvg } = useMemo(() => {
     if (!overviewData?.seasonAverages) return { minSeasonAvg: 0, maxSeasonAvg: 0 };
@@ -174,7 +211,7 @@ export default function DraftOverview() {
           <CardContent><div className="overflow-x-auto"><Table className="min-w-full border-collapse">
             <TableHeader><TableRow><TableHead className="sticky left-0 bg-card z-10 p-2 border text-xs md:text-sm"><Button variant="ghost" onClick={() => requestSort('gm_name')} className="px-1 group">GM Name {getSortIcon('gm_name')}</Button></TableHead>{seasonYears.map(year => (<TableHead key={year} className="p-2 border text-center text-xs md:text-sm whitespace-nowrap">{year}</TableHead>))}<TableHead className="p-2 border text-center text-xs md:text-sm whitespace-nowrap font-bold bg-muted/50 dark:bg-muted/30">GM Avg</TableHead></TableRow></TableHeader>
             <TableBody>{gmNames.map(gm_name => {
-                const gmAvgData = overviewData.gmAverages?.find(avg => avg.gm_name === gm_name);
+                const gmAvgData = gmSeasonAverages.find(avg => avg.gm_name === gm_name);
                 const gmAvgValue = gmAvgData ? gmAvgData[selectedMetric] : undefined;
                 const gmAvgPerfObject: Partial<GMDraftSeasonPerformance> = { gm_name, avg_pvdre: gmAvgData?.avg_pvdre, pvdre_hit_rate: gmAvgData?.pvdre_hit_rate, avg_value_vs_adp: gmAvgData?.avg_value_vs_adp };
                 return (<TableRow key={gm_name}><TableCell className="font-medium sticky left-0 bg-card z-10 p-2 border whitespace-nowrap">{gm_name}</TableCell>{seasonYears.map(year => {
