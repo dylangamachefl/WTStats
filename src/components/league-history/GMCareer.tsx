@@ -115,7 +115,7 @@ const CustomPieTooltip = ({ active, payload }: any ) => {
 const mockGmsForTabs: GM_Mock[] = [
   { id: "chris", name: "Chris" }, { id: "dan", name: "Dan" }, { id: "dylan", name: "Dylan" }, { id: "fitz", name: "Fitz" }, { id: "jack", name: "Jack" }, { id: "jake", name: "Jake" }, { id: "josh", name: "Josh" }, { id: "lac", name: "Lac" }, { id: "mark", name: "Mark" }, { id: "nick", name: "Nick" }, { id: "sean", name: "Sean" }, { id: "will", name: "Will" }, { id: "zach", name: "Zach" },
 ];
-const GM_CHART_COLORS = { GM_STARTED_PTS: 'hsl(var(--primary))', LEAGUE_AVG_PTS: 'hsl(var(--chart-2))' };
+const GM_CHART_COLORS = { GM_STARTED_PTS: 'hsl(var(--primary))', LEAGUE_AVG_PTS: 'hsl(var(--accent))' };
 
 export default function GMCareer() {
   const [selectedGmId, setSelectedGmId] = useState<string | undefined>(mockGmsForTabs[0]?.id);
