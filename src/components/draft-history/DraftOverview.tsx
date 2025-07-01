@@ -184,6 +184,9 @@ export default function DraftOverview() {
                               <div className="flex justify-between"><span>Avg Value vs ADP:</span> <span className="font-medium">{perfData.avg_value_vs_adp?.toFixed(2) ?? 'N/A'}</span></div>
                               <div className="flex justify-between"><span>Total Picks:</span> <span className="font-medium">{perfData.total_picks ?? 'N/A'}</span></div>
                               <div className="flex justify-between"><span>Total POE:</span> <span className="font-medium">{perfData.total_pvdre?.toFixed(2) ?? 'N/A'}</span></div>
+                              {perfData.first_round_draft_position != null && (
+                                <div className="flex justify-between"><span>1st Round Pick:</span> <span className="font-medium">{perfData.first_round_draft_position}</span></div>
+                              )}
                             </div>
                           </TooltipContent>}
                         </Tooltip>
