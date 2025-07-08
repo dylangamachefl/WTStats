@@ -1,8 +1,7 @@
-// src/app/(main)/league-history/page.tsx
+// src/app/(main)/page.tsx
 "use client";
 
-import { Suspense } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from 'next/dynamic';
@@ -13,10 +12,7 @@ const AllSeasonsOverview = dynamic(() => import('@/components/league-history/All
 const SeasonDetail = dynamic(() => import('@/components/league-history/SeasonDetail'), { loading: () => <ComponentLoader />, ssr: false });
 const GMCareer = dynamic(() => import('@/components/league-history/GMCareer'), { loading: () => <ComponentLoader />, ssr: false });
 
-function LeagueHistoryContent() {
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get('section') || 'all-seasons';
-
+function LeagueHistoryContent({ activeTab }: { activeTab: string }) {
   return (
     <Suspense fallback={<ComponentLoader />}>
       <TabsContent value="all-seasons" className="mt-6">{activeTab === 'all-seasons' && <AllSeasonsOverview />}</TabsContent>
@@ -27,15 +23,38 @@ function LeagueHistoryContent() {
 }
 
 export default function LeagueHistoryPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get('section') || 'all-seasons';
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.substring(1);
+      return hash || 'all-seasons';
+    }
+    return 'all-seasons';
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      setActiveTab(hash || 'all-seasons');
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('hashchange', handleHashChange);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('hashchange', handleHashChange);
+      }
+    };
+  }, []);
 
   const handleTabChange = (value: string) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set('section', value);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    setActiveTab(value);
+    if (typeof window !== 'undefined') {
+      window.location.hash = value;
+    }
   };
 
   return (
@@ -46,7 +65,7 @@ export default function LeagueHistoryPage() {
           <TabsTrigger value="season-detail">Season View</TabsTrigger>
           <TabsTrigger value="gm-career">GM View</TabsTrigger>
         </TabsList>
-        <LeagueHistoryContent />
+        <LeagueHistoryContent activeTab={activeTab} />
       </Tabs>
     </div>
   );

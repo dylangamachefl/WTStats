@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trophy, Shield, Goal, Star } from "lucide-react";
 import { Metadata } from 'next';
+import MDXImage from '@/components/MDXImage';
 
 // --- DATA IMPORT & TYPE DEFINITION ---
 import allDecadeTeamData from '@/data/deep-dives/data_all_decade_team.json';
@@ -98,35 +99,20 @@ export default async function DeepDiveArticlePage({ params }: DeepDiveArticlePag
     notFound();
   }
   const { frontmatter, content } = deepDiveData;
-
   const components = {
-    // 2. ADD THE IMAGE COMPONENT TO THE LIST
-    // This allows you to use <Image ... /> inside your .mdx files
+    img: MDXImage, // <-- handles ![]() syntax in MDX
     Image: (props: Omit<NextImagePropsTypeOnly, 'alt'> & { src: string; alt?: string; caption?: string }) => {
       const { src, alt, caption, ...rest } = props;
-
-      // Your existing logic for handling relative vs. absolute paths is good,
-      // but we need to ensure the basePath is always considered.
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
       let imageSrc = src;
-      if (typeof src === 'string') {
-        if (src.startsWith('/')) {
-            // This is a root-relative path like "/images/..."
-            // It will be correctly handled by the Next.js Image component's
-            // internal logic which respects `assetPrefix`. No manual prepending is needed here.
-            imageSrc = src;
-        } else {
-            // This handles relative paths within the MDX, e.g., "./chart.png"
-            imageSrc = `/images/deep-dives/${slug}/${src}`;
-        }
+      if (src.startsWith('/')) {
+        imageSrc = `${basePath}${src}`;
+      } else {
+        imageSrc = `${basePath}/images/deep-dives/${slug}/${src}`;
       }
       
       return (
         <figure>
-          {/* 
-            The key is that we are using the REAL NextImage component.
-            As long as its 'src' prop starts with a '/', it will automatically
-            use the `assetPrefix` from your next.config.js during the build.
-          */}
           <NextImage
             {...rest}
             src={imageSrc as string}
